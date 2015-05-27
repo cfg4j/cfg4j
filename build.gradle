@@ -1,0 +1,72 @@
+// ----------- Build script configuration -----------
+
+buildscript {
+
+    ext {
+        artifactGroup = "pl.nort"
+        artifactName = "config"
+        artifactVersion = "1.0-SNAPSHOT"
+    }
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+}
+
+// ----------- Plugins -----------
+
+apply plugin: "java"
+apply plugin: "idea"
+apply plugin: "jacoco"
+apply plugin: "maven"
+
+// ----------- Repositories -----------
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+// ----------- External module dependencies -----------
+
+dependencies {
+    compile group: "com.google.guava", name: "guava", version: "18.0"
+
+    // Logging
+    compile group: "org.slf4j", name: "slf4j-api", version: "1.7.9"
+
+    // Code quality
+    compile group: "com.google.code.findbugs", name: "findbugs", version: "3.0.1"
+
+    testCompile group: "junit", name: "junit", version: "4.11"
+    testCompile group: "org.easytesting", name: "fest-assert-core", version: "2.0M10"
+    testCompile group: "org.mockito", name: "mockito-core", version: "1.9.5"
+}
+
+// ----------- EXTRA tasks -----------
+
+// Generate Gradle wrapper
+task wrapper(type: Wrapper) {
+    gradleVersion = "2.3"
+}
+
+// ----------- Task configurations -----------
+defaultTasks "clean", "build"
+
+compileJava {
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+}
+
+jar {
+    baseName = "${artifactName}"
+    version = "${artifactVersion}"
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled false
+        html.enabled false
+    }
+}

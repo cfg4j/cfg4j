@@ -3,13 +3,16 @@ package pl.nort;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
 
-public class GitConfigurationService implements ConfigurationService {
+public class GitConfigurationService implements ConfigurationService, Closeable {
 
   private static final String LOCAL_REPOSITORY_PATH_IN_TEMP = "nort-config-git-config-repository";
+
+  private final Git clonedRepo;
 
   /**
    * Read configuration from the remote GIT repository residing at {@code repositoryURI}. Keeps a local
@@ -45,8 +48,6 @@ public class GitConfigurationService implements ConfigurationService {
       throw new GitConfigurationServiceException("Unable to create local clone directory: " + localRepositoryPathInTemp, e);
     }
 
-    Git clonedRepo;
-
     try {
       clonedRepo = Git.cloneRepository()
           .setURI(repositoryURI)
@@ -55,8 +56,6 @@ public class GitConfigurationService implements ConfigurationService {
     } catch (GitAPIException e) {
       throw new GitConfigurationServiceException("Unable to clone repository: " + repositoryURI, e);
     }
-
-    clonedRepo.close();
   }
 
   @Override
@@ -64,4 +63,8 @@ public class GitConfigurationService implements ConfigurationService {
     return null;
   }
 
+  @Override
+  public void close() throws IOException {
+    clonedRepo.close();
+  }
 }

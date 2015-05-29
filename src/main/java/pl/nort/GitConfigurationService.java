@@ -16,13 +16,12 @@ public class GitConfigurationService implements ConfigurationService {
    * clone of the repository in the system tmp directory.
    *
    * @param repositoryURI
-   * @throws GitAPIException
    */
-  public GitConfigurationService(String repositoryURI) throws GitAPIException {
+  public GitConfigurationService(String repositoryURI) {
     this(repositoryURI, System.getProperty("java.io.tmpdir"), LOCAL_REPOSITORY_PATH_IN_TEMP);
   }
 
-  public GitConfigurationService(String repositoryURI, String tmpPath, String localRepositoryPathInTemp) throws GitAPIException {
+  public GitConfigurationService(String repositoryURI, String tmpPath, String localRepositoryPathInTemp) {
 
     File clonedRepoPath;
 
@@ -34,16 +33,18 @@ public class GitConfigurationService implements ConfigurationService {
       throw new GitConfigurationServiceException("Unable to create local clone directory: " + localRepositoryPathInTemp, e);
     }
 
-    Git clonedRepo = Git.cloneRepository()
-        .setURI(repositoryURI)
-        .setDirectory(clonedRepoPath)
-        .call();
+    Git clonedRepo;
 
     try {
-      System.out.println(clonedRepo.getRepository().getDirectory());
-    } finally {
-      clonedRepo.close();
+      clonedRepo = Git.cloneRepository()
+          .setURI(repositoryURI)
+          .setDirectory(clonedRepoPath)
+          .call();
+    } catch (GitAPIException e) {
+      throw new GitConfigurationServiceException("Unable to clone repository: " + repositoryURI, e);
     }
+
+    clonedRepo.close();
   }
 
   @Override

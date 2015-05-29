@@ -18,6 +18,12 @@ public class GitConfigurationServiceIntegrationTest {
   }
 
   @Test
+  public void shouldThrowOnInvalidRemote() throws Exception {
+    expectedException.expect(GitConfigurationServiceException.class);
+    new GitConfigurationService("https://github.com/nort/nonExistentRepo");
+  }
+
+  @Test
   public void shouldReadConfigFromRemoteRepository() throws Exception {
     String repoCoordinates = "https://github.com/nort/config-git-sample-config.git";
     GitConfigurationService gitConfigurationService = new GitConfigurationService(repoCoordinates);

@@ -34,6 +34,9 @@ repositories {
 dependencies {
     compile group: "com.google.guava", name: "guava", version: "18.0"
 
+    // Git
+    compile group: "org.eclipse.jgit", name: "org.eclipse.jgit", version: "3.7.1.201504261725-r"
+
     // Logging
     compile group: "org.slf4j", name: "slf4j-api", version: "1.7.9"
 

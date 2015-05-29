@@ -19,7 +19,8 @@ buildscript {
 apply plugin: "java"
 apply plugin: "idea"
 apply plugin: "jacoco"
-apply plugin: "maven"
+apply plugin: 'maven'
+apply plugin: 'signing'
 
 // ----------- Repositories -----------
 
@@ -32,6 +33,9 @@ repositories {
 
 dependencies {
     compile group: "com.google.guava", name: "guava", version: "18.0"
+
+    // Git
+    compile group: "org.eclipse.jgit", name: "org.eclipse.jgit", version: "3.7.1.201504261725-r"
 
     // Logging
     compile group: "org.slf4j", name: "slf4j-api", version: "1.7.9"
@@ -49,6 +53,16 @@ dependencies {
 // Generate Gradle wrapper
 task wrapper(type: Wrapper) {
     gradleVersion = "2.3"
+}
+
+task javadocJar(type: Jar) {
+    classifier = 'javadoc'
+    from javadoc
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
 }
 
 // ----------- Task configurations -----------
@@ -70,3 +84,54 @@ jacocoTestReport {
         html.enabled false
     }
 }
+
+group = "${artifactGroup}"
+archivesBaseName = "${artifactName}"
+version = "${artifactVersion}"
+
+//artifacts {
+//    archives javadocJar, sourcesJar
+//}
+
+//signing {
+//    sign configurations.archives
+//}
+
+//uploadArchives {
+//    repositories {
+//        mavenDeployer {
+//            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+//
+//            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+//                authentication(userName: ossrhUsername, password: ossrhPassword)
+//            }
+//
+//            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+//                authentication(userName: ossrhUsername, password: ossrhPassword)
+//            }
+//
+//            pom.project {
+//                name 'Nort Config'
+//                packaging 'jar'
+//                description 'Nort Config is a configuration library making work with external configuration services a breeze.'
+//                url 'https://github.com/nort/config'
+//
+//                licenses {
+//                    license {
+//                        name 'The Apache License, Version 2.0'
+//                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+//                        distribution 'repo'
+//                    }
+//                }
+//
+//                developers {
+//                    developer {
+//                        id 'norbertpotocki'
+//                        name 'Norbert Potocki'
+//                        email 'norbert.potocki@nort.pl'
+//                    }
+//                }
+//            }
+//        }
+//    }
+//}

@@ -28,7 +28,7 @@ public class GitConfigurationServiceIntegrationTest {
     String repoCoordinates = "https://github.com/nort/config-git-sample-config.git";
 
     try (GitConfigurationService gitConfigurationService = new GitConfigurationService(repoCoordinates)) {
-      assertThat(gitConfigurationService.getConfiguration()).isNotEmpty();
+      assertThat(gitConfigurationService.getConfiguration()).containsKey("some.setting");
     }
   }
 }

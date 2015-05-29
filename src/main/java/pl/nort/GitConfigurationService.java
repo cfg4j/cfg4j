@@ -5,7 +5,9 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 
 import java.io.Closeable;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 public class GitConfigurationService implements ConfigurationService, Closeable {
@@ -13,6 +15,7 @@ public class GitConfigurationService implements ConfigurationService, Closeable 
   private static final String LOCAL_REPOSITORY_PATH_IN_TEMP = "nort-config-git-config-repository";
 
   private final Git clonedRepo;
+  private final File clonedRepoPath;
 
   /**
    * Read configuration from the remote GIT repository residing at {@code repositoryURI}. Keeps a local
@@ -36,8 +39,6 @@ public class GitConfigurationService implements ConfigurationService, Closeable 
    */
   public GitConfigurationService(String repositoryURI, String tmpPath, String localRepositoryPathInTemp) {
 
-    File clonedRepoPath;
-
     try {
       clonedRepoPath = File.createTempFile(localRepositoryPathInTemp, "", new File(tmpPath));
       // This folder can't exist or JGit will throw NPE on clone
@@ -60,7 +61,25 @@ public class GitConfigurationService implements ConfigurationService, Closeable 
 
   @Override
   public Properties getConfiguration() {
-    return null;
+    Properties properties = new Properties();
+    InputStream input = null;
+
+    try {
+      input = new FileInputStream(clonedRepoPath + "/application.properties");
+      properties.load(input);
+    } catch (IOException ex) {
+      ex.printStackTrace();
+    } finally {
+      if (input != null) {
+        try {
+          input.close();
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
+    }
+
+    return properties;
   }
 
   @Override

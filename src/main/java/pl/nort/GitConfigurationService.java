@@ -12,15 +12,25 @@ public class GitConfigurationService implements ConfigurationService {
   private static final String LOCAL_REPOSITORY_PATH_IN_TEMP = "nort-config-git-config-repository";
 
   /**
-   * Read configuration from the remote repository residing at {@code repositoryURI}. Keeps a local
+   * Read configuration from the remote GIT repository residing at {@code repositoryURI}. Keeps a local
    * clone of the repository in the system tmp directory.
    *
-   * @param repositoryURI
+   * @param repositoryURI URI to the remote git repository
+   * @throws GitConfigurationServiceException when unable to clone repository
    */
   public GitConfigurationService(String repositoryURI) {
     this(repositoryURI, System.getProperty("java.io.tmpdir"), LOCAL_REPOSITORY_PATH_IN_TEMP);
   }
 
+  /**
+   * Read configuration from the remote GIT repository residing at {@code repositoryURI}. Keeps a local
+   * clone of the repository in the {@code localRepositoryPathInTemp} directory under {@code tmpPath} path.
+   *
+   * @param repositoryURI             URI to the remote git repository
+   * @param tmpPath                   path to the tmp directory
+   * @param localRepositoryPathInTemp name of the local directory keeping the repository clone
+   * @throws GitConfigurationServiceException when unable to clone repository
+   */
   public GitConfigurationService(String repositoryURI, String tmpPath, String localRepositoryPathInTemp) {
 
     File clonedRepoPath;

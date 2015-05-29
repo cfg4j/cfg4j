@@ -27,8 +27,10 @@ public class GitConfigurationService implements ConfigurationService {
 
     try {
       clonedRepoPath = File.createTempFile(localRepositoryPathInTemp, "", new File(tmpPath));
-      // This folder can't exist of JGit will throw NPE on clone
-      clonedRepoPath.delete();
+      // This folder can't exist or JGit will throw NPE on clone
+      if (!clonedRepoPath.delete()) {
+        throw new GitConfigurationServiceException("Unable to remove temp directory for local clone: " + localRepositoryPathInTemp);
+      }
     } catch (IOException e) {
       throw new GitConfigurationServiceException("Unable to create local clone directory: " + localRepositoryPathInTemp, e);
     }

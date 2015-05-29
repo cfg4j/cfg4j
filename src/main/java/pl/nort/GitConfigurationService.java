@@ -12,15 +12,15 @@ public class GitConfigurationService implements ConfigurationService {
   private static final String LOCAL_REPOSITORY_PATH_IN_TEMP = "nort-config-git-config-repository";
 
   public GitConfigurationService(String repositoryURI) throws GitAPIException {
-    this(repositoryURI, LOCAL_REPOSITORY_PATH_IN_TEMP);
+    this(repositoryURI, System.getProperty("java.io.tmpdir"), LOCAL_REPOSITORY_PATH_IN_TEMP);
   }
 
-  public GitConfigurationService(String repositoryURI, String localRepositoryPathInTemp) throws GitAPIException {
+  public GitConfigurationService(String repositoryURI, String tmpPath, String localRepositoryPathInTemp) throws GitAPIException {
 
     File clonedRepoPath;
 
     try {
-      clonedRepoPath = File.createTempFile(localRepositoryPathInTemp, "");
+      clonedRepoPath = File.createTempFile(localRepositoryPathInTemp, "", new File(tmpPath));
     } catch (IOException e) {
       throw new GitConfigurationServiceException("Unable to create local clone directory: " + localRepositoryPathInTemp, e);
     }

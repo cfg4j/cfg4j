@@ -7,14 +7,14 @@
 # Usage
 ## Setting up dependency
 ### Gradle
-```
+```groovy
 dependencies {
   compile group: "pl.nort", name:"config", version: "1.0.0"
 }
 ```
 
 ### Maven
-```
+```xml
 <dependencies>
   <dependency>
     <groupId>pl.nort</groupId>

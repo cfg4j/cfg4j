@@ -17,7 +17,16 @@ package pl.nort;
 
 import java.util.Properties;
 
+/**
+ * Configuration source.
+ */
 public interface ConfigurationSource {
 
+  /**
+   * Get full configuration set from this source in a form of {@link Properties}.
+   *
+   * @return full configuration set
+   * @throws IllegalStateException when unable to fetch configuration
+   */
   Properties getConfiguration();
 }

@@ -166,10 +166,8 @@ gradle.taskGraph.whenReady { taskGraph ->
                 "\n\nPlease enter your credentials.\n\n"
 
         def signingPassword = console.readPassword("PGP Private Key Password: ")
-        def ossrhPassword = console.readPassword("Maven Central Password: ")
 
         allprojects { ext."signing.password" = signingPassword }
-        allprojects { ext."ossrhPassword" = ossrhPassword }
 
 
         console.printf "\nThanks.\n\n"

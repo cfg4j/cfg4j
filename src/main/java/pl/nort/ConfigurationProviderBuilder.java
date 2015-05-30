@@ -15,8 +15,6 @@
  */
 package pl.nort;
 
-import java.util.Properties;
-
 /**
  * A builder producing {@link ConfigurationProvider}s
  */
@@ -30,17 +28,7 @@ public class ConfigurationProviderBuilder {
   }
 
   public ConfigurationProvider build() {
-    return new ConfigurationProvider() {
-      @Override
-      public Properties allConfigurationAsProperties() {
-        return configurationSource.getConfiguration();
-      }
-
-      @Override
-      public String getProperty(String key) {
-        return configurationSource.getConfiguration().getProperty(key);
-      }
-    };
+    return new SimpleConfigurationProvider(configurationSource);
   }
 
 }

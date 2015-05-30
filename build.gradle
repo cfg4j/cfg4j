@@ -127,6 +127,13 @@ uploadArchives {
                 description 'Configuration management for distributed Java applications made easy.'
                 url 'https://github.com/nort/config'
 
+                scm {
+                    url 'git@github.com:nort/config.git'
+                    connection 'scm:git:git@github.com:nort/config.git'
+                    developerConnection 'scm:git:git@github.com:nort/config.git'
+                }
+
+
                 licenses {
                     license {
                         name 'The Apache License, Version 2.0'

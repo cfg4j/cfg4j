@@ -9,19 +9,19 @@
 ### Gradle
 ```
 dependencies {
-    compile group: "pl.nort", name:"config", version: "1.0.0"
+  compile group: "pl.nort", name:"config", version: "1.0.0"
 }
 ```
 
 ### Maven
 ```
-  <dependencies>
-        <dependency>
-            <groupId>pl.nort</groupId>
-            <artifactId>config</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-    </dependencies>
+<dependencies>
+  <dependency>
+    <groupId>pl.nort</groupId>
+    <artifactId>config</artifactId>
+    <version>1.0.0</version>
+  </dependency>
+</dependencies>
 ```
 
 # License

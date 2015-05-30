@@ -13,8 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pl.nort;
+package pl.nort.config.provider;
 
-public class GitConfigurationSourceTest {
+import pl.nort.config.source.ConfigurationSource;
+
+/**
+ * A builder producing {@link ConfigurationProvider}s
+ */
+public class ConfigurationProviderBuilder {
+
+  private ConfigurationSource configurationSource;
+
+  public ConfigurationProviderBuilder withConfigurationSource(ConfigurationSource configurationSource) {
+    this.configurationSource = configurationSource;
+    return this;
+  }
+
+  public ConfigurationProvider build() {
+    return new SimpleConfigurationProvider(configurationSource);
+  }
 
 }

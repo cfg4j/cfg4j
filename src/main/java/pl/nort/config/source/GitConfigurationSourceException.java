@@ -13,20 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pl.nort;
+package pl.nort.config.source;
 
-import java.util.Properties;
+public class GitConfigurationSourceException extends RuntimeException {
 
-/**
- * Configuration source.
- */
-public interface ConfigurationSource {
+  public GitConfigurationSourceException(String msg, Exception e) {
+    super(msg, e);
+  }
 
-  /**
-   * Get full configuration set from this source in a form of {@link Properties}.
-   *
-   * @return full configuration set
-   * @throws IllegalStateException when unable to fetch configuration
-   */
-  Properties getConfiguration();
+  public GitConfigurationSourceException(String msg) {
+    super(msg);
+  }
 }

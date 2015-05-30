@@ -13,22 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pl.nort;
+package pl.nort.config.source;
+
+import java.util.Properties;
 
 /**
- * A builder producing {@link ConfigurationProvider}s
+ * Configuration source.
  */
-public class ConfigurationProviderBuilder {
+public interface ConfigurationSource {
 
-  private ConfigurationSource configurationSource;
-
-  public ConfigurationProviderBuilder withConfigurationSource(ConfigurationSource configurationSource) {
-    this.configurationSource = configurationSource;
-    return this;
-  }
-
-  public ConfigurationProvider build() {
-    return new SimpleConfigurationProvider(configurationSource);
-  }
-
+  /**
+   * Get full configuration set from this source in a form of {@link Properties}.
+   *
+   * @return full configuration set
+   * @throws IllegalStateException when unable to fetch configuration
+   */
+  Properties getConfiguration();
 }

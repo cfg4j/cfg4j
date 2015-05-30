@@ -13,7 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pl.nort;
+package pl.nort.config.provider;
+
+import pl.nort.config.source.ConfigurationSource;
+import pl.nort.config.source.GitConfigurationSource;
 
 /**
  * A factory producing {@link ConfigurationProvider}s.

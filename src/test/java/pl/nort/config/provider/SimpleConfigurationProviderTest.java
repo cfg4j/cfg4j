@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pl.nort;
+package pl.nort.config.provider;
 
 import static org.mockito.Mockito.when;
 
@@ -24,6 +24,7 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import pl.nort.config.source.ConfigurationSource;
 
 import java.util.NoSuchElementException;
 import java.util.Properties;

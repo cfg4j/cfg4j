@@ -13,15 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pl.nort;
+package pl.nort.config.source;
 
-public class GitConfigurationSourceException extends RuntimeException {
+public class GitConfigurationSourceTest {
 
-  public GitConfigurationSourceException(String msg, Exception e) {
-    super(msg, e);
-  }
-
-  public GitConfigurationSourceException(String msg) {
-    super(msg);
-  }
 }

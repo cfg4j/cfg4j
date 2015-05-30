@@ -124,7 +124,7 @@ uploadArchives {
             pom.project {
                 name 'Nort Config'
                 packaging 'jar'
-                description 'Nort Config is a configuration library making work with external configuration services a breeze.'
+                description 'Configuration management for distributed Java applications made easy.'
                 url 'https://github.com/nort/config'
 
                 licenses {

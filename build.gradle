@@ -104,13 +104,13 @@ group = "${artifactGroup}"
 archivesBaseName = "${artifactName}"
 version = "${artifactVersion}"
 
-//artifacts {
-//    archives javadocJar, sourcesJar
-//}
+artifacts {
+    archives javadocJar, sourcesJar
+}
 
-//signing {
-//    sign configurations.archives
-//}
+signing {
+    sign configurations.archives
+}
 
 //uploadArchives {
 //    repositories {

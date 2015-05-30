@@ -108,10 +108,6 @@ artifacts {
     archives javadocJar, sourcesJar
 }
 
-signing {
-    sign configurations.archives
-}
-
 uploadArchives {
     repositories {
         mavenDeployer {
@@ -148,5 +144,24 @@ uploadArchives {
                 }
             }
         }
+    }
+}
+
+
+signing {
+    sign configurations.archives
+}
+
+gradle.taskGraph.whenReady { taskGraph ->
+    if (taskGraph.allTasks.any { it instanceof Sign }) {
+        Console console = System.console()
+        console.printf "\n\nWe have to sign some things in this build." +
+                "\n\nPlease enter your signing details.\n\n"
+
+        def password = console.readPassword("PGP Private Key Password: ")
+
+        allprojects { ext."signing.password" = password }
+
+        console.printf "\nThanks.\n\n"
     }
 }

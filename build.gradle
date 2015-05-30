@@ -104,49 +104,76 @@ group = "${artifactGroup}"
 archivesBaseName = "${artifactName}"
 version = "${artifactVersion}"
 
-//artifacts {
-//    archives javadocJar, sourcesJar
-//}
+artifacts {
+    archives javadocJar, sourcesJar
+}
 
-//signing {
-//    sign configurations.archives
-//}
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
-//uploadArchives {
-//    repositories {
-//        mavenDeployer {
-//            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-//
-//            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-//                authentication(userName: ossrhUsername, password: ossrhPassword)
-//            }
-//
-//            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-//                authentication(userName: ossrhUsername, password: ossrhPassword)
-//            }
-//
-//            pom.project {
-//                name 'Nort Config'
-//                packaging 'jar'
-//                description 'Nort Config is a configuration library making work with external configuration services a breeze.'
-//                url 'https://github.com/nort/config'
-//
-//                licenses {
-//                    license {
-//                        name 'The Apache License, Version 2.0'
-//                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-//                        distribution 'repo'
-//                    }
-//                }
-//
-//                developers {
-//                    developer {
-//                        id 'norbertpotocki'
-//                        name 'Norbert Potocki'
-//                        email 'norbert.potocki@nort.pl'
-//                    }
-//                }
-//            }
-//        }
-//    }
-//}
+            def ossrhUsername = project.hasProperty("ossrhUsername") ? project.property("ossrhUsername") : ""
+            def ossrhPassword = project.hasProperty("ossrhPassword") ? project.property("ossrhPassword") : ""
+
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            pom.project {
+                name 'Nort Config'
+                packaging 'jar'
+                description 'Configuration management for distributed Java applications made easy.'
+                url 'https://github.com/nort/config'
+
+                scm {
+                    url 'git@github.com:nort/config.git'
+                    connection 'scm:git:git@github.com:nort/config.git'
+                    developerConnection 'scm:git:git@github.com:nort/config.git'
+                }
+
+
+                licenses {
+                    license {
+                        name 'The Apache License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        distribution 'repo'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id 'norbertpotocki'
+                        name 'Norbert Potocki'
+                        email 'norbert.potocki@nort.pl'
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+signing {
+    required { gradle.taskGraph.hasTask(":uploadArchives") }
+    sign configurations.archives
+}
+
+gradle.taskGraph.whenReady { taskGraph ->
+    if (taskGraph.hasTask(":uploadArchives")) {
+        Console console = System.console()
+        console.printf "\n\nWe have to sign and upload artifacts to Maven Central Repository" +
+                "\n\nPlease enter your credentials.\n\n"
+
+        def signingPassword = console.readPassword("PGP Private Key Password: ")
+
+        allprojects { ext."signing.password" = signingPassword }
+
+
+        console.printf "\nThanks.\n\n"
+    }
+}

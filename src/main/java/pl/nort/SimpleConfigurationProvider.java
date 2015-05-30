@@ -20,10 +20,18 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.util.NoSuchElementException;
 import java.util.Properties;
 
+/**
+ * Basic implementation of {@link ConfigurationProvider}
+ */
 public class SimpleConfigurationProvider implements ConfigurationProvider {
 
   private final ConfigurationSource configurationSource;
 
+  /**
+   * {@link ConfigurationProvider} backed by provided {@link ConfigurationSource}
+   *
+   * @param configurationSource source for configuration
+   */
   public SimpleConfigurationProvider(ConfigurationSource configurationSource) {
     this.configurationSource = checkNotNull(configurationSource);
   }

@@ -15,13 +15,13 @@
  */
 package pl.nort;
 
-public class GitConfigurationServiceException extends RuntimeException {
+public class GitConfigurationSourceException extends RuntimeException {
 
-  public GitConfigurationServiceException(String msg, Exception e) {
+  public GitConfigurationSourceException(String msg, Exception e) {
     super(msg, e);
   }
 
-  public GitConfigurationServiceException(String msg) {
+  public GitConfigurationSourceException(String msg) {
     super(msg);
   }
 }

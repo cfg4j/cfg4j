@@ -15,9 +15,6 @@
  */
 package pl.nort;
 
-import java.util.Properties;
+public class GitConfigurationSourceTest {
 
-public interface ConfigurationService {
-
-  Properties getConfiguration();
 }

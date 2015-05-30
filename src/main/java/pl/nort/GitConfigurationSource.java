@@ -1,12 +1,12 @@
-/**
+/*
  * Copyright 2015 Norbert Potocki (norbert.potocki@nort.pl)
- * <p>
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-public class GitConfigurationService implements ConfigurationService, Closeable {
+public class GitConfigurationSource implements ConfigurationSource, Closeable {
 
   private static final String LOCAL_REPOSITORY_PATH_IN_TEMP = "nort-config-git-config-repository";
 
@@ -37,9 +37,9 @@ public class GitConfigurationService implements ConfigurationService, Closeable 
    * clone of the repository in the system tmp directory.
    *
    * @param repositoryURI URI to the remote git repository
-   * @throws GitConfigurationServiceException when unable to clone repository
+   * @throws GitConfigurationSourceException when unable to clone repository
    */
-  public GitConfigurationService(String repositoryURI) {
+  public GitConfigurationSource(String repositoryURI) {
     this(repositoryURI, System.getProperty("java.io.tmpdir"), LOCAL_REPOSITORY_PATH_IN_TEMP);
   }
 
@@ -50,18 +50,18 @@ public class GitConfigurationService implements ConfigurationService, Closeable 
    * @param repositoryURI             URI to the remote git repository
    * @param tmpPath                   path to the tmp directory
    * @param localRepositoryPathInTemp name of the local directory keeping the repository clone
-   * @throws GitConfigurationServiceException when unable to clone repository
+   * @throws GitConfigurationSourceException when unable to clone repository
    */
-  public GitConfigurationService(String repositoryURI, String tmpPath, String localRepositoryPathInTemp) {
+  public GitConfigurationSource(String repositoryURI, String tmpPath, String localRepositoryPathInTemp) {
 
     try {
       clonedRepoPath = File.createTempFile(localRepositoryPathInTemp, "", new File(tmpPath));
       // This folder can't exist or JGit will throw NPE on clone
       if (!clonedRepoPath.delete()) {
-        throw new GitConfigurationServiceException("Unable to remove temp directory for local clone: " + localRepositoryPathInTemp);
+        throw new GitConfigurationSourceException("Unable to remove temp directory for local clone: " + localRepositoryPathInTemp);
       }
     } catch (IOException e) {
-      throw new GitConfigurationServiceException("Unable to create local clone directory: " + localRepositoryPathInTemp, e);
+      throw new GitConfigurationSourceException("Unable to create local clone directory: " + localRepositoryPathInTemp, e);
     }
 
     try {
@@ -70,7 +70,7 @@ public class GitConfigurationService implements ConfigurationService, Closeable 
           .setDirectory(clonedRepoPath)
           .call();
     } catch (GitAPIException e) {
-      throw new GitConfigurationServiceException("Unable to clone repository: " + repositoryURI, e);
+      throw new GitConfigurationSourceException("Unable to clone repository: " + repositoryURI, e);
     }
   }
 

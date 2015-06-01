@@ -71,32 +71,25 @@ public class SimpleConfigurationProvider implements ConfigurationProvider {
   public <T> T getProperty(String key, Class<T> type) {
     String propertyStr = getProperty(key);
 
-    T property;
-
     try {
       TypeParser parser = TypeParser.newBuilder().build();
-      property = parser.parse(propertyStr, type);
+      return parser.parse(propertyStr, type);
     } catch (TypeParserException | NoSuchRegisteredParserException e) {
       throw new IllegalArgumentException("Unable to cast value \'" + propertyStr + "\' to " + type, e);
     }
-
-    return property;
   }
 
   @Override
   public <T> T getProperty(String key, GenericType<T> genericType) {
     String propertyStr = getProperty(key);
 
-    T property;
-
     try {
       TypeParser parser = TypeParser.newBuilder().build();
-      property = parser.parse(propertyStr, new GenericTypeAdapter<>(genericType));
+      @SuppressWarnings("unchecked")
+      T property = (T) parser.parseType(propertyStr, genericType.getType());
+      return property;
     } catch (TypeParserException | NoSuchRegisteredParserException e) {
       throw new IllegalArgumentException("Unable to cast value \'" + propertyStr + "\' to " + genericType, e);
     }
-
-    return property;
-
   }
 }

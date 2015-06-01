@@ -15,7 +15,6 @@
  */
 package pl.nort.config.provider;
 
-import static org.fest.assertions.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import org.junit.Before;
@@ -71,7 +70,7 @@ public class SimpleConfigurationProviderTest {
   }
 
   @Test
-  public void shouldReturnPropertyFromSource() throws Exception {
+  public void shouldReturnStringPropertyFromSource() throws Exception {
     Properties properties = new Properties();
     properties.put("some.property", "abc");
     when(configurationSource.getConfiguration()).thenReturn(properties);

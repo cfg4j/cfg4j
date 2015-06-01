@@ -55,6 +55,9 @@ dependencies {
     // Logging
     compile group: "org.slf4j", name: "slf4j-api", version: "1.7.9"
 
+    // Types parsing
+    compile group: "com.github.drapostolos", name: "type-parser", version: "0.5.0"
+
     // Code quality
     compile group: "com.google.code.findbugs", name: "findbugs", version: "3.0.1"
 

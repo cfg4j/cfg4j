@@ -63,6 +63,7 @@ public interface ConfigurationProvider {
    *             {@link List}, {@link Set}, {@link SortedSet}, {@link Map}, {@link SortedMap}
    * @return configuration value
    * @throws NoSuchElementException when the provided {@code key} doesn't have a corresponding config value
+   * @throws IllegalArgumentException when property can't be coverted to {@code type}
    * @throws IllegalStateException  when provider is unable to fetch configuration value for the given {@code key}
    */
   <T> T getProperty(String key, Class<T> type);

@@ -102,6 +102,14 @@ public class SimpleConfigurationProviderTest {
     assertThat(property).isTrue();
   }
 
+  @Test
+  public void getProperty2ShouldThrowOnIncompatibleConversion() throws Exception {
+    when(configurationSource.getConfiguration()).thenReturn(propertiesWith("some.property", "true"));
+
+    expectedException.expect(IllegalArgumentException.class);
+    simpleConfigurationProvider.getProperty("some.property", Integer.class);
+  }
+
   private Properties propertiesWith(String... args) {
     Properties properties = new Properties();
     properties.put(args[0], args[1]);

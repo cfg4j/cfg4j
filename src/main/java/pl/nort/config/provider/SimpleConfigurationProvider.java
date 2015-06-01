@@ -18,6 +18,7 @@ package pl.nort.config.provider;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.github.drapostolos.typeparser.TypeParser;
+import com.github.drapostolos.typeparser.TypeParserException;
 import pl.nort.config.source.ConfigurationSource;
 
 import java.util.NoSuchElementException;
@@ -69,8 +70,15 @@ public class SimpleConfigurationProvider implements ConfigurationProvider {
   public <T> T getProperty(String key, Class<T> type) {
     String propertyStr = getProperty(key);
 
-    TypeParser parser = TypeParser.newBuilder().build();
+    T property;
 
-    return parser.parse(propertyStr, type);
+    try {
+      TypeParser parser = TypeParser.newBuilder().build();
+      property = parser.parse(propertyStr, type);
+    } catch (TypeParserException e) {
+      throw new IllegalArgumentException("Unable to cast value \'" + propertyStr + "\' to " + type, e);
+    }
+
+    return property;
   }
 }

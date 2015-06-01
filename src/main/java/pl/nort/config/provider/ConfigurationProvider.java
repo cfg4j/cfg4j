@@ -53,18 +53,30 @@ public interface ConfigurationProvider {
   String getProperty(String key);
 
   /**
-   * Get a configuration property of a given {@code type}
+   * Get a configuration property of a given basic {@code type}
    *
    * @param key  configuration key
-   * @param type property type. Supported simple types: {@link BigDecimal}, {@link BigInteger}, {@link Boolean}, {@link Byte},
+   * @param type property type. Supported baic types: {@link BigDecimal}, {@link BigInteger}, {@link Boolean}, {@link Byte},
    *             {@link Character}, {@link Class}, {@link Double}, {@link Enum}, {@link File}, {@link Float}, {@link Integer},
-   *             {@link Long}, {@link Number}, {@link Short},  {@link String}, {@link URL}, {@link URI}.
-   *             Supported collections (and most of their standard implementations) of aforementioned types: array, {@link Collection},
-   *             {@link List}, {@link Set}, {@link SortedSet}, {@link Map}, {@link SortedMap}
+   *             {@link Long}, {@link Number}, {@link Short}, {@link String}, {@link URL}, {@link URI} and arrays.
+   *             For {@link Collection} support see method {@link #getProperty(String, GenericType)})
    * @return configuration value
    * @throws NoSuchElementException when the provided {@code key} doesn't have a corresponding config value
    * @throws IllegalArgumentException when property can't be coverted to {@code type}
    * @throws IllegalStateException  when provider is unable to fetch configuration value for the given {@code key}
    */
   <T> T getProperty(String key, Class<T> type);
+
+  /**
+   * Get a configuration property of a generic type {@code T}
+   *
+   * @param key  configuration key
+   * @param genericType property type. Supported collections (and most of their standard implementations): {@link Collection},
+   *             {@link List}, {@link Set}, {@link SortedSet}, {@link Map}, {@link SortedMap}
+   * @return configuration value
+   * @throws NoSuchElementException when the provided {@code key} doesn't have a corresponding config value
+   * @throws IllegalArgumentException when property can't be coverted to {@code type}
+   * @throws IllegalStateException  when provider is unable to fetch configuration value for the given {@code key}
+   */
+  <T> T getProperty(String key, GenericType<T> genericType);
 }

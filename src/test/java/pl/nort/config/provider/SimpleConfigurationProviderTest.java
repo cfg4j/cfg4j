@@ -27,6 +27,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import pl.nort.config.source.ConfigurationSource;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Properties;
 
@@ -95,14 +96,6 @@ public class SimpleConfigurationProviderTest {
   }
 
   @Test
-  public void getProperty2ShouldReturnPropertyFromSource() throws Exception {
-    when(configurationSource.getConfiguration()).thenReturn(propertiesWith("some.property", "true"));
-
-    Boolean property = simpleConfigurationProvider.getProperty("some.property", Boolean.class);
-    assertThat(property).isTrue();
-  }
-
-  @Test
   public void getProperty2ShouldThrowOnIncompatibleConversion() throws Exception {
     when(configurationSource.getConfiguration()).thenReturn(propertiesWith("some.property", "true"));
 
@@ -111,11 +104,55 @@ public class SimpleConfigurationProviderTest {
   }
 
   @Test
+  public void getProperty2ShouldReturnPropertyFromSource() throws Exception {
+    when(configurationSource.getConfiguration()).thenReturn(propertiesWith("some.property", "true"));
+
+    Boolean property = simpleConfigurationProvider.getProperty("some.property", Boolean.class);
+    assertThat(property).isTrue();
+  }
+
+  @Test
   public void getProperty2ShouldReturnArrayPropertyFromSource() throws Exception {
     when(configurationSource.getConfiguration()).thenReturn(propertiesWith("some.property", "42.5, 99.9999"));
 
     double[] property = simpleConfigurationProvider.getProperty("some.property", double[].class);
     assertThat(property).containsExactly(42.5, 99.9999);
+  }
+
+  @Test
+  public void getProperty3ShouldThrowWhenFetchingNonexistentKey() throws Exception {
+    when(configurationSource.getConfiguration()).thenReturn(new Properties());
+
+    expectedException.expect(NoSuchElementException.class);
+    simpleConfigurationProvider.getProperty("some.property", new GenericType<List<String>>() {
+    });
+  }
+
+  @Test
+  public void getProperty3ShouldThrowWhenUnableToFetchKey() throws Exception {
+    when(configurationSource.getConfiguration()).thenThrow(IllegalStateException.class);
+
+    expectedException.expect(IllegalStateException.class);
+    simpleConfigurationProvider.getProperty("some.property", new GenericType<List<String>>() {
+    });
+  }
+
+  @Test
+  public void getProperty3ShouldThrowOnIncompatibleConversion() throws Exception {
+    when(configurationSource.getConfiguration()).thenReturn(propertiesWith("some.property", "true"));
+
+    expectedException.expect(IllegalArgumentException.class);
+    simpleConfigurationProvider.getProperty("some.property", new GenericType<List<Integer>>() {
+    });
+  }
+
+  @Test
+  public void getProperty3ShouldReturnPropertyFromSource() throws Exception {
+    when(configurationSource.getConfiguration()).thenReturn(propertiesWith("some.property", "1,2"));
+
+    List<Integer> properties = simpleConfigurationProvider.getProperty("some.property", new GenericType<List<Integer>>() {
+    });
+    assertThat(properties).containsExactly(1, 2);
   }
 
   private Properties propertiesWith(String... args) {

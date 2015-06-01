@@ -17,6 +17,7 @@ package pl.nort.config.provider;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.github.drapostolos.typeparser.NoSuchRegisteredParserException;
 import com.github.drapostolos.typeparser.TypeParser;
 import com.github.drapostolos.typeparser.TypeParserException;
 import pl.nort.config.source.ConfigurationSource;
@@ -75,10 +76,27 @@ public class SimpleConfigurationProvider implements ConfigurationProvider {
     try {
       TypeParser parser = TypeParser.newBuilder().build();
       property = parser.parse(propertyStr, type);
-    } catch (TypeParserException e) {
+    } catch (TypeParserException | NoSuchRegisteredParserException e) {
       throw new IllegalArgumentException("Unable to cast value \'" + propertyStr + "\' to " + type, e);
     }
 
     return property;
+  }
+
+  @Override
+  public <T> T getProperty(String key, GenericType<T> genericType) {
+    String propertyStr = getProperty(key);
+
+    T property;
+
+    try {
+      TypeParser parser = TypeParser.newBuilder().build();
+      property = parser.parse(propertyStr, new GenericTypeAdapter<>(genericType));
+    } catch (TypeParserException | NoSuchRegisteredParserException e) {
+      throw new IllegalArgumentException("Unable to cast value \'" + propertyStr + "\' to " + genericType, e);
+    }
+
+    return property;
+
   }
 }

@@ -32,13 +32,12 @@ public interface ConfigurationProvider {
   Properties allConfigurationAsProperties();
 
   /**
-   * Get a configuration property
+   * Get {@link String} configuration property
    *
    * @param key configuration key
    * @return configuration value
    * @throws NoSuchElementException when the provided {@code key} doesn't have a corresponding config value
    * @throws IllegalStateException  when provider is unable to fetch configuration value for the given {@code key}
    */
-  //<T extends Object> T
   String getProperty(String key);
 }

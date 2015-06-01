@@ -15,6 +15,7 @@
  */
 package pl.nort.config.provider;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import org.junit.Before;
@@ -70,11 +71,17 @@ public class SimpleConfigurationProviderTest {
   }
 
   @Test
-  public void shouldReturnStringPropertyFromSource() throws Exception {
-    Properties properties = new Properties();
-    properties.put("some.property", "abc");
-    when(configurationSource.getConfiguration()).thenReturn(properties);
+  public void shouldReturnBasicStringPropertyFromSource() throws Exception {
+    when(configurationSource.getConfiguration()).thenReturn(propertiesWith("some.property", "abc"));
 
-    assertThat(simpleConfigurationProvider.getProperty("some.property")).isEqualTo("abc");
+    String property = simpleConfigurationProvider.getProperty("some.property");
+    assertThat(property).isEqualTo("abc");
+  }
+
+  private Properties propertiesWith(String... args) {
+    Properties properties = new Properties();
+    properties.put(args[0], args[1]);
+
+    return properties;
   }
 }

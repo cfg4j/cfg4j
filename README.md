@@ -19,6 +19,7 @@ Nort Config is a **web services-oriented configuration library**. It's very simp
     * Configuration chaining
     * Multiple source merging
     * Validation
+    * POJO configuration objects binding
 * Modern design
     * Well documented
     * Heavily tested
@@ -61,9 +62,9 @@ public class NortConfigPoweredApplication {
     // Change the link below to point to your fork
     ConfigurationProvider configurationProvider = ConfigurationProviders.backedByGit("https://github.com/nort/config-git-sample-config.git");
 
-    String mySampleProperty = configurationProvider.getProperty("my.sample.property");
+    String someSetting = configurationProvider.getProperty("some.setting");
     // or
-    MyLiveConfigurationPOJO configuration = configurationProvider.bind("my.changing.config", MyLiveConfigurationPOJO.class);
+    MyLiveConfigurationPOJO configuration = configurationProvider.bind("my.changing.setting", MyLiveConfigurationPOJO.class);
   }
 
 }

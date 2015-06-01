@@ -110,6 +110,14 @@ public class SimpleConfigurationProviderTest {
     simpleConfigurationProvider.getProperty("some.property", Integer.class);
   }
 
+  @Test
+  public void getProperty2ShouldReturnArrayPropertyFromSource() throws Exception {
+    when(configurationSource.getConfiguration()).thenReturn(propertiesWith("some.property", "42.5, 99.9999"));
+
+    double[] property = simpleConfigurationProvider.getProperty("some.property", double[].class);
+    assertThat(property).containsExactly(42.5, 99.9999);
+  }
+
   private Properties propertiesWith(String... args) {
     Properties properties = new Properties();
     properties.put(args[0], args[1]);

@@ -15,8 +15,19 @@
  */
 package pl.nort.config.provider;
 
+import java.io.File;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.net.URI;
+import java.net.URL;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Properties;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.SortedSet;
 
 /**
  * Provides access to configuration values both on a single property level and aggregated.
@@ -40,4 +51,19 @@ public interface ConfigurationProvider {
    * @throws IllegalStateException  when provider is unable to fetch configuration value for the given {@code key}
    */
   String getProperty(String key);
+
+  /**
+   * Get a configuration property of a given {@code type}
+   *
+   * @param key  configuration key
+   * @param type property type. Supported simple types: {@link BigDecimal}, {@link BigInteger}, {@link Boolean}, {@link Byte},
+   *             {@link Character}, {@link Class}, {@link Double}, {@link Enum}, {@link File}, {@link Float}, {@link Integer},
+   *             {@link Long}, {@link Number}, {@link Short},  {@link String}, {@link URL}, {@link URI}.
+   *             Supported collections (and most of their standard implementations) of aforementioned types: array, {@link Collection},
+   *             {@link List}, {@link Set}, {@link SortedSet}, {@link Map}, {@link SortedMap}
+   * @return configuration value
+   * @throws NoSuchElementException when the provided {@code key} doesn't have a corresponding config value
+   * @throws IllegalStateException  when provider is unable to fetch configuration value for the given {@code key}
+   */
+  <T> T getProperty(String key, Class<T> type);
 }

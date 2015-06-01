@@ -47,7 +47,7 @@ public class SimpleConfigurationProviderTest {
   }
 
   @Test
-  public void shouldThrowWhenUnableToFetchConfiguration() throws Exception {
+  public void allConfigurationAsPropertiesShouldThrowWhenUnableToFetchConfiguration() throws Exception {
     when(configurationSource.getConfiguration()).thenThrow(IllegalStateException.class);
 
     expectedException.expect(IllegalStateException.class);
@@ -55,7 +55,7 @@ public class SimpleConfigurationProviderTest {
   }
 
   @Test
-  public void shouldThrowWhenFetchingNonexistentKey() throws Exception {
+  public void getPropertyShouldThrowWhenFetchingNonexistentKey() throws Exception {
     when(configurationSource.getConfiguration()).thenReturn(new Properties());
 
     expectedException.expect(NoSuchElementException.class);
@@ -63,7 +63,7 @@ public class SimpleConfigurationProviderTest {
   }
 
   @Test
-  public void shouldThrowWhenUnableToFetchKey() throws Exception {
+  public void getPropertyShouldThrowWhenUnableToFetchKey() throws Exception {
     when(configurationSource.getConfiguration()).thenThrow(IllegalStateException.class);
 
     expectedException.expect(IllegalStateException.class);
@@ -71,11 +71,35 @@ public class SimpleConfigurationProviderTest {
   }
 
   @Test
-  public void shouldReturnBasicStringPropertyFromSource() throws Exception {
+  public void getPropertyShouldReturnStringPropertyFromSource() throws Exception {
     when(configurationSource.getConfiguration()).thenReturn(propertiesWith("some.property", "abc"));
 
     String property = simpleConfigurationProvider.getProperty("some.property");
     assertThat(property).isEqualTo("abc");
+  }
+
+  @Test
+  public void getProperty2ShouldThrowWhenFetchingNonexistentKey() throws Exception {
+    when(configurationSource.getConfiguration()).thenReturn(new Properties());
+
+    expectedException.expect(NoSuchElementException.class);
+    simpleConfigurationProvider.getProperty("some.property", String.class);
+  }
+
+  @Test
+  public void getProperty2ShouldThrowWhenUnableToFetchKey() throws Exception {
+    when(configurationSource.getConfiguration()).thenThrow(IllegalStateException.class);
+
+    expectedException.expect(IllegalStateException.class);
+    simpleConfigurationProvider.getProperty("some.property", String.class);
+  }
+
+  @Test
+  public void getProperty2ShouldReturnPropertyFromSource() throws Exception {
+    when(configurationSource.getConfiguration()).thenReturn(propertiesWith("some.property", "true"));
+
+    Boolean property = simpleConfigurationProvider.getProperty("some.property", Boolean.class);
+    assertThat(property).isTrue();
   }
 
   private Properties propertiesWith(String... args) {

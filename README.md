@@ -8,7 +8,8 @@ Nort Config is a **web services-oriented configuration library**. It's very simp
     * Configuration reloading (periodical and push)
     * Re-try on network failures
     * Configuration caching
-    * Multiple configuration sources
+    * Multiple configuration sources wit fallback mechanism
+    * Multi-environment support (e.g. testing, preprod, prod-colo1, prod-colo2)
 * Adapters for multiple configuration stores
     * Git repository (with Github as a configuration editor) - read more about this powerful solution in [this article]().
     * Consul 
@@ -24,7 +25,6 @@ Nort Config is a **web services-oriented configuration library**. It's very simp
     * Dependency Injection-friendly
 
 # Usage
-
 
 ## Setting up dependency
 ### Gradle
@@ -44,6 +44,33 @@ dependencies {
   </dependency>
 </dependencies>
 ```
+
+## Quick start
+The fastest way to start working with Nort Config is to use a Git repository as configuration store. To do that follow the steps:
+
+1. Fork the [configuration sample repository](https://github.com/nort/config-git-sample-config) (or create your own - it contains just one file).
+2. Add your configuration to the *application.properties* file and commit the changes.
+3. Use the following code in your application to connect to this source:
+```Java
+import pl.nort.config.provider.ConfigurationProvider;
+import pl.nort.config.provider.ConfigurationProviders;
+
+public class NortConfigPoweredApplication {
+
+  public static void main(String... args) {
+    // Change the link below to point to your fork
+    ConfigurationProvider configurationProvider = ConfigurationProviders.backedByGit("https://github.com/nort/config-git-sample-config.git");
+
+    String mySampleProperty = configurationProvider.getProperty("my.sample.property");
+    // or
+    MyLiveConfigurationPOJO configuration = configurationProvider.bind("my.changing.config", MyLiveConfigurationPOJO.class);
+  }
+
+}
+```
+
+## Detailed documentation
+Head to [the documentation](https://github.com/pages/nort/config).
 
 # License
 Copyright 2015 Norbert Potocki (norbert.potocki@nort.pl)

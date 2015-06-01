@@ -17,6 +17,9 @@ package pl.nort.config.provider;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.github.drapostolos.typeparser.NoSuchRegisteredParserException;
+import com.github.drapostolos.typeparser.TypeParser;
+import com.github.drapostolos.typeparser.TypeParserException;
 import pl.nort.config.source.ConfigurationSource;
 
 import java.util.NoSuchElementException;
@@ -61,6 +64,32 @@ public class SimpleConfigurationProvider implements ConfigurationProvider {
 
     } catch (IllegalStateException e) {
       throw new IllegalStateException("Couldn't fetch configuration from configuration source for key: " + key, e);
+    }
+  }
+
+  @Override
+  public <T> T getProperty(String key, Class<T> type) {
+    String propertyStr = getProperty(key);
+
+    try {
+      TypeParser parser = TypeParser.newBuilder().build();
+      return parser.parse(propertyStr, type);
+    } catch (TypeParserException | NoSuchRegisteredParserException e) {
+      throw new IllegalArgumentException("Unable to cast value \'" + propertyStr + "\' to " + type, e);
+    }
+  }
+
+  @Override
+  public <T> T getProperty(String key, GenericType<T> genericType) {
+    String propertyStr = getProperty(key);
+
+    try {
+      TypeParser parser = TypeParser.newBuilder().build();
+      @SuppressWarnings("unchecked")
+      T property = (T) parser.parseType(propertyStr, genericType.getType());
+      return property;
+    } catch (TypeParserException | NoSuchRegisteredParserException e) {
+      throw new IllegalArgumentException("Unable to cast value \'" + propertyStr + "\' to " + genericType, e);
     }
   }
 }

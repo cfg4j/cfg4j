@@ -18,39 +18,21 @@ package pl.nort.config.provider;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import pl.nort.config.source.ConfigurationSource;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Properties;
 
 @RunWith(MockitoJUnitRunner.class)
-public class PojoBindTest {
+public class SimpleConfigurationProviderBindTest extends SimpleConfigurationProviderAbstractTest {
 
   interface ConfigPojo {
     Integer getSomeSetting();
 
     List<Boolean> getOtherSetting();
-  }
-
-  @Rule
-  public ExpectedException expectedException = ExpectedException.none();
-
-  private SimpleConfigurationProvider simpleConfigurationProvider;
-
-  @Mock
-  private ConfigurationSource configurationSource;
-
-  @Before
-  public void setUp() throws Exception {
-    simpleConfigurationProvider = new SimpleConfigurationProvider(configurationSource);
   }
 
   @Test
@@ -104,14 +86,5 @@ public class PojoBindTest {
 
     assertThat(config.getSomeSetting()).isEqualTo(0);
     assertThat(config.getOtherSetting()).containsExactly(true);
-  }
-
-  private Properties propertiesWith(String... args) {
-    Properties properties = new Properties();
-    for (int i = 1; i < args.length; i += 2) {
-      properties.put(args[i - 1], args[i]);
-    }
-
-    return properties;
   }
 }

@@ -92,4 +92,9 @@ public class SimpleConfigurationProvider implements ConfigurationProvider {
       throw new IllegalArgumentException("Unable to cast value \'" + propertyStr + "\' to " + genericType, e);
     }
   }
+
+  @Override
+  public <T> void bind(String s, Class<T> type) {
+
+  }
 }

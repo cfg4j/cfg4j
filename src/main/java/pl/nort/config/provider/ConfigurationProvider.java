@@ -82,5 +82,19 @@ public interface ConfigurationProvider {
    */
   <T> T getProperty(String key, GenericType<T> genericType);
 
-  <T> T bind(String s, Class<T> type);
+  /**
+   * Create an instance of a given {@code type} that will be bound to this provider. Each time configuration changes the
+   * bound object will be updated with the new values. Use {@code prefix} to specify the relative path to configuration
+   * values.
+   *
+   * @param <T>    interface describing configuration object to bind
+   * @param prefix relative path to configuration values (e.g. "myContext" will map settings "myContext.someSetting",
+   *               "myContext.someOtherSetting")
+   * @param type   {@link Class} for {@code <T>}
+   * @return configuration object bound to this {@link ConfigurationProvider}
+   * @throws NoSuchElementException   when the provided {@code key} doesn't have a corresponding config value
+   * @throws IllegalArgumentException when property can't be coverted to {@code type}
+   * @throws IllegalStateException    when provider is unable to fetch configuration value for the given {@code key}
+   */
+  <T> T bind(String prefix, Class<T> type);
 }

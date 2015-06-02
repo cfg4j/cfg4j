@@ -15,6 +15,7 @@
  */
 package pl.nort.config.provider;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import org.junit.Before;
@@ -27,6 +28,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import pl.nort.config.source.ConfigurationSource;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Properties;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -52,8 +54,27 @@ public class PojoBindTest {
   }
 
   @Test
-  public void shouldThrowOnBindFailure() throws Exception {
+  public void bindShouldThrowWhenFetchingNonexistentKey() throws Exception {
+    when(configurationSource.getConfiguration()).thenReturn(new Properties());
 
+    expectedException.expect(NoSuchElementException.class);
+    simpleConfigurationProvider.bind("", ConfigPojo.class);
+  }
+
+  @Test
+  public void bindShouldThrowWhenUnableToFetchKey() throws Exception {
+    when(configurationSource.getConfiguration()).thenThrow(IllegalStateException.class);
+
+    expectedException.expect(IllegalStateException.class);
+    simpleConfigurationProvider.bind("", ConfigPojo.class);
+  }
+
+  @Test
+  public void bindShouldThrowOnIncompatibleConversion() throws Exception {
+    when(configurationSource.getConfiguration()).thenReturn(propertiesWith("someSetting", "42", "otherSetting", "42"));
+
+    expectedException.expect(IllegalArgumentException.class);
+    simpleConfigurationProvider.bind("", ConfigPojo.class);
   }
 
   @Test
@@ -61,19 +82,28 @@ public class PojoBindTest {
     when(configurationSource.getConfiguration()).thenReturn(propertiesWith("someSetting", "42", "otherSetting", "true,false"));
 
     ConfigPojo config = simpleConfigurationProvider.bind("", ConfigPojo.class);
-
+    assertThat(config.getSomeSetting()).isEqualTo(42);
+    assertThat(config.getOtherSetting()).containsExactly(true, false);
   }
 
   @Test
   public void shouldBindInitialValuesInSubPath() throws Exception {
     when(configurationSource.getConfiguration()).thenReturn(propertiesWith("myContext.someSetting", "42", "myContext.otherSetting", "true,false"));
 
-    simpleConfigurationProvider.bind("myContext", ConfigPojo.class);
+    ConfigPojo config = simpleConfigurationProvider.bind("myContext", ConfigPojo.class);
+    assertThat(config.getSomeSetting()).isEqualTo(42);
+    assertThat(config.getOtherSetting()).containsExactly(true, false);
   }
 
   @Test
   public void shouldUpdateValuesAfterChange() throws Exception {
+    when(configurationSource.getConfiguration()).thenReturn(propertiesWith("someSetting", "42", "otherSetting", "true,false"));
+    ConfigPojo config = simpleConfigurationProvider.bind("", ConfigPojo.class);
 
+    when(configurationSource.getConfiguration()).thenReturn(propertiesWith("someSetting", "0", "otherSetting", "true"));
+
+    assertThat(config.getSomeSetting()).isEqualTo(0);
+    assertThat(config.getOtherSetting()).containsExactly(true);
   }
 
   private Properties propertiesWith(String... args) {

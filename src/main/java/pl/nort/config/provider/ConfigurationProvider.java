@@ -81,4 +81,6 @@ public interface ConfigurationProvider {
    * @throws IllegalStateException    when provider is unable to fetch configuration value for the given {@code key}
    */
   <T> T getProperty(String key, GenericType<T> genericType);
+
+  <T> void bind(String s, Class<T> type);
 }

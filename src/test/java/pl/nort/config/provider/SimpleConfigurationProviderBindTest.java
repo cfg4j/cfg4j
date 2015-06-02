@@ -30,9 +30,9 @@ import java.util.Properties;
 public class SimpleConfigurationProviderBindTest extends SimpleConfigurationProviderAbstractTest {
 
   interface ConfigPojo {
-    Integer getSomeSetting();
+    Integer someSetting();
 
-    List<Boolean> getOtherSetting();
+    List<Boolean> otherSetting();
   }
 
   @Test
@@ -64,8 +64,8 @@ public class SimpleConfigurationProviderBindTest extends SimpleConfigurationProv
     when(configurationSource.getConfiguration()).thenReturn(propertiesWith("someSetting", "42", "otherSetting", "true,false"));
 
     ConfigPojo config = simpleConfigurationProvider.bind("", ConfigPojo.class);
-    assertThat(config.getSomeSetting()).isEqualTo(42);
-    assertThat(config.getOtherSetting()).containsExactly(true, false);
+    assertThat(config.someSetting()).isEqualTo(42);
+    assertThat(config.otherSetting()).containsExactly(true, false);
   }
 
   @Test
@@ -73,8 +73,8 @@ public class SimpleConfigurationProviderBindTest extends SimpleConfigurationProv
     when(configurationSource.getConfiguration()).thenReturn(propertiesWith("myContext.someSetting", "42", "myContext.otherSetting", "true,false"));
 
     ConfigPojo config = simpleConfigurationProvider.bind("myContext", ConfigPojo.class);
-    assertThat(config.getSomeSetting()).isEqualTo(42);
-    assertThat(config.getOtherSetting()).containsExactly(true, false);
+    assertThat(config.someSetting()).isEqualTo(42);
+    assertThat(config.otherSetting()).containsExactly(true, false);
   }
 
   @Test
@@ -84,7 +84,7 @@ public class SimpleConfigurationProviderBindTest extends SimpleConfigurationProv
 
     when(configurationSource.getConfiguration()).thenReturn(propertiesWith("someSetting", "0", "otherSetting", "true"));
 
-    assertThat(config.getSomeSetting()).isEqualTo(0);
-    assertThat(config.getOtherSetting()).containsExactly(true);
+    assertThat(config.someSetting()).isEqualTo(0);
+    assertThat(config.otherSetting()).containsExactly(true);
   }
 }

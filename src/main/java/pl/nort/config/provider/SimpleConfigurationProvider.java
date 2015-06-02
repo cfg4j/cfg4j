@@ -94,7 +94,7 @@ public class SimpleConfigurationProvider implements ConfigurationProvider {
   }
 
   @Override
-  public <T> void bind(String s, Class<T> type) {
-
+  public <T> T bind(String s, Class<T> type) {
+    return null;
   }
 }

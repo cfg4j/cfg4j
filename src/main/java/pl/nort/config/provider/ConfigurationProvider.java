@@ -82,5 +82,5 @@ public interface ConfigurationProvider {
    */
   <T> T getProperty(String key, GenericType<T> genericType);
 
-  <T> void bind(String s, Class<T> type);
+  <T> T bind(String s, Class<T> type);
 }

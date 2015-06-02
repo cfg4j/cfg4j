@@ -60,7 +60,8 @@ public class PojoBindTest {
   public void shouldBindInitialValues() throws Exception {
     when(configurationSource.getConfiguration()).thenReturn(propertiesWith("someSetting", "42", "otherSetting", "true,false"));
 
-    simpleConfigurationProvider.bind("", ConfigPojo.class);
+    ConfigPojo config = simpleConfigurationProvider.bind("", ConfigPojo.class);
+
   }
 
   @Test

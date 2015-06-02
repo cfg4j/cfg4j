@@ -22,6 +22,10 @@ import com.github.drapostolos.typeparser.TypeParser;
 import com.github.drapostolos.typeparser.TypeParserException;
 import pl.nort.config.source.ConfigurationSource;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.lang.reflect.Type;
 import java.util.NoSuchElementException;
 import java.util.Properties;
 
@@ -95,6 +99,24 @@ public class SimpleConfigurationProvider implements ConfigurationProvider {
 
   @Override
   public <T> T bind(String prefix, Class<T> type) {
-    return null;
+    @SuppressWarnings("unchecked")
+    T proxy = (T) Proxy.newProxyInstance(type.getClassLoader(), new Class<?>[]{type}, new BindInvocationHandler(prefix));
+    return proxy;
   }
+
+  private class BindInvocationHandler implements InvocationHandler {
+
+    private final String prefix;
+
+    private BindInvocationHandler(String prefix) {
+      this.prefix = checkNotNull(prefix);
+    }
+
+    @Override
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+      Type returnType = method.getGenericReturnType();
+      return getProperty(prefix + (prefix.isEmpty() ? "" : ".") + method.getName(), () -> returnType);
+    }
+  }
+
 }

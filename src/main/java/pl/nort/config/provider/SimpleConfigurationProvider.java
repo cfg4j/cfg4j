@@ -80,7 +80,7 @@ public class SimpleConfigurationProvider implements ConfigurationProvider {
   }
 
   @Override
-  public <T> T getProperty(String key, GenericType<T> genericType) {
+  public <T> T getProperty(String key, GenericTypeInterface genericType) {
     String propertyStr = getProperty(key);
 
     try {
@@ -94,7 +94,7 @@ public class SimpleConfigurationProvider implements ConfigurationProvider {
   }
 
   @Override
-  public <T> T bind(String s, Class<T> type) {
+  public <T> T bind(String prefix, Class<T> type) {
     return null;
   }
 }

@@ -23,7 +23,7 @@ import java.lang.reflect.Type;
  *
  * @param <T> generic type
  */
-public abstract class GenericType<T> {
+public abstract class GenericType<T> implements GenericTypeInterface {
 
   private final Type type;
 
@@ -43,7 +43,8 @@ public abstract class GenericType<T> {
     }
   }
 
-  public final Type getType() {
+  @Override
+  public Type getType() {
     return type;
   }
 }

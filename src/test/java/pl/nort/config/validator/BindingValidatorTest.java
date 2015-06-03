@@ -66,14 +66,6 @@ public class BindingValidatorTest {
   }
 
   @Test
-  public void shouldThrowOnAccessProblems() throws Exception {
-    when(configPojo.someSetting()).thenThrow(IllegalAccessException.class);
-
-    expectedException.expect(IllegalStateException.class);
-    bindingValidator.validate(configPojo, ConfigPojo.class);
-  }
-
-  @Test
   public void shouldPassNoSuchElementExceptionsFromInvocation() throws Exception {
     when(configPojo.someSetting()).thenThrow(NoSuchElementException.class);
 
@@ -86,6 +78,14 @@ public class BindingValidatorTest {
     when(configPojo.someSetting()).thenThrow(IllegalArgumentException.class);
 
     expectedException.expect(IllegalArgumentException.class);
+    bindingValidator.validate(configPojo, ConfigPojo.class);
+  }
+
+  @Test
+  public void shouldThrowOnOtherExceptions() throws Exception {
+    when(configPojo.someSetting()).thenThrow(IllegalAccessException.class);
+
+    expectedException.expect(IllegalStateException.class);
     bindingValidator.validate(configPojo, ConfigPojo.class);
   }
 }

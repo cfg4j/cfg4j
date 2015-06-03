@@ -21,7 +21,7 @@ import com.github.drapostolos.typeparser.NoSuchRegisteredParserException;
 import com.github.drapostolos.typeparser.TypeParser;
 import com.github.drapostolos.typeparser.TypeParserException;
 import pl.nort.config.source.ConfigurationSource;
-import pl.nort.config.validate.BindingValidator;
+import pl.nort.config.validator.BindingValidator;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;

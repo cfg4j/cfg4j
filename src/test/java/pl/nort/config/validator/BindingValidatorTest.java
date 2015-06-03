@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package pl.nort.config.validate;
+package pl.nort.config.validator;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;

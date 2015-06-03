@@ -21,7 +21,12 @@ import com.github.drapostolos.typeparser.NoSuchRegisteredParserException;
 import com.github.drapostolos.typeparser.TypeParser;
 import com.github.drapostolos.typeparser.TypeParserException;
 import pl.nort.config.source.ConfigurationSource;
+import pl.nort.config.validator.BindingValidator;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.lang.reflect.Type;
 import java.util.NoSuchElementException;
 import java.util.Properties;
 
@@ -80,7 +85,7 @@ public class SimpleConfigurationProvider implements ConfigurationProvider {
   }
 
   @Override
-  public <T> T getProperty(String key, GenericType<T> genericType) {
+  public <T> T getProperty(String key, GenericTypeInterface genericType) {
     String propertyStr = getProperty(key);
 
     try {
@@ -92,4 +97,30 @@ public class SimpleConfigurationProvider implements ConfigurationProvider {
       throw new IllegalArgumentException("Unable to cast value \'" + propertyStr + "\' to " + genericType, e);
     }
   }
+
+  @Override
+  public <T> T bind(String prefix, Class<T> type) {
+    @SuppressWarnings("unchecked")
+    T proxy = (T) Proxy.newProxyInstance(type.getClassLoader(), new Class<?>[]{type}, new BindInvocationHandler(prefix));
+
+    new BindingValidator().validate(proxy, type);
+
+    return proxy;
+  }
+
+  private class BindInvocationHandler implements InvocationHandler {
+
+    private final String prefix;
+
+    private BindInvocationHandler(String prefix) {
+      this.prefix = checkNotNull(prefix);
+    }
+
+    @Override
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+      Type returnType = method.getGenericReturnType();
+      return getProperty(prefix + (prefix.isEmpty() ? "" : ".") + method.getName(), () -> returnType);
+    }
+  }
+
 }

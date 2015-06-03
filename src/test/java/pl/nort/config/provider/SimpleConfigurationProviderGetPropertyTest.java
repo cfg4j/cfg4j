@@ -18,34 +18,16 @@ package pl.nort.config.provider;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import pl.nort.config.source.ConfigurationSource;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Properties;
 
 @RunWith(MockitoJUnitRunner.class)
-public class SimpleConfigurationProviderTest {
-
-  @Rule
-  public ExpectedException expectedException = ExpectedException.none();
-
-  private SimpleConfigurationProvider simpleConfigurationProvider;
-
-  @Mock
-  private ConfigurationSource configurationSource;
-
-  @Before
-  public void setUp() throws Exception {
-    simpleConfigurationProvider = new SimpleConfigurationProvider(configurationSource);
-  }
+public class SimpleConfigurationProviderGetPropertyTest extends SimpleConfigurationProviderAbstractTest {
 
   @Test
   public void allConfigurationAsPropertiesShouldThrowWhenUnableToFetchConfiguration() throws Exception {
@@ -155,10 +137,4 @@ public class SimpleConfigurationProviderTest {
     assertThat(properties).containsExactly(1, 2);
   }
 
-  private Properties propertiesWith(String... args) {
-    Properties properties = new Properties();
-    properties.put(args[0], args[1]);
-
-    return properties;
-  }
 }

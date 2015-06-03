@@ -29,7 +29,7 @@ import java.util.Properties;
 @RunWith(MockitoJUnitRunner.class)
 public class SimpleConfigurationProviderBindTest extends SimpleConfigurationProviderAbstractTest {
 
-  interface ConfigPojo {
+  public interface ConfigPojo {
     Integer someSetting();
 
     List<Boolean> otherSetting();

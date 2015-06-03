@@ -21,6 +21,7 @@ import com.github.drapostolos.typeparser.NoSuchRegisteredParserException;
 import com.github.drapostolos.typeparser.TypeParser;
 import com.github.drapostolos.typeparser.TypeParserException;
 import pl.nort.config.source.ConfigurationSource;
+import pl.nort.config.validate.BindingValidator;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -101,6 +102,9 @@ public class SimpleConfigurationProvider implements ConfigurationProvider {
   public <T> T bind(String prefix, Class<T> type) {
     @SuppressWarnings("unchecked")
     T proxy = (T) Proxy.newProxyInstance(type.getClassLoader(), new Class<?>[]{type}, new BindInvocationHandler(prefix));
+
+    new BindingValidator().validate(proxy, type);
+
     return proxy;
   }
 

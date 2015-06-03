@@ -32,9 +32,9 @@ public class BindingValidator {
    * @param <T>               type of the validated bean
    * @throws IllegalStateException    when unable to access one of the methods
    * @throws NoSuchElementException   when an invocation of one of the {@code configurationBean} methods failed with an
-   *                                  underlaying exception of type {@link NoSuchElementException}
+   *                                  underlying exception of type {@link NoSuchElementException}
    * @throws IllegalArgumentException when an invocation of one of the {@code configurationBean} methods failed with an
-   *                                  underlaying exception of type {@link IllegalArgumentException}
+   *                                  underlying exception of type {@link IllegalArgumentException}
    */
   public <T> void validate(T configurationBean, Class<T> type) {
     for (Method declaredMethod : type.getDeclaredMethods()) {

@@ -16,7 +16,7 @@
 
 package pl.nort.config.source.refresh.strategy;
 
-import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import org.junit.Test;
@@ -26,17 +26,26 @@ import org.mockito.runners.MockitoJUnitRunner;
 import pl.nort.config.source.refresh.Refreshable;
 
 @RunWith(MockitoJUnitRunner.class)
-public class NopRefreshStrategyTest {
+public class OnInitRefreshStrategyTest {
 
   @Mock
   private Refreshable resource;
 
   @Test
-  public void shouldNotRefreshResource() throws Exception {
-    NopRefreshStrategy refreshStrategy = new NopRefreshStrategy();
+  public void shouldRefreshResourceOnce() throws Exception {
+    OnInitRefreshStrategy refreshStrategy = new OnInitRefreshStrategy();
     refreshStrategy.init(resource);
     refreshStrategy.shutdown();
 
-    verify(resource, never()).refresh();
+    verify(resource, times(1)).refresh();
+  }
+
+  @Test
+  public void shouldNotRefreshAfterClose() throws Exception {
+    OnInitRefreshStrategy refreshStrategy = new OnInitRefreshStrategy();
+    refreshStrategy.init(resource);
+    refreshStrategy.shutdown();
+
+    verify(resource, times(1)).refresh();
   }
 }

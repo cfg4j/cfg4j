@@ -19,13 +19,13 @@ import pl.nort.config.source.refresh.RefreshStrategy;
 import pl.nort.config.source.refresh.Refreshable;
 
 /**
- * {@link RefreshStrategy} that doesn't refresh the resource.
+ * {@link RefreshStrategy} that refreshes the resource only once - the moment the {@link #init(Refreshable)} is called.
  */
-public class NopRefreshStrategy implements RefreshStrategy {
+public class OnInitRefreshStrategy implements RefreshStrategy {
 
   @Override
   public void init(Refreshable resource) {
-    // NOP
+    resource.refresh();
   }
 
   @Override

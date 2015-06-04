@@ -1,5 +1,5 @@
 [![GitHub license](https://img.shields.io/github/license/nort/config.svg)](https://github.com/nort/config/blob/master/LICENSE)
-[![Maven Central](https://img.shields.io/maven-central/v/pl.nort/config.svg)]()
+[![Maven Central](https://img.shields.io/maven-central/v/pl.nort/config.svg)](http://search.maven.org/#search|ga|1|pl.nort.config)
 [![Travis](https://img.shields.io/travis/nort/config.svg)](https://travis-ci.org/nort/config)
 
 # Overview
@@ -31,7 +31,7 @@ Nort Config is a **web services-oriented configuration library**. It's very simp
 ### Gradle
 ```groovy
 dependencies {
-  compile group: "pl.nort", name:"config", version: "1.0.0"
+  compile group: "pl.nort", name:"config", version: "1.1.0"
 }
 ```
 
@@ -41,7 +41,7 @@ dependencies {
   <dependency>
     <groupId>pl.nort</groupId>
     <artifactId>config</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
   </dependency>
 </dependencies>
 ```
@@ -62,9 +62,19 @@ public class NortConfigPoweredApplication {
     // Change the link below to point to your fork
     ConfigurationProvider configurationProvider = ConfigurationProviders.backedByGit("https://github.com/nort/config-git-sample-config.git");
 
-    String someSetting = configurationProvider.getProperty("some.setting");
-    // or
-    MyLiveConfigurationPOJO configuration = configurationProvider.bind("my.changing.setting", MyLiveConfigurationPOJO.class);
+    // Access config directly
+    Integer someSetting = configurationProvider.getProperty("some.setting", Integer.class);
+    
+    // Wide-range of collections
+    List<Boolean> otherSetting = configurationProvider.getProperty("some.setting", new GenericType<List<Boolean>>() {});
+    
+    // You can also define a configuration object and bind it (it will auto update when configuration changes)
+    public interface ConfigPojo {
+        Integer someSetting();
+        List<Boolean> otherSetting();
+    }
+    
+    ConfigPojo config = configurationProvider.bind("", ConfigPojo.class);
   }
 
 }

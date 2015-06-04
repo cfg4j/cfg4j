@@ -110,6 +110,6 @@ public class GitConfigurationSource implements ConfigurationSource, Closeable {
   @Override
   public void close() throws IOException {
     clonedRepo.close();
-    FileUtils.deleteDir(new File(clonedRepo.getRepository().getWorkTree().getAbsolutePath()));
+    FileUtils.deleteDir(clonedRepoPath);
   }
 }

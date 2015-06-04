@@ -47,7 +47,7 @@ public class GitConfigurationSourceIntegrationTest {
 
   @After
   public void tearDown() throws Exception {
-    remoteRepo.close();
+    remoteRepo.remove();
   }
 
   @Test
@@ -68,7 +68,7 @@ public class GitConfigurationSourceIntegrationTest {
       assertThat(gitConfigurationSource.getConfiguration()).contains(MapEntry.entry("some.setting", "value"));
     }
   }
-
+  
   private static class SampleGitRepo {
 
     private final Git repo;
@@ -85,6 +85,11 @@ public class GitConfigurationSourceIntegrationTest {
     public void changeProperty(String propFilePath, String key, String value) throws IOException, GitAPIException {
       writePropertyToFile(propFilePath, key, value);
       commitChangesTo(repo);
+    }
+
+    public void remove() {
+      repo.close();
+      deleteDir(new File(getURI()));
     }
 
     private Git createLocalRepo(File path) throws IOException, GitAPIException {
@@ -112,8 +117,21 @@ public class GitConfigurationSourceIntegrationTest {
           .call();
     }
 
-    public void close() {
-      repo.close();
+    public void deleteDir(File directory) {
+      if (directory.exists()) {
+        File[] files = directory.listFiles();
+
+        if (files != null) {
+          for (File file : files) {
+            if (file.isDirectory()) {
+              deleteDir(file);
+            } else {
+              file.delete();
+            }
+          }
+        }
+        directory.delete();
+      }
     }
   }
 

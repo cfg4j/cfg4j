@@ -13,23 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pl.nort.config.source;
-
-import pl.nort.config.source.refresh.Refreshable;
-
-import java.util.Properties;
+package pl.nort.config.source.refresh;
 
 /**
- * Provides access to configuration store and exposes configuration values in bulk {@link Properties} format.
+ * Identifies resource that can be refreshed
  */
-public interface ConfigurationSource extends Refreshable {
+public interface Refreshable {
 
   /**
-   * Get full configuration set from this source in a form of {@link Properties}.
+   * Request configuration refresh. When this method returns configuration should be reloaded.
    *
-   * @return full configuration set
    * @throws IllegalStateException when unable to fetch configuration
    */
-  Properties getConfiguration();
+  void refresh();
 
 }

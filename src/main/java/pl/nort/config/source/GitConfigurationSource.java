@@ -99,7 +99,11 @@ public class GitConfigurationSource implements ConfigurationSource, Closeable {
 
   @Override
   public void refresh() {
-
+    try {
+      clonedRepo.pull().call();
+    } catch (GitAPIException e) {
+      throw new IllegalStateException("Unable to pull from remote repository", e);
+    }
   }
 
   @Override

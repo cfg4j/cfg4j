@@ -62,6 +62,15 @@ public class SimpleConfigurationProviderGetPropertyTest extends SimpleConfigurat
   }
 
   @Test
+  public void getPropertyShouldReactToSourceChanges() throws Exception {
+    when(configurationSource.getConfiguration()).thenReturn(propertiesWith("some.property", "abc"));
+    when(configurationSource.getConfiguration()).thenReturn(propertiesWith("some.property", "cde"));
+
+    String property = simpleConfigurationProvider.getProperty("some.property");
+    assertThat(property).isEqualTo("cde");
+  }
+
+  @Test
   public void getProperty2ShouldThrowWhenFetchingNonexistentKey() throws Exception {
     when(configurationSource.getConfiguration()).thenReturn(new Properties());
 
@@ -91,6 +100,15 @@ public class SimpleConfigurationProviderGetPropertyTest extends SimpleConfigurat
 
     Boolean property = simpleConfigurationProvider.getProperty("some.property", Boolean.class);
     assertThat(property).isTrue();
+  }
+
+  @Test
+  public void getProperty2ShouldReactToSourceChanges() throws Exception {
+    when(configurationSource.getConfiguration()).thenReturn(propertiesWith("some.property", "true"));
+    when(configurationSource.getConfiguration()).thenReturn(propertiesWith("some.property", "false"));
+
+    Boolean property = simpleConfigurationProvider.getProperty("some.property", Boolean.class);
+    assertThat(property).isFalse();
   }
 
   @Test
@@ -135,6 +153,16 @@ public class SimpleConfigurationProviderGetPropertyTest extends SimpleConfigurat
     List<Integer> properties = simpleConfigurationProvider.getProperty("some.property", new GenericType<List<Integer>>() {
     });
     assertThat(properties).containsExactly(1, 2);
+  }
+
+  @Test
+  public void getProperty3ShouldReactToSourceChanges() throws Exception {
+    when(configurationSource.getConfiguration()).thenReturn(propertiesWith("some.property", "1,2"));
+    when(configurationSource.getConfiguration()).thenReturn(propertiesWith("some.property", "3,4,5"));
+
+    List<Integer> properties = simpleConfigurationProvider.getProperty("some.property", new GenericType<List<Integer>>() {
+    });
+    assertThat(properties).containsExactly(3,4,5);
   }
 
 }

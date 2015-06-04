@@ -30,7 +30,7 @@ import java.util.SortedMap;
 import java.util.SortedSet;
 
 /**
- * Provides access to configuration values both on a single property level and aggregated.
+ * Provides access to configuration on a single property level, aggregated and through binding in a format agnostic way.
  */
 public interface ConfigurationProvider {
 

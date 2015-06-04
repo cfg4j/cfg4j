@@ -18,7 +18,7 @@ package pl.nort.config.source;
 import java.util.Properties;
 
 /**
- * Configuration source.
+ * Provides access to configuration store and exposes configuration values in bulk {@link Properties} format.
  */
 public interface ConfigurationSource {
 
@@ -29,4 +29,10 @@ public interface ConfigurationSource {
    * @throws IllegalStateException when unable to fetch configuration
    */
   Properties getConfiguration();
+
+  /**
+   * Request configuration refresh. When this method returns configuration should be reloaded.
+   * @throws IllegalStateException when unable to fetch configuration
+   */
+  void refresh();
 }

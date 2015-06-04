@@ -25,6 +25,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import pl.nort.config.utils.FileUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -108,9 +109,9 @@ public class GitConfigurationSourceIntegrationTest {
       commitChangesTo(repo);
     }
 
-    public void remove() {
+    public void remove() throws IOException {
       repo.close();
-      deleteDir(new File(getURI()));
+      FileUtils.deleteDir(new File(getURI()));
     }
 
     private Git createLocalRepo(File path) throws IOException, GitAPIException {
@@ -136,23 +137,6 @@ public class GitConfigurationSourceIntegrationTest {
       repo.commit()
           .setMessage("config change")
           .call();
-    }
-
-    public void deleteDir(File directory) {
-      if (directory.exists()) {
-        File[] files = directory.listFiles();
-
-        if (files != null) {
-          for (File file : files) {
-            if (file.isDirectory()) {
-              deleteDir(file);
-            } else {
-              file.delete();
-            }
-          }
-        }
-        directory.delete();
-      }
     }
   }
 

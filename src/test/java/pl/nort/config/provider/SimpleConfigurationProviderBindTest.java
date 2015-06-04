@@ -31,7 +31,9 @@ public class SimpleConfigurationProviderBindTest extends SimpleConfigurationProv
 
   public interface ConfigPojo {
     Integer someSetting();
+  }
 
+  public interface MultiPropertyConfigPojo extends ConfigPojo {
     List<Boolean> otherSetting();
   }
 
@@ -53,38 +55,44 @@ public class SimpleConfigurationProviderBindTest extends SimpleConfigurationProv
 
   @Test
   public void bindShouldThrowOnIncompatibleConversion() throws Exception {
-    when(configurationSource.getConfiguration()).thenReturn(propertiesWith("someSetting", "42", "otherSetting", "42"));
+    when(configurationSource.getConfiguration()).thenReturn(propertiesWith("someSetting", "shouldBeNumber"));
 
     expectedException.expect(IllegalArgumentException.class);
     simpleConfigurationProvider.bind("", ConfigPojo.class);
   }
 
   @Test
-  public void shouldBindInitialValues() throws Exception {
+  public void shouldBindAllInterfaceMethods() throws Exception {
     when(configurationSource.getConfiguration()).thenReturn(propertiesWith("someSetting", "42", "otherSetting", "true,false"));
+
+    MultiPropertyConfigPojo config = simpleConfigurationProvider.bind("", MultiPropertyConfigPojo.class);
+    assertThat(config.someSetting()).isEqualTo(42);
+    assertThat(config.otherSetting()).containsExactly(true, false);
+  }
+
+  @Test
+  public void shouldBindInitialValues() throws Exception {
+    when(configurationSource.getConfiguration()).thenReturn(propertiesWith("someSetting", "42"));
 
     ConfigPojo config = simpleConfigurationProvider.bind("", ConfigPojo.class);
     assertThat(config.someSetting()).isEqualTo(42);
-    assertThat(config.otherSetting()).containsExactly(true, false);
   }
 
   @Test
   public void shouldBindInitialValuesInSubPath() throws Exception {
-    when(configurationSource.getConfiguration()).thenReturn(propertiesWith("myContext.someSetting", "42", "myContext.otherSetting", "true,false"));
+    when(configurationSource.getConfiguration()).thenReturn(propertiesWith("myContext.someSetting", "42"));
 
     ConfigPojo config = simpleConfigurationProvider.bind("myContext", ConfigPojo.class);
     assertThat(config.someSetting()).isEqualTo(42);
-    assertThat(config.otherSetting()).containsExactly(true, false);
   }
 
   @Test
-  public void shouldUpdateValuesAfterChange() throws Exception {
-    when(configurationSource.getConfiguration()).thenReturn(propertiesWith("someSetting", "42", "otherSetting", "true,false"));
+  public void shouldReactToSourceChanges() throws Exception {
+    when(configurationSource.getConfiguration()).thenReturn(propertiesWith("someSetting", "42"));
     ConfigPojo config = simpleConfigurationProvider.bind("", ConfigPojo.class);
 
-    when(configurationSource.getConfiguration()).thenReturn(propertiesWith("someSetting", "0", "otherSetting", "true"));
+    when(configurationSource.getConfiguration()).thenReturn(propertiesWith("someSetting", "0"));
 
     assertThat(config.someSetting()).isEqualTo(0);
-    assertThat(config.otherSetting()).containsExactly(true);
   }
 }

@@ -58,8 +58,9 @@ public class GitConfigurationSourceIntegrationTest {
 
   @Test
   public void shouldThrowOnInvalidRemote() throws Exception {
+    remoteRepo.remove();
     expectedException.expect(GitConfigurationSourceException.class);
-    new GitConfigurationSource(File.createTempFile("temp", "temp").getAbsolutePath());
+    new GitConfigurationSource(remoteRepo.getURI());
   }
 
   @Test

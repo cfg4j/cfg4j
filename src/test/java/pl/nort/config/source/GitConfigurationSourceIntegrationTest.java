@@ -68,7 +68,27 @@ public class GitConfigurationSourceIntegrationTest {
       assertThat(gitConfigurationSource.getConfiguration()).contains(MapEntry.entry("some.setting", "value"));
     }
   }
-  
+
+  @Test
+  public void refreshShouldSyncWithRepoState() throws Exception {
+    try (GitConfigurationSource gitConfigurationSource = new GitConfigurationSource(remoteRepo.getURI())) {
+      remoteRepo.changeProperty("application.properties", "some.setting", "otherValue");
+      gitConfigurationSource.refresh();
+
+      assertThat(gitConfigurationSource.getConfiguration()).contains(MapEntry.entry("some.setting", "otherValue"));
+    }
+  }
+
+  @Test
+  public void refreshShouldThrowOnSyncProblems() throws Exception {
+    try (GitConfigurationSource gitConfigurationSource = new GitConfigurationSource(remoteRepo.getURI())) {
+      remoteRepo.remove();
+
+      expectedException.expect(IllegalStateException.class);
+      gitConfigurationSource.refresh();
+    }
+  }
+
   private static class SampleGitRepo {
 
     private final Git repo;

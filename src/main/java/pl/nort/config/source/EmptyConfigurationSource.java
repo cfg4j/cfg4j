@@ -15,21 +15,22 @@
  */
 package pl.nort.config.source;
 
-import pl.nort.config.source.refresh.Refreshable;
-
 import java.util.Properties;
 
 /**
- * Provides access to configuration store and exposes configuration values in bulk {@link Properties} format.
+ * Empty {@link ConfigurationSource}
  */
-public interface ConfigurationSource extends Refreshable {
+public class EmptyConfigurationSource implements ConfigurationSource {
 
-  /**
-   * Get full configuration set from this source in a form of {@link Properties}.
-   *
-   * @return full configuration set
-   * @throws IllegalStateException when unable to fetch configuration
-   */
-  Properties getConfiguration();
+  private final Properties properties = new Properties();
 
+  @Override
+  public Properties getConfiguration() {
+    return properties;
+  }
+
+  @Override
+  public void refresh() {
+    // NOP
+  }
 }

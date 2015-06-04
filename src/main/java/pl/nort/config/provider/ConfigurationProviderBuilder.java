@@ -16,20 +16,63 @@
 package pl.nort.config.provider;
 
 import pl.nort.config.source.ConfigurationSource;
+import pl.nort.config.source.EmptyConfigurationSource;
+import pl.nort.config.source.refresh.RefreshStrategy;
+import pl.nort.config.source.refresh.strategy.OnInitRefreshStrategy;
 
 /**
- * A builder producing {@link ConfigurationProvider}s
+ * A builder producing {@link ConfigurationProvider}s. If you don't specify the value for one the fields
+ * then the default value will be provided - read the constructor's documentation to learn
+ * what the default values are.
  */
 public class ConfigurationProviderBuilder {
 
   private ConfigurationSource configurationSource;
+  private RefreshStrategy refreshStrategy;
 
+  /**
+   * Construct {@link ConfigurationProvider}s builder
+   * <p>
+   * Default setup (override using with*() methods)
+   * <ul>
+   * <li>ConfigurationSource: {@link EmptyConfigurationSource}</li>
+   * <li>RefreshStrategy: {@link OnInitRefreshStrategy}</li>
+   * </ul>
+   */
+  public ConfigurationProviderBuilder() {
+    configurationSource = new EmptyConfigurationSource();
+    refreshStrategy = new OnInitRefreshStrategy();
+  }
+
+  /**
+   * Set {@link ConfigurationSource} for {@link ConfigurationProvider}s built by this builder
+   *
+   * @param configurationSource {@link ConfigurationSource} to use
+   * @return this builder with {@link ConfigurationSource} set to {@code configurationSource}
+   */
   public ConfigurationProviderBuilder withConfigurationSource(ConfigurationSource configurationSource) {
     this.configurationSource = configurationSource;
     return this;
   }
 
+  /**
+   * Set {@link RefreshStrategy} for {@link ConfigurationProvider}s built by this builder
+   *
+   * @param refreshStrategy {@link RefreshStrategy} to use
+   * @return this builder with {@link RefreshStrategy} set to {@code refreshStrategy}
+   */
+  public ConfigurationProviderBuilder withRefreshStrategy(RefreshStrategy refreshStrategy) {
+    this.refreshStrategy = refreshStrategy;
+    return this;
+  }
+
+  /**
+   * Build a {@link ConfigurationProvider} using this builder's configuration
+   * @return new {@link ConfigurationProvider}
+   */
   public ConfigurationProvider build() {
+    refreshStrategy.init(configurationSource);
+
     return new SimpleConfigurationProvider(configurationSource);
   }
 

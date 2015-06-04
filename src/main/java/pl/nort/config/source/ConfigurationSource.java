@@ -29,4 +29,10 @@ public interface ConfigurationSource {
    * @throws IllegalStateException when unable to fetch configuration
    */
   Properties getConfiguration();
+
+  /**
+   * Request configuration refresh. When this method returns configuration should be reloaded.
+   * @throws IllegalStateException when unable to fetch configuration
+   */
+  void refresh();
 }

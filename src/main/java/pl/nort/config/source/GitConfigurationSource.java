@@ -17,6 +17,7 @@ package pl.nort.config.source;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import pl.nort.config.utils.FileUtils;
 
 import java.io.Closeable;
 import java.io.File;
@@ -109,5 +110,6 @@ public class GitConfigurationSource implements ConfigurationSource, Closeable {
   @Override
   public void close() throws IOException {
     clonedRepo.close();
+    FileUtils.deleteDir(new File(clonedRepo.getRepository().getWorkTree().getAbsolutePath()));
   }
 }

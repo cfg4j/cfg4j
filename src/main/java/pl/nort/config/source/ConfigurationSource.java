@@ -18,7 +18,7 @@ package pl.nort.config.source;
 import java.util.Properties;
 
 /**
- * Configuration source.
+ * Provides access to configuration store and exposes configuration values in bulk {@link Properties} format.
  */
 public interface ConfigurationSource {
 

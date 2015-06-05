@@ -15,6 +15,9 @@
  */
 package pl.nort.config.validator;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.NoSuchElementException;
@@ -23,6 +26,8 @@ import java.util.NoSuchElementException;
  * Configuration beans binding validator
  */
 public class BindingValidator {
+
+  private static final Logger LOG = LoggerFactory.getLogger(BindingValidator.class);
 
   /**
    * Validate if the {@code configurationBean} object was bound successfully
@@ -37,8 +42,11 @@ public class BindingValidator {
    *                                  underlying exception of type {@link IllegalArgumentException}
    */
   public <T> void validate(T configurationBean, Class<T> type) {
+    LOG.debug("Validating configuration bean of type " + type);
+
     for (Method declaredMethod : type.getDeclaredMethods()) {
       try {
+        LOG.debug("Validating method: " + declaredMethod.getName());
 
         declaredMethod.invoke(configurationBean);
 

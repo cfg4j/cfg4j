@@ -15,10 +15,15 @@
  */
 package pl.nort.config.utils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.IOException;
 
 public class FileUtils {
+
+  private static final Logger LOG = LoggerFactory.getLogger(FileUtils.class);
 
   public static void deleteDir(File directory) throws IOException {
     if (directory.exists()) {
@@ -29,12 +34,15 @@ public class FileUtils {
           if (file.isDirectory()) {
             deleteDir(file);
           } else {
+            LOG.debug("Removing file: " + directory.getAbsolutePath());
             if (!file.delete()) {
               throw new IOException("Unable to delete file: " + file.getAbsolutePath());
             }
           }
         }
       }
+
+      LOG.debug("Removing directory: " + directory.getAbsolutePath());
       if (!directory.delete()) {
         throw new IOException("Unable to delete directory: " + directory.getAbsolutePath());
       }

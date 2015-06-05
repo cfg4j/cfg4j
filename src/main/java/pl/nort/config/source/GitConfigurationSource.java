@@ -17,6 +17,8 @@ package pl.nort.config.source;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pl.nort.config.utils.FileUtils;
 
 import java.io.Closeable;
@@ -28,6 +30,7 @@ import java.util.Properties;
 
 public class GitConfigurationSource implements ConfigurationSource, Closeable {
 
+  private static final Logger LOG = LoggerFactory.getLogger(GitConfigurationSource.class);
   private static final String LOCAL_REPOSITORY_PATH_IN_TEMP = "nort-config-git-config-repository";
 
   private final Git clonedRepo;
@@ -54,6 +57,8 @@ public class GitConfigurationSource implements ConfigurationSource, Closeable {
    * @throws GitConfigurationSourceException when unable to clone repository
    */
   public GitConfigurationSource(String repositoryURI, String tmpPath, String localRepositoryPathInTemp) {
+
+    LOG.info("Initializing " + GitConfigurationSource.class + " pointing to " + repositoryURI);
 
     try {
       clonedRepoPath = File.createTempFile(localRepositoryPathInTemp, "", new File(tmpPath));
@@ -101,14 +106,16 @@ public class GitConfigurationSource implements ConfigurationSource, Closeable {
   @Override
   public void refresh() {
     try {
+      LOG.debug("Refreshing configuration by pulling changes from branch: " + clonedRepo.getRepository().getBranch());
       clonedRepo.pull().call();
-    } catch (GitAPIException e) {
+    } catch (GitAPIException | IOException e) {
       throw new IllegalStateException("Unable to pull from remote repository", e);
     }
   }
 
   @Override
   public void close() throws IOException {
+    LOG.debug("Closing local repository: " + clonedRepoPath);
     clonedRepo.close();
     FileUtils.deleteDir(clonedRepoPath);
   }

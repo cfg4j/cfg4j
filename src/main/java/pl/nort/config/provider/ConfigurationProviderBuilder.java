@@ -15,6 +15,8 @@
  */
 package pl.nort.config.provider;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pl.nort.config.source.ConfigurationSource;
 import pl.nort.config.source.EmptyConfigurationSource;
 import pl.nort.config.source.refresh.RefreshStrategy;
@@ -26,6 +28,8 @@ import pl.nort.config.source.refresh.strategy.OnInitRefreshStrategy;
  * what the default values are.
  */
 public class ConfigurationProviderBuilder {
+
+  private static final Logger LOG = LoggerFactory.getLogger(ConfigurationProviderBuilder.class);
 
   private ConfigurationSource configurationSource;
   private RefreshStrategy refreshStrategy;
@@ -68,9 +72,13 @@ public class ConfigurationProviderBuilder {
 
   /**
    * Build a {@link ConfigurationProvider} using this builder's configuration
+   *
    * @return new {@link ConfigurationProvider}
    */
   public ConfigurationProvider build() {
+    LOG.info("Initializing ConfigurationProvider with " + configurationSource.getClass() + " source and " +
+        refreshStrategy.getClass() + " refresh strategy.");
+
     refreshStrategy.init(configurationSource);
 
     return new SimpleConfigurationProvider(configurationSource);

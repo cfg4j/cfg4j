@@ -15,6 +15,8 @@
  */
 package pl.nort.config.source.refresh.strategy;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pl.nort.config.source.refresh.RefreshStrategy;
 import pl.nort.config.source.refresh.Refreshable;
 
@@ -25,6 +27,8 @@ import java.util.TimerTask;
  * {@link RefreshStrategy} that refreshes the resource periodically. It spawns a background tread!
  */
 public class PeriodicalRefreshStrategy implements RefreshStrategy {
+
+  private static final Logger LOG = LoggerFactory.getLogger(PeriodicalRefreshStrategy.class);
 
   private final long refreshAfterMs;
   private final Timer timer;
@@ -43,6 +47,8 @@ public class PeriodicalRefreshStrategy implements RefreshStrategy {
 
   @Override
   public void init(Refreshable resource) {
+    LOG.info("Initializing " + PeriodicalRefreshStrategy.class + "with refresh time of " + refreshAfterMs + "ms");
+
     resource.refresh();
 
     timer.schedule(new TimerTask() {
@@ -55,6 +61,7 @@ public class PeriodicalRefreshStrategy implements RefreshStrategy {
 
   @Override
   public void shutdown() {
+    LOG.info("Shutting down " + PeriodicalRefreshStrategy.class);
     timer.cancel();
   }
 }

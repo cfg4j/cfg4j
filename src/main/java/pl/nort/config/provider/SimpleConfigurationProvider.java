@@ -20,6 +20,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import com.github.drapostolos.typeparser.NoSuchRegisteredParserException;
 import com.github.drapostolos.typeparser.TypeParser;
 import com.github.drapostolos.typeparser.TypeParserException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pl.nort.config.source.ConfigurationSource;
 import pl.nort.config.validator.BindingValidator;
 

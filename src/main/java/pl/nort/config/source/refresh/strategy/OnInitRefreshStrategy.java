@@ -15,6 +15,8 @@
  */
 package pl.nort.config.source.refresh.strategy;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pl.nort.config.source.refresh.RefreshStrategy;
 import pl.nort.config.source.refresh.Refreshable;
 
@@ -23,13 +25,16 @@ import pl.nort.config.source.refresh.Refreshable;
  */
 public class OnInitRefreshStrategy implements RefreshStrategy {
 
+  private static final Logger LOG = LoggerFactory.getLogger(OnInitRefreshStrategy.class);
+
   @Override
   public void init(Refreshable resource) {
-    resource.refresh();
+    LOG.info("Initializing " + OnInitRefreshStrategy.class);
+        resource.refresh();
   }
 
   @Override
   public void shutdown() {
-    // NOP
+    LOG.info("Shutting down " + OnInitRefreshStrategy.class);
   }
 }

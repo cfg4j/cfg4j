@@ -83,6 +83,15 @@ class TempConfigurationGitRepo {
   }
 
   /**
+   * Delete file from this repository.
+   *
+   * @param filePath relative file path to delete
+   */
+  public void deleteFile(String filePath) {
+    new File(getURI() + "/" + filePath).delete();
+  }
+
+  /**
    * Remove this repository.
    *
    * @throws IOException when unable to remove directory

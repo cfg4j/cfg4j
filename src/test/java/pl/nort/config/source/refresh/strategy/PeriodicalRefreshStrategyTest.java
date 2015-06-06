@@ -52,6 +52,6 @@ public class PeriodicalRefreshStrategyTest {
     strategy.init(refreshable);
     Thread.sleep(50);
     strategy.shutdown();
-    verify(refreshable, atLeast(3)).refresh();
+    verify(refreshable, atLeast(2)).refresh();
   }
 }

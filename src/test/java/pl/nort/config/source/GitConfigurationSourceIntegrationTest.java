@@ -18,31 +18,22 @@ package pl.nort.config.source;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.assertj.core.data.MapEntry;
-import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.errors.GitAPIException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import pl.nort.config.utils.FileUtils;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Properties;
 
 public class GitConfigurationSourceIntegrationTest {
 
   @Rule
   public ExpectedException expectedException = ExpectedException.none();
 
-  private SampleGitRepo remoteRepo;
+  private TempConfigurationGitRepo remoteRepo;
 
   @Before
   public void setUp() throws Exception {
-    remoteRepo = new SampleGitRepo();
+    remoteRepo = new TempConfigurationGitRepo();
     remoteRepo.changeProperty("application.properties", "some.setting", "value");
   }
 
@@ -90,54 +81,4 @@ public class GitConfigurationSourceIntegrationTest {
       gitConfigurationSource.refresh();
     }
   }
-
-  private static class SampleGitRepo {
-
-    private final Git repo;
-
-    public SampleGitRepo() throws IOException, GitAPIException {
-      File tempFile = File.createTempFile("test-repo.git", "");
-      repo = createLocalRepo(tempFile);
-    }
-
-    public String getURI() {
-      return repo.getRepository().getWorkTree().getAbsolutePath();
-    }
-
-    public void changeProperty(String propFilePath, String key, String value) throws IOException, GitAPIException {
-      writePropertyToFile(propFilePath, key, value);
-      commitChangesTo(repo);
-    }
-
-    public void remove() throws IOException {
-      repo.close();
-      FileUtils.deleteDir(new File(getURI()));
-    }
-
-    private Git createLocalRepo(File path) throws IOException, GitAPIException {
-      path.delete();
-      return Git.init()
-          .setDirectory(path)
-          .call();
-    }
-
-    private void writePropertyToFile(String propFilePath, String key, String value) throws IOException {
-      OutputStream out = new FileOutputStream(getURI() + "/" + propFilePath);
-      Properties properties = new Properties();
-      properties.put(key, value);
-      properties.store(out, "");
-      out.close();
-    }
-
-    private void commitChangesTo(Git repo) throws GitAPIException {
-      repo.add()
-          .addFilepattern(".")
-          .call();
-
-      repo.commit()
-          .setMessage("config change")
-          .call();
-    }
-  }
-
 }

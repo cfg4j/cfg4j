@@ -16,6 +16,7 @@
 package pl.nort.config.source;
 
 import pl.nort.config.source.context.EnvSelectionStrategy;
+import pl.nort.config.source.context.MissingEnvironmentException;
 import pl.nort.config.source.refresh.Refreshable;
 
 import java.util.Properties;
@@ -38,6 +39,7 @@ public interface ConfigurationSource extends Refreshable {
    * Provided {@link EnvSelectionStrategy} will be used to determine which environment to use.
    *
    * @return full configuration set
+   * @throws MissingEnvironmentException when requested environment couldn't be found
    * @throws IllegalStateException when unable to fetch configuration
    */
   Properties getConfiguration(EnvSelectionStrategy envSelectionStrategy);

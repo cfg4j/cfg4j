@@ -18,12 +18,17 @@ package pl.nort.config.source.context;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * {@link EnvSelectionStrategy} that never changes
+ * {@link EnvSelectionStrategy} that never changes.
  */
 public class ImmutableEnvSelectionStrategy implements EnvSelectionStrategy {
 
   private final String envName;
 
+  /**
+   * Construct strategy that will always use {@code envName} as the environment name.
+   *
+   * @param envName environment name to use
+   */
   public ImmutableEnvSelectionStrategy(String envName) {
     this.envName = checkNotNull(envName);
   }

@@ -60,10 +60,22 @@ class TempConfigurationGitRepo {
    * @throws GitAPIException when unable to change branch.
    */
   public void changeBranchTo(String branch) throws GitAPIException {
-    repo
-        .checkout()
+    repo.checkout()
         .setCreateBranch(true)
         .setName(branch)
+        .call();
+  }
+
+  /**
+   * Delete {@code branch}.
+   *
+   * @param branch branch name to delete
+   * @throws GitAPIException when unable to delete branch.
+   */
+  public void deleteBranch(String branch) throws GitAPIException {
+    repo.branchDelete()
+        .setBranchNames(branch)
+        .setForce(true)
         .call();
   }
 

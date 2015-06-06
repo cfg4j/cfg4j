@@ -54,6 +54,20 @@ class TempConfigurationGitRepo {
   }
 
   /**
+   * Change active branch to {@code branch}. Create the branch if it doesn't exist.
+   *
+   * @param branch branch to activate
+   * @throws GitAPIException when unable to change branch.
+   */
+  public void changeBranchTo(String branch) throws GitAPIException {
+    repo
+        .checkout()
+        .setCreateBranch(true)
+        .setName(branch)
+        .call();
+  }
+
+  /**
    * Change the {@code key} property to {@code value} and store it in a {@code propFilePath} properties file. Commit
    * the change.
    *

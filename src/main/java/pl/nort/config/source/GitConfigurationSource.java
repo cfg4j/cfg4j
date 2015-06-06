@@ -19,6 +19,7 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pl.nort.config.source.context.EnvSelectionStrategy;
 import pl.nort.config.utils.FileUtils;
 
 import java.io.Closeable;
@@ -101,6 +102,11 @@ public class GitConfigurationSource implements ConfigurationSource, Closeable {
     }
 
     return properties;
+  }
+
+  @Override
+  public Properties getConfiguration(EnvSelectionStrategy envSelectionStrategy) {
+    return null;
   }
 
   @Override

@@ -24,7 +24,7 @@ import java.util.Properties;
  */
 public class EmptyConfigurationSource implements ConfigurationSource {
 
-  private final Properties properties = new Properties();
+  private static final Properties properties = new Properties();
 
   @Override
   public Properties getConfiguration() {

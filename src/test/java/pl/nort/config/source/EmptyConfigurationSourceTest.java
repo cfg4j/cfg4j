@@ -17,6 +17,7 @@
 package pl.nort.config.source;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -24,6 +25,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
+import pl.nort.config.source.context.EnvSelectionStrategy;
 
 @RunWith(MockitoJUnitRunner.class)
 public class EmptyConfigurationSourceTest {
@@ -47,5 +49,10 @@ public class EmptyConfigurationSourceTest {
   public void refreshShouldNotChangeConfiguration() throws Exception {
     source.refresh();
     assertThat(source.getConfiguration()).isEmpty();
+  }
+
+  @Test
+  public void shouldReturnEmptyConfigurationForAnyEnvironment() throws Exception {
+    assertThat(source.getConfiguration(mock(EnvSelectionStrategy.class))).isEmpty();
   }
 }

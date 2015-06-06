@@ -39,7 +39,7 @@ public class GitConfigurationSourceIntegrationTest {
 
   @After
   public void tearDown() throws Exception {
-    remoteRepo.remove();
+    //remoteRepo.remove();
   }
 
   @Test
@@ -56,9 +56,19 @@ public class GitConfigurationSourceIntegrationTest {
   }
 
   @Test
-  public void shouldReadConfigFromRemoteRepository() throws Exception {
+  public void getConfigurationShouldReadConfigFromRemoteRepository() throws Exception {
     try (GitConfigurationSource gitConfigurationSource = new GitConfigurationSource(remoteRepo.getURI())) {
       assertThat(gitConfigurationSource.getConfiguration()).contains(MapEntry.entry("some.setting", "value"));
+    }
+  }
+
+  @Test
+  public void getConfigurationShouldThrowOnMissingConfigFile() throws Exception {
+    remoteRepo.deleteFile("application.properties");
+
+    try (GitConfigurationSource gitConfigurationSource = new GitConfigurationSource(remoteRepo.getURI())) {
+      expectedException.expect(IllegalStateException.class);
+      gitConfigurationSource.getConfiguration();
     }
   }
 

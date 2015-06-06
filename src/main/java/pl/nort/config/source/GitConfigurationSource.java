@@ -89,14 +89,14 @@ public class GitConfigurationSource implements ConfigurationSource, Closeable {
     try {
       input = new FileInputStream(clonedRepoPath + "/application.properties");
       properties.load(input);
-    } catch (IOException ex) {
-      ex.printStackTrace();
+    } catch (IOException e) {
+      throw new IllegalStateException("Unable to load properties from application.properties file", e);
     } finally {
       if (input != null) {
         try {
           input.close();
         } catch (IOException e) {
-          e.printStackTrace();
+          throw new IllegalStateException("Unable to close application.properties file", e);
         }
       }
     }

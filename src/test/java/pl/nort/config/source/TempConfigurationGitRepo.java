@@ -68,7 +68,7 @@ class TempConfigurationGitRepo {
   }
 
   /**
-   * Change the {@code key} property to {@code value} and store it in a {@code propFilePath} properties file. Commit
+   * Change the {@code key} property to {@code value} and store it in a {@code propFilePath} properties file. Commits
    * the change.
    *
    * @param propFilePath relative path to the properties file in this repository
@@ -79,16 +79,21 @@ class TempConfigurationGitRepo {
    */
   public void changeProperty(String propFilePath, String key, String value) throws IOException, GitAPIException {
     writePropertyToFile(propFilePath, key, value);
-    commitChangesTo(repo);
+    commitChanges();
   }
 
   /**
-   * Delete file from this repository.
+   * Delete file from this repository. Commits changes.
    *
    * @param filePath relative file path to delete
+   * @throws GitAPIException when unable to commit changes
    */
-  public void deleteFile(String filePath) {
-    new File(getURI() + "/" + filePath).delete();
+  public void deleteFile(String filePath) throws GitAPIException {
+    repo.rm()
+        .addFilepattern(filePath)
+        .call();
+
+    commitChanges();
   }
 
   /**
@@ -116,7 +121,7 @@ class TempConfigurationGitRepo {
     out.close();
   }
 
-  private void commitChangesTo(Git repo) throws GitAPIException {
+  private void commitChanges() throws GitAPIException {
     repo.add()
         .addFilepattern(".")
         .call();

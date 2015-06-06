@@ -15,11 +15,17 @@
  */
 package pl.nort.config.source;
 
+import com.google.common.collect.Iterables;
+import org.eclipse.jgit.api.CheckoutCommand;
+import org.eclipse.jgit.api.CreateBranchCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.lib.Ref;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.nort.config.source.context.EnvSelectionStrategy;
+import pl.nort.config.source.context.ImmutableEnvSelectionStrategy;
+import pl.nort.config.source.context.MissingEnvironmentException;
 import pl.nort.config.utils.FileUtils;
 
 import java.io.Closeable;
@@ -27,6 +33,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Properties;
 
 public class GitConfigurationSource implements ConfigurationSource, Closeable {
@@ -83,30 +90,30 @@ public class GitConfigurationSource implements ConfigurationSource, Closeable {
 
   @Override
   public Properties getConfiguration() {
-    Properties properties = new Properties();
-    InputStream input = null;
-
     try {
-      input = new FileInputStream(clonedRepoPath + "/application.properties");
-      properties.load(input);
-    } catch (IOException e) {
-      throw new IllegalStateException("Unable to load properties from application.properties file", e);
-    } finally {
-      if (input != null) {
-        try {
-          input.close();
-        } catch (IOException e) {
-          throw new IllegalStateException("Unable to close application.properties file", e);
-        }
-      }
+      return getConfiguration(new ImmutableEnvSelectionStrategy("master"));
+    } catch (MissingEnvironmentException e) {
+      throw new IllegalStateException("Unable to load configuration", e);
     }
-
-    return properties;
   }
 
   @Override
   public Properties getConfiguration(EnvSelectionStrategy envSelectionStrategy) {
-    return null;
+    try {
+      checkoutToBranch(envSelectionStrategy.getEnvironmentName());
+    } catch (GitAPIException e) {
+      throw new MissingEnvironmentException(envSelectionStrategy.getEnvironmentName(), e);
+    }
+
+    Properties properties = new Properties();
+
+    try (InputStream input = new FileInputStream(clonedRepoPath + "/application.properties")) {
+      properties.load(input);
+    } catch (IOException e) {
+      throw new IllegalStateException("Unable to load properties from application.properties file", e);
+    }
+
+    return properties;
   }
 
   @Override
@@ -124,5 +131,22 @@ public class GitConfigurationSource implements ConfigurationSource, Closeable {
     LOG.debug("Closing local repository: " + clonedRepoPath);
     clonedRepo.close();
     FileUtils.deleteDir(clonedRepoPath);
+  }
+
+  private void checkoutToBranch(String branch) throws GitAPIException {
+    CheckoutCommand checkoutCommand = clonedRepo.checkout()
+        .setCreateBranch(false)
+        .setName(branch);
+
+    List<Ref> refList = clonedRepo.branchList().call();
+    if (!Iterables.any(refList, ref -> ref.getName().replace("refs/heads/", "").equals(branch))) {
+      checkoutCommand = checkoutCommand
+          .setCreateBranch(true)
+          .setUpstreamMode(CreateBranchCommand.SetupUpstreamMode.TRACK)
+          .setStartPoint("origin/" + branch);
+    }
+
+    checkoutCommand
+        .call();
   }
 }

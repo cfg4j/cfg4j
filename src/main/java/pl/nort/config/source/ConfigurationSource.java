@@ -15,6 +15,7 @@
  */
 package pl.nort.config.source;
 
+import pl.nort.config.source.context.EnvSelectionStrategy;
 import pl.nort.config.source.refresh.Refreshable;
 
 import java.util.Properties;
@@ -25,11 +26,19 @@ import java.util.Properties;
 public interface ConfigurationSource extends Refreshable {
 
   /**
-   * Get full configuration set from this source in a form of {@link Properties}.
+   * Get configuration set from this source in a form of {@link Properties}. Uses default environment.
    *
-   * @return full configuration set
+   * @return configuration set for default environment
    * @throws IllegalStateException when unable to fetch configuration
    */
   Properties getConfiguration();
 
+  /**
+   * Get configuration set for a given environment from this source in a form of {@link Properties}.
+   * Provided {@link EnvSelectionStrategy} will be used to determine which environment to use.
+   *
+   * @return full configuration set
+   * @throws IllegalStateException when unable to fetch configuration
+   */
+  Properties getConfiguration(EnvSelectionStrategy envSelectionStrategy);
 }

@@ -23,8 +23,14 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import pl.nort.config.source.context.EnvSelectionStrategy;
+import pl.nort.config.source.context.ImmutableEnvSelectionStrategy;
+import pl.nort.config.source.context.MissingEnvironmentException;
 
 public class GitConfigurationSourceIntegrationTest {
+
+  public static final String DEFAULT_BRANCH = "master";
+  public static final String TEST_ENV_BRANCH = "testEnvBranch";
 
   @Rule
   public ExpectedException expectedException = ExpectedException.none();
@@ -34,12 +40,17 @@ public class GitConfigurationSourceIntegrationTest {
   @Before
   public void setUp() throws Exception {
     remoteRepo = new TempConfigurationGitRepo();
-    remoteRepo.changeProperty("application.properties", "some.setting", "value");
+    remoteRepo.changeProperty("application.properties", "some.setting", "masterValue");
+
+    remoteRepo.changeBranchTo(TEST_ENV_BRANCH);
+    remoteRepo.changeProperty("application.properties", "some.setting", "testValue");
+
+    remoteRepo.changeBranchTo(DEFAULT_BRANCH);
   }
 
   @After
   public void tearDown() throws Exception {
-    //remoteRepo.remove();
+    remoteRepo.remove();
   }
 
   @Test
@@ -58,7 +69,7 @@ public class GitConfigurationSourceIntegrationTest {
   @Test
   public void getConfigurationShouldReadConfigFromRemoteRepository() throws Exception {
     try (GitConfigurationSource gitConfigurationSource = new GitConfigurationSource(remoteRepo.getURI())) {
-      assertThat(gitConfigurationSource.getConfiguration()).contains(MapEntry.entry("some.setting", "value"));
+      assertThat(gitConfigurationSource.getConfiguration()).contains(MapEntry.entry("some.setting", "masterValue"));
     }
   }
 
@@ -73,12 +84,71 @@ public class GitConfigurationSourceIntegrationTest {
   }
 
   @Test
-  public void refreshShouldSyncWithRepoState() throws Exception {
+  public void getConfigurationShouldThrowOnMissingBranch() throws Exception {
+    remoteRepo.changeBranchTo("test");
+    remoteRepo.deleteBranch(DEFAULT_BRANCH);
+
     try (GitConfigurationSource gitConfigurationSource = new GitConfigurationSource(remoteRepo.getURI())) {
-      remoteRepo.changeProperty("application.properties", "some.setting", "otherValue");
+      expectedException.expect(IllegalStateException.class);
+      gitConfigurationSource.getConfiguration();
+    }
+  }
+
+  @Test
+  public void getConfiguration2ShouldReadConfigFromSpecifiedBranch() throws Exception {
+    try (GitConfigurationSource gitConfigurationSource = new GitConfigurationSource(remoteRepo.getURI())) {
+      EnvSelectionStrategy selectionStrategy = new ImmutableEnvSelectionStrategy(TEST_ENV_BRANCH);
+
+      assertThat(gitConfigurationSource.getConfiguration(selectionStrategy)).contains(MapEntry.entry("some.setting", "testValue"));
+    }
+  }
+
+  @Test
+  public void getConfiguration2ShouldThrowOnMissingBranch() throws Exception {
+    try (GitConfigurationSource gitConfigurationSource = new GitConfigurationSource(remoteRepo.getURI())) {
+      expectedException.expect(MissingEnvironmentException.class);
+      gitConfigurationSource.getConfiguration(new ImmutableEnvSelectionStrategy("nonExistentBranch"));
+    }
+  }
+
+  @Test
+  public void getConfiguration2ShouldThrowOnMissingConfigFile() throws Exception {
+    remoteRepo.deleteFile("application.properties");
+
+    try (GitConfigurationSource gitConfigurationSource = new GitConfigurationSource(remoteRepo.getURI())) {
+      expectedException.expect(IllegalStateException.class);
+      gitConfigurationSource.getConfiguration(new ImmutableEnvSelectionStrategy(DEFAULT_BRANCH));
+    }
+  }
+
+  @Test
+  public void refreshShouldUpdateGetConfigurationResults() throws Exception {
+    try (GitConfigurationSource gitConfigurationSource = new GitConfigurationSource(remoteRepo.getURI())) {
+      remoteRepo.changeProperty("application.properties", "some.setting", "changedValue");
       gitConfigurationSource.refresh();
 
-      assertThat(gitConfigurationSource.getConfiguration()).contains(MapEntry.entry("some.setting", "otherValue"));
+      assertThat(gitConfigurationSource.getConfiguration()).contains(MapEntry.entry("some.setting", "changedValue"));
+    }
+  }
+
+  @Test
+  public void refreshShouldUpdateGetConfiguration2OnDefaultBranch() throws Exception {
+    try (GitConfigurationSource gitConfigurationSource = new GitConfigurationSource(remoteRepo.getURI())) {
+      remoteRepo.changeProperty("application.properties", "some.setting", "changedValue");
+      gitConfigurationSource.refresh();
+
+      assertThat(gitConfigurationSource.getConfiguration(new ImmutableEnvSelectionStrategy(DEFAULT_BRANCH))).contains(MapEntry.entry("some.setting", "changedValue"));
+    }
+  }
+
+  @Test
+  public void refreshShouldUpdateGetConfiguration2OnNonDefaultBranch() throws Exception {
+    try (GitConfigurationSource gitConfigurationSource = new GitConfigurationSource(remoteRepo.getURI())) {
+      remoteRepo.changeBranchTo(TEST_ENV_BRANCH);
+      remoteRepo.changeProperty("application.properties", "some.setting", "changedValue");
+      gitConfigurationSource.refresh();
+
+      assertThat(gitConfigurationSource.getConfiguration(new ImmutableEnvSelectionStrategy(TEST_ENV_BRANCH))).contains(MapEntry.entry("some.setting", "changedValue"));
     }
   }
 

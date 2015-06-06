@@ -15,14 +15,17 @@
  */
 package pl.nort.config.source;
 
+import com.google.common.collect.Iterables;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.lib.Ref;
 import pl.nort.config.utils.FileUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -60,8 +63,15 @@ class TempConfigurationGitRepo {
    * @throws GitAPIException when unable to change branch.
    */
   public void changeBranchTo(String branch) throws GitAPIException {
+    boolean createBranch = true;
+
+    List<Ref> refList = repo.branchList().call();
+    if (Iterables.any(refList, ref -> ref.getName().replace("refs/heads/", "").equals(branch))) {
+      createBranch = false;
+    }
+
     repo.checkout()
-        .setCreateBranch(true)
+        .setCreateBranch(createBranch)
         .setName(branch)
         .call();
   }
@@ -72,6 +82,7 @@ class TempConfigurationGitRepo {
    * @param branch branch name to delete
    * @throws GitAPIException when unable to delete branch.
    */
+
   public void deleteBranch(String branch) throws GitAPIException {
     repo.branchDelete()
         .setBranchNames(branch)

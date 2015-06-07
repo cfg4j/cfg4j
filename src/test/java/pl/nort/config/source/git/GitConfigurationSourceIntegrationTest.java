@@ -56,19 +56,24 @@ public class GitConfigurationSourceIntegrationTest {
   @Test
   public void shouldThrowWhenUnableToCreateLocalCloneOnNoTempDir() throws Exception {
     expectedException.expect(GitConfigurationSourceException.class);
-    new GitConfigurationSource(remoteRepo.getURI(), "/someNonexistentDir/lkfjalfcz", "existing-path");
+
+    new GitConfigurationSourceBuilder()
+        .withRepositoryURI(remoteRepo.getURI())
+        .withTmpPath("/someNonexistentDir/lkfjalfcz")
+        .withLocalRepositoryPathInTemp("existing-path")
+        .build();
   }
 
   @Test
   public void shouldThrowOnInvalidRemote() throws Exception {
     remoteRepo.remove();
     expectedException.expect(GitConfigurationSourceException.class);
-    new GitConfigurationSource(remoteRepo.getURI());
+    getSourceForRemoteRepo();
   }
 
   @Test
   public void getConfigurationShouldReadConfigFromRemoteRepository() throws Exception {
-    try (GitConfigurationSource gitConfigurationSource = new GitConfigurationSource(remoteRepo.getURI())) {
+    try (GitConfigurationSource gitConfigurationSource = getSourceForRemoteRepo()) {
       assertThat(gitConfigurationSource.getConfiguration()).contains(MapEntry.entry("some.setting", "masterValue"));
     }
   }
@@ -77,7 +82,7 @@ public class GitConfigurationSourceIntegrationTest {
   public void getConfigurationShouldThrowOnMissingConfigFile() throws Exception {
     remoteRepo.deleteFile("application.properties");
 
-    try (GitConfigurationSource gitConfigurationSource = new GitConfigurationSource(remoteRepo.getURI())) {
+    try (GitConfigurationSource gitConfigurationSource = getSourceForRemoteRepo()) {
       expectedException.expect(IllegalStateException.class);
       gitConfigurationSource.getConfiguration();
     }
@@ -88,7 +93,7 @@ public class GitConfigurationSourceIntegrationTest {
     remoteRepo.changeBranchTo("test");
     remoteRepo.deleteBranch(DEFAULT_BRANCH);
 
-    try (GitConfigurationSource gitConfigurationSource = new GitConfigurationSource(remoteRepo.getURI())) {
+    try (GitConfigurationSource gitConfigurationSource = getSourceForRemoteRepo()) {
       expectedException.expect(IllegalStateException.class);
       gitConfigurationSource.getConfiguration();
     }
@@ -96,7 +101,7 @@ public class GitConfigurationSourceIntegrationTest {
 
   @Test
   public void getConfiguration2ShouldReadConfigFromSpecifiedBranch() throws Exception {
-    try (GitConfigurationSource gitConfigurationSource = new GitConfigurationSource(remoteRepo.getURI())) {
+    try (GitConfigurationSource gitConfigurationSource = getSourceForRemoteRepo()) {
       Environment selectionStrategy = new ImmutableEnvironment(TEST_ENV_BRANCH);
 
       assertThat(gitConfigurationSource.getConfiguration(selectionStrategy)).contains(MapEntry.entry("some.setting", "testValue"));
@@ -105,7 +110,7 @@ public class GitConfigurationSourceIntegrationTest {
 
   @Test
   public void getConfiguration2ShouldThrowOnMissingBranch() throws Exception {
-    try (GitConfigurationSource gitConfigurationSource = new GitConfigurationSource(remoteRepo.getURI())) {
+    try (GitConfigurationSource gitConfigurationSource = getSourceForRemoteRepo()) {
       expectedException.expect(MissingEnvironmentException.class);
       gitConfigurationSource.getConfiguration(new ImmutableEnvironment("nonExistentBranch"));
     }
@@ -115,7 +120,7 @@ public class GitConfigurationSourceIntegrationTest {
   public void getConfiguration2ShouldThrowOnMissingConfigFile() throws Exception {
     remoteRepo.deleteFile("application.properties");
 
-    try (GitConfigurationSource gitConfigurationSource = new GitConfigurationSource(remoteRepo.getURI())) {
+    try (GitConfigurationSource gitConfigurationSource = getSourceForRemoteRepo()) {
       expectedException.expect(IllegalStateException.class);
       gitConfigurationSource.getConfiguration(new ImmutableEnvironment(DEFAULT_BRANCH));
     }
@@ -123,7 +128,7 @@ public class GitConfigurationSourceIntegrationTest {
 
   @Test
   public void refreshShouldUpdateGetConfigurationResults() throws Exception {
-    try (GitConfigurationSource gitConfigurationSource = new GitConfigurationSource(remoteRepo.getURI())) {
+    try (GitConfigurationSource gitConfigurationSource = getSourceForRemoteRepo()) {
       remoteRepo.changeProperty("application.properties", "some.setting", "changedValue");
       gitConfigurationSource.refresh();
 
@@ -133,7 +138,7 @@ public class GitConfigurationSourceIntegrationTest {
 
   @Test
   public void refreshShouldUpdateGetConfiguration2OnDefaultBranch() throws Exception {
-    try (GitConfigurationSource gitConfigurationSource = new GitConfigurationSource(remoteRepo.getURI())) {
+    try (GitConfigurationSource gitConfigurationSource = getSourceForRemoteRepo()) {
       remoteRepo.changeProperty("application.properties", "some.setting", "changedValue");
       gitConfigurationSource.refresh();
 
@@ -143,7 +148,7 @@ public class GitConfigurationSourceIntegrationTest {
 
   @Test
   public void refreshShouldUpdateGetConfiguration2OnNonDefaultBranch() throws Exception {
-    try (GitConfigurationSource gitConfigurationSource = new GitConfigurationSource(remoteRepo.getURI())) {
+    try (GitConfigurationSource gitConfigurationSource = getSourceForRemoteRepo()) {
       remoteRepo.changeBranchTo(TEST_ENV_BRANCH);
       remoteRepo.changeProperty("application.properties", "some.setting", "changedValue");
       gitConfigurationSource.refresh();
@@ -154,11 +159,17 @@ public class GitConfigurationSourceIntegrationTest {
 
   @Test
   public void refreshShouldThrowOnSyncProblems() throws Exception {
-    try (GitConfigurationSource gitConfigurationSource = new GitConfigurationSource(remoteRepo.getURI())) {
+    try (GitConfigurationSource gitConfigurationSource = getSourceForRemoteRepo()) {
       remoteRepo.remove();
 
       expectedException.expect(IllegalStateException.class);
       gitConfigurationSource.refresh();
     }
+  }
+
+  private GitConfigurationSource getSourceForRemoteRepo() {
+    return new GitConfigurationSourceBuilder()
+        .withRepositoryURI(remoteRepo.getURI())
+        .build();
   }
 }

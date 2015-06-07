@@ -18,6 +18,7 @@ package pl.nort.config.provider;
 import pl.nort.config.source.ConfigurationSource;
 import pl.nort.config.source.context.Environment;
 import pl.nort.config.source.git.GitConfigurationSource;
+import pl.nort.config.source.git.GitConfigurationSourceBuilder;
 
 /**
  * A factory producing {@link ConfigurationProvider}s.
@@ -32,7 +33,9 @@ public class ConfigurationProviders {
    */
   public static ConfigurationProvider backedByGit(String repositoryURI) {
     return new ConfigurationProviderBuilder()
-        .withConfigurationSource(new GitConfigurationSource(repositoryURI))
+        .withConfigurationSource(new GitConfigurationSourceBuilder()
+            .withRepositoryURI(repositoryURI)
+            .build())
         .build();
   }
 
@@ -45,7 +48,9 @@ public class ConfigurationProviders {
    */
   public static ConfigurationProvider backedByGit(String repositoryURI, Environment environment) {
     return new ConfigurationProviderBuilder()
-        .withConfigurationSource(new GitConfigurationSource(repositoryURI))
+        .withConfigurationSource(new GitConfigurationSourceBuilder()
+            .withRepositoryURI(repositoryURI)
+            .build())
         .withEnvSelectionStrategy(environment)
         .build();
   }

@@ -19,6 +19,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.nort.config.source.ConfigurationSource;
 import pl.nort.config.source.EmptyConfigurationSource;
+import pl.nort.config.source.context.DefaultEnvSelectionStrategy;
+import pl.nort.config.source.context.EnvSelectionStrategy;
 import pl.nort.config.source.refresh.RefreshStrategy;
 import pl.nort.config.source.refresh.strategy.OnInitRefreshStrategy;
 
@@ -33,6 +35,7 @@ public class ConfigurationProviderBuilder {
 
   private ConfigurationSource configurationSource;
   private RefreshStrategy refreshStrategy;
+  private EnvSelectionStrategy envSelectionStrategy;
 
   /**
    * Construct {@link ConfigurationProvider}s builder
@@ -41,11 +44,13 @@ public class ConfigurationProviderBuilder {
    * <ul>
    * <li>ConfigurationSource: {@link EmptyConfigurationSource}</li>
    * <li>RefreshStrategy: {@link OnInitRefreshStrategy}</li>
+   * <li>EnvSelectionStrategy: {@link DefaultEnvSelectionStrategy}</li>
    * </ul>
    */
   public ConfigurationProviderBuilder() {
     configurationSource = new EmptyConfigurationSource();
     refreshStrategy = new OnInitRefreshStrategy();
+    envSelectionStrategy = new DefaultEnvSelectionStrategy();
   }
 
   /**
@@ -71,17 +76,29 @@ public class ConfigurationProviderBuilder {
   }
 
   /**
+   * Set {@link EnvSelectionStrategy} for {@link ConfigurationProviders}s built by this builder
+   *
+   * @param envSelectionStrategy {@link EnvSelectionStrategy} to use
+   * @return this builder with {@link EnvSelectionStrategy} set to {@code envSelectionStrategy}
+   */
+  public ConfigurationProviderBuilder withEnvSelectionStrategy(EnvSelectionStrategy envSelectionStrategy) {
+    this.envSelectionStrategy = envSelectionStrategy;
+    return this;
+  }
+
+  /**
    * Build a {@link ConfigurationProvider} using this builder's configuration
    *
    * @return new {@link ConfigurationProvider}
    */
   public ConfigurationProvider build() {
-    LOG.info("Initializing ConfigurationProvider with " + configurationSource.getClass() + " source and " +
-        refreshStrategy.getClass() + " refresh strategy.");
+    LOG.info("Initializing ConfigurationProvider with " + configurationSource.getClass() + " source, " +
+        refreshStrategy.getClass() + " refresh strategy and " + envSelectionStrategy.getClass() + " environment" +
+        "selection strategy.");
 
     refreshStrategy.init(configurationSource);
 
-    return new SimpleConfigurationProvider(configurationSource);
+    return new SimpleConfigurationProvider(configurationSource, envSelectionStrategy);
   }
 
 }

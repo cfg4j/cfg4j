@@ -22,7 +22,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import pl.nort.config.source.ConfigurationSource;
-import pl.nort.config.source.context.EnvSelectionStrategy;
+import pl.nort.config.source.context.Environment;
 
 import java.util.Properties;
 
@@ -38,11 +38,11 @@ public abstract class SimpleConfigurationProviderAbstractTest {
   protected ConfigurationSource configurationSource;
 
   @Mock
-  protected EnvSelectionStrategy envSelectionStrategy;
+  protected Environment environment;
 
   @Before
   public void setUp() throws Exception {
-    simpleConfigurationProvider = new SimpleConfigurationProvider(configurationSource, envSelectionStrategy);
+    simpleConfigurationProvider = new SimpleConfigurationProvider(configurationSource, environment);
   }
 
   protected Properties propertiesWith(String... args) {

@@ -19,8 +19,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.nort.config.source.ConfigurationSource;
 import pl.nort.config.source.EmptyConfigurationSource;
-import pl.nort.config.source.context.DefaultEnvSelectionStrategy;
-import pl.nort.config.source.context.EnvSelectionStrategy;
+import pl.nort.config.source.context.DefaultEnvironment;
+import pl.nort.config.source.context.Environment;
 import pl.nort.config.source.refresh.RefreshStrategy;
 import pl.nort.config.source.refresh.strategy.OnInitRefreshStrategy;
 
@@ -35,7 +35,7 @@ public class ConfigurationProviderBuilder {
 
   private ConfigurationSource configurationSource;
   private RefreshStrategy refreshStrategy;
-  private EnvSelectionStrategy envSelectionStrategy;
+  private Environment environment;
 
   /**
    * Construct {@link ConfigurationProvider}s builder
@@ -44,13 +44,13 @@ public class ConfigurationProviderBuilder {
    * <ul>
    * <li>ConfigurationSource: {@link EmptyConfigurationSource}</li>
    * <li>RefreshStrategy: {@link OnInitRefreshStrategy}</li>
-   * <li>EnvSelectionStrategy: {@link DefaultEnvSelectionStrategy}</li>
+   * <li>Environment: {@link DefaultEnvironment}</li>
    * </ul>
    */
   public ConfigurationProviderBuilder() {
     configurationSource = new EmptyConfigurationSource();
     refreshStrategy = new OnInitRefreshStrategy();
-    envSelectionStrategy = new DefaultEnvSelectionStrategy();
+    environment = new DefaultEnvironment();
   }
 
   /**
@@ -76,13 +76,13 @@ public class ConfigurationProviderBuilder {
   }
 
   /**
-   * Set {@link EnvSelectionStrategy} for {@link ConfigurationProviders}s built by this builder
+   * Set {@link Environment} for {@link ConfigurationProviders}s built by this builder
    *
-   * @param envSelectionStrategy {@link EnvSelectionStrategy} to use
-   * @return this builder with {@link EnvSelectionStrategy} set to {@code envSelectionStrategy}
+   * @param environment {@link Environment} to use
+   * @return this builder with {@link Environment} set to {@code environment}
    */
-  public ConfigurationProviderBuilder withEnvSelectionStrategy(EnvSelectionStrategy envSelectionStrategy) {
-    this.envSelectionStrategy = envSelectionStrategy;
+  public ConfigurationProviderBuilder withEnvSelectionStrategy(Environment environment) {
+    this.environment = environment;
     return this;
   }
 
@@ -93,12 +93,12 @@ public class ConfigurationProviderBuilder {
    */
   public ConfigurationProvider build() {
     LOG.info("Initializing ConfigurationProvider with " + configurationSource.getClass() + " source, " +
-        refreshStrategy.getClass() + " refresh strategy and " + envSelectionStrategy.getClass() + " environment" +
+        refreshStrategy.getClass() + " refresh strategy and " + environment.getClass() + " environment" +
         "selection strategy.");
 
     refreshStrategy.init(configurationSource);
 
-    return new SimpleConfigurationProvider(configurationSource, envSelectionStrategy);
+    return new SimpleConfigurationProvider(configurationSource, environment);
   }
 
 }

@@ -24,8 +24,8 @@ import org.eclipse.jgit.lib.Ref;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.nort.config.source.ConfigurationSource;
-import pl.nort.config.source.context.EnvSelectionStrategy;
-import pl.nort.config.source.context.ImmutableEnvSelectionStrategy;
+import pl.nort.config.source.context.Environment;
+import pl.nort.config.source.context.ImmutableEnvironment;
 import pl.nort.config.source.context.MissingEnvironmentException;
 import pl.nort.config.utils.FileUtils;
 
@@ -92,18 +92,18 @@ public class GitConfigurationSource implements ConfigurationSource, Closeable {
   @Override
   public Properties getConfiguration() {
     try {
-      return getConfiguration(new ImmutableEnvSelectionStrategy("master"));
+      return getConfiguration(new ImmutableEnvironment("master"));
     } catch (MissingEnvironmentException e) {
       throw new IllegalStateException("Unable to load configuration", e);
     }
   }
 
   @Override
-  public Properties getConfiguration(EnvSelectionStrategy envSelectionStrategy) {
+  public Properties getConfiguration(Environment environment) {
     try {
-      checkoutToBranch(envSelectionStrategy.getEnvironmentName());
+      checkoutToBranch(environment.getName());
     } catch (GitAPIException e) {
-      throw new MissingEnvironmentException(envSelectionStrategy.getEnvironmentName(), e);
+      throw new MissingEnvironmentException(environment.getName(), e);
     }
 
     Properties properties = new Properties();

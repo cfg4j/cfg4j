@@ -15,16 +15,26 @@
  */
 package pl.nort.config.source.context;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
- * Strategy defining the naming of the configuration environment used.
+ * {@link Environment} that never changes.
  */
-public interface EnvSelectionStrategy {
+public class ImmutableEnvironment implements Environment {
+
+  private final String envName;
 
   /**
-   * Environment name to be used
+   * Construct environment named {@code envName}. This name never changes.
    *
-   * @return environment name
+   * @param envName environment name to use
    */
-  String getEnvironmentName();
+  public ImmutableEnvironment(String envName) {
+    this.envName = checkNotNull(envName);
+  }
 
+  @Override
+  public String getName() {
+    return envName;
+  }
 }

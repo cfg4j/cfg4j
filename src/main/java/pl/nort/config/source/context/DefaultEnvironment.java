@@ -15,18 +15,14 @@
  */
 package pl.nort.config.source.context;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
-
-
-@RunWith(MockitoJUnitRunner.class)
-public class DefaultEnvSelectionStrategyTest {
-
-  @Test
-  public void shouldUseEmptyStringAsEnvName() throws Exception {
-    assertThat(new DefaultEnvSelectionStrategy().getEnvironmentName()).isEmpty();
+/**
+ * Environment named "" (empty string).
+ */
+public class DefaultEnvironment extends ImmutableEnvironment {
+  /**
+   * Constructs environment named "" (empty string).
+   */
+  public DefaultEnvironment() {
+    super("");
   }
 }

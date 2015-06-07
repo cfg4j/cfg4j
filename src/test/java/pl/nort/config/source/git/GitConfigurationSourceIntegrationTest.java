@@ -23,8 +23,8 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import pl.nort.config.source.context.EnvSelectionStrategy;
-import pl.nort.config.source.context.ImmutableEnvSelectionStrategy;
+import pl.nort.config.source.context.Environment;
+import pl.nort.config.source.context.ImmutableEnvironment;
 import pl.nort.config.source.context.MissingEnvironmentException;
 
 public class GitConfigurationSourceIntegrationTest {
@@ -97,7 +97,7 @@ public class GitConfigurationSourceIntegrationTest {
   @Test
   public void getConfiguration2ShouldReadConfigFromSpecifiedBranch() throws Exception {
     try (GitConfigurationSource gitConfigurationSource = new GitConfigurationSource(remoteRepo.getURI())) {
-      EnvSelectionStrategy selectionStrategy = new ImmutableEnvSelectionStrategy(TEST_ENV_BRANCH);
+      Environment selectionStrategy = new ImmutableEnvironment(TEST_ENV_BRANCH);
 
       assertThat(gitConfigurationSource.getConfiguration(selectionStrategy)).contains(MapEntry.entry("some.setting", "testValue"));
     }
@@ -107,7 +107,7 @@ public class GitConfigurationSourceIntegrationTest {
   public void getConfiguration2ShouldThrowOnMissingBranch() throws Exception {
     try (GitConfigurationSource gitConfigurationSource = new GitConfigurationSource(remoteRepo.getURI())) {
       expectedException.expect(MissingEnvironmentException.class);
-      gitConfigurationSource.getConfiguration(new ImmutableEnvSelectionStrategy("nonExistentBranch"));
+      gitConfigurationSource.getConfiguration(new ImmutableEnvironment("nonExistentBranch"));
     }
   }
 
@@ -117,7 +117,7 @@ public class GitConfigurationSourceIntegrationTest {
 
     try (GitConfigurationSource gitConfigurationSource = new GitConfigurationSource(remoteRepo.getURI())) {
       expectedException.expect(IllegalStateException.class);
-      gitConfigurationSource.getConfiguration(new ImmutableEnvSelectionStrategy(DEFAULT_BRANCH));
+      gitConfigurationSource.getConfiguration(new ImmutableEnvironment(DEFAULT_BRANCH));
     }
   }
 
@@ -137,7 +137,7 @@ public class GitConfigurationSourceIntegrationTest {
       remoteRepo.changeProperty("application.properties", "some.setting", "changedValue");
       gitConfigurationSource.refresh();
 
-      assertThat(gitConfigurationSource.getConfiguration(new ImmutableEnvSelectionStrategy(DEFAULT_BRANCH))).contains(MapEntry.entry("some.setting", "changedValue"));
+      assertThat(gitConfigurationSource.getConfiguration(new ImmutableEnvironment(DEFAULT_BRANCH))).contains(MapEntry.entry("some.setting", "changedValue"));
     }
   }
 
@@ -148,7 +148,7 @@ public class GitConfigurationSourceIntegrationTest {
       remoteRepo.changeProperty("application.properties", "some.setting", "changedValue");
       gitConfigurationSource.refresh();
 
-      assertThat(gitConfigurationSource.getConfiguration(new ImmutableEnvSelectionStrategy(TEST_ENV_BRANCH))).contains(MapEntry.entry("some.setting", "changedValue"));
+      assertThat(gitConfigurationSource.getConfiguration(new ImmutableEnvironment(TEST_ENV_BRANCH))).contains(MapEntry.entry("some.setting", "changedValue"));
     }
   }
 

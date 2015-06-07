@@ -15,20 +15,16 @@
  */
 package pl.nort.config.source.context;
 
-import static org.assertj.core.api.Assertions.assertThat;
+/**
+ * Configuration environment.
+ */
+public interface Environment {
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+  /**
+   * Name of the environment.
+   *
+   * @return environment name
+   */
+  String getName();
 
-
-@RunWith(MockitoJUnitRunner.class)
-public class ImmutableEnvSelectionStrategyTest {
-
-  @Test
-  public void shouldReturnConstantEnvName() throws Exception {
-    String environmentName = "sampleEnvironment";
-    ImmutableEnvSelectionStrategy strategy = new ImmutableEnvSelectionStrategy(environmentName);
-    assertThat(strategy.getEnvironmentName()).isEqualTo(environmentName);
-  }
 }

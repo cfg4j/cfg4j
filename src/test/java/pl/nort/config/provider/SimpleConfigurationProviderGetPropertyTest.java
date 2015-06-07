@@ -23,7 +23,7 @@ import static org.mockito.Mockito.when;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
-import pl.nort.config.source.context.EnvSelectionStrategy;
+import pl.nort.config.source.context.Environment;
 import pl.nort.config.source.context.MissingEnvironmentException;
 
 import java.util.List;
@@ -35,7 +35,7 @@ public class SimpleConfigurationProviderGetPropertyTest extends SimpleConfigurat
 
   @Test
   public void allConfigurationAsPropertiesShouldThrowWhenUnableToFetchConfiguration() throws Exception {
-    when(configurationSource.getConfiguration(any(EnvSelectionStrategy.class))).thenThrow(IllegalStateException.class);
+    when(configurationSource.getConfiguration(any(Environment.class))).thenThrow(IllegalStateException.class);
 
     expectedException.expect(IllegalStateException.class);
     simpleConfigurationProvider.allConfigurationAsProperties();
@@ -43,7 +43,7 @@ public class SimpleConfigurationProviderGetPropertyTest extends SimpleConfigurat
 
   @Test
   public void allConfigurationAsPropertiesShouldThrowWhenMissingEnvironment() throws Exception {
-    when(configurationSource.getConfiguration(any(EnvSelectionStrategy.class))).thenThrow(MissingEnvironmentException.class);
+    when(configurationSource.getConfiguration(any(Environment.class))).thenThrow(MissingEnvironmentException.class);
 
     expectedException.expect(IllegalStateException.class);
     simpleConfigurationProvider.allConfigurationAsProperties();
@@ -55,7 +55,7 @@ public class SimpleConfigurationProviderGetPropertyTest extends SimpleConfigurat
 
     simpleConfigurationProvider.allConfigurationAsProperties();
 
-    verify(configurationSource).getConfiguration(envSelectionStrategy);
+    verify(configurationSource).getConfiguration(environment);
   }
 
   @Test

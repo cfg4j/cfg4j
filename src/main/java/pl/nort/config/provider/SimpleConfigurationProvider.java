@@ -21,7 +21,7 @@ import com.github.drapostolos.typeparser.NoSuchRegisteredParserException;
 import com.github.drapostolos.typeparser.TypeParser;
 import com.github.drapostolos.typeparser.TypeParserException;
 import pl.nort.config.source.ConfigurationSource;
-import pl.nort.config.source.context.EnvSelectionStrategy;
+import pl.nort.config.source.context.Environment;
 import pl.nort.config.source.context.MissingEnvironmentException;
 import pl.nort.config.validator.BindingValidator;
 
@@ -38,23 +38,23 @@ import java.util.Properties;
 public class SimpleConfigurationProvider implements ConfigurationProvider {
 
   private final ConfigurationSource configurationSource;
-  private final EnvSelectionStrategy envSelectionStrategy;
+  private final Environment environment;
 
   /**
-   * {@link ConfigurationProvider} backed by provided {@link ConfigurationSource} and using {@code envSelectionStrategy}
+   * {@link ConfigurationProvider} backed by provided {@link ConfigurationSource} and using {@code environment}
    * to select environment.
    * @param configurationSource source for configuration
-   * @param envSelectionStrategy {@link EnvSelectionStrategy} to use
+   * @param environment {@link Environment} to use
    */
-  public SimpleConfigurationProvider(ConfigurationSource configurationSource, EnvSelectionStrategy envSelectionStrategy) {
+  public SimpleConfigurationProvider(ConfigurationSource configurationSource, Environment environment) {
     this.configurationSource = checkNotNull(configurationSource);
-    this.envSelectionStrategy = checkNotNull(envSelectionStrategy);
+    this.environment = checkNotNull(environment);
   }
 
   @Override
   public Properties allConfigurationAsProperties() {
     try {
-      return configurationSource.getConfiguration(envSelectionStrategy);
+      return configurationSource.getConfiguration(environment);
     } catch (IllegalStateException | MissingEnvironmentException e) {
       throw new IllegalStateException("Couldn't fetch configuration from configuration source", e);
     }

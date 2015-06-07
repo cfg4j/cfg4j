@@ -15,7 +15,7 @@
  */
 package pl.nort.config.source;
 
-import pl.nort.config.source.context.EnvSelectionStrategy;
+import pl.nort.config.source.context.Environment;
 
 import java.util.Properties;
 
@@ -32,7 +32,7 @@ public class EmptyConfigurationSource implements ConfigurationSource {
   }
 
   @Override
-  public Properties getConfiguration(EnvSelectionStrategy envSelectionStrategy) {
+  public Properties getConfiguration(Environment environment) {
     return properties;
   }
 

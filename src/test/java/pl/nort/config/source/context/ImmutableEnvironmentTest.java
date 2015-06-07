@@ -15,26 +15,20 @@
  */
 package pl.nort.config.source.context;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * {@link EnvSelectionStrategy} that never changes.
- */
-public class ImmutableEnvSelectionStrategy implements EnvSelectionStrategy {
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.runners.MockitoJUnitRunner;
 
-  private final String envName;
 
-  /**
-   * Construct strategy that will always use {@code envName} as the environment name.
-   *
-   * @param envName environment name to use
-   */
-  public ImmutableEnvSelectionStrategy(String envName) {
-    this.envName = checkNotNull(envName);
-  }
+@RunWith(MockitoJUnitRunner.class)
+public class ImmutableEnvironmentTest {
 
-  @Override
-  public String getEnvironmentName() {
-    return envName;
+  @Test
+  public void shouldReturnConstantEnvName() throws Exception {
+    String environmentName = "sampleEnvironment";
+    ImmutableEnvironment strategy = new ImmutableEnvironment(environmentName);
+    assertThat(strategy.getName()).isEqualTo(environmentName);
   }
 }

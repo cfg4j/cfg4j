@@ -25,7 +25,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
-import pl.nort.config.source.context.EnvSelectionStrategy;
+import pl.nort.config.source.context.Environment;
 
 @RunWith(MockitoJUnitRunner.class)
 public class EmptyConfigurationSourceTest {
@@ -53,6 +53,6 @@ public class EmptyConfigurationSourceTest {
 
   @Test
   public void shouldReturnEmptyConfigurationForAnyEnvironment() throws Exception {
-    assertThat(source.getConfiguration(mock(EnvSelectionStrategy.class))).isEmpty();
+    assertThat(source.getConfiguration(mock(Environment.class))).isEmpty();
   }
 }

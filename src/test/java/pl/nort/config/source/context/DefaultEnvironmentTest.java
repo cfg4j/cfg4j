@@ -15,14 +15,18 @@
  */
 package pl.nort.config.source.context;
 
-/**
- * Environment selection strategy that will always use "" (empty string) as the environment name.
- */
-public class DefaultEnvSelectionStrategy extends ImmutableEnvSelectionStrategy {
-  /**
-   * Construct strategy that will always use "" (empty string) as the environment name.
-   */
-  public DefaultEnvSelectionStrategy() {
-    super("");
+import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.runners.MockitoJUnitRunner;
+
+
+@RunWith(MockitoJUnitRunner.class)
+public class DefaultEnvironmentTest {
+
+  @Test
+  public void shouldUseEmptyStringAsEnvName() throws Exception {
+    assertThat(new DefaultEnvironment().getName()).isEmpty();
   }
 }

@@ -16,7 +16,7 @@
 package pl.nort.config.provider;
 
 import pl.nort.config.source.ConfigurationSource;
-import pl.nort.config.source.context.EnvSelectionStrategy;
+import pl.nort.config.source.context.Environment;
 import pl.nort.config.source.git.GitConfigurationSource;
 
 /**
@@ -37,17 +37,16 @@ public class ConfigurationProviders {
   }
 
   /**
-   * A {@link ConfigurationProvider} backed by {@link GitConfigurationSource} and using {@code envSelectionStrategy}
-   * to control environment selection.
+   * A {@link ConfigurationProvider} backed by {@link GitConfigurationSource} and using {@code environment}.
    *
-   * @param repositoryURI        a git repository URI (can be remote)
-   * @param envSelectionStrategy {@link EnvSelectionStrategy} to use for determining which environment to choose
+   * @param repositoryURI a git repository URI (can be remote)
+   * @param environment   {@link Environment} to use
    * @return {@link ConfigurationProvider} using provided git repository as a {@link ConfigurationSource}
    */
-  public static ConfigurationProvider backedByGit(String repositoryURI, EnvSelectionStrategy envSelectionStrategy) {
+  public static ConfigurationProvider backedByGit(String repositoryURI, Environment environment) {
     return new ConfigurationProviderBuilder()
         .withConfigurationSource(new GitConfigurationSource(repositoryURI))
-        .withEnvSelectionStrategy(envSelectionStrategy)
+        .withEnvSelectionStrategy(environment)
         .build();
   }
 
@@ -64,17 +63,16 @@ public class ConfigurationProviders {
   }
 
   /**
-   * A {@link ConfigurationProvider} backed by a provided {@link ConfigurationSource} and using {@code envSelectionStrategy}
-   * to control environment selection.
+   * A {@link ConfigurationProvider} backed by a provided {@link ConfigurationSource} and using {@code environment}.
    *
-   * @param source               {@link ConfigurationSource} used to supply provider with configuration
-   * @param envSelectionStrategy {@link EnvSelectionStrategy} to use for determining which environment to choose
+   * @param source      {@link ConfigurationSource} used to supply provider with configuration
+   * @param environment {@link Environment} to use
    * @return {@link ConfigurationProvider} backed by a {@code source}
    */
-  public static ConfigurationProvider withSource(ConfigurationSource source, EnvSelectionStrategy envSelectionStrategy) {
+  public static ConfigurationProvider withSource(ConfigurationSource source, Environment environment) {
     return new ConfigurationProviderBuilder()
         .withConfigurationSource(source)
-        .withEnvSelectionStrategy(envSelectionStrategy)
+        .withEnvSelectionStrategy(environment)
         .build();
   }
 

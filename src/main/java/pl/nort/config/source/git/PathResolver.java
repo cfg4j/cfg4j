@@ -15,16 +15,20 @@
  */
 package pl.nort.config.source.git;
 
+import pl.nort.config.source.context.Environment;
+
 /**
  * Specifies path to use in git repository.
  */
 public interface PathResolver {
 
   /**
-   * Path to use.
+   * Extract git branch name to use for a given {@code environment}. For extraction mechanism details
+   * refer to the implementing class javadoc.
    *
+   * @param environment environment to extract git path from
    * @return path
    */
-  String getPath();
+  String getPathFor(Environment environment);
 
 }

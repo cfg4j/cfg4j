@@ -15,15 +15,12 @@
  */
 package pl.nort.config.source.git;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import pl.nort.config.source.context.Environment;
 
 import java.util.StringJoiner;
 
 /**
  * Adapter for {@link Environment} to provide git path resolution through {@link PathResolver} interface.
- * If underlying {@link Environment} name changes the {@link #getPath()} will reflect that change immediately.
  * The adaptation process works as follows:
  * <ul>
  * <li>the environment name is split into tokens divided by "/"</li>
@@ -33,14 +30,8 @@ import java.util.StringJoiner;
  */
 public class EnvironmentBasedPathResolver implements PathResolver {
 
-  private final Environment environment;
-
-  public EnvironmentBasedPathResolver(Environment environment) {
-    this.environment = checkNotNull(environment);
-  }
-
   @Override
-  public String getPath() {
+  public String getPathFor(Environment environment) {
     String[] tokens = environment.getName().split("/");
 
     StringJoiner stringJoiner = new StringJoiner("/");

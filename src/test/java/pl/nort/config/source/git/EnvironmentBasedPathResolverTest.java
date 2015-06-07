@@ -41,43 +41,34 @@ public class EnvironmentBasedPathResolverTest {
 
   @Before
   public void setUp() throws Exception {
-    pathResolver = new EnvironmentBasedPathResolver(environment);
+    pathResolver = new EnvironmentBasedPathResolver();
   }
 
   @Test
   public void shouldResolveEmptyStringToEmptyPath() throws Exception {
     when(environment.getName()).thenReturn("us-west-1/");
 
-    assertThat(pathResolver.getPath()).isEqualTo("");
+    assertThat(pathResolver.getPathFor(environment)).isEqualTo("");
   }
 
   @Test
   public void shouldDiscardFirstToken() throws Exception {
     when(environment.getName()).thenReturn("us-west-1/local/path");
 
-    assertThat(pathResolver.getPath()).isEqualTo("local/path");
+    assertThat(pathResolver.getPathFor(environment)).isEqualTo("local/path");
   }
 
   @Test
   public void shouldIgnoreMissingFirstToken() throws Exception {
     when(environment.getName()).thenReturn("/local/path");
 
-    assertThat(pathResolver.getPath()).isEqualTo("local/path");
+    assertThat(pathResolver.getPathFor(environment)).isEqualTo("local/path");
   }
 
   @Test
   public void shouldTreatMissingPathAsEmptyPath() throws Exception {
     when(environment.getName()).thenReturn("us-west-1/");
 
-    assertThat(pathResolver.getPath()).isEqualTo("");
-  }
-
-  @Test
-  public void shouldChangePathWhenEnvironmentChanges() throws Exception {
-    when(environment.getName()).thenReturn("us-west-1/local/path");
-    pathResolver.getPath();
-    when(environment.getName()).thenReturn("us-west-2/other/path");
-
-    assertThat(pathResolver.getPath()).isEqualTo("other/path");
+    assertThat(pathResolver.getPathFor(environment)).isEqualTo("");
   }
 }

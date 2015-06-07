@@ -31,7 +31,7 @@ Nort Config is a **web services-oriented configuration library**. It's very simp
 ### Gradle
 ```groovy
 dependencies {
-  compile group: "pl.nort", name:"config", version: "1.1.0"
+  compile group: "pl.nort", name:"config", version: "2.0.1"
 }
 ```
 
@@ -41,7 +41,7 @@ dependencies {
   <dependency>
     <groupId>pl.nort</groupId>
     <artifactId>config</artifactId>
-    <version>1.1.0</version>
+    <version>2.0.1</version>
   </dependency>
 </dependencies>
 ```

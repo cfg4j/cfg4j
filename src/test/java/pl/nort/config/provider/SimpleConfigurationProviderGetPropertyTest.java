@@ -16,6 +16,7 @@
 package pl.nort.config.provider;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.junit.Test;
@@ -35,6 +36,15 @@ public class SimpleConfigurationProviderGetPropertyTest extends SimpleConfigurat
 
     expectedException.expect(IllegalStateException.class);
     simpleConfigurationProvider.allConfigurationAsProperties();
+  }
+
+  @Test
+  public void allConfigurationAsPropertiesShouldUseProvidedEnvSelectionStrategy() throws Exception {
+    when(configurationSource.getConfiguration()).thenReturn(new Properties());
+
+    simpleConfigurationProvider.allConfigurationAsProperties();
+
+    verify(configurationSource).getConfiguration(envSelectionStrategy);
   }
 
   @Test

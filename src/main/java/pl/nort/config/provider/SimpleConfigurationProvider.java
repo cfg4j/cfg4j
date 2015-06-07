@@ -20,9 +20,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import com.github.drapostolos.typeparser.NoSuchRegisteredParserException;
 import com.github.drapostolos.typeparser.TypeParser;
 import com.github.drapostolos.typeparser.TypeParserException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import pl.nort.config.source.ConfigurationSource;
+import pl.nort.config.source.context.EnvSelectionStrategy;
 import pl.nort.config.validator.BindingValidator;
 
 import java.lang.reflect.InvocationHandler;
@@ -38,20 +37,23 @@ import java.util.Properties;
 public class SimpleConfigurationProvider implements ConfigurationProvider {
 
   private final ConfigurationSource configurationSource;
+  private final EnvSelectionStrategy envSelectionStrategy;
 
   /**
-   * {@link ConfigurationProvider} backed by provided {@link ConfigurationSource}
-   *
+   * {@link ConfigurationProvider} backed by provided {@link ConfigurationSource} and using {@code envSelectionStrategy}
+   * to select environment.
    * @param configurationSource source for configuration
+   * @param envSelectionStrategy {@link EnvSelectionStrategy} to use
    */
-  public SimpleConfigurationProvider(ConfigurationSource configurationSource) {
+  public SimpleConfigurationProvider(ConfigurationSource configurationSource, EnvSelectionStrategy envSelectionStrategy) {
     this.configurationSource = checkNotNull(configurationSource);
+    this.envSelectionStrategy = checkNotNull(envSelectionStrategy);
   }
 
   @Override
   public Properties allConfigurationAsProperties() {
     try {
-      return configurationSource.getConfiguration();
+      return configurationSource.getConfiguration(envSelectionStrategy);
     } catch (IllegalStateException e) {
       throw new IllegalStateException("Couldn't fetch configuration from configuration source", e);
     }

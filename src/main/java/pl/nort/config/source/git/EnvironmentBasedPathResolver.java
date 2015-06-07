@@ -19,33 +19,36 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import pl.nort.config.source.context.Environment;
 
+import java.util.StringJoiner;
+
 /**
- * Adapter for {@link Environment} to provide git branch resolution through {@link BranchResolver} interface.
- * If underlying {@link Environment} name changes the {@link #getBranchName()} will reflect that change immediately.
+ * Adapter for {@link Environment} to provide git path resolution through {@link PathResolver} interface.
+ * If underlying {@link Environment} name changes the {@link #getPath()} will reflect that change immediately.
  * The adaptation process works as follows:
  * <ul>
  * <li>the environment name is split into tokens divided by "/"</li>
- * <li>first token is treated as a branch name</li>
- * <li>if the branch name is empty ("", or contains only whitespaces) then the "master" branch is used</li>
+ * <li>first token is discarded</li>
+ * <li>remaining tokens are re-combined and used as a path</li>
  * </ul>
  */
-public class EnvironmentBasedBranchResolver implements BranchResolver {
+public class EnvironmentBasedPathResolver implements PathResolver {
 
   private final Environment environment;
 
-  public EnvironmentBasedBranchResolver(Environment environment) {
+  public EnvironmentBasedPathResolver(Environment environment) {
     this.environment = checkNotNull(environment);
   }
 
   @Override
-  public String getBranchName() {
+  public String getPath() {
     String[] tokens = environment.getName().split("/");
 
-    String branchName = tokens[0].trim();
-    if (branchName.isEmpty()) {
-      branchName = "master";
+    StringJoiner stringJoiner = new StringJoiner("/");
+
+    for (int i = 1; i < tokens.length; i++) {
+      stringJoiner.add(tokens[i]);
     }
 
-    return branchName;
+    return stringJoiner.toString();
   }
 }

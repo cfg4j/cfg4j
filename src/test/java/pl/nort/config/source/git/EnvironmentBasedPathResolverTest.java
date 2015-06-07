@@ -29,7 +29,7 @@ import pl.nort.config.source.context.Environment;
 
 
 @RunWith(MockitoJUnitRunner.class)
-public class EnvironmentBasedBranchResolverTest {
+public class EnvironmentBasedPathResolverTest {
 
   @Rule
   public ExpectedException expectedException = ExpectedException.none();
@@ -37,47 +37,47 @@ public class EnvironmentBasedBranchResolverTest {
   @Mock
   private Environment environment;
 
-  private EnvironmentBasedBranchResolver branchResolver;
+  private EnvironmentBasedPathResolver pathResolver;
 
   @Before
   public void setUp() throws Exception {
-    branchResolver = new EnvironmentBasedBranchResolver(environment);
+    pathResolver = new EnvironmentBasedPathResolver(environment);
   }
 
   @Test
-  public void shouldResolveEmptyStringToMaster() throws Exception {
-    when(environment.getName()).thenReturn("");
+  public void shouldResolveEmptyStringToEmptyPath() throws Exception {
+    when(environment.getName()).thenReturn("us-west-1/");
 
-    assertThat(branchResolver.getBranchName()).isEqualTo("master");
+    assertThat(pathResolver.getPath()).isEqualTo("");
   }
 
   @Test
-  public void shouldResolveWhitespacesToMaster() throws Exception {
-    when(environment.getName()).thenReturn("   ");
-
-    assertThat(branchResolver.getBranchName()).isEqualTo("master");
-  }
-
-  @Test
-  public void shouldSupportSingleToken() throws Exception {
-    when(environment.getName()).thenReturn("us-west-1");
-
-    assertThat(branchResolver.getBranchName()).isEqualTo("us-west-1");
-  }
-
-  @Test
-  public void shouldUseFirstTokenAsBranchName() throws Exception {
+  public void shouldDiscardFirstToken() throws Exception {
     when(environment.getName()).thenReturn("us-west-1/local/path");
 
-    assertThat(branchResolver.getBranchName()).isEqualTo("us-west-1");
+    assertThat(pathResolver.getPath()).isEqualTo("local/path");
   }
 
   @Test
-  public void shouldChangeBranchWhenEnvironmentChanges() throws Exception {
-    when(environment.getName()).thenReturn("us-west-1/local/path");
-    branchResolver.getBranchName();
-    when(environment.getName()).thenReturn("us-west-2/local/path");
+  public void shouldIgnoreMissingFirstToken() throws Exception {
+    when(environment.getName()).thenReturn("/local/path");
 
-    assertThat(branchResolver.getBranchName()).isEqualTo("us-west-2");
+    assertThat(pathResolver.getPath()).isEqualTo("local/path");
+  }
+
+  @Test
+  public void shouldTreatMissingPathAsEmptyPath() throws Exception {
+    when(environment.getName()).thenReturn("us-west-1/");
+
+    assertThat(pathResolver.getPath()).isEqualTo("");
+  }
+
+  @Test
+  public void shouldChangePathWhenEnvironmentChanges() throws Exception {
+    when(environment.getName()).thenReturn("us-west-1/local/path");
+    pathResolver.getPath();
+    when(environment.getName()).thenReturn("us-west-2/other/path");
+
+    assertThat(pathResolver.getPath()).isEqualTo("other/path");
   }
 }

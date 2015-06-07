@@ -16,15 +16,15 @@
 package pl.nort.config.source.git;
 
 /**
- * Specifies git branch to use.
+ * Specifies path to use in git repository.
  */
-public interface BranchResolver {
+public interface PathResolver {
 
   /**
-   * Git branch name to use.
+   * Path to use.
    *
-   * @return branch name
+   * @return path
    */
-  String getBranchName();
+  String getPath();
 
 }

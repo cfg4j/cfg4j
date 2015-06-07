@@ -20,7 +20,7 @@ buildscript {
     ext {
         artifactGroup = "pl.nort"
         artifactName = "config"
-        artifactVersion = "2.0.1"
+        artifactVersion = "2.1.0-SNAPSHOT"
     }
 
     repositories {

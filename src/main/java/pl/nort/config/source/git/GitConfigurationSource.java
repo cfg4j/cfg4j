@@ -26,8 +26,8 @@ import org.eclipse.jgit.lib.Ref;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.nort.config.source.ConfigurationSource;
+import pl.nort.config.source.context.DefaultEnvironment;
 import pl.nort.config.source.context.Environment;
-import pl.nort.config.source.context.ImmutableEnvironment;
 import pl.nort.config.source.context.MissingEnvironmentException;
 import pl.nort.config.utils.FileUtils;
 
@@ -95,7 +95,7 @@ public class GitConfigurationSource implements ConfigurationSource, Closeable {
   @Override
   public Properties getConfiguration() {
     try {
-      return getConfiguration(new ImmutableEnvironment("master"));
+      return getConfiguration(new DefaultEnvironment());
     } catch (MissingEnvironmentException e) {
       throw new IllegalStateException("Unable to load configuration", e);
     }
@@ -104,14 +104,18 @@ public class GitConfigurationSource implements ConfigurationSource, Closeable {
   @Override
   public Properties getConfiguration(Environment environment) {
     try {
-      checkoutToBranch(environment.getName());
+      checkoutToBranch(branchResolver.getBranchNameFor(environment));
     } catch (GitAPIException e) {
       throw new MissingEnvironmentException(environment.getName(), e);
     }
 
     Properties properties = new Properties();
 
-    try (InputStream input = new FileInputStream(clonedRepoPath + "/application.properties")) {
+    String configFilePath = clonedRepoPath + "/"
+        + pathResolver.getPathFor(environment)
+        + "/application.properties";
+
+    try (InputStream input = new FileInputStream(configFilePath)) {
       properties.load(input);
     } catch (IOException e) {
       throw new IllegalStateException("Unable to load properties from application.properties file", e);

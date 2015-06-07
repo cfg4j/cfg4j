@@ -101,8 +101,14 @@ class TempConfigurationGitRepo {
    * @throws GitAPIException when unable to commit changes
    */
   public void changeProperty(String propFilePath, String key, String value) throws IOException, GitAPIException {
+    createRequiredDirsForFile(propFilePath);
     writePropertyToFile(propFilePath, key, value);
     commitChanges();
+  }
+
+  private void createRequiredDirsForFile(String propFilePath) {
+    int lastSlashPos = propFilePath.lastIndexOf("/") == -1 ? 0 : propFilePath.lastIndexOf("/");
+    new File(getURI() + "/" + propFilePath.substring(0, lastSlashPos)).mkdirs();
   }
 
   /**

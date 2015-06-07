@@ -35,9 +35,10 @@ public interface ConfigurationSource extends Refreshable {
   Properties getConfiguration();
 
   /**
-   * Get configuration set for a given environment from this source in a form of {@link Properties}.
+   * Get configuration set for a given {@code environment} from this source in a form of {@link Properties}.
    * Provided {@link Environment} will be used to determine which environment to use.
    *
+   * @param environment environment to use
    * @return full configuration set
    * @throws MissingEnvironmentException when requested environment couldn't be found
    * @throws IllegalStateException when unable to fetch configuration

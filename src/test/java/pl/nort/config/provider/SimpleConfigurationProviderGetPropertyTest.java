@@ -16,12 +16,15 @@
 package pl.nort.config.provider;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
+import pl.nort.config.source.context.EnvSelectionStrategy;
+import pl.nort.config.source.context.MissingEnvironmentException;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -32,7 +35,15 @@ public class SimpleConfigurationProviderGetPropertyTest extends SimpleConfigurat
 
   @Test
   public void allConfigurationAsPropertiesShouldThrowWhenUnableToFetchConfiguration() throws Exception {
-    when(configurationSource.getConfiguration()).thenThrow(IllegalStateException.class);
+    when(configurationSource.getConfiguration(any(EnvSelectionStrategy.class))).thenThrow(IllegalStateException.class);
+
+    expectedException.expect(IllegalStateException.class);
+    simpleConfigurationProvider.allConfigurationAsProperties();
+  }
+
+  @Test
+  public void allConfigurationAsPropertiesShouldThrowWhenMissingEnvironment() throws Exception {
+    when(configurationSource.getConfiguration(any(EnvSelectionStrategy.class))).thenThrow(MissingEnvironmentException.class);
 
     expectedException.expect(IllegalStateException.class);
     simpleConfigurationProvider.allConfigurationAsProperties();

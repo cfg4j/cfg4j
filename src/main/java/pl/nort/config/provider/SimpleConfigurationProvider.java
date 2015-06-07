@@ -22,6 +22,7 @@ import com.github.drapostolos.typeparser.TypeParser;
 import com.github.drapostolos.typeparser.TypeParserException;
 import pl.nort.config.source.ConfigurationSource;
 import pl.nort.config.source.context.EnvSelectionStrategy;
+import pl.nort.config.source.context.MissingEnvironmentException;
 import pl.nort.config.validator.BindingValidator;
 
 import java.lang.reflect.InvocationHandler;
@@ -54,7 +55,7 @@ public class SimpleConfigurationProvider implements ConfigurationProvider {
   public Properties allConfigurationAsProperties() {
     try {
       return configurationSource.getConfiguration(envSelectionStrategy);
-    } catch (IllegalStateException e) {
+    } catch (IllegalStateException | MissingEnvironmentException e) {
       throw new IllegalStateException("Couldn't fetch configuration from configuration source", e);
     }
   }

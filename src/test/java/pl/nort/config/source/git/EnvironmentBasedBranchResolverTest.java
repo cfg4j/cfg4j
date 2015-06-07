@@ -41,43 +41,34 @@ public class EnvironmentBasedBranchResolverTest {
 
   @Before
   public void setUp() throws Exception {
-    branchResolver = new EnvironmentBasedBranchResolver(environment);
+    branchResolver = new EnvironmentBasedBranchResolver();
   }
 
   @Test
   public void shouldResolveEmptyStringToMaster() throws Exception {
     when(environment.getName()).thenReturn("");
 
-    assertThat(branchResolver.getBranchName()).isEqualTo("master");
+    assertThat(branchResolver.getBranchNameFor(environment)).isEqualTo("master");
   }
 
   @Test
   public void shouldResolveWhitespacesToMaster() throws Exception {
     when(environment.getName()).thenReturn("   ");
 
-    assertThat(branchResolver.getBranchName()).isEqualTo("master");
+    assertThat(branchResolver.getBranchNameFor(environment)).isEqualTo("master");
   }
 
   @Test
   public void shouldSupportSingleToken() throws Exception {
     when(environment.getName()).thenReturn("us-west-1");
 
-    assertThat(branchResolver.getBranchName()).isEqualTo("us-west-1");
+    assertThat(branchResolver.getBranchNameFor(environment)).isEqualTo("us-west-1");
   }
 
   @Test
   public void shouldUseFirstTokenAsBranchName() throws Exception {
     when(environment.getName()).thenReturn("us-west-1/local/path");
 
-    assertThat(branchResolver.getBranchName()).isEqualTo("us-west-1");
-  }
-
-  @Test
-  public void shouldChangeBranchWhenEnvironmentChanges() throws Exception {
-    when(environment.getName()).thenReturn("us-west-1/local/path");
-    branchResolver.getBranchName();
-    when(environment.getName()).thenReturn("us-west-2/local/path");
-
-    assertThat(branchResolver.getBranchName()).isEqualTo("us-west-2");
+    assertThat(branchResolver.getBranchNameFor(environment)).isEqualTo("us-west-1");
   }
 }

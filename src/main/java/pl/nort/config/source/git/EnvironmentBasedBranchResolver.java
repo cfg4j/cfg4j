@@ -15,13 +15,10 @@
  */
 package pl.nort.config.source.git;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import pl.nort.config.source.context.Environment;
 
 /**
  * Adapter for {@link Environment} to provide git branch resolution through {@link BranchResolver} interface.
- * If underlying {@link Environment} name changes the {@link #getBranchName()} will reflect that change immediately.
  * The adaptation process works as follows:
  * <ul>
  * <li>the environment name is split into tokens divided by "/"</li>
@@ -31,14 +28,8 @@ import pl.nort.config.source.context.Environment;
  */
 public class EnvironmentBasedBranchResolver implements BranchResolver {
 
-  private final Environment environment;
-
-  public EnvironmentBasedBranchResolver(Environment environment) {
-    this.environment = checkNotNull(environment);
-  }
-
   @Override
-  public String getBranchName() {
+  public String getBranchNameFor(Environment environment) {
     String[] tokens = environment.getName().split("/");
 
     String branchName = tokens[0].trim();

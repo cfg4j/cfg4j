@@ -15,16 +15,20 @@
  */
 package pl.nort.config.source.git;
 
+import pl.nort.config.source.context.Environment;
+
 /**
  * Specifies git branch to use.
  */
 public interface BranchResolver {
 
   /**
-   * Git branch name to use.
+   * Extract git branch name to use for a given {@code environment}. For extraction mechanism details
+   * refer to the implementing class javadoc.
    *
+   * @param environment environment to extract git branch name from
    * @return branch name
    */
-  String getBranchName();
+  String getBranchNameFor(Environment environment);
 
 }

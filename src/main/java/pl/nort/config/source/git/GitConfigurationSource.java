@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pl.nort.config.source;
+package pl.nort.config.source.git;
 
 import com.google.common.collect.Iterables;
 import org.eclipse.jgit.api.CheckoutCommand;
@@ -23,6 +23,7 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Ref;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pl.nort.config.source.ConfigurationSource;
 import pl.nort.config.source.context.EnvSelectionStrategy;
 import pl.nort.config.source.context.ImmutableEnvSelectionStrategy;
 import pl.nort.config.source.context.MissingEnvironmentException;

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pl.nort.config.source;
+package pl.nort.config.source.git;
 
 import com.google.common.collect.Iterables;
 import org.eclipse.jgit.api.Git;

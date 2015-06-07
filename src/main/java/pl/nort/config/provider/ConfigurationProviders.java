@@ -16,8 +16,8 @@
 package pl.nort.config.provider;
 
 import pl.nort.config.source.ConfigurationSource;
-import pl.nort.config.source.GitConfigurationSource;
 import pl.nort.config.source.context.EnvSelectionStrategy;
+import pl.nort.config.source.git.GitConfigurationSource;
 
 /**
  * A factory producing {@link ConfigurationProvider}s.

@@ -81,7 +81,7 @@ public class ConfigurationProviderBuilder {
    * @param environment {@link Environment} to use
    * @return this builder with {@link Environment} set to {@code environment}
    */
-  public ConfigurationProviderBuilder withEnvSelectionStrategy(Environment environment) {
+  public ConfigurationProviderBuilder withEnvironment(Environment environment) {
     this.environment = environment;
     return this;
   }

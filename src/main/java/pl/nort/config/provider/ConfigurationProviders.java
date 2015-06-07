@@ -51,7 +51,7 @@ public class ConfigurationProviders {
         .withConfigurationSource(new GitConfigurationSourceBuilder()
             .withRepositoryURI(repositoryURI)
             .build())
-        .withEnvSelectionStrategy(environment)
+        .withEnvironment(environment)
         .build();
   }
 
@@ -77,7 +77,7 @@ public class ConfigurationProviders {
   public static ConfigurationProvider withSource(ConfigurationSource source, Environment environment) {
     return new ConfigurationProviderBuilder()
         .withConfigurationSource(source)
-        .withEnvSelectionStrategy(environment)
+        .withEnvironment(environment)
         .build();
   }
 

@@ -50,7 +50,7 @@ public class SimpleConfigurationProviderGetPropertyTest extends SimpleConfigurat
   }
 
   @Test
-  public void allConfigurationAsPropertiesShouldUseProvidedEnvSelectionStrategy() throws Exception {
+  public void allConfigurationAsPropertiesShouldUseProvidedEnvironment() throws Exception {
     when(configurationSource.getConfiguration()).thenReturn(new Properties());
 
     simpleConfigurationProvider.allConfigurationAsProperties();

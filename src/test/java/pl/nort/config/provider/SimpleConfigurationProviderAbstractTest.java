@@ -22,6 +22,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import pl.nort.config.source.ConfigurationSource;
+import pl.nort.config.source.context.Environment;
 
 import java.util.Properties;
 
@@ -36,9 +37,12 @@ public abstract class SimpleConfigurationProviderAbstractTest {
   @Mock
   protected ConfigurationSource configurationSource;
 
+  @Mock
+  protected Environment environment;
+
   @Before
   public void setUp() throws Exception {
-    simpleConfigurationProvider = new SimpleConfigurationProvider(configurationSource);
+    simpleConfigurationProvider = new SimpleConfigurationProvider(configurationSource, environment);
   }
 
   protected Properties propertiesWith(String... args) {

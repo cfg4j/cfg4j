@@ -20,9 +20,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import com.github.drapostolos.typeparser.NoSuchRegisteredParserException;
 import com.github.drapostolos.typeparser.TypeParser;
 import com.github.drapostolos.typeparser.TypeParserException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import pl.nort.config.source.ConfigurationSource;
+import pl.nort.config.source.context.Environment;
+import pl.nort.config.source.context.MissingEnvironmentException;
 import pl.nort.config.validator.BindingValidator;
 
 import java.lang.reflect.InvocationHandler;
@@ -38,21 +38,24 @@ import java.util.Properties;
 public class SimpleConfigurationProvider implements ConfigurationProvider {
 
   private final ConfigurationSource configurationSource;
+  private final Environment environment;
 
   /**
-   * {@link ConfigurationProvider} backed by provided {@link ConfigurationSource}
-   *
+   * {@link ConfigurationProvider} backed by provided {@link ConfigurationSource} and using {@code environment}
+   * to select environment.
    * @param configurationSource source for configuration
+   * @param environment {@link Environment} to use
    */
-  public SimpleConfigurationProvider(ConfigurationSource configurationSource) {
+  public SimpleConfigurationProvider(ConfigurationSource configurationSource, Environment environment) {
     this.configurationSource = checkNotNull(configurationSource);
+    this.environment = checkNotNull(environment);
   }
 
   @Override
   public Properties allConfigurationAsProperties() {
     try {
-      return configurationSource.getConfiguration();
-    } catch (IllegalStateException e) {
+      return configurationSource.getConfiguration(environment);
+    } catch (IllegalStateException | MissingEnvironmentException e) {
       throw new IllegalStateException("Couldn't fetch configuration from configuration source", e);
     }
   }

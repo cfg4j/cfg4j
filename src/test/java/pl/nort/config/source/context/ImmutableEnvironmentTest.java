@@ -13,31 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pl.nort.config.source;
+package pl.nort.config.source.context;
 
-import pl.nort.config.source.context.Environment;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Properties;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.runners.MockitoJUnitRunner;
 
-/**
- * Empty {@link ConfigurationSource}
- */
-public class EmptyConfigurationSource implements ConfigurationSource {
 
-  private static final Properties properties = new Properties();
+@RunWith(MockitoJUnitRunner.class)
+public class ImmutableEnvironmentTest {
 
-  @Override
-  public Properties getConfiguration() {
-    return properties;
-  }
-
-  @Override
-  public Properties getConfiguration(Environment environment) {
-    return properties;
-  }
-
-  @Override
-  public void refresh() {
-    // NOP
+  @Test
+  public void shouldReturnConstantEnvName() throws Exception {
+    String environmentName = "sampleEnvironment";
+    ImmutableEnvironment strategy = new ImmutableEnvironment(environmentName);
+    assertThat(strategy.getName()).isEqualTo(environmentName);
   }
 }

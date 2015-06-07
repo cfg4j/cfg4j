@@ -13,31 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pl.nort.config.source;
+package pl.nort.config.source.context;
 
-import pl.nort.config.source.context.Environment;
-
-import java.util.Properties;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Empty {@link ConfigurationSource}
+ * {@link Environment} that never changes.
  */
-public class EmptyConfigurationSource implements ConfigurationSource {
+public class ImmutableEnvironment implements Environment {
 
-  private static final Properties properties = new Properties();
+  private final String envName;
 
-  @Override
-  public Properties getConfiguration() {
-    return properties;
+  /**
+   * Construct environment named {@code envName}. This name never changes.
+   *
+   * @param envName environment name to use
+   */
+  public ImmutableEnvironment(String envName) {
+    this.envName = checkNotNull(envName);
   }
 
   @Override
-  public Properties getConfiguration(Environment environment) {
-    return properties;
-  }
-
-  @Override
-  public void refresh() {
-    // NOP
+  public String getName() {
+    return envName;
   }
 }

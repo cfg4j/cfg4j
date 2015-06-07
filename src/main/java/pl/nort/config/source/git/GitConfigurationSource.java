@@ -13,12 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pl.nort.config.source;
+package pl.nort.config.source.git;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
+import com.google.common.collect.Iterables;
+import org.eclipse.jgit.api.CheckoutCommand;
+import org.eclipse.jgit.api.CreateBranchCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.lib.Ref;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pl.nort.config.source.ConfigurationSource;
+import pl.nort.config.source.context.DefaultEnvironment;
+import pl.nort.config.source.context.Environment;
+import pl.nort.config.source.context.MissingEnvironmentException;
 import pl.nort.config.utils.FileUtils;
 
 import java.io.Closeable;
@@ -26,37 +36,39 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Properties;
 
 public class GitConfigurationSource implements ConfigurationSource, Closeable {
 
   private static final Logger LOG = LoggerFactory.getLogger(GitConfigurationSource.class);
-  private static final String LOCAL_REPOSITORY_PATH_IN_TEMP = "nort-config-git-config-repository";
 
   private final Git clonedRepo;
   private final File clonedRepoPath;
+  private final BranchResolver branchResolver;
+  private final PathResolver pathResolver;
 
   /**
-   * Read configuration from the remote GIT repository residing at {@code repositoryURI}. Keeps a local
-   * clone of the repository in the system tmp directory.
+   * Note: use {@link GitConfigurationSourceBuilder} for building instances of this class.
    *
-   * @param repositoryURI URI to the remote git repository
-   * @throws GitConfigurationSourceException when unable to clone repository
-   */
-  public GitConfigurationSource(String repositoryURI) {
-    this(repositoryURI, System.getProperty("java.io.tmpdir"), LOCAL_REPOSITORY_PATH_IN_TEMP);
-  }
-
-  /**
    * Read configuration from the remote GIT repository residing at {@code repositoryURI}. Keeps a local
    * clone of the repository in the {@code localRepositoryPathInTemp} directory under {@code tmpPath} path.
+   * Uses provided {@code branchResolver} and {@code pathResolver} for branch and path resolution.
    *
    * @param repositoryURI             URI to the remote git repository
    * @param tmpPath                   path to the tmp directory
    * @param localRepositoryPathInTemp name of the local directory keeping the repository clone
+   * @param branchResolver            {@link BranchResolver} used for extracting git branch from an {@link Environment}
+   * @param pathResolver              {@link PathResolver} used for extracting git path from an {@link Environment}
    * @throws GitConfigurationSourceException when unable to clone repository
    */
-  public GitConfigurationSource(String repositoryURI, String tmpPath, String localRepositoryPathInTemp) {
+  GitConfigurationSource(String repositoryURI, String tmpPath, String localRepositoryPathInTemp, BranchResolver branchResolver,
+                         PathResolver pathResolver) {
+    this.branchResolver = checkNotNull(branchResolver);
+    this.pathResolver = checkNotNull(pathResolver);
+    checkNotNull(tmpPath);
+    checkNotNull(localRepositoryPathInTemp);
+    checkNotNull(repositoryURI);
 
     LOG.info("Initializing " + GitConfigurationSource.class + " pointing to " + repositoryURI);
 
@@ -82,22 +94,31 @@ public class GitConfigurationSource implements ConfigurationSource, Closeable {
 
   @Override
   public Properties getConfiguration() {
-    Properties properties = new Properties();
-    InputStream input = null;
-
     try {
-      input = new FileInputStream(clonedRepoPath + "/application.properties");
+      return getConfiguration(new DefaultEnvironment());
+    } catch (MissingEnvironmentException e) {
+      throw new IllegalStateException("Unable to load configuration", e);
+    }
+  }
+
+  @Override
+  public Properties getConfiguration(Environment environment) {
+    try {
+      checkoutToBranch(branchResolver.getBranchNameFor(environment));
+    } catch (GitAPIException e) {
+      throw new MissingEnvironmentException(environment.getName(), e);
+    }
+
+    Properties properties = new Properties();
+
+    String configFilePath = clonedRepoPath + "/"
+        + pathResolver.getPathFor(environment)
+        + "/application.properties";
+
+    try (InputStream input = new FileInputStream(configFilePath)) {
       properties.load(input);
-    } catch (IOException ex) {
-      ex.printStackTrace();
-    } finally {
-      if (input != null) {
-        try {
-          input.close();
-        } catch (IOException e) {
-          e.printStackTrace();
-        }
-      }
+    } catch (IOException e) {
+      throw new IllegalStateException("Unable to load properties from application.properties file", e);
     }
 
     return properties;
@@ -118,5 +139,22 @@ public class GitConfigurationSource implements ConfigurationSource, Closeable {
     LOG.debug("Closing local repository: " + clonedRepoPath);
     clonedRepo.close();
     FileUtils.deleteDir(clonedRepoPath);
+  }
+
+  private void checkoutToBranch(String branch) throws GitAPIException {
+    CheckoutCommand checkoutCommand = clonedRepo.checkout()
+        .setCreateBranch(false)
+        .setName(branch);
+
+    List<Ref> refList = clonedRepo.branchList().call();
+    if (!Iterables.any(refList, ref -> ref.getName().replace("refs/heads/", "").equals(branch))) {
+      checkoutCommand = checkoutCommand
+          .setCreateBranch(true)
+          .setUpstreamMode(CreateBranchCommand.SetupUpstreamMode.TRACK)
+          .setStartPoint("origin/" + branch);
+    }
+
+    checkoutCommand
+        .call();
   }
 }

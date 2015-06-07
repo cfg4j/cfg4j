@@ -13,46 +13,62 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package pl.nort.config.source;
+package pl.nort.config.source.git;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import pl.nort.config.source.context.Environment;
 
+
 @RunWith(MockitoJUnitRunner.class)
-public class EmptyConfigurationSourceTest {
+public class EnvironmentBasedPathResolverTest {
 
   @Rule
   public ExpectedException expectedException = ExpectedException.none();
 
-  private EmptyConfigurationSource source;
+  @Mock
+  private Environment environment;
+
+  private EnvironmentBasedPathResolver pathResolver;
 
   @Before
   public void setUp() throws Exception {
-    source = new EmptyConfigurationSource();
+    pathResolver = new EnvironmentBasedPathResolver();
   }
 
   @Test
-  public void shouldReturnEmptyConfiguration() throws Exception {
-    assertThat(source.getConfiguration()).isEmpty();
+  public void shouldResolveEmptyStringToEmptyPath() throws Exception {
+    when(environment.getName()).thenReturn("us-west-1/");
+
+    assertThat(pathResolver.getPathFor(environment)).isEqualTo("");
   }
 
   @Test
-  public void refreshShouldNotChangeConfiguration() throws Exception {
-    source.refresh();
-    assertThat(source.getConfiguration()).isEmpty();
+  public void shouldDiscardFirstToken() throws Exception {
+    when(environment.getName()).thenReturn("us-west-1/local/path");
+
+    assertThat(pathResolver.getPathFor(environment)).isEqualTo("local/path");
   }
 
   @Test
-  public void shouldReturnEmptyConfigurationForAnyEnvironment() throws Exception {
-    assertThat(source.getConfiguration(mock(Environment.class))).isEmpty();
+  public void shouldIgnoreMissingFirstToken() throws Exception {
+    when(environment.getName()).thenReturn("/local/path");
+
+    assertThat(pathResolver.getPathFor(environment)).isEqualTo("local/path");
+  }
+
+  @Test
+  public void shouldTreatMissingPathAsEmptyPath() throws Exception {
+    when(environment.getName()).thenReturn("us-west-1/");
+
+    assertThat(pathResolver.getPathFor(environment)).isEqualTo("");
   }
 }

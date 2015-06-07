@@ -13,31 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pl.nort.config.source;
+package pl.nort.config.source.git;
 
 import pl.nort.config.source.context.Environment;
 
-import java.util.Properties;
-
 /**
- * Empty {@link ConfigurationSource}
+ * Specifies git branch to use.
  */
-public class EmptyConfigurationSource implements ConfigurationSource {
+public interface BranchResolver {
 
-  private static final Properties properties = new Properties();
+  /**
+   * Extract git branch name to use for a given {@code environment}. For extraction mechanism details
+   * refer to the implementing class javadoc.
+   *
+   * @param environment environment to extract git branch name from
+   * @return branch name
+   */
+  String getBranchNameFor(Environment environment);
 
-  @Override
-  public Properties getConfiguration() {
-    return properties;
-  }
-
-  @Override
-  public Properties getConfiguration(Environment environment) {
-    return properties;
-  }
-
-  @Override
-  public void refresh() {
-    // NOP
-  }
 }

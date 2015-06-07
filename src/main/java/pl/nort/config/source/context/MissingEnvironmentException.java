@@ -13,15 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pl.nort.config.source;
+package pl.nort.config.source.context;
 
-public class GitConfigurationSourceException extends RuntimeException {
+/**
+ * Indicates missing configuration environment
+ */
+public class MissingEnvironmentException extends RuntimeException {
 
-  public GitConfigurationSourceException(String msg, Exception e) {
-    super(msg, e);
-  }
+  private static final String MISSING_ENV_MSG = "Missing environment: ";
 
-  public GitConfigurationSourceException(String msg) {
-    super(msg);
+  /**
+   * Environment named {@code envName} is missing.
+   *
+   * @param envName environment name
+   * @param cause root cause
+   */
+  public MissingEnvironmentException(String envName, Throwable cause) {
+    super(MISSING_ENV_MSG + envName, cause);
   }
 }

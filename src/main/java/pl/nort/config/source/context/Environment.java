@@ -13,31 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pl.nort.config.source;
-
-import pl.nort.config.source.context.Environment;
-
-import java.util.Properties;
+package pl.nort.config.source.context;
 
 /**
- * Empty {@link ConfigurationSource}
+ * Configuration environment.
  */
-public class EmptyConfigurationSource implements ConfigurationSource {
+public interface Environment {
 
-  private static final Properties properties = new Properties();
+  /**
+   * Name of the environment.
+   *
+   * @return environment name
+   */
+  String getName();
 
-  @Override
-  public Properties getConfiguration() {
-    return properties;
-  }
-
-  @Override
-  public Properties getConfiguration(Environment environment) {
-    return properties;
-  }
-
-  @Override
-  public void refresh() {
-    // NOP
-  }
 }

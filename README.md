@@ -3,7 +3,7 @@
 [![Travis](https://img.shields.io/travis/cfg4j/cfg4j.svg)](https://travis-ci.org/cfg4j/cfg4j)
 
 # Overview
-**cfg4j** ("Configuration for Java") is a **web service-oriented configuration library for Java**. It's very simple to use yet offers a comprehensive set of features:
+**cfg4j** ("Configuration for Java") is a **distributed apps-oriented configuration library for Java**. It's very simple to use yet offers a comprehensive set of features:
 * Distributed environment support:
     * Runtime configuration reload (periodical, push and custom)
     * Caching
@@ -51,36 +51,34 @@ Head to [the documentation](http://cfg4j.org).
 ## Quick start
 The fastest way to start working with cfg4j is to use a Git repository as a configuration store. To do that follow the steps:
 
-1. Fork the [configuration sample repository](https://github.com/cfg4j/cfg4j-git-sample-config) (or create your own - it contains just one file).
-2. Add your configuration to the *application.properties* file and commit the changes.
-3. Use the following code in your application to connect to this source:
-```Java
-import org.cfg4j.provider.ConfigurationProvider;
-import org.cfg4j.provider.ConfigurationProviders;
-
+* Use the following code in your application to connect to sample configuration source:
+```java
 public class Cfg4jPoweredApplication {
 
-  public static void main(String... args) {
-    // Change the link below to point to your fork
-    ConfigurationProvider configurationProvider = ConfigurationProviders.backedByGit("https://github.com/cfg4j/cfg4j-git-sample-config");
+  // Change this interface to whatever you want
+  public interface MyConfigInterface {
+      Integer someSetting();
+      List<Boolean> otherSetting();
+  }
 
-    // Access config directly
-    Integer someSetting = configurationProvider.getProperty("some.setting", Integer.class);
+  public static void main(String... args) {
+    ConfigurationProvider configurationProvider =
+        ConfigurationProviders.backedByGit("https://github.com/cfg4j/cfg4j-git-sample-config");
     
-    // Wide-range of collections
-    List<Boolean> otherSetting = configurationProvider.getProperty("some.setting", new GenericType<List<Boolean>>() {});
+    MyConfigInterface config = configurationProvider.bind("", MyConfigInterface.class);
     
-    // You can also define a configuration object and bind it (it will auto update when configuration changes)
-    public interface ConfigPojo {
-        Integer someSetting();
-        List<Boolean> otherSetting();
-    }
-    
-    ConfigPojo config = configurationProvider.bind("", ConfigPojo.class);
+    // Use it!
+    System.out.println(config.someSetting);
   }
 
 }
 ```
+
+* Optional steps
+    1. Fork the [configuration sample repository](https://github.com/cfg4j/cfg4j-git-sample-config).
+    2. Add your configuration to the "*application.properties*" file and commit the changes.
+    3. Update the code above to point to your fork.
+    
 # License
 Copyright 2015 Norbert Potocki (norbert.potocki@nort.pl)
 

@@ -5,19 +5,18 @@
 # Overview
 **cfg4j** ("Configuration for Java") is a **web service-oriented configuration library for Java**. It's very simple to use yet offers a comprehensive set of features:
 * Distributed environment support:
-    * Configuration reloading (periodical and push)
-    * Re-try on network failures
-    * Configuration caching
-    * Multiple configuration sources wit fallback mechanism
-    * Multi-environment support (e.g. testing, preprod, prod-colo1, prod-colo2)
+    * Runtime configuration reload (periodical, push and custom)
+    * Caching
+    * Support for multi-tenant configuration sources (e.g. keep configuration for all your environments [test, preprod, prod] in one store)
+    * Handle network failures (e.g. re-try, fallback to another source)
 * Adapters for multiple configuration stores
-    * Git repository (with Github as a configuration editor) - read more about this powerful solution in [this article]().
-    * Consul 
-    * MySQL
+    * Git repository - read more about this powerful solution in [this article]().
+    * Consul (WIP)
+    * ZooKeeper (WIP)
+    * MySQL (WIP)
     * Files (YAML, Properties, XML)
 * Easy yet flexible configuration management:
-    * Configuration chaining
-    * Multiple source merging
+    * Merge configurations from different sources
     * Validation
     * POJO configuration objects binding
 * Modern design
@@ -52,7 +51,7 @@ Head to [the documentation](http://cfg4j.org).
 ## Quick start
 The fastest way to start working with cfg4j is to use a Git repository as a configuration store. To do that follow the steps:
 
-1. Fork the [configuration sample repository](https://github.com/cfg4j-git-sample-config) (or create your own - it contains just one file).
+1. Fork the [configuration sample repository](https://github.com/cfg4j/cfg4j-git-sample-config) (or create your own - it contains just one file).
 2. Add your configuration to the *application.properties* file and commit the changes.
 3. Use the following code in your application to connect to this source:
 ```Java
@@ -63,7 +62,7 @@ public class Cfg4jPoweredApplication {
 
   public static void main(String... args) {
     // Change the link below to point to your fork
-    ConfigurationProvider configurationProvider = ConfigurationProviders.backedByGit("https://github.com/cfg4j-git-sample-config");
+    ConfigurationProvider configurationProvider = ConfigurationProviders.backedByGit("https://github.com/cfg4j/cfg4j-git-sample-config");
 
     // Access config directly
     Integer someSetting = configurationProvider.getProperty("some.setting", Integer.class);

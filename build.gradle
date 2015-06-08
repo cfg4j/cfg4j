@@ -18,8 +18,8 @@
 buildscript {
 
     ext {
-        artifactGroup = "pl.nort"
-        artifactName = "config"
+        artifactGroup = "org.cfg4j"
+        artifactName = "cfg4j"
         artifactVersion = "2.1.0-SNAPSHOT"
     }
 
@@ -128,15 +128,15 @@ uploadArchives {
             }
 
             pom.project {
-                name 'Nort Config'
+                name 'cfg4j'
                 packaging 'jar'
-                description 'Configuration management for distributed Java applications made easy.'
+                description 'Web service-oriented configuration library for Java'
                 url 'https://github.com/nort/config'
 
                 scm {
-                    url 'git@github.com:nort/config.git'
-                    connection 'scm:git:git@github.com:nort/config.git'
-                    developerConnection 'scm:git:git@github.com:nort/config.git'
+                    url 'git@github.com:cfg4j/cfg4j.git'
+                    connection 'scm:git:git@github.com:cfg4j/cfg4j.git'
+                    developerConnection 'scm:git:git@github.com:cfg4j/cfg4j.git'
                 }
 
 

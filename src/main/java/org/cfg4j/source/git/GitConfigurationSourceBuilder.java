@@ -25,12 +25,14 @@ public class GitConfigurationSourceBuilder {
   private String repositoryURI;
   private String tmpPath;
   private String localRepositoryPathInTemp;
+  private ConfigFilesProvider configFilesProvider;
 
   public GitConfigurationSourceBuilder() {
     branchResolver = new EnvironmentBasedBranchResolver();
     pathResolver = new EnvironmentBasedPathResolver();
     tmpPath = System.getProperty("java.io.tmpdir");
     localRepositoryPathInTemp = "nort-config-git-config-repository";
+    configFilesProvider = new DefaultConfigFilesProvider();
   }
 
   public GitConfigurationSourceBuilder withBranchResolver(BranchResolver branchResolver) {
@@ -58,7 +60,13 @@ public class GitConfigurationSourceBuilder {
     return this;
   }
 
+  public GitConfigurationSourceBuilder withConfigFilesProvider(ConfigFilesProvider configFilesProvider) {
+    this.configFilesProvider = configFilesProvider;
+    return this;
+  }
+
   public GitConfigurationSource build() {
-    return new GitConfigurationSource(repositoryURI, tmpPath, localRepositoryPathInTemp, branchResolver, pathResolver);
+    return new GitConfigurationSource(repositoryURI, tmpPath, localRepositoryPathInTemp, branchResolver, pathResolver,
+        configFilesProvider);
   }
 }

@@ -47,6 +47,7 @@ public class GitConfigurationSource implements ConfigurationSource, Closeable {
   private final File clonedRepoPath;
   private final BranchResolver branchResolver;
   private final PathResolver pathResolver;
+  private final ConfigFilesProvider configFilesProvider;
 
   /**
    * Note: use {@link GitConfigurationSourceBuilder} for building instances of this class.
@@ -63,9 +64,10 @@ public class GitConfigurationSource implements ConfigurationSource, Closeable {
    * @throws GitConfigurationSourceException when unable to clone repository
    */
   GitConfigurationSource(String repositoryURI, String tmpPath, String localRepositoryPathInTemp, BranchResolver branchResolver,
-                         PathResolver pathResolver) {
+                         PathResolver pathResolver, ConfigFilesProvider configFilesProvider) {
     this.branchResolver = checkNotNull(branchResolver);
     this.pathResolver = checkNotNull(pathResolver);
+    this.configFilesProvider = checkNotNull(configFilesProvider);
     checkNotNull(tmpPath);
     checkNotNull(localRepositoryPathInTemp);
     checkNotNull(repositoryURI);

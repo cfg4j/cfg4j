@@ -3,7 +3,8 @@
 [![Travis](https://img.shields.io/travis/cfg4j/cfg4j.svg)](https://travis-ci.org/cfg4j/cfg4j)
 
 # Overview
-**cfg4j** ("Configuration for Java") is a **distributed apps-oriented configuration library for Java**. It's very simple to use yet offers a comprehensive set of features:
+**cfg4j** ("Configuration for Java") is a **distributed apps-oriented configuration library for Java**. It's very simple to use
+ yet offers a comprehensive set of features:
 * Distributed environment support:
     * Runtime configuration reload (periodical, push and custom)
     * Caching
@@ -67,7 +68,7 @@ public class Cfg4jPoweredApplication {
 
   public static void main(String... args) {
     ConfigurationProvider configurationProvider =
-        ConfigurationProviders.backedByGit("https://github.com/cfg4j/cfg4j-git-sample-config");
+        ConfigurationProviders.backedByGit("https://github.com/cfg4j/cfg4j-git-sample-config.git");
     
     MyConfigInterface config = configurationProvider.bind("", MyConfigInterface.class);
     

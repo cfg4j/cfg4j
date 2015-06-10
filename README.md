@@ -26,15 +26,22 @@
 
 # Usage
 
-## Setting up dependency
-### Gradle
+## Sample apps
+Explore the code of the [sample apps](https://github.com/cfg4j/cfg4-sample-apps).
+
+## Detailed documentation
+Head to [the documentation](http://cfg4j.org).
+
+## Quick start
+### Setting up dependency
+#### Gradle
 ```groovy
 dependencies {
   compile group: "org.cfg4j", name:"cfg4j", version: "3.0.0"
 }
 ```
 
-### Maven
+#### Maven
 ```xml
 <dependencies>
   <dependency>
@@ -45,10 +52,7 @@ dependencies {
 </dependencies>
 ```
 
-## Detailed documentation
-Head to [the documentation](http://cfg4j.org).
-
-## Quick start
+### Usage
 The fastest way to start working with cfg4j is to use a Git repository as a configuration store. To do that follow the steps:
 
 * Use the following code in your application to connect to sample configuration source:
@@ -80,6 +84,4 @@ public class Cfg4jPoweredApplication {
     3. Update the code above to point to your fork.
     
 # License
-Copyright 2015 Norbert Potocki (norbert.potocki@nort.pl)
-
 Licensed under the Apache License, Version 2.0. See LICENSE file.

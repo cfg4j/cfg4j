@@ -28,7 +28,7 @@
 # Usage
 
 ## Sample apps
-Explore the code of the [sample apps](https://github.com/cfg4j/cfg4-sample-apps).
+Explore the code of the [sample apps](https://github.com/cfg4j/cfg4j-sample-apps).
 
 ## Detailed documentation
 Head to [the documentation](http://cfg4j.org).

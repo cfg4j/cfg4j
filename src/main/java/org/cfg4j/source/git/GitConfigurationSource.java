@@ -18,6 +18,10 @@ package org.cfg4j.source.git;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.collect.Iterables;
+import org.cfg4j.source.ConfigurationSource;
+import org.cfg4j.source.context.DefaultEnvironment;
+import org.cfg4j.source.context.Environment;
+import org.cfg4j.source.context.MissingEnvironmentException;
 import org.cfg4j.utils.FileUtils;
 import org.eclipse.jgit.api.CheckoutCommand;
 import org.eclipse.jgit.api.CreateBranchCommand;
@@ -26,10 +30,6 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Ref;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.cfg4j.source.ConfigurationSource;
-import org.cfg4j.source.context.DefaultEnvironment;
-import org.cfg4j.source.context.Environment;
-import org.cfg4j.source.context.MissingEnvironmentException;
 
 import java.io.Closeable;
 import java.io.File;
@@ -47,10 +47,11 @@ public class GitConfigurationSource implements ConfigurationSource, Closeable {
   private final File clonedRepoPath;
   private final BranchResolver branchResolver;
   private final PathResolver pathResolver;
+  private final ConfigFilesProvider configFilesProvider;
 
   /**
    * Note: use {@link GitConfigurationSourceBuilder} for building instances of this class.
-   *
+   * <p>
    * Read configuration from the remote GIT repository residing at {@code repositoryURI}. Keeps a local
    * clone of the repository in the {@code localRepositoryPathInTemp} directory under {@code tmpPath} path.
    * Uses provided {@code branchResolver} and {@code pathResolver} for branch and path resolution.
@@ -60,12 +61,15 @@ public class GitConfigurationSource implements ConfigurationSource, Closeable {
    * @param localRepositoryPathInTemp name of the local directory keeping the repository clone
    * @param branchResolver            {@link BranchResolver} used for extracting git branch from an {@link Environment}
    * @param pathResolver              {@link PathResolver} used for extracting git path from an {@link Environment}
+   * @param configFilesProvider       {@link ConfigFilesProvider} used for determining which files in repository should be read
+   *                                  as config files
    * @throws GitConfigurationSourceException when unable to clone repository
    */
   GitConfigurationSource(String repositoryURI, String tmpPath, String localRepositoryPathInTemp, BranchResolver branchResolver,
-                         PathResolver pathResolver) {
+                         PathResolver pathResolver, ConfigFilesProvider configFilesProvider) {
     this.branchResolver = checkNotNull(branchResolver);
     this.pathResolver = checkNotNull(pathResolver);
+    this.configFilesProvider = checkNotNull(configFilesProvider);
     checkNotNull(tmpPath);
     checkNotNull(localRepositoryPathInTemp);
     checkNotNull(repositoryURI);
@@ -111,14 +115,15 @@ public class GitConfigurationSource implements ConfigurationSource, Closeable {
 
     Properties properties = new Properties();
 
-    String configFilePath = clonedRepoPath + "/"
-        + pathResolver.getPathFor(environment)
-        + "/application.properties";
+    Iterable<File> files = Iterables.transform(configFilesProvider.getConfigFiles(),
+        file -> new File(clonedRepoPath + "/" + pathResolver.getPathFor(environment) + "/" + file.getPath()));
 
-    try (InputStream input = new FileInputStream(configFilePath)) {
-      properties.load(input);
-    } catch (IOException e) {
-      throw new IllegalStateException("Unable to load properties from application.properties file", e);
+    for (File file : files) {
+      try (InputStream input = new FileInputStream(file.getPath())) {
+        properties.load(input);
+      } catch (IOException e) {
+        throw new IllegalStateException("Unable to load properties from application.properties file", e);
+      }
     }
 
     return properties;

@@ -17,16 +17,19 @@ package org.cfg4j.source.git;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.google.common.collect.ImmutableList;
 import org.assertj.core.data.MapEntry;
+import org.cfg4j.source.context.DefaultEnvironment;
 import org.cfg4j.source.context.Environment;
+import org.cfg4j.source.context.ImmutableEnvironment;
 import org.cfg4j.source.context.MissingEnvironmentException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.cfg4j.source.context.DefaultEnvironment;
-import org.cfg4j.source.context.ImmutableEnvironment;
+
+import java.io.File;
 
 public class GitConfigurationSourceIntegrationTest {
 
@@ -42,6 +45,7 @@ public class GitConfigurationSourceIntegrationTest {
   public void setUp() throws Exception {
     remoteRepo = new TempConfigurationGitRepo();
     remoteRepo.changeProperty("application.properties", "some.setting", "masterValue");
+    remoteRepo.changeProperty("otherConfig.properties", "otherConfig.setting", "masterValue");
     remoteRepo.changeProperty("otherApplicationConfigs/application.properties", "some.setting", "otherAppSetting");
 
     remoteRepo.changeBranchTo(TEST_ENV_BRANCH);
@@ -86,6 +90,15 @@ public class GitConfigurationSourceIntegrationTest {
     try (GitConfigurationSource gitConfigurationSource = getSourceForRemoteRepoWithDefaults()) {
       expectedException.expect(IllegalStateException.class);
       gitConfigurationSource.getConfiguration();
+    }
+  }
+
+  @Test
+  public void getConfigurationShouldReadFromGivenFiles() throws Exception {
+    ConfigFilesProvider configFilesProvider = () -> ImmutableList.of(new File("application.properties"), new File("otherConfig.properties"));
+
+    try (GitConfigurationSource gitConfigurationSource = getSourceForRemoteRepoWithFilesProvider(configFilesProvider)) {
+      assertThat(gitConfigurationSource.getConfiguration()).containsKeys("some.setting", "otherConfig.setting");
     }
   }
 
@@ -149,6 +162,16 @@ public class GitConfigurationSourceIntegrationTest {
       Environment environment = new ImmutableEnvironment("/otherApplicationConfigs/");
 
       assertThat(gitConfigurationSource.getConfiguration(environment)).contains(MapEntry.entry("some.setting", "otherAppSetting"));
+    }
+  }
+
+  @Test
+  public void getConfiguration2ShouldReadFromGivenFiles() throws Exception {
+    ConfigFilesProvider configFilesProvider = () -> ImmutableList.of(new File("application.properties"), new File("otherConfig.properties"));
+    Environment environment = new DefaultEnvironment();
+
+    try (GitConfigurationSource gitConfigurationSource = getSourceForRemoteRepoWithFilesProvider(configFilesProvider)) {
+      assertThat(gitConfigurationSource.getConfiguration(environment)).containsKeys("some.setting", "otherConfig.setting");
     }
   }
 
@@ -224,6 +247,12 @@ public class GitConfigurationSourceIntegrationTest {
   private GitConfigurationSource getSourceForRemoteRepoWithPathResolver(PathResolver pathResolver) {
     return getSourceBuilderForRemoteRepoWithDefaults()
         .withPathResolver(pathResolver)
+        .build();
+  }
+
+  private GitConfigurationSource getSourceForRemoteRepoWithFilesProvider(ConfigFilesProvider configFilesProvider) {
+    return getSourceBuilderForRemoteRepoWithDefaults()
+        .withConfigFilesProvider(configFilesProvider)
         .build();
   }
 

@@ -128,7 +128,7 @@ uploadArchives {
                 name 'cfg4j'
                 packaging 'jar'
                 description 'Web service-oriented configuration library for Java'
-                url 'https://cfg4j.org'
+                url 'http://cfg4j.org'
 
                 scm {
                     url 'git@github.com:cfg4j/cfg4j.git'

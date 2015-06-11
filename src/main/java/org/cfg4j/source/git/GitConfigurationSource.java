@@ -132,9 +132,9 @@ public class GitConfigurationSource implements ConfigurationSource, Closeable {
   @Override
   public void refresh() {
     try {
-      LOG.debug("Refreshing configuration by pulling changes from branch: " + clonedRepo.getRepository().getBranch());
+      LOG.debug("Refreshing configuration by pulling changes");
       clonedRepo.pull().call();
-    } catch (GitAPIException | IOException e) {
+    } catch (GitAPIException e) {
       throw new IllegalStateException("Unable to pull from remote repository", e);
     }
   }

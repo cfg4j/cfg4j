@@ -17,11 +17,18 @@ package org.cfg4j.source.consul;
 
 import com.orbitz.consul.Consul;
 import com.orbitz.consul.KeyValueClient;
+import com.orbitz.consul.model.kv.Value;
 import org.cfg4j.source.ConfigurationSource;
 import org.cfg4j.source.SourceCommunicationException;
+import org.cfg4j.source.context.DefaultEnvironment;
 import org.cfg4j.source.context.Environment;
 
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 public class ConsulConfigurationSource implements ConfigurationSource {
@@ -38,6 +45,7 @@ public class ConsulConfigurationSource implements ConfigurationSource {
 
   private final Consul consul;
   private final KeyValueClient kvClient;
+  private Map<String, String> consulValues;
 
   public ConsulConfigurationSource() {
     this(DEFAULT_HTTP_HOST, DEFAULT_HTTP_PORT);
@@ -54,20 +62,51 @@ public class ConsulConfigurationSource implements ConfigurationSource {
     } catch (Exception e) {
       throw new SourceCommunicationException("Can't connect to host: " + host + ":" + port, e);
     }
+
+    refresh();
   }
 
   @Override
   public Properties getConfiguration() {
-    return null;
+    return getConfiguration(new DefaultEnvironment());
   }
 
   @Override
   public Properties getConfiguration(Environment environment) {
-    return null;
+    Properties properties = new Properties();
+    String path = environment.getName();
+
+    if (path.startsWith("/")) {
+      path = path.substring(1);
+    }
+
+    if (path.length() > 0 && !path.endsWith("/")) {
+      path = path + "/";
+    }
+
+    for (Map.Entry<String, String> entry : consulValues.entrySet()) {
+      if (entry.getKey().startsWith(path)) {
+        properties.put(entry.getKey().substring(path.length()).replace("/", "."), entry.getValue());
+      }
+    }
+
+    return properties;
   }
 
   @Override
   public void refresh() {
+    consulValues = new HashMap<>();
+    List<Value> valueList;
 
+    try {
+      valueList = kvClient.getValues("/");
+    } catch (Exception e) {
+      throw new SourceCommunicationException("Can't get values from k-v store", e);
+    }
+
+    for (Value value : valueList) {
+      String val = new String(Base64.getDecoder().decode(value.getValue().getBytes(StandardCharsets.UTF_8)));
+      consulValues.put(value.getKey(), val);
+    }
   }
 }

@@ -61,11 +61,13 @@ public class ConsulConfigurationSourceIntegrationTest {
       switch (request.getPath()) {
         case "/v1/agent/self":
           return new MockResponse().setResponseCode(200).setBody(PING_RESPONSE);
-        case "/v1/kv/us-west-1/featureA/toggle":
-          return new MockResponse().setResponseCode(200).setBody("[{\"CreateIndex\":1,\"ModifyIndex\":1,\"LockIndex\":0,\"Key\":\"us-west-1/featureA/toggle\",\"Flags\":0,\"Value\":\"ZGlzYWJsZWQ=\"}]");
-        case "/v1/kv/us-west-2/featureA/toggle":
-          return new MockResponse().setResponseCode(200).setBody("[{\"CreateIndex\":2,\"ModifyIndex\":2,\"LockIndex\":0,\"Key\":\"us-west-2/featureA/toggle\",\"Flags\":0,\"Value\":\""
-              + (usWest2Toggle ? enabledBase64 : disabledBase64) + "\"}]");
+        case "/v1/kv/?recurse=true":
+          return new MockResponse()
+              .setResponseCode(200)
+              .addHeader("Content-Type", "application/json; charset=utf-8")
+              .setBody("[{\"CreateIndex\":1,\"ModifyIndex\":1,\"LockIndex\":0,\"Key\":\"us-west-1/featureA/toggle\",\"Flags\":0,\"Value\":\"ZGlzYWJsZWQ=\"},"
+                  + "{\"CreateIndex\":2,\"ModifyIndex\":2,\"LockIndex\":0,\"Key\":\"us-west-2/featureA/toggle\",\"Flags\":0,\"Value\":\""
+                  + (usWest2Toggle ? enabledBase64 : disabledBase64) + "\"}]");
       }
       return new MockResponse().setResponseCode(404);
     }
@@ -120,8 +122,8 @@ public class ConsulConfigurationSourceIntegrationTest {
 
   @Test
   public void getConfigurationShouldReturnAllKeys() throws Exception {
-    assertThat(source.getConfiguration()).containsExactly(MapEntry.entry("us-west-1/featureA/toggle", "disabled"),
-        MapEntry.entry("us-west-2/featureA/toggle", "disabled"));
+    assertThat(source.getConfiguration()).contains(MapEntry.entry("us-west-1.featureA.toggle", "disabled"),
+        MapEntry.entry("us-west-2.featureA.toggle", "disabled"));
   }
 
   @Test
@@ -130,15 +132,15 @@ public class ConsulConfigurationSourceIntegrationTest {
 
     source.refresh();
 
-    assertThat(source.getConfiguration()).containsExactly(MapEntry.entry("us-west-1/featureA/toggle", "disabled"),
-        MapEntry.entry("us-west-2/featureA/toggle", "enabled"));
+    assertThat(source.getConfiguration()).contains(MapEntry.entry("us-west-1.featureA.toggle", "disabled"),
+        MapEntry.entry("us-west-2.featureA.toggle", "enabled"));
   }
 
   @Test
   public void getConfiguration2ShouldReturnAllKeysFromGivenEnvironment() throws Exception {
     Environment environment = new ImmutableEnvironment("us-west-1");
 
-    assertThat(source.getConfiguration(environment)).containsExactly(MapEntry.entry("featureA/toggle", "disabled"));
+    assertThat(source.getConfiguration(environment)).contains(MapEntry.entry("featureA.toggle", "disabled"));
   }
 
   @Test
@@ -147,8 +149,8 @@ public class ConsulConfigurationSourceIntegrationTest {
 
     source.refresh();
 
-    Environment environment = new ImmutableEnvironment("us-west-1");
-    assertThat(source.getConfiguration(environment)).containsExactly(MapEntry.entry("us-west-2/featureA/toggle", "enabled"));
+    Environment environment = new ImmutableEnvironment("us-west-2");
+    assertThat(source.getConfiguration(environment)).contains(MapEntry.entry("featureA.toggle", "enabled"));
   }
 
   @Test

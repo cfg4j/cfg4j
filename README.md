@@ -1,6 +1,9 @@
 [![GitHub license](https://img.shields.io/github/license/cfg4j/cfg4j.svg)](https://github.com/cfg4j/cfg4j/blob/master/LICENSE)
 [![Maven Central](https://img.shields.io/maven-central/v/org.cfg4j/cfg4j.svg)](http://search.maven.org/#search|ga|1|org.cfg4j.cfg4j)
 [![Travis](https://img.shields.io/travis/cfg4j/cfg4j.svg)](https://travis-ci.org/cfg4j/cfg4j)
+[![Documentation](https://img.shields.io/badge/documentation-www.cfg4j.org-blue.svg)](http://cfg4j.org)
+[![Examples](https://img.shields.io/badge/demo-here-blue.svg)](https://github.com/cfg4j/cfg4j-sample-apps)
+[![JavaDoc](https://img.shields.io/badge/javadoc-html-blue.svg)](http://www.javadoc.io/doc/org.cfg4j/cfg4j)
 
 # Overview
 **cfg4j** ("Configuration for Java") is a **distributed apps-oriented configuration library for Java**. It's very simple to use
@@ -11,11 +14,7 @@
     * Support for multi-tenant configuration sources (e.g. keep configuration for all your environments [test, preprod, prod] in one store)
     * Handle network failures (e.g. re-try, fallback to another source)
 * Adapters for multiple configuration stores
-    * Git repository - read more about this powerful solution in [this article]().
-    * Consul (WIP)
-    * ZooKeeper (WIP)
-    * MySQL (WIP)
-    * Files (YAML, Properties, XML)
+    * [Git](), [Consul](https://consul.io/), [ZooKeeper (WIP)](https://zookeeper.apache.org/), MySQL (WIP), Files (YAML, Properties, XML)
 * Easy yet flexible configuration management:
     * Merge configurations from different sources
     * Validation

@@ -21,6 +21,7 @@
     * Validation
     * POJO configuration objects binding
 * Modern design
+    * Extensible
     * Well documented
     * Heavily tested
     * Dependency Injection-friendly

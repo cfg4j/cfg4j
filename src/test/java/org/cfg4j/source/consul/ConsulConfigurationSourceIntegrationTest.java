@@ -21,7 +21,10 @@ import com.squareup.okhttp.mockwebserver.Dispatcher;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
 import com.squareup.okhttp.mockwebserver.RecordedRequest;
+import org.assertj.core.data.MapEntry;
 import org.cfg4j.source.SourceCommunicationException;
+import org.cfg4j.source.context.Environment;
+import org.cfg4j.source.context.ImmutableEnvironment;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -30,6 +33,7 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
@@ -40,12 +44,16 @@ public class ConsulConfigurationSourceIntegrationTest {
   private static final String PING_RESPONSE = "\n" +
       "{\"Config\":{\"Bootstrap\":true,\"BootstrapExpect\":0,\"Server\":true,\"Datacenter\":\"dc1\",\"DataDir\":\"/tmp/consul\",\"DNSRecursor\":\"\",\"DNSRecursors\":[],\"DNSConfig\":{\"NodeTTL\":0,\"ServiceTTL\":null,\"AllowStale\":false,\"EnableTruncate\":false,\"MaxStale\":5000000000,\"OnlyPassing\":false},\"Domain\":\"consul.\",\"LogLevel\":\"INFO\",\"NodeName\":\"receivehead-lm\",\"ClientAddr\":\"127.0.0.1\",\"BindAddr\":\"0.0.0.0\",\"AdvertiseAddr\":\"192.168.0.4\",\"Ports\":{\"DNS\":8600,\"HTTP\":8500,\"HTTPS\":-1,\"RPC\":8400,\"SerfLan\":8301,\"SerfWan\":8302,\"Server\":8300},\"Addresses\":{\"DNS\":\"\",\"HTTP\":\"\",\"HTTPS\":\"\",\"RPC\":\"\"},\"LeaveOnTerm\":false,\"SkipLeaveOnInt\":false,\"StatsiteAddr\":\"\",\"StatsdAddr\":\"\",\"Protocol\":2,\"EnableDebug\":false,\"VerifyIncoming\":false,\"VerifyOutgoing\":false,\"CAFile\":\"\",\"CertFile\":\"\",\"KeyFile\":\"\",\"ServerName\":\"\",\"StartJoin\":[],\"StartJoinWan\":[],\"RetryJoin\":[],\"RetryMaxAttempts\":0,\"RetryIntervalRaw\":\"\",\"RetryJoinWan\":[],\"RetryMaxAttemptsWan\":0,\"RetryIntervalWanRaw\":\"\",\"UiDir\":\"\",\"PidFile\":\"\",\"EnableSyslog\":false,\"SyslogFacility\":\"LOCAL0\",\"RejoinAfterLeave\":false,\"CheckUpdateInterval\":300000000000,\"ACLDatacenter\":\"\",\"ACLTTL\":30000000000,\"ACLTTLRaw\":\"\",\"ACLDefaultPolicy\":\"allow\",\"ACLDownPolicy\":\"extend-cache\",\"Watches\":null,\"DisableRemoteExec\":false,\"DisableUpdateCheck\":false,\"DisableAnonymousSignature\":false,\"HTTPAPIResponseHeaders\":null,\"AtlasInfrastructure\":\"\",\"AtlasJoin\":false,\"Revision\":\"0c7ca91c74587d0a378831f63e189ac6bf7bab3f+CHANGES\",\"Version\":\"0.5.0\",\"VersionPrerelease\":\"\",\"UnixSockets\":{\"Usr\":\"\",\"Grp\":\"\",\"Perms\":\"\"}},\"Member\":{\"Name\":\"receivehead-lm\",\"Addr\":\"192.168.0.4\",\"Port\":8301,\"Tags\":{\"bootstrap\":\"1\",\"build\":\"0.5.0:0c7ca91c\",\"dc\":\"dc1\",\"port\":\"8300\",\"role\":\"consul\",\"vsn\":\"2\",\"vsn_max\":\"2\",\"vsn_min\":\"1\"},\"Status\":1,\"ProtocolMin\":1,\"ProtocolMax\":2,\"ProtocolCur\":2,\"DelegateMin\":2,\"DelegateMax\":4,\"DelegateCur\":4}}";
 
-  @Rule
-  public ExpectedException expectedException = ExpectedException.none();
+  private class ModifiableDispatcher extends Dispatcher {
 
-  private MockWebServer server;
+    private static final String disabledBase64 = "ZGlzYWJsZWQ=";
+    private static final String enabledBase64 = "ZW5hYmxlZA==";
 
-  private final Dispatcher dispatcher = new Dispatcher() {
+    private boolean usWest2Toggle = false;
+
+    public void toggleUsWest2() {
+      usWest2Toggle = !usWest2Toggle;
+    }
 
     @Override
     public MockResponse dispatch(RecordedRequest request) throws InterruptedException {
@@ -53,23 +61,27 @@ public class ConsulConfigurationSourceIntegrationTest {
       switch (request.getPath()) {
         case "/v1/agent/self":
           return new MockResponse().setResponseCode(200).setBody(PING_RESPONSE);
-        case "/v1/":
-          return new MockResponse().setResponseCode(200).setBody("version=9");
-        case "/v1/abc":
-          return new MockResponse().setResponseCode(200).setBody("{\\\"info\\\":{\\\"name\":\"Lucas Albuquerque\",\"age\":\"21\",\"gender\":\"male\"}}");
+        case "/v1/kv/us-west-1/featureA/toggle":
+          return new MockResponse().setResponseCode(200).setBody("[{\"CreateIndex\":1,\"ModifyIndex\":1,\"LockIndex\":0,\"Key\":\"us-west-1/featureA/toggle\",\"Flags\":0,\"Value\":\"ZGlzYWJsZWQ=\"}]");
+        case "/v1/kv/us-west-2/featureA/toggle":
+          return new MockResponse().setResponseCode(200).setBody("[{\"CreateIndex\":2,\"ModifyIndex\":2,\"LockIndex\":0,\"Key\":\"us-west-2/featureA/toggle\",\"Flags\":0,\"Value\":\""
+              + (usWest2Toggle ? enabledBase64 : disabledBase64) + "\"}]");
       }
       return new MockResponse().setResponseCode(404);
     }
-  };
+  }
 
+  @Rule
+  public ExpectedException expectedException = ExpectedException.none();
+  private MockWebServer server;
   private ConsulConfigurationSource source;
+  private ModifiableDispatcher dispatcher;
 
 
   @Before
   public void setUp() throws Exception {
-    server = new MockWebServer();
-    server.setDispatcher(dispatcher);
-    server.start(ConsulConfigurationSource.DEFAULT_HTTP_PORT);
+    dispatcher = new ModifiableDispatcher();
+    runMockServerOnPort(ConsulConfigurationSource.DEFAULT_HTTP_PORT);
     source = new ConsulConfigurationSource(server.getUrl(""));
   }
 
@@ -86,7 +98,11 @@ public class ConsulConfigurationSourceIntegrationTest {
 
   @Test
   public void shouldConnectToSpecifiedAgent() throws Exception {
-
+    server.shutdown();
+    runMockServerOnPort(ConsulConfigurationSource.DEFAULT_HTTP_PORT + 1);
+    source = new ConsulConfigurationSource(new URL("http", "localhost", ConsulConfigurationSource.DEFAULT_HTTP_PORT + 1, ""));
+    RecordedRequest request = server.takeRequest(0, TimeUnit.MILLISECONDS);
+    assertThat(request).isNotNull();
   }
 
   @Test
@@ -103,27 +119,48 @@ public class ConsulConfigurationSourceIntegrationTest {
   }
 
   @Test
-  public void getPropertiesShouldReturnAllKeys() throws Exception {
-
+  public void getConfigurationShouldReturnAllKeys() throws Exception {
+    assertThat(source.getConfiguration()).containsExactly(MapEntry.entry("us-west-1/featureA/toggle", "disabled"),
+        MapEntry.entry("us-west-2/featureA/toggle", "disabled"));
   }
 
   @Test
-  public void getPropertiesShouldBeUpdatedByRefresh() throws Exception {
+  public void getConfigurationShouldBeUpdatedByRefresh() throws Exception {
+    dispatcher.toggleUsWest2();
 
+    source.refresh();
+
+    assertThat(source.getConfiguration()).containsExactly(MapEntry.entry("us-west-1/featureA/toggle", "disabled"),
+        MapEntry.entry("us-west-2/featureA/toggle", "enabled"));
   }
 
   @Test
-  public void getPropertiesShouldReturnAllKeysFromGivenContext() throws Exception {
+  public void getConfiguration2ShouldReturnAllKeysFromGivenEnvironment() throws Exception {
+    Environment environment = new ImmutableEnvironment("us-west-1");
 
+    assertThat(source.getConfiguration(environment)).containsExactly(MapEntry.entry("featureA/toggle", "disabled"));
   }
 
   @Test
-  public void getProperties2ShouldBeUpdatedByRefresh() throws Exception {
+  public void getConfiguration2ShouldBeUpdatedByRefresh() throws Exception {
+    dispatcher.toggleUsWest2();
 
+    source.refresh();
+
+    Environment environment = new ImmutableEnvironment("us-west-1");
+    assertThat(source.getConfiguration(environment)).containsExactly(MapEntry.entry("us-west-2/featureA/toggle", "enabled"));
   }
 
   @Test
   public void refreshShouldThrowOnConnectionFailure() throws Exception {
+    server.shutdown();
+    expectedException.expect(SourceCommunicationException.class);
+    source.refresh();
+  }
 
+  private void runMockServerOnPort(int port) throws IOException {
+    server = new MockWebServer();
+    server.setDispatcher(dispatcher);
+    server.start(port);
   }
 }

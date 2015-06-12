@@ -61,19 +61,21 @@ The fastest way to start working with cfg4j is to use a Git repository as a conf
 public class Cfg4jPoweredApplication {
 
   // Change this interface to whatever you want
-  public interface MyConfigInterface {
-      Integer someSetting();
-      List<Boolean> otherSetting();
+  public interface SampleConfig {  
+    Integer birthYear();  
+    List<String> friends();  
+    URL homepage();  
+    Map<String, Character> grades();  
   }
 
   public static void main(String... args) {
     ConfigurationProvider configurationProvider =
         ConfigurationProviders.backedByGit("https://github.com/cfg4j/cfg4j-git-sample-config.git");
     
-    MyConfigInterface config = configurationProvider.bind("", MyConfigInterface.class);
+    SampleConfig config = configurationProvider.bind("reksio", SampleConfig.class);
     
     // Use it!
-    System.out.println(config.someSetting);
+    System.out.println(config.homepage());
   }
 
 }

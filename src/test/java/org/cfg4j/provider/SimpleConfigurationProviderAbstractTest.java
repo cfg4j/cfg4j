@@ -26,6 +26,8 @@ import org.cfg4j.source.context.Environment;
 
 import java.util.Properties;
 
+import static org.mockito.Matchers.any;
+
 @RunWith(MockitoJUnitRunner.class)
 public abstract class SimpleConfigurationProviderAbstractTest {
 
@@ -52,5 +54,9 @@ public abstract class SimpleConfigurationProviderAbstractTest {
     }
 
     return properties;
+  }
+
+  protected Environment anyEnvironment() {
+    return any(Environment.class);
   }
 }

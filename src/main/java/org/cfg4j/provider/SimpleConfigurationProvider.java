@@ -64,7 +64,7 @@ public class SimpleConfigurationProvider implements ConfigurationProvider {
   public String getProperty(String key) {
     try {
 
-      String property = configurationSource.getConfiguration().getProperty(key);
+      String property = configurationSource.getConfiguration(environment).getProperty(key);
 
       if (property == null) {
         throw new NoSuchElementException("No configuration with key: " + key);

@@ -32,6 +32,7 @@ public interface ConfigurationSource extends Refreshable {
    * @return configuration set for default environment
    * @throws IllegalStateException when unable to fetch configuration
    */
+  @Deprecated
   Properties getConfiguration();
 
   /**
@@ -39,9 +40,9 @@ public interface ConfigurationSource extends Refreshable {
    * Provided {@link Environment} will be used to determine which environment to use.
    *
    * @param environment environment to use
-   * @return full configuration set
+   * @return configuration set for {@code environment}
    * @throws MissingEnvironmentException when requested environment couldn't be found
-   * @throws IllegalStateException when unable to fetch configuration
+   * @throws IllegalStateException       when unable to fetch configuration
    */
   Properties getConfiguration(Environment environment);
 }

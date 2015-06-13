@@ -28,6 +28,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.util.concurrent.TimeUnit;
+
 
 @RunWith(MockitoJUnitRunner.class)
 public class PeriodicalRefreshStrategyTest {
@@ -40,7 +42,7 @@ public class PeriodicalRefreshStrategyTest {
 
   @Test
   public void shouldRefreshImmediatelyAfterInit() throws Exception {
-    PeriodicalRefreshStrategy strategy = new PeriodicalRefreshStrategy(60000);
+    PeriodicalRefreshStrategy strategy = new PeriodicalRefreshStrategy(60, TimeUnit.SECONDS);
     strategy.init(refreshable);
     strategy.shutdown();
     verify(refreshable, times(1)).refresh();
@@ -48,7 +50,7 @@ public class PeriodicalRefreshStrategyTest {
 
   @Test
   public void shouldRefreshPeriodically() throws Exception {
-    PeriodicalRefreshStrategy strategy = new PeriodicalRefreshStrategy(10);
+    PeriodicalRefreshStrategy strategy = new PeriodicalRefreshStrategy(10, TimeUnit.MILLISECONDS);
     strategy.init(refreshable);
     Thread.sleep(50);
     strategy.shutdown();

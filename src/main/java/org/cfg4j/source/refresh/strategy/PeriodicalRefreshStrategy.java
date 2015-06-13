@@ -15,6 +15,8 @@
  */
 package org.cfg4j.source.refresh.strategy;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import org.cfg4j.source.refresh.RefreshStrategy;
 import org.cfg4j.source.refresh.Refreshable;
 import org.slf4j.Logger;
@@ -22,6 +24,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 /**
  * {@link RefreshStrategy} that refreshes the resource periodically. It spawns a background tread!
@@ -30,24 +33,41 @@ public class PeriodicalRefreshStrategy implements RefreshStrategy {
 
   private static final Logger LOG = LoggerFactory.getLogger(PeriodicalRefreshStrategy.class);
 
-  private final long refreshAfterMs;
+  private final long duration;
+  private final TimeUnit timeUnit;
   private final Timer timer;
 
   /**
+   * <b>Deprecated: use {@link #PeriodicalRefreshStrategy(long, TimeUnit)} instead.</b>
+   *
    * Construct strategy that refreshes the resource every {@code refreshAfterMs} ms.
    * First refresh will happen immediately after calling {@link #init(Refreshable)}. Each following
    * refresh will happen {@code refreshAfterMs} ms after the previous one completed.
    *
    * @param refreshAfterMs time (in milliseconds) between refreshes
    */
+  @Deprecated
   public PeriodicalRefreshStrategy(long refreshAfterMs) {
-    this.refreshAfterMs = refreshAfterMs;
+    this(refreshAfterMs, TimeUnit.MILLISECONDS);
+  }
+
+  /**
+   * Construct strategy that refreshes the resource every {@code duration} (measured in {@code timeUnit}s).
+   * First refresh will happen immediately after calling {@link #init(Refreshable)}. Each following
+   * refresh will happen {@code refreshAfterMs} ms after the previous one completed.
+   *
+   * @param duration time (in {@code timeUnit}) between refreshes
+   * @param timeUnit time unit to use
+   */
+  public PeriodicalRefreshStrategy(long duration, TimeUnit timeUnit) {
+    this.duration = duration;
+    this.timeUnit = checkNotNull(timeUnit);
     timer = new Timer();
   }
 
   @Override
   public void init(Refreshable resource) {
-    LOG.info("Initializing " + PeriodicalRefreshStrategy.class + "with refresh time of " + refreshAfterMs + "ms");
+    LOG.info("Initializing " + PeriodicalRefreshStrategy.class + "with refresh time of " + duration + timeUnit);
 
     resource.refresh();
 
@@ -56,7 +76,7 @@ public class PeriodicalRefreshStrategy implements RefreshStrategy {
       public void run() {
         resource.refresh();
       }
-    }, refreshAfterMs, refreshAfterMs);
+    }, timeUnit.toMillis(duration), timeUnit.toMillis(duration));
   }
 
   @Override

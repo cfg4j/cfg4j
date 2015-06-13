@@ -94,6 +94,7 @@ public class ConsulConfigurationSourceIntegrationTest {
 
   @Test
   public void shouldConnectToLocalhostAgentByDefault() throws Exception {
+    source = new ConsulConfigurationSource();
     RecordedRequest request = server.takeRequest(0, TimeUnit.MILLISECONDS);
     assertThat(request).isNotNull();
   }
@@ -139,6 +140,13 @@ public class ConsulConfigurationSourceIntegrationTest {
   @Test
   public void getConfiguration2ShouldReturnAllKeysFromGivenEnvironment() throws Exception {
     Environment environment = new ImmutableEnvironment("us-west-1");
+
+    assertThat(source.getConfiguration(environment)).contains(MapEntry.entry("featureA.toggle", "disabled"));
+  }
+
+  @Test
+  public void getConfiguration2ShouldIgnoreLeadginSlashInGivenEnvironment() throws Exception {
+    Environment environment = new ImmutableEnvironment("/us-west-1");
 
     assertThat(source.getConfiguration(environment)).contains(MapEntry.entry("featureA.toggle", "disabled"));
   }

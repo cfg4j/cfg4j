@@ -15,6 +15,7 @@
  */
 package org.cfg4j.source;
 
+import org.cfg4j.source.context.DefaultEnvironment;
 import org.cfg4j.source.context.Environment;
 import org.cfg4j.source.context.MissingEnvironmentException;
 import org.cfg4j.source.refresh.Refreshable;
@@ -27,6 +28,8 @@ import java.util.Properties;
 public interface ConfigurationSource extends Refreshable {
 
   /**
+   * <b>DEPRECATED: Use {@link #getConfiguration(Environment)} with {@link DefaultEnvironment} instead.</b>
+   *
    * Get configuration set from this source in a form of {@link Properties}. Uses default environment.
    *
    * @return configuration set for default environment

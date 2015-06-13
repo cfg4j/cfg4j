@@ -48,8 +48,6 @@ repositories {
 // ----------- External module dependencies -----------
 
 dependencies {
-    compile group: "com.google.guava", name: "guava", version: "18.0"
-
     // Git
     compile group: "org.eclipse.jgit", name: "org.eclipse.jgit", version: "3.7.1.201504261725-r"
 

@@ -17,7 +17,6 @@ package org.cfg4j.source.git;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.google.common.collect.ImmutableList;
 import org.assertj.core.data.MapEntry;
 import org.cfg4j.source.context.DefaultEnvironment;
 import org.cfg4j.source.context.Environment;
@@ -30,6 +29,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import java.io.File;
+import java.util.Arrays;
 
 public class GitConfigurationSourceIntegrationTest {
 
@@ -95,7 +95,7 @@ public class GitConfigurationSourceIntegrationTest {
 
   @Test
   public void getConfigurationShouldReadFromGivenFiles() throws Exception {
-    ConfigFilesProvider configFilesProvider = () -> ImmutableList.of(new File("application.properties"), new File("otherConfig.properties"));
+    ConfigFilesProvider configFilesProvider = () -> Arrays.asList(new File("application.properties"), new File("otherConfig.properties"));
 
     try (GitConfigurationSource gitConfigurationSource = getSourceForRemoteRepoWithFilesProvider(configFilesProvider)) {
       assertThat(gitConfigurationSource.getConfiguration()).containsKeys("some.setting", "otherConfig.setting");
@@ -167,7 +167,7 @@ public class GitConfigurationSourceIntegrationTest {
 
   @Test
   public void getConfiguration2ShouldReadFromGivenFiles() throws Exception {
-    ConfigFilesProvider configFilesProvider = () -> ImmutableList.of(new File("application.properties"), new File("otherConfig.properties"));
+    ConfigFilesProvider configFilesProvider = () -> Arrays.asList(new File("application.properties"), new File("otherConfig.properties"));
     Environment environment = new DefaultEnvironment();
 
     try (GitConfigurationSource gitConfigurationSource = getSourceForRemoteRepoWithFilesProvider(configFilesProvider)) {

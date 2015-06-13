@@ -15,14 +15,14 @@
  */
 package org.cfg4j.provider;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Objects.requireNonNull;
 
 import com.github.drapostolos.typeparser.NoSuchRegisteredParserException;
 import com.github.drapostolos.typeparser.TypeParser;
 import com.github.drapostolos.typeparser.TypeParserException;
+import org.cfg4j.source.ConfigurationSource;
 import org.cfg4j.source.context.Environment;
 import org.cfg4j.source.context.MissingEnvironmentException;
-import org.cfg4j.source.ConfigurationSource;
 import org.cfg4j.validator.BindingValidator;
 
 import java.lang.reflect.InvocationHandler;
@@ -47,8 +47,8 @@ public class SimpleConfigurationProvider implements ConfigurationProvider {
    * @param environment {@link Environment} to use
    */
   public SimpleConfigurationProvider(ConfigurationSource configurationSource, Environment environment) {
-    this.configurationSource = checkNotNull(configurationSource);
-    this.environment = checkNotNull(environment);
+    this.configurationSource = requireNonNull(configurationSource);
+    this.environment = requireNonNull(environment);
   }
 
   @Override
@@ -118,7 +118,7 @@ public class SimpleConfigurationProvider implements ConfigurationProvider {
     private final String prefix;
 
     private BindInvocationHandler(String prefix) {
-      this.prefix = checkNotNull(prefix);
+      this.prefix = requireNonNull(prefix);
     }
 
     @Override

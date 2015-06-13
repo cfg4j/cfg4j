@@ -15,7 +15,7 @@
  */
 package org.cfg4j.source.refresh.strategy;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Objects.requireNonNull;
 
 import org.cfg4j.source.refresh.RefreshStrategy;
 import org.cfg4j.source.refresh.Refreshable;
@@ -61,7 +61,7 @@ public class PeriodicalRefreshStrategy implements RefreshStrategy {
    */
   public PeriodicalRefreshStrategy(long duration, TimeUnit timeUnit) {
     this.duration = duration;
-    this.timeUnit = checkNotNull(timeUnit);
+    this.timeUnit = requireNonNull(timeUnit);
     timer = new Timer();
   }
 

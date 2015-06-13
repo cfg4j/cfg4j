@@ -20,7 +20,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.google.common.collect.ImmutableList;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -29,6 +28,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -54,7 +54,7 @@ public class BindingValidatorTest {
     bindingValidator = new BindingValidator();
 
     when(configPojo.someSetting()).thenReturn(0);
-    when(configPojo.otherSetting()).thenReturn(ImmutableList.of());
+    when(configPojo.otherSetting()).thenReturn(Collections.emptyList());
   }
 
   @Test

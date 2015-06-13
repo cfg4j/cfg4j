@@ -15,9 +15,8 @@
  */
 package org.cfg4j.source.git;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Objects.requireNonNull;
 
-import com.google.common.collect.Iterables;
 import org.cfg4j.source.ConfigurationSource;
 import org.cfg4j.source.context.DefaultEnvironment;
 import org.cfg4j.source.context.Environment;
@@ -38,6 +37,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 public class GitConfigurationSource implements ConfigurationSource, Closeable {
 
@@ -67,12 +68,12 @@ public class GitConfigurationSource implements ConfigurationSource, Closeable {
    */
   GitConfigurationSource(String repositoryURI, String tmpPath, String localRepositoryPathInTemp, BranchResolver branchResolver,
                          PathResolver pathResolver, ConfigFilesProvider configFilesProvider) {
-    this.branchResolver = checkNotNull(branchResolver);
-    this.pathResolver = checkNotNull(pathResolver);
-    this.configFilesProvider = checkNotNull(configFilesProvider);
-    checkNotNull(tmpPath);
-    checkNotNull(localRepositoryPathInTemp);
-    checkNotNull(repositoryURI);
+    this.branchResolver = requireNonNull(branchResolver);
+    this.pathResolver = requireNonNull(pathResolver);
+    this.configFilesProvider = requireNonNull(configFilesProvider);
+    requireNonNull(tmpPath);
+    requireNonNull(localRepositoryPathInTemp);
+    requireNonNull(repositoryURI);
 
     LOG.info("Initializing " + GitConfigurationSource.class + " pointing to " + repositoryURI);
 
@@ -115,8 +116,9 @@ public class GitConfigurationSource implements ConfigurationSource, Closeable {
 
     Properties properties = new Properties();
 
-    Iterable<File> files = Iterables.transform(configFilesProvider.getConfigFiles(),
-        file -> new File(clonedRepoPath + "/" + pathResolver.getPathFor(environment) + "/" + file.getPath()));
+    List<File> files = StreamSupport.stream(configFilesProvider.getConfigFiles().spliterator(), false)
+        .map(file -> new File(clonedRepoPath + "/" + pathResolver.getPathFor(environment) + "/" + file.getPath()))
+        .collect(Collectors.toList());
 
     for (File file : files) {
       try (InputStream input = new FileInputStream(file.getPath())) {
@@ -152,7 +154,7 @@ public class GitConfigurationSource implements ConfigurationSource, Closeable {
         .setName(branch);
 
     List<Ref> refList = clonedRepo.branchList().call();
-    if (!Iterables.any(refList, ref -> ref.getName().replace("refs/heads/", "").equals(branch))) {
+    if (!refList.stream().anyMatch(ref -> ref.getName().replace("refs/heads/", "").equals(branch))) {
       checkoutCommand = checkoutCommand
           .setCreateBranch(true)
           .setUpstreamMode(CreateBranchCommand.SetupUpstreamMode.TRACK)

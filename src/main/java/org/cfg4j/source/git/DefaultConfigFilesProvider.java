@@ -15,9 +15,8 @@
  */
 package org.cfg4j.source.git;
 
-import com.google.common.collect.ImmutableList;
-
 import java.io.File;
+import java.util.Collections;
 
 /**
  * Provides default configuration file (i.e. application.properties).
@@ -26,6 +25,6 @@ public class DefaultConfigFilesProvider implements ConfigFilesProvider {
 
   @Override
   public Iterable<File> getConfigFiles() {
-    return ImmutableList.of(new File("application.properties"));
+    return Collections.singletonList(new File("application.properties"));
   }
 }

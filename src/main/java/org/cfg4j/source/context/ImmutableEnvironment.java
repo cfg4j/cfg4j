@@ -15,7 +15,7 @@
  */
 package org.cfg4j.source.context;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Objects.requireNonNull;
 
 /**
  * {@link Environment} that never changes.
@@ -30,7 +30,7 @@ public class ImmutableEnvironment implements Environment {
    * @param envName environment name to use
    */
   public ImmutableEnvironment(String envName) {
-    this.envName = checkNotNull(envName);
+    this.envName = requireNonNull(envName);
   }
 
   @Override

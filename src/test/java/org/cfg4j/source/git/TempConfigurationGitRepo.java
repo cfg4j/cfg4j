@@ -15,7 +15,6 @@
  */
 package org.cfg4j.source.git;
 
-import com.google.common.collect.Iterables;
 import org.cfg4j.utils.FileUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -66,7 +65,7 @@ class TempConfigurationGitRepo {
     boolean createBranch = true;
 
     List<Ref> refList = repo.branchList().call();
-    if (Iterables.any(refList, ref -> ref.getName().replace("refs/heads/", "").equals(branch))) {
+    if (refList.stream().anyMatch(ref -> ref.getName().replace("refs/heads/", "").equals(branch))) {
       createBranch = false;
     }
 

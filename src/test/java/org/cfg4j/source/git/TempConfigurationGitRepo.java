@@ -15,22 +15,19 @@
  */
 package org.cfg4j.source.git;
 
-import org.cfg4j.utils.FileUtils;
+import org.cfg4j.source.files.TempConfigurationFileRepo;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Ref;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
+import java.nio.file.Path;
 import java.util.List;
-import java.util.Properties;
 
 /**
  * Temporary local git repository that contains configuration files.
  */
-class TempConfigurationGitRepo {
+class TempConfigurationGitRepo extends TempConfigurationFileRepo {
 
   private final Git repo;
 
@@ -41,18 +38,9 @@ class TempConfigurationGitRepo {
    * @throws IOException     when unable to create local directories
    * @throws GitAPIException when unable to execute git operations
    */
-  public TempConfigurationGitRepo() throws IOException, GitAPIException {
-    File tempFile = File.createTempFile("test-repo.git", "");
-    repo = createLocalRepo(tempFile);
-  }
-
-  /**
-   * Get absolute path to this repository.
-   *
-   * @return path to the repository
-   */
-  public String getURI() {
-    return repo.getRepository().getWorkTree().getAbsolutePath();
+  public TempConfigurationGitRepo(String dirName) throws IOException, GitAPIException {
+    super(dirName);
+    repo = createLocalRepo(dirPath);
   }
 
   /**
@@ -81,7 +69,6 @@ class TempConfigurationGitRepo {
    * @param branch branch name to delete
    * @throws GitAPIException when unable to delete branch.
    */
-
   public void deleteBranch(String branch) throws GitAPIException {
     repo.branchDelete()
         .setBranchNames(branch)
@@ -99,15 +86,14 @@ class TempConfigurationGitRepo {
    * @throws IOException     when unable to modify properties file
    * @throws GitAPIException when unable to commit changes
    */
-  public void changeProperty(String propFilePath, String key, String value) throws IOException, GitAPIException {
-    createRequiredDirsForFile(propFilePath);
-    writePropertyToFile(propFilePath, key, value);
-    commitChanges();
-  }
-
-  private void createRequiredDirsForFile(String propFilePath) {
-    int lastSlashPos = propFilePath.lastIndexOf("/") == -1 ? 0 : propFilePath.lastIndexOf("/");
-    new File(getURI() + "/" + propFilePath.substring(0, lastSlashPos)).mkdirs();
+  @Override
+  public void changeProperty(String propFilePath, String key, String value) throws IOException {
+    super.changeProperty(propFilePath, key, value);
+    try {
+      commitChanges();
+    } catch (GitAPIException e) {
+      throw new IOException(e);
+    }
   }
 
   /**
@@ -116,12 +102,20 @@ class TempConfigurationGitRepo {
    * @param filePath relative file path to delete
    * @throws GitAPIException when unable to commit changes
    */
-  public void deleteFile(String filePath) throws GitAPIException {
-    repo.rm()
-        .addFilepattern(filePath)
-        .call();
+  @Override
+  public void deleteFile(String filePath) throws IOException {
+    try {
+      repo.rm()
+          .addFilepattern(filePath)
+          .call();
 
-    commitChanges();
+      super.deleteFile(filePath);
+
+      commitChanges();
+
+    } catch (GitAPIException e) {
+      throw new IOException(e);
+    }
   }
 
   /**
@@ -129,24 +123,17 @@ class TempConfigurationGitRepo {
    *
    * @throws IOException when unable to remove directory
    */
+  @Override
   public void remove() throws IOException {
     repo.close();
-    FileUtils.deleteDir(new File(getURI()));
+    super.remove();
   }
 
-  private Git createLocalRepo(File path) throws IOException, GitAPIException {
-    path.delete();
+  private Git createLocalRepo(Path path) throws IOException, GitAPIException {
+    path.toFile().delete();
     return Git.init()
-        .setDirectory(path)
+        .setDirectory(path.toFile())
         .call();
-  }
-
-  private void writePropertyToFile(String propFilePath, String key, String value) throws IOException {
-    OutputStream out = new FileOutputStream(getURI() + "/" + propFilePath);
-    Properties properties = new Properties();
-    properties.put(key, value);
-    properties.store(out, "");
-    out.close();
   }
 
   private void commitChanges() throws GitAPIException {

@@ -23,7 +23,7 @@ public interface Refreshable {
   /**
    * Request configuration refresh. When this method returns configuration should be reloaded.
    *
-   * @throws IllegalStateException when unable to fetch configuration
+   * @throws IllegalStateException when unable to refresh configuration
    */
   void refresh();
 

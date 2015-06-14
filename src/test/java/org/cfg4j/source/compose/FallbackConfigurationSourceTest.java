@@ -27,7 +27,6 @@ import static org.mockito.Mockito.when;
 import org.assertj.core.data.MapEntry;
 import org.cfg4j.source.ConfigurationSource;
 import org.cfg4j.source.context.Environment;
-import org.cfg4j.source.context.ImmutableEnvironment;
 import org.cfg4j.source.context.MissingEnvironmentException;
 import org.junit.Before;
 import org.junit.Rule;
@@ -66,7 +65,7 @@ public class FallbackConfigurationSourceTest {
     makeAllSourcesThrow(IllegalStateException.class);
 
     expectedException.expect(IllegalStateException.class);
-    fallbackConfigurationSource.getConfiguration(new ImmutableEnvironment("test"));
+    fallbackConfigurationSource.getConfiguration();
   }
 
   @Test

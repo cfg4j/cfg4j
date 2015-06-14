@@ -26,6 +26,15 @@ public class MissingEnvironmentException extends RuntimeException {
    * Environment named {@code envName} is missing.
    *
    * @param envName environment name
+   */
+  public MissingEnvironmentException(String envName) {
+    super(MISSING_ENV_MSG + envName);
+  }
+
+  /**
+   * Environment named {@code envName} is missing.
+   *
+   * @param envName environment name
    * @param cause root cause
    */
   public MissingEnvironmentException(String envName, Throwable cause) {

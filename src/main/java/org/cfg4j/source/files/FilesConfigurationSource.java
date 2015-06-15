@@ -62,11 +62,7 @@ public class FilesConfigurationSource implements ConfigurationSource {
    */
   @Override
   public Properties getConfiguration() {
-    try {
-      return getConfiguration(new DefaultEnvironment());
-    } catch (MissingEnvironmentException e) {
-      throw new IllegalStateException("Unable to load configuration", e);
-    }
+    return getConfiguration(new DefaultEnvironment());
   }
 
   /**
@@ -83,9 +79,14 @@ public class FilesConfigurationSource implements ConfigurationSource {
   public Properties getConfiguration(Environment environment) {
     Properties properties = new Properties();
 
-//    if(! new File(environment.getName()).exists()) {
-    //    throw new MissingEnvironmentException("Directory doesn't exist: " + environment.getName());
-    //  }
+    String path = environment.getName();
+    if (path.trim().isEmpty()) {
+      path = "/";
+    }
+
+    if (!new File(path).exists()) {
+      throw new MissingEnvironmentException("Directory doesn't exist: " + environment.getName());
+    }
 
     List<File> files = StreamSupport.stream(configFilesProvider.getConfigFiles().spliterator(), false)
         .map(file -> new File(environment.getName() + "/" + file.getPath()))

@@ -21,6 +21,7 @@ import org.assertj.core.data.MapEntry;
 import org.cfg4j.source.context.DefaultEnvironment;
 import org.cfg4j.source.context.Environment;
 import org.cfg4j.source.context.ImmutableEnvironment;
+import org.cfg4j.source.context.MissingEnvironmentException;
 import org.cfg4j.source.git.ConfigFilesProvider;
 import org.junit.After;
 import org.junit.Before;
@@ -113,6 +114,12 @@ public class FilesConfigurationSourceTest {
 
     source = new FilesConfigurationSource(configFilesProvider);
     assertThat(source.getConfiguration(new DefaultEnvironment())).containsOnlyKeys("some.setting", "otherConfig.setting");
+  }
+
+  @Test
+  public void getConfiguration2ShouldThrowOnMissingEnvironment() throws Exception {
+    expectedException.expect(MissingEnvironmentException.class);
+    source.getConfiguration(new ImmutableEnvironment("awlerijawoetinawwerlkjn"));
   }
 
   @Test

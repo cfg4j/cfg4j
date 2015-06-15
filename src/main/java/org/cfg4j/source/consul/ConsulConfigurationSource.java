@@ -22,6 +22,8 @@ import org.cfg4j.source.ConfigurationSource;
 import org.cfg4j.source.SourceCommunicationException;
 import org.cfg4j.source.context.DefaultEnvironment;
 import org.cfg4j.source.context.Environment;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -32,6 +34,8 @@ import java.util.Map;
 import java.util.Properties;
 
 public class ConsulConfigurationSource implements ConfigurationSource {
+
+  private static final Logger LOG = LoggerFactory.getLogger(ConsulConfigurationSource.class);
 
   /**
    * Default Consul HTTP API host.

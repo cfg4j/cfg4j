@@ -23,7 +23,14 @@ import org.cfg4j.source.context.Environment;
 import org.cfg4j.source.context.MissingEnvironmentException;
 import org.cfg4j.source.git.ConfigFilesProvider;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * {@link ConfigurationSource} reading configuration from local files.
@@ -55,7 +62,11 @@ public class FilesConfigurationSource implements ConfigurationSource {
    */
   @Override
   public Properties getConfiguration() {
-    return null;
+    try {
+      return getConfiguration(new DefaultEnvironment());
+    } catch (MissingEnvironmentException e) {
+      throw new IllegalStateException("Unable to load configuration", e);
+    }
   }
 
   /**
@@ -70,11 +81,29 @@ public class FilesConfigurationSource implements ConfigurationSource {
    */
   @Override
   public Properties getConfiguration(Environment environment) {
-    return null;
+    Properties properties = new Properties();
+
+//    if(! new File(environment.getName()).exists()) {
+    //    throw new MissingEnvironmentException("Directory doesn't exist: " + environment.getName());
+    //  }
+
+    List<File> files = StreamSupport.stream(configFilesProvider.getConfigFiles().spliterator(), false)
+        .map(file -> new File(environment.getName() + "/" + file.getPath()))
+        .collect(Collectors.toList());
+
+    for (File file : files) {
+      try (InputStream input = new FileInputStream(file.getPath())) {
+        properties.load(input);
+      } catch (IOException e) {
+        throw new IllegalStateException("Unable to load properties from application.properties file", e);
+      }
+    }
+
+    return properties;
   }
 
   @Override
   public void refresh() {
-
+    // NOP
   }
 }

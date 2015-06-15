@@ -79,7 +79,9 @@ public class TempConfigurationFileRepo {
    * @throws GitAPIException when unable to commit changes
    */
   public void deleteFile(String filePath) throws IOException {
-    new File(filePath).delete();
+    if (!new File(dirPath + "/" + filePath).delete()) {
+      throw new IllegalStateException("Unable to delete file: " + filePath);
+    }
   }
 
   /**

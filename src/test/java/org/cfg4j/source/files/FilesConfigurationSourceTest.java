@@ -99,7 +99,7 @@ public class FilesConfigurationSourceTest {
 
     source = new FilesConfigurationSource(configFilesProvider);
 
-    Environment environment = new ImmutableEnvironment(fileRepo.getURI());
+    Environment environment = new ImmutableEnvironment(fileRepo.getURI() + "/otherApplicationConfigs/");
 
     assertThat(source.getConfiguration(environment)).containsOnly(MapEntry.entry("some.setting", "otherAppSetting"));
   }
@@ -137,13 +137,5 @@ public class FilesConfigurationSourceTest {
     source.refresh();
 
     assertThat(source.getConfiguration(new DefaultEnvironment())).containsOnly(MapEntry.entry("some.setting", "changedValue"));
-  }
-
-  @Test
-  public void refreshShouldThrowOnSyncProblems() throws Exception {
-    fileRepo.remove();
-
-    expectedException.expect(IllegalStateException.class);
-    source.refresh();
   }
 }

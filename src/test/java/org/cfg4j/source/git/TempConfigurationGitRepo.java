@@ -105,11 +105,11 @@ class TempConfigurationGitRepo extends TempConfigurationFileRepo {
   @Override
   public void deleteFile(String filePath) throws IOException {
     try {
+      super.deleteFile(filePath);
+
       repo.rm()
           .addFilepattern(filePath)
           .call();
-
-      super.deleteFile(filePath);
 
       commitChanges();
 

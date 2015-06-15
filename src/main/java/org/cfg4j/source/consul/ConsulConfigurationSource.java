@@ -47,7 +47,6 @@ public class ConsulConfigurationSource implements ConfigurationSource {
    */
   public static final int DEFAULT_HTTP_PORT = 8500;
 
-  private final Consul consul;
   private final KeyValueClient kvClient;
   private Map<String, String> consulValues;
 
@@ -62,7 +61,8 @@ public class ConsulConfigurationSource implements ConfigurationSource {
   private ConsulConfigurationSource(String host, int port) {
     try {
       LOG.info("Connecting to Consul client at " + host + ":" + port);
-      consul = Consul.newClient(host, port);
+
+      Consul consul = Consul.newClient(host, port);
       kvClient = consul.keyValueClient();
     } catch (Exception e) {
       throw new SourceCommunicationException("Can't connect to host: " + host + ":" + port, e);

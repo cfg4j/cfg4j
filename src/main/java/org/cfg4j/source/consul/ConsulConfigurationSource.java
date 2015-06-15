@@ -61,6 +61,7 @@ public class ConsulConfigurationSource implements ConfigurationSource {
 
   private ConsulConfigurationSource(String host, int port) {
     try {
+      LOG.info("Connecting to Consul client at " + host + ":" + port);
       consul = Consul.newClient(host, port);
       kvClient = consul.keyValueClient();
     } catch (Exception e) {
@@ -77,6 +78,8 @@ public class ConsulConfigurationSource implements ConfigurationSource {
 
   @Override
   public Properties getConfiguration(Environment environment) {
+    LOG.trace("Requesting configuration for environment: " + environment.getName());
+
     Properties properties = new Properties();
     String path = environment.getName();
 
@@ -103,6 +106,7 @@ public class ConsulConfigurationSource implements ConfigurationSource {
     List<Value> valueList;
 
     try {
+      LOG.debug("Refreshing configuration from Consuls' K-V store");
       valueList = kvClient.getValues("/");
     } catch (Exception e) {
       throw new SourceCommunicationException("Can't get values from k-v store", e);
@@ -110,6 +114,9 @@ public class ConsulConfigurationSource implements ConfigurationSource {
 
     for (Value value : valueList) {
       String val = new String(Base64.getDecoder().decode(value.getValue().getBytes(StandardCharsets.UTF_8)));
+
+      LOG.trace("Consul provided configuration key: " + value.getKey() + " with value: " + val);
+
       consulValues.put(value.getKey(), val);
     }
   }

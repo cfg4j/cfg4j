@@ -43,7 +43,7 @@ public class GitConfigurationSourceIntegrationTest {
 
   @Before
   public void setUp() throws Exception {
-    remoteRepo = new TempConfigurationGitRepo();
+    remoteRepo = new TempConfigurationGitRepo("cfg4j-test-repo.git");
     remoteRepo.changeProperty("application.properties", "some.setting", "masterValue");
     remoteRepo.changeProperty("otherConfig.properties", "otherConfig.setting", "masterValue");
     remoteRepo.changeProperty("otherApplicationConfigs/application.properties", "some.setting", "otherAppSetting");

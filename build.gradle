@@ -49,10 +49,10 @@ repositories {
 
 dependencies {
     // Git
-    compile group: "org.eclipse.jgit", name: "org.eclipse.jgit", version: "3.7.1.201504261725-r"
+    compile group: "org.eclipse.jgit", name: "org.eclipse.jgit", version: "4.0.0.201506090130-r"
 
     // Consul
-    compile group: "com.orbitz.consul", name: "consul-client", version: "0.9.3"
+    compile group: "com.orbitz.consul", name: "consul-client", version: "0.9.4"
     compile group: "org.apache.cxf", name: "cxf-rt-rs-client", version: "3.1.1"
     compile group: "org.apache.cxf", name: "cxf-rt-transports-http-hc", version: "3.1.1"
 

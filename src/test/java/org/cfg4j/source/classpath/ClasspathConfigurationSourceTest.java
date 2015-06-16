@@ -74,6 +74,18 @@ public class ClasspathConfigurationSourceTest {
   }
 
   @Test
+  public void getConfigurationShouldThrowOnMalformedConfigFile() throws Exception {
+    configFilesProvider = () -> Collections.singletonList(
+        new File("malformed.properties")
+    );
+
+    source = new ClasspathConfigurationSource(configFilesProvider);
+
+    expectedException.expect(IllegalStateException.class);
+    source.getConfiguration();
+  }
+
+  @Test
   public void getConfigurationShouldReadFromGivenFiles() throws Exception {
     configFilesProvider = () -> Arrays.asList(
         new File("application.properties"),
@@ -93,7 +105,7 @@ public class ClasspathConfigurationSourceTest {
 
     source = new ClasspathConfigurationSource(configFilesProvider);
 
-    Environment environment = new ImmutableEnvironment("otherApplicationConfigs/");
+    Environment environment = new ImmutableEnvironment("/otherApplicationConfigs/");
 
     assertThat(source.getConfiguration(environment)).containsOnly(MapEntry.entry("some.setting", "otherAppSetting"));
   }

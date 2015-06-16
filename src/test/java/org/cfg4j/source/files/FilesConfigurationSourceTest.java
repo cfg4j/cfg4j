@@ -142,6 +142,18 @@ public class FilesConfigurationSourceTest {
   }
 
   @Test
+  public void getConfiguration2ShouldThrowOnMalformedConfigFile() throws Exception {
+    configFilesProvider = () -> Collections.singletonList(
+        new File(fileRepo.getURI() + "/malformed.properties")
+    );
+
+    source = new FilesConfigurationSource(configFilesProvider);
+
+    expectedException.expect(IllegalStateException.class);
+    source.getConfiguration(new DefaultEnvironment());
+  }
+
+  @Test
   public void refreshShouldUpdateGetConfigurationResults() throws Exception {
     fileRepo.changeProperty("application.properties", "some.setting", "changedValue");
     source.refresh();

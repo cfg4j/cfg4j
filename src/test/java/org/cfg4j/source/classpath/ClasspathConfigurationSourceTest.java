@@ -50,7 +50,7 @@ public class ClasspathConfigurationSourceTest {
     classpathRepo = new TempConfigurationClasspathRepo();
 
     configFilesProvider = () -> Collections.singletonList(
-        new File("/application.properties")
+        new File("application.properties")
     );
 
     source = new ClasspathConfigurationSource(configFilesProvider);
@@ -64,7 +64,7 @@ public class ClasspathConfigurationSourceTest {
   @Test
   public void getConfigurationShouldThrowOnMissingConfigFile() throws Exception {
     configFilesProvider = () -> Collections.singletonList(
-        new File("/nonexistent.properties")
+        new File("nonexistent.properties")
     );
 
     source = new ClasspathConfigurationSource(configFilesProvider);
@@ -76,8 +76,8 @@ public class ClasspathConfigurationSourceTest {
   @Test
   public void getConfigurationShouldReadFromGivenFiles() throws Exception {
     configFilesProvider = () -> Arrays.asList(
-        new File("/application.properties"),
-        new File("/otherConfig.properties")
+        new File("application.properties"),
+        new File("otherConfig.properties")
     );
 
     source = new ClasspathConfigurationSource(configFilesProvider);
@@ -93,7 +93,7 @@ public class ClasspathConfigurationSourceTest {
 
     source = new ClasspathConfigurationSource(configFilesProvider);
 
-    Environment environment = new ImmutableEnvironment("/otherApplicationConfigs/");
+    Environment environment = new ImmutableEnvironment("otherApplicationConfigs/");
 
     assertThat(source.getConfiguration(environment)).containsOnly(MapEntry.entry("some.setting", "otherAppSetting"));
   }
@@ -101,8 +101,8 @@ public class ClasspathConfigurationSourceTest {
   @Test
   public void getConfiguration2ShouldReadFromGivenFiles() throws Exception {
     configFilesProvider = () -> Arrays.asList(
-        new File("/application.properties"),
-        new File("/otherConfig.properties")
+        new File("application.properties"),
+        new File("otherConfig.properties")
     );
 
     source = new ClasspathConfigurationSource(configFilesProvider);
@@ -118,7 +118,7 @@ public class ClasspathConfigurationSourceTest {
   @Test
   public void getConfiguration2ShouldThrowOnMissingConfigFile() throws Exception {
     configFilesProvider = () -> Collections.singletonList(
-        new File("/nonexistent.properties")
+        new File("nonexistent.properties")
     );
 
     source = new ClasspathConfigurationSource(configFilesProvider);

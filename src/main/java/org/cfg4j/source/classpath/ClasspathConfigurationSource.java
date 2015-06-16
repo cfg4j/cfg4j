@@ -23,7 +23,14 @@ import org.cfg4j.source.context.Environment;
 import org.cfg4j.source.context.MissingEnvironmentException;
 import org.cfg4j.source.git.ConfigFilesProvider;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * {@link ConfigurationSource} reading configuration from classpath files.
@@ -38,7 +45,7 @@ public class ClasspathConfigurationSource implements ConfigurationSource {
    * {@link #getConfiguration()} and {@link #getConfiguration(Environment)} calls (see corresponding javadocs
    * for detail).
    *
-   * @param configFilesProvider
+   * @param configFilesProvider {@link ConfigFilesProvider} supplying a list of configuration files to use
    */
   public ClasspathConfigurationSource(ConfigFilesProvider configFilesProvider) {
     this.configFilesProvider = requireNonNull(configFilesProvider);
@@ -70,11 +77,51 @@ public class ClasspathConfigurationSource implements ConfigurationSource {
    */
   @Override
   public Properties getConfiguration(Environment environment) {
-    return null;
+    Properties properties = new Properties();
+
+    String pathPrefix = getPrefixFor(environment);
+
+    URL url = ClassLoader.getSystemResource(pathPrefix);
+    if (url == null) {
+      throw new MissingEnvironmentException("Directory doesn't exist: " + environment.getName());
+    }
+
+    List<File> files = StreamSupport.stream(configFilesProvider.getConfigFiles().spliterator(), false)
+        .map(file -> new File(pathPrefix + file.getPath()))
+        .collect(Collectors.toList());
+
+    for (File file : files) {
+      try (InputStream input = ClassLoader.getSystemResourceAsStream(file.getPath())) {
+
+        if (input == null) {
+          throw new IllegalStateException("Unable to load properties from classpath: " + file.getPath());
+        }
+
+        properties.load(input);
+      } catch (IOException e) {
+        throw new IllegalStateException("Unable to load properties from classpath: " + file.getPath(), e);
+      }
+    }
+
+    return properties;
   }
 
   @Override
   public void refresh() {
     // NOP
+  }
+
+  private String getPrefixFor(Environment environment) {
+    String path = environment.getName();
+
+    if (!path.trim().isEmpty() && !path.endsWith("/")) {
+      path += "/";
+    }
+
+    if (path.startsWith("/")) {
+      path = path.substring(1);
+    }
+
+    return path;
   }
 }

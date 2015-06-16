@@ -15,7 +15,11 @@
  */
 package org.cfg4j.source.classpath;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URL;
+import java.util.Properties;
 
 /**
  * Classpath files repository.
@@ -40,22 +44,12 @@ public class TempConfigurationClasspathRepo {
     writePropertyToFile(propFilePath, key, value);
   }
 
-  /**
-   * Delete file from this repository.
-   *
-   * @param filePath relative file path to delete
-   */
-  public void deleteFile(String filePath) throws IOException {
-//    if (!new File(dirPath + "/" + filePath).delete()) {
-//      throw new IllegalStateException("Unable to delete file: " + filePath);
-//    }
-  }
-
   private void writePropertyToFile(String propFilePath, String key, String value) throws IOException {
-//    OutputStream out = new FileOutputStream(getURI() + "/" + propFilePath);
-//    Properties properties = new Properties();
-//    properties.put(key, value);
-//    properties.store(out, "");
-//    out.close();
+    URL systemResource = ClassLoader.getSystemResource(propFilePath);
+    OutputStream out = new FileOutputStream(systemResource.getPath());
+    Properties properties = new Properties();
+    properties.put(key, value);
+    properties.store(out, "");
+    out.close();
   }
 }

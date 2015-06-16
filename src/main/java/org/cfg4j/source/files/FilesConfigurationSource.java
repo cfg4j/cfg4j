@@ -95,7 +95,7 @@ public class FilesConfigurationSource implements ConfigurationSource {
     for (File file : files) {
       try (InputStream input = new FileInputStream(file.getPath())) {
         properties.load(input);
-      } catch (IOException e) {
+      } catch (IOException | IllegalArgumentException e) {
         throw new IllegalStateException("Unable to load properties from application.properties file", e);
       }
     }

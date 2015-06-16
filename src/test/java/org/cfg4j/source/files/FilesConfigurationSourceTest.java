@@ -33,6 +33,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Collections;
 
 
 @RunWith(MockitoJUnitRunner.class)
@@ -50,9 +51,10 @@ public class FilesConfigurationSourceTest {
     fileRepo = new TempConfigurationFileRepo("cfg4j-test-repo");
     fileRepo.changeProperty("application.properties", "some.setting", "masterValue");
     fileRepo.changeProperty("otherConfig.properties", "otherConfig.setting", "masterValue");
+    fileRepo.changeProperty("malformed.properties", "otherConfig.setting", "\\uzzzzz");
     fileRepo.changeProperty("otherApplicationConfigs/application.properties", "some.setting", "otherAppSetting");
 
-    configFilesProvider = () -> Arrays.asList(
+    configFilesProvider = () -> Collections.singletonList(
         new File(fileRepo.getURI() + "/application.properties")
     );
 
@@ -78,6 +80,18 @@ public class FilesConfigurationSourceTest {
   }
 
   @Test
+  public void getConfigurationShouldThrowOnMalformedConfigFile() throws Exception {
+    configFilesProvider = () -> Collections.singletonList(
+        new File(fileRepo.getURI() + "/malformed.properties")
+    );
+
+    source = new FilesConfigurationSource(configFilesProvider);
+
+    expectedException.expect(IllegalStateException.class);
+    source.getConfiguration();
+  }
+
+  @Test
   public void getConfigurationShouldReadFromGivenFiles() throws Exception {
     configFilesProvider = () -> Arrays.asList(
         new File(fileRepo.getURI() + "/application.properties"),
@@ -91,7 +105,7 @@ public class FilesConfigurationSourceTest {
 
   @Test
   public void getConfiguration2ShouldReadFromGivenPath() throws Exception {
-    configFilesProvider = () -> Arrays.asList(
+    configFilesProvider = () -> Collections.singletonList(
         new File("application.properties")
     );
 

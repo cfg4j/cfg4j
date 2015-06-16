@@ -47,9 +47,7 @@ public class TempConfigurationClasspathRepo {
   private void writePropertyToFile(String propFilePath, String key, String value) throws IOException {
     URL systemResource = ClassLoader.getSystemResource(propFilePath);
     OutputStream out = new FileOutputStream(systemResource.getPath());
-    Properties properties = new Properties();
-    properties.put(key, value);
-    properties.store(out, "");
+    out.write((key + "=" + value).getBytes());
     out.close();
   }
 }

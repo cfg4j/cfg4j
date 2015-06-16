@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Properties;
 
 /**
  * Temporary local file repository that contains configuration files.
@@ -92,9 +91,7 @@ public class TempConfigurationFileRepo {
 
   private void writePropertyToFile(String propFilePath, String key, String value) throws IOException {
     OutputStream out = new FileOutputStream(getURI() + "/" + propFilePath);
-    Properties properties = new Properties();
-    properties.put(key, value);
-    properties.store(out, "");
+    out.write((key + "=" + value).getBytes());
     out.close();
   }
 }

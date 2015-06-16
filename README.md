@@ -14,7 +14,7 @@
     * Support for multi-tenant configuration sources (e.g. keep configuration for all your environments [test, preprod, prod] in one store)
     * Handle network failures (e.g. re-try, fallback to another source)
 * Adapters for multiple configuration stores
-    * [Git](), [Consul](https://consul.io/), [ZooKeeper (WIP)](https://zookeeper.apache.org/), MySQL (WIP), Files (YAML, Properties, XML)
+    * [Git](), [Consul](https://consul.io/), Files, Classpath,[ZooKeeper (WIP)](https://zookeeper.apache.org/) and MySQL (WIP)
 * Easy yet flexible configuration management:
     * Merge configurations from different sources
     * Validation
@@ -38,7 +38,7 @@ Head to [the documentation](http://cfg4j.org).
 #### Gradle
 ```groovy
 dependencies {
-  compile group: "org.cfg4j", name:"cfg4j", version: "3.2.0"
+  compile group: "org.cfg4j", name:"cfg4j", version: "3.3.0"
 }
 ```
 
@@ -48,7 +48,7 @@ dependencies {
   <dependency>
     <groupId>org.cfg4j</groupId>
     <artifactId>cfg4j</artifactId>
-    <version>3.2.0</version>
+    <version>3.3.0</version>
   </dependency>
 </dependencies>
 ```

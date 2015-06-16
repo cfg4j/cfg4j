@@ -140,6 +140,18 @@ public class ClasspathConfigurationSourceTest {
   }
 
   @Test
+  public void getConfiguration2ShouldThrowOnMalformedConfigFile() throws Exception {
+    configFilesProvider = () -> Collections.singletonList(
+        new File("malformed.properties")
+    );
+
+    source = new ClasspathConfigurationSource(configFilesProvider);
+
+    expectedException.expect(IllegalStateException.class);
+    source.getConfiguration(new DefaultEnvironment());
+  }
+
+  @Test
   public void refreshShouldUpdateGetConfigurationResults() throws Exception {
     classpathRepo.changeProperty("application.properties", "some.setting", "changedValue");
     source.refresh();

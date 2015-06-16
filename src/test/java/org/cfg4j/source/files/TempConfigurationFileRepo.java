@@ -24,10 +24,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Properties;
 
 /**
- * Temporary local git repository that contains configuration files.
+ * Temporary local file repository that contains configuration files.
  */
 public class TempConfigurationFileRepo {
 
@@ -53,14 +52,12 @@ public class TempConfigurationFileRepo {
   }
 
   /**
-   * Change the {@code key} property to {@code value} and store it in a {@code propFilePath} properties file. Commits
-   * the change.
+   * Change the {@code key} property to {@code value} and store it in a {@code propFilePath} properties file
    *
    * @param propFilePath relative path to the properties file in this repository
    * @param key          property key
    * @param value        property value
    * @throws IOException     when unable to modify properties file
-   * @throws GitAPIException when unable to commit changes
    */
   public void changeProperty(String propFilePath, String key, String value) throws IOException {
     createRequiredDirsForFile(propFilePath);
@@ -73,10 +70,9 @@ public class TempConfigurationFileRepo {
   }
 
   /**
-   * Delete file from this repository. Commits changes.
+   * Delete file from this repository.
    *
    * @param filePath relative file path to delete
-   * @throws GitAPIException when unable to commit changes
    */
   public void deleteFile(String filePath) throws IOException {
     if (!new File(dirPath + "/" + filePath).delete()) {
@@ -95,9 +91,7 @@ public class TempConfigurationFileRepo {
 
   private void writePropertyToFile(String propFilePath, String key, String value) throws IOException {
     OutputStream out = new FileOutputStream(getURI() + "/" + propFilePath);
-    Properties properties = new Properties();
-    properties.put(key, value);
-    properties.store(out, "");
+    out.write((key + "=" + value).getBytes());
     out.close();
   }
 }

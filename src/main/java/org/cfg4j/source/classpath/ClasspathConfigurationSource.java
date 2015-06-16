@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cfg4j.source.files;
+package org.cfg4j.source.classpath;
 
 import static java.util.Objects.requireNonNull;
 
@@ -24,30 +24,30 @@ import org.cfg4j.source.context.MissingEnvironmentException;
 import org.cfg4j.source.git.ConfigFilesProvider;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 /**
- * {@link ConfigurationSource} reading configuration from local files.
+ * {@link ConfigurationSource} reading configuration from classpath files.
  */
-public class FilesConfigurationSource implements ConfigurationSource {
+public class ClasspathConfigurationSource implements ConfigurationSource {
 
   private final ConfigFilesProvider configFilesProvider;
 
   /**
-   * Construct {@link ConfigurationSource} backed by files. File list should by provided by
+   * Construct {@link ConfigurationSource} backed by classpath files. File list should by provided by
    * {@link ConfigFilesProvider} and will be treated as relative paths to the environment provided in
    * {@link #getConfiguration()} and {@link #getConfiguration(Environment)} calls (see corresponding javadocs
    * for detail).
    *
    * @param configFilesProvider {@link ConfigFilesProvider} supplying a list of configuration files to use
    */
-  public FilesConfigurationSource(ConfigFilesProvider configFilesProvider) {
+  public ClasspathConfigurationSource(ConfigFilesProvider configFilesProvider) {
     this.configFilesProvider = requireNonNull(configFilesProvider);
   }
 
@@ -79,24 +79,27 @@ public class FilesConfigurationSource implements ConfigurationSource {
   public Properties getConfiguration(Environment environment) {
     Properties properties = new Properties();
 
-    String path = environment.getName();
-    if (path.trim().isEmpty()) {
-      path = "/";
-    }
+    String pathPrefix = getPrefixFor(environment);
 
-    if (!new File(path).exists()) {
+    URL url = ClassLoader.getSystemResource(pathPrefix);
+    if (url == null) {
       throw new MissingEnvironmentException("Directory doesn't exist: " + environment.getName());
     }
 
     List<File> files = StreamSupport.stream(configFilesProvider.getConfigFiles().spliterator(), false)
-        .map(file -> new File(environment.getName() + "/" + file.getPath()))
+        .map(file -> new File(pathPrefix + file.getPath()))
         .collect(Collectors.toList());
 
     for (File file : files) {
-      try (InputStream input = new FileInputStream(file.getPath())) {
+      try (InputStream input = ClassLoader.getSystemResourceAsStream(file.getPath())) {
+
+        if (input == null) {
+          throw new IllegalStateException("Unable to load properties from classpath: " + file.getPath());
+        }
+
         properties.load(input);
       } catch (IOException | IllegalArgumentException e) {
-        throw new IllegalStateException("Unable to load properties from application.properties file", e);
+        throw new IllegalStateException("Unable to load properties from classpath: " + file.getPath(), e);
       }
     }
 
@@ -106,5 +109,19 @@ public class FilesConfigurationSource implements ConfigurationSource {
   @Override
   public void refresh() {
     // NOP
+  }
+
+  private String getPrefixFor(Environment environment) {
+    String path = environment.getName();
+
+    if (!path.trim().isEmpty() && !path.endsWith("/")) {
+      path += "/";
+    }
+
+    if (path.startsWith("/")) {
+      path = path.substring(1);
+    }
+
+    return path;
   }
 }

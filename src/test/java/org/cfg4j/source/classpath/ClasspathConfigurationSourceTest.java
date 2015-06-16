@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cfg4j.source.files;
+package org.cfg4j.source.classpath;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -23,7 +23,6 @@ import org.cfg4j.source.context.Environment;
 import org.cfg4j.source.context.ImmutableEnvironment;
 import org.cfg4j.source.context.MissingEnvironmentException;
 import org.cfg4j.source.git.ConfigFilesProvider;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -37,33 +36,24 @@ import java.util.Collections;
 
 
 @RunWith(MockitoJUnitRunner.class)
-public class FilesConfigurationSourceTest {
+public class ClasspathConfigurationSourceTest {
 
   @Rule
   public ExpectedException expectedException = ExpectedException.none();
 
-  private TempConfigurationFileRepo fileRepo;
+  private TempConfigurationClasspathRepo classpathRepo;
   private ConfigFilesProvider configFilesProvider;
-  private FilesConfigurationSource source;
+  private ClasspathConfigurationSource source;
 
   @Before
   public void setUp() throws Exception {
-    fileRepo = new TempConfigurationFileRepo("cfg4j-test-repo");
-    fileRepo.changeProperty("application.properties", "some.setting", "masterValue");
-    fileRepo.changeProperty("otherConfig.properties", "otherConfig.setting", "masterValue");
-    fileRepo.changeProperty("malformed.properties", "otherConfig.setting", "\\uzzzzz");
-    fileRepo.changeProperty("otherApplicationConfigs/application.properties", "some.setting", "otherAppSetting");
+    classpathRepo = new TempConfigurationClasspathRepo();
 
     configFilesProvider = () -> Collections.singletonList(
-        new File(fileRepo.getURI() + "/application.properties")
+        new File("application.properties")
     );
 
-    source = new FilesConfigurationSource(configFilesProvider);
-  }
-
-  @After
-  public void tearDown() throws Exception {
-    fileRepo.remove();
+    source = new ClasspathConfigurationSource(configFilesProvider);
   }
 
   @Test
@@ -73,7 +63,11 @@ public class FilesConfigurationSourceTest {
 
   @Test
   public void getConfigurationShouldThrowOnMissingConfigFile() throws Exception {
-    fileRepo.deleteFile("application.properties");
+    configFilesProvider = () -> Collections.singletonList(
+        new File("nonexistent.properties")
+    );
+
+    source = new ClasspathConfigurationSource(configFilesProvider);
 
     expectedException.expect(IllegalStateException.class);
     source.getConfiguration();
@@ -82,10 +76,10 @@ public class FilesConfigurationSourceTest {
   @Test
   public void getConfigurationShouldThrowOnMalformedConfigFile() throws Exception {
     configFilesProvider = () -> Collections.singletonList(
-        new File(fileRepo.getURI() + "/malformed.properties")
+        new File("malformed.properties")
     );
 
-    source = new FilesConfigurationSource(configFilesProvider);
+    source = new ClasspathConfigurationSource(configFilesProvider);
 
     expectedException.expect(IllegalStateException.class);
     source.getConfiguration();
@@ -94,11 +88,11 @@ public class FilesConfigurationSourceTest {
   @Test
   public void getConfigurationShouldReadFromGivenFiles() throws Exception {
     configFilesProvider = () -> Arrays.asList(
-        new File(fileRepo.getURI() + "/application.properties"),
-        new File(fileRepo.getURI() + "/otherConfig.properties")
+        new File("application.properties"),
+        new File("otherConfig.properties")
     );
 
-    source = new FilesConfigurationSource(configFilesProvider);
+    source = new ClasspathConfigurationSource(configFilesProvider);
 
     assertThat(source.getConfiguration()).containsOnlyKeys("some.setting", "otherConfig.setting");
   }
@@ -109,9 +103,9 @@ public class FilesConfigurationSourceTest {
         new File("application.properties")
     );
 
-    source = new FilesConfigurationSource(configFilesProvider);
+    source = new ClasspathConfigurationSource(configFilesProvider);
 
-    Environment environment = new ImmutableEnvironment(fileRepo.getURI() + "/otherApplicationConfigs/");
+    Environment environment = new ImmutableEnvironment("/otherApplicationConfigs/");
 
     assertThat(source.getConfiguration(environment)).containsOnly(MapEntry.entry("some.setting", "otherAppSetting"));
   }
@@ -119,11 +113,11 @@ public class FilesConfigurationSourceTest {
   @Test
   public void getConfiguration2ShouldReadFromGivenFiles() throws Exception {
     configFilesProvider = () -> Arrays.asList(
-        new File(fileRepo.getURI() + "/application.properties"),
-        new File(fileRepo.getURI() + "/otherConfig.properties")
+        new File("application.properties"),
+        new File("otherConfig.properties")
     );
 
-    source = new FilesConfigurationSource(configFilesProvider);
+    source = new ClasspathConfigurationSource(configFilesProvider);
     assertThat(source.getConfiguration(new DefaultEnvironment())).containsOnlyKeys("some.setting", "otherConfig.setting");
   }
 
@@ -135,7 +129,11 @@ public class FilesConfigurationSourceTest {
 
   @Test
   public void getConfiguration2ShouldThrowOnMissingConfigFile() throws Exception {
-    fileRepo.deleteFile("application.properties");
+    configFilesProvider = () -> Collections.singletonList(
+        new File("nonexistent.properties")
+    );
+
+    source = new ClasspathConfigurationSource(configFilesProvider);
 
     expectedException.expect(IllegalStateException.class);
     source.getConfiguration(new DefaultEnvironment());
@@ -144,10 +142,10 @@ public class FilesConfigurationSourceTest {
   @Test
   public void getConfiguration2ShouldThrowOnMalformedConfigFile() throws Exception {
     configFilesProvider = () -> Collections.singletonList(
-        new File(fileRepo.getURI() + "/malformed.properties")
+        new File("malformed.properties")
     );
 
-    source = new FilesConfigurationSource(configFilesProvider);
+    source = new ClasspathConfigurationSource(configFilesProvider);
 
     expectedException.expect(IllegalStateException.class);
     source.getConfiguration(new DefaultEnvironment());
@@ -155,7 +153,7 @@ public class FilesConfigurationSourceTest {
 
   @Test
   public void refreshShouldUpdateGetConfigurationResults() throws Exception {
-    fileRepo.changeProperty("application.properties", "some.setting", "changedValue");
+    classpathRepo.changeProperty("application.properties", "some.setting", "changedValue");
     source.refresh();
 
     assertThat(source.getConfiguration()).containsOnly(MapEntry.entry("some.setting", "changedValue"));
@@ -163,7 +161,7 @@ public class FilesConfigurationSourceTest {
 
   @Test
   public void refreshShouldUpdateGetConfiguration2OnDefaultBranch() throws Exception {
-    fileRepo.changeProperty("application.properties", "some.setting", "changedValue");
+    classpathRepo.changeProperty("application.properties", "some.setting", "changedValue");
     source.refresh();
 
     assertThat(source.getConfiguration(new DefaultEnvironment())).containsOnly(MapEntry.entry("some.setting", "changedValue"));

@@ -30,6 +30,7 @@ import org.junit.rules.ExpectedException;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Collections;
 
 public class GitConfigurationSourceIntegrationTest {
 
@@ -46,6 +47,7 @@ public class GitConfigurationSourceIntegrationTest {
     remoteRepo = new TempConfigurationGitRepo("cfg4j-test-repo.git");
     remoteRepo.changeProperty("application.properties", "some.setting", "masterValue");
     remoteRepo.changeProperty("otherConfig.properties", "otherConfig.setting", "masterValue");
+    remoteRepo.changeProperty("malformed.properties", "otherConfig.setting", "\\uzzzzz");
     remoteRepo.changeProperty("otherApplicationConfigs/application.properties", "some.setting", "otherAppSetting");
 
     remoteRepo.changeBranchTo(TEST_ENV_BRANCH);
@@ -91,6 +93,14 @@ public class GitConfigurationSourceIntegrationTest {
       expectedException.expect(IllegalStateException.class);
       gitConfigurationSource.getConfiguration();
     }
+  }
+
+  @Test
+  public void getConfigurationShouldThrowOnMalformedConfigFile() throws Exception {
+    ConfigFilesProvider configFilesProvider = () -> Collections.singletonList(new File("malformed.properties"));
+
+    expectedException.expect(IllegalStateException.class);
+    getSourceForRemoteRepoWithFilesProvider(configFilesProvider).getConfiguration();
   }
 
   @Test
@@ -191,6 +201,14 @@ public class GitConfigurationSourceIntegrationTest {
       expectedException.expect(IllegalStateException.class);
       gitConfigurationSource.getConfiguration(new DefaultEnvironment());
     }
+  }
+
+  @Test
+  public void getConfiguration2ShouldThrowOnMalformedConfigFile() throws Exception {
+    ConfigFilesProvider configFilesProvider = () -> Collections.singletonList(new File("malformed.properties"));
+
+    expectedException.expect(IllegalStateException.class);
+    getSourceForRemoteRepoWithFilesProvider(configFilesProvider).getConfiguration(new DefaultEnvironment());
   }
 
   @Test

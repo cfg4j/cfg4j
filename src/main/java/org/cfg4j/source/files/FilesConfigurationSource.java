@@ -45,7 +45,7 @@ public class FilesConfigurationSource implements ConfigurationSource {
    * {@link #getConfiguration()} and {@link #getConfiguration(Environment)} calls (see corresponding javadocs
    * for detail).
    *
-   * @param configFilesProvider
+   * @param configFilesProvider {@link ConfigFilesProvider} supplying a list of configuration files to use
    */
   public FilesConfigurationSource(ConfigFilesProvider configFilesProvider) {
     this.configFilesProvider = requireNonNull(configFilesProvider);

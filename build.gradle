@@ -20,7 +20,7 @@ buildscript {
     ext {
         artifactGroup = "org.cfg4j"
         artifactName = "cfg4j"
-        artifactVersion = "3.3.0"
+        artifactVersion = "4.0.0-SNAPSHOT"
     }
 
     repositories {

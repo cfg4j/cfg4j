@@ -122,22 +122,6 @@ public class ConsulConfigurationSourceIntegrationTest {
   }
 
   @Test
-  public void getConfigurationShouldReturnAllKeys() throws Exception {
-    assertThat(source.getConfiguration()).contains(MapEntry.entry("us-west-1.featureA.toggle", "disabled"),
-        MapEntry.entry("us-west-2.featureA.toggle", "disabled"));
-  }
-
-  @Test
-  public void getConfigurationShouldBeUpdatedByRefresh() throws Exception {
-    dispatcher.toggleUsWest2();
-
-    source.refresh();
-
-    assertThat(source.getConfiguration()).contains(MapEntry.entry("us-west-1.featureA.toggle", "disabled"),
-        MapEntry.entry("us-west-2.featureA.toggle", "enabled"));
-  }
-
-  @Test
   public void getConfiguration2ShouldReturnAllKeysFromGivenEnvironment() throws Exception {
     Environment environment = new ImmutableEnvironment("us-west-1");
 

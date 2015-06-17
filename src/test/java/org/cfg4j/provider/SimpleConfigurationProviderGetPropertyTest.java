@@ -34,7 +34,7 @@ public class SimpleConfigurationProviderGetPropertyTest extends SimpleConfigurat
 
   @Test
   public void allConfigurationAsPropertiesShouldThrowWhenUnableToFetchConfiguration() throws Exception {
-    when(configurationSource.getConfiguration(anyEnvironment())).thenThrow(IllegalStateException.class);
+    when(configurationSource.getConfiguration(anyEnvironment())).thenThrow(new IllegalStateException());
 
     expectedException.expect(IllegalStateException.class);
     simpleConfigurationProvider.allConfigurationAsProperties();
@@ -42,7 +42,7 @@ public class SimpleConfigurationProviderGetPropertyTest extends SimpleConfigurat
 
   @Test
   public void allConfigurationAsPropertiesShouldThrowWhenMissingEnvironment() throws Exception {
-    when(configurationSource.getConfiguration(anyEnvironment())).thenThrow(MissingEnvironmentException.class);
+    when(configurationSource.getConfiguration(anyEnvironment())).thenThrow(new MissingEnvironmentException(""));
 
     expectedException.expect(IllegalStateException.class);
     simpleConfigurationProvider.allConfigurationAsProperties();
@@ -67,7 +67,7 @@ public class SimpleConfigurationProviderGetPropertyTest extends SimpleConfigurat
 
   @Test
   public void getPropertyShouldThrowWhenUnableToFetchKey() throws Exception {
-    when(configurationSource.getConfiguration(anyEnvironment())).thenThrow(IllegalStateException.class);
+    when(configurationSource.getConfiguration(anyEnvironment())).thenThrow(new IllegalStateException());
 
     expectedException.expect(IllegalStateException.class);
     simpleConfigurationProvider.getProperty("some.property");
@@ -100,7 +100,7 @@ public class SimpleConfigurationProviderGetPropertyTest extends SimpleConfigurat
 
   @Test
   public void getProperty2ShouldThrowWhenUnableToFetchKey() throws Exception {
-    when(configurationSource.getConfiguration(anyEnvironment())).thenThrow(IllegalStateException.class);
+    when(configurationSource.getConfiguration(anyEnvironment())).thenThrow(new IllegalStateException());
 
     expectedException.expect(IllegalStateException.class);
     simpleConfigurationProvider.getProperty("some.property", String.class);
@@ -150,7 +150,7 @@ public class SimpleConfigurationProviderGetPropertyTest extends SimpleConfigurat
 
   @Test
   public void getProperty3ShouldThrowWhenUnableToFetchKey() throws Exception {
-    when(configurationSource.getConfiguration(anyEnvironment())).thenThrow(IllegalStateException.class);
+    when(configurationSource.getConfiguration(anyEnvironment())).thenThrow(new IllegalStateException());
 
     expectedException.expect(IllegalStateException.class);
     simpleConfigurationProvider.getProperty("some.property", new GenericType<List<String>>() {
@@ -189,7 +189,6 @@ public class SimpleConfigurationProviderGetPropertyTest extends SimpleConfigurat
   public void getPropertyShouldReturnPropertyForProperEnvironment() throws Exception {
     when(configurationSource.getConfiguration(environment)).thenReturn(propertiesWith("some.property", "1"));
     when(configurationSource.getConfiguration(new ImmutableEnvironment("test_env"))).thenReturn(propertiesWith("some.property", "2"));
-    when(configurationSource.getConfiguration()).thenReturn(propertiesWith("some.property", "3"));
 
     Integer property = simpleConfigurationProvider.getProperty("some.property", Integer.class);
 

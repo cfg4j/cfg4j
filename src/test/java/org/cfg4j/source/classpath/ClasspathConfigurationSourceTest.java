@@ -57,47 +57,6 @@ public class ClasspathConfigurationSourceTest {
   }
 
   @Test
-  public void getConfigurationShouldReadConfigFromAbsolutePaths() throws Exception {
-    assertThat(source.getConfiguration()).containsOnlyKeys("some.setting");
-  }
-
-  @Test
-  public void getConfigurationShouldThrowOnMissingConfigFile() throws Exception {
-    configFilesProvider = () -> Collections.singletonList(
-        new File("nonexistent.properties")
-    );
-
-    source = new ClasspathConfigurationSource(configFilesProvider);
-
-    expectedException.expect(IllegalStateException.class);
-    source.getConfiguration();
-  }
-
-  @Test
-  public void getConfigurationShouldThrowOnMalformedConfigFile() throws Exception {
-    configFilesProvider = () -> Collections.singletonList(
-        new File("malformed.properties")
-    );
-
-    source = new ClasspathConfigurationSource(configFilesProvider);
-
-    expectedException.expect(IllegalStateException.class);
-    source.getConfiguration();
-  }
-
-  @Test
-  public void getConfigurationShouldReadFromGivenFiles() throws Exception {
-    configFilesProvider = () -> Arrays.asList(
-        new File("application.properties"),
-        new File("otherConfig.properties")
-    );
-
-    source = new ClasspathConfigurationSource(configFilesProvider);
-
-    assertThat(source.getConfiguration()).containsOnlyKeys("some.setting", "otherConfig.setting");
-  }
-
-  @Test
   public void getConfiguration2ShouldReadFromGivenPath() throws Exception {
     configFilesProvider = () -> Collections.singletonList(
         new File("application.properties")
@@ -149,14 +108,6 @@ public class ClasspathConfigurationSourceTest {
 
     expectedException.expect(IllegalStateException.class);
     source.getConfiguration(new DefaultEnvironment());
-  }
-
-  @Test
-  public void refreshShouldUpdateGetConfigurationResults() throws Exception {
-    classpathRepo.changeProperty("application.properties", "some.setting", "changedValue");
-    source.refresh();
-
-    assertThat(source.getConfiguration()).containsOnly(MapEntry.entry("some.setting", "changedValue"));
   }
 
   @Test

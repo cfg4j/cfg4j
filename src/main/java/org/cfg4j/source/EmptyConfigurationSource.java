@@ -27,11 +27,6 @@ public class EmptyConfigurationSource implements ConfigurationSource {
   private static final Properties properties = new Properties();
 
   @Override
-  public Properties getConfiguration() {
-    return properties;
-  }
-
-  @Override
   public Properties getConfiguration(Environment environment) {
     return properties;
   }

@@ -19,6 +19,7 @@ package org.cfg4j.source;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
+import org.cfg4j.source.context.DefaultEnvironment;
 import org.cfg4j.source.context.Environment;
 import org.junit.Before;
 import org.junit.Rule;
@@ -42,13 +43,13 @@ public class EmptyConfigurationSourceTest {
 
   @Test
   public void shouldReturnEmptyConfiguration() throws Exception {
-    assertThat(source.getConfiguration()).isEmpty();
+    assertThat(source.getConfiguration(new DefaultEnvironment())).isEmpty();
   }
 
   @Test
   public void refreshShouldNotChangeConfiguration() throws Exception {
     source.refresh();
-    assertThat(source.getConfiguration()).isEmpty();
+    assertThat(source.getConfiguration(new DefaultEnvironment())).isEmpty();
   }
 
   @Test

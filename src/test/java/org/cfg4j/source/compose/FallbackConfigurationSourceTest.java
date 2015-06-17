@@ -62,7 +62,7 @@ public class FallbackConfigurationSourceTest {
 
   @Test
   public void getConfiguration2ShouldThrowWhenAllSourcesThrowOnMissingEnvironment() throws Exception {
-    makeAllSourcesThrow(MissingEnvironmentException.class);
+    makeAllSourcesThrow(new MissingEnvironmentException(""));
 
     expectedException.expect(MissingEnvironmentException.class);
     fallbackConfigurationSource.getConfiguration(mock(Environment.class));
@@ -70,7 +70,7 @@ public class FallbackConfigurationSourceTest {
 
   @Test
   public void getConfiguration2ShouldThrowWhenAllSourcesThrow() throws Exception {
-    makeAllSourcesThrow(IllegalStateException.class);
+    makeAllSourcesThrow(new IllegalStateException());
 
     expectedException.expect(IllegalStateException.class);
     fallbackConfigurationSource.getConfiguration(mock(Environment.class));
@@ -78,7 +78,7 @@ public class FallbackConfigurationSourceTest {
 
   @Test
   public void getConfiguration2ShouldSelectFirstAvailableConfiguration() throws Exception {
-    makeAllSourcesThrow(IllegalStateException.class);
+    makeAllSourcesThrow(new IllegalStateException());
     underlyingSources[LAST_SOURCE_INDEX] = mock(ConfigurationSource.class);
     when(underlyingSources[LAST_SOURCE_INDEX].getConfiguration(any(Environment.class))).thenReturn(getProps("prop1", "value1")[0]);
 
@@ -97,7 +97,7 @@ public class FallbackConfigurationSourceTest {
 
   @Test
   public void refreshShouldThrowWhenAllSourcesThrow() throws Exception {
-    makeAllSourcesThrow(IllegalStateException.class);
+    makeAllSourcesThrow(new IllegalStateException());
 
     expectedException.expect(IllegalStateException.class);
     fallbackConfigurationSource.refresh();
@@ -105,16 +105,16 @@ public class FallbackConfigurationSourceTest {
 
   @Test
   public void refreshShouldIgnoreExceptionsIfAtLeastOneSourceSucceeds() throws Exception {
-    makeAllSourcesThrow(IllegalStateException.class);
+    makeAllSourcesThrow(new IllegalStateException());
     doNothing().when(underlyingSources[LAST_SOURCE_INDEX]).refresh();
 
     fallbackConfigurationSource.refresh();
   }
 
-  private void makeAllSourcesThrow(Class<? extends Throwable> exceptionClass) {
+  private void makeAllSourcesThrow(Throwable exception) {
     for (ConfigurationSource underlyingSource : underlyingSources) {
-      when(underlyingSource.getConfiguration(any(Environment.class))).thenThrow(exceptionClass);
-      doThrow(exceptionClass).when(underlyingSource).refresh();
+      when(underlyingSource.getConfiguration(any(Environment.class))).thenThrow(exception);
+      doThrow(exception).when(underlyingSource).refresh();
     }
   }
 

@@ -60,7 +60,7 @@ public class MergeConfigurationSourceTest {
 
   @Test
   public void getConfiguration2ShouldThrowWhenOneOfSourcesThrowsOnMissingEnvironment() throws Exception {
-    when(underlyingSources[1].getConfiguration(any())).thenThrow(MissingEnvironmentException.class);
+    when(underlyingSources[1].getConfiguration(any())).thenThrow(new MissingEnvironmentException(""));
 
     expectedException.expect(MissingEnvironmentException.class);
     mergeConfigurationSource.getConfiguration(new ImmutableEnvironment("test"));
@@ -68,7 +68,7 @@ public class MergeConfigurationSourceTest {
 
   @Test
   public void getConfiguration2ShouldThrowWhenOneOfSourcesThrows() throws Exception {
-    when(underlyingSources[3].getConfiguration(any())).thenThrow(IllegalStateException.class);
+    when(underlyingSources[3].getConfiguration(any())).thenThrow(new IllegalStateException());
 
     expectedException.expect(IllegalStateException.class);
     mergeConfigurationSource.getConfiguration(new ImmutableEnvironment("test"));

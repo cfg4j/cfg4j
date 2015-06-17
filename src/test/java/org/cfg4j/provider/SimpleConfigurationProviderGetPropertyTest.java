@@ -189,7 +189,6 @@ public class SimpleConfigurationProviderGetPropertyTest extends SimpleConfigurat
   public void getPropertyShouldReturnPropertyForProperEnvironment() throws Exception {
     when(configurationSource.getConfiguration(environment)).thenReturn(propertiesWith("some.property", "1"));
     when(configurationSource.getConfiguration(new ImmutableEnvironment("test_env"))).thenReturn(propertiesWith("some.property", "2"));
-    when(configurationSource.getConfiguration()).thenReturn(propertiesWith("some.property", "3"));
 
     Integer property = simpleConfigurationProvider.getProperty("some.property", Integer.class);
 

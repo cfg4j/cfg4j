@@ -18,7 +18,6 @@ package org.cfg4j.source.classpath;
 import static java.util.Objects.requireNonNull;
 
 import org.cfg4j.source.ConfigurationSource;
-import org.cfg4j.source.context.DefaultEnvironment;
 import org.cfg4j.source.context.Environment;
 import org.cfg4j.source.context.MissingEnvironmentException;
 import org.cfg4j.source.git.ConfigFilesProvider;
@@ -42,27 +41,12 @@ public class ClasspathConfigurationSource implements ConfigurationSource {
   /**
    * Construct {@link ConfigurationSource} backed by classpath files. File list should by provided by
    * {@link ConfigFilesProvider} and will be treated as relative paths to the environment provided in
-   * {@link #getConfiguration()} and {@link #getConfiguration(Environment)} calls (see corresponding javadocs
-   * for detail).
+   * {@link #getConfiguration(Environment)} calls (see corresponding javadocs for detail).
    *
    * @param configFilesProvider {@link ConfigFilesProvider} supplying a list of configuration files to use
    */
   public ClasspathConfigurationSource(ConfigFilesProvider configFilesProvider) {
     this.configFilesProvider = requireNonNull(configFilesProvider);
-  }
-
-  /**
-   * <b>DEPRECATED: Use {@link #getConfiguration(Environment)} with {@link DefaultEnvironment} instead.</b>
-   * <p>
-   * Get configuration set from this source in a form of {@link Properties}. Uses default environment which means
-   * treating paths from {@link ConfigFilesProvider} as absolute paths.
-   *
-   * @return configuration set for default environment
-   * @throws IllegalStateException when unable to fetch configuration
-   */
-  @Override
-  public Properties getConfiguration() {
-    return getConfiguration(new DefaultEnvironment());
   }
 
   /**

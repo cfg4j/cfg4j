@@ -44,26 +44,6 @@ public class MergeConfigurationSource implements ConfigurationSource {
   }
 
   /**
-   * Get configuration set from this source in a form of {@link Properties}. Uses default environment. The configuration
-   * set is a result of a merge of provided {@link ConfigurationSource} configurations. In case of key collision
-   * last-match wins merge strategy is used.
-   *
-   * @return configuration set for default environment
-   * @throws IllegalStateException when unable to fetch configuration from one of the underlying sources
-   */
-  @Override
-  public Properties getConfiguration() {
-    Properties properties = new Properties();
-
-    for (ConfigurationSource source : sources) {
-      Properties sourceProperties = source.getConfiguration();
-      properties.putAll(sourceProperties);
-    }
-
-    return properties;
-  }
-
-  /**
    * Get configuration set for a given {@code environment} from this source in a form of {@link Properties}. The configuration
    * set is a result of a merge of provided {@link ConfigurationSource} configurations. In case of key collision
    * last-match wins merge strategy is used.

@@ -79,51 +79,6 @@ public class GitConfigurationSourceIntegrationTest {
   }
 
   @Test
-  public void getConfigurationShouldReadConfigFromDefaultBranch() throws Exception {
-    try (GitConfigurationSource gitConfigurationSource = getSourceForRemoteRepoWithDefaults()) {
-      assertThat(gitConfigurationSource.getConfiguration()).contains(MapEntry.entry("some.setting", "masterValue"));
-    }
-  }
-
-  @Test
-  public void getConfigurationShouldThrowOnMissingConfigFile() throws Exception {
-    remoteRepo.deleteFile("application.properties");
-
-    try (GitConfigurationSource gitConfigurationSource = getSourceForRemoteRepoWithDefaults()) {
-      expectedException.expect(IllegalStateException.class);
-      gitConfigurationSource.getConfiguration();
-    }
-  }
-
-  @Test
-  public void getConfigurationShouldThrowOnMalformedConfigFile() throws Exception {
-    ConfigFilesProvider configFilesProvider = () -> Collections.singletonList(new File("malformed.properties"));
-
-    expectedException.expect(IllegalStateException.class);
-    getSourceForRemoteRepoWithFilesProvider(configFilesProvider).getConfiguration();
-  }
-
-  @Test
-  public void getConfigurationShouldReadFromGivenFiles() throws Exception {
-    ConfigFilesProvider configFilesProvider = () -> Arrays.asList(new File("application.properties"), new File("otherConfig.properties"));
-
-    try (GitConfigurationSource gitConfigurationSource = getSourceForRemoteRepoWithFilesProvider(configFilesProvider)) {
-      assertThat(gitConfigurationSource.getConfiguration()).containsKeys("some.setting", "otherConfig.setting");
-    }
-  }
-
-  @Test
-  public void getConfigurationShouldThrowOnMissingBranch() throws Exception {
-    remoteRepo.changeBranchTo("test");
-    remoteRepo.deleteBranch(DEFAULT_BRANCH);
-
-    try (GitConfigurationSource gitConfigurationSource = getSourceForRemoteRepoWithDefaults()) {
-      expectedException.expect(IllegalStateException.class);
-      gitConfigurationSource.getConfiguration();
-    }
-  }
-
-  @Test
   public void getConfiguration2ShouldUseBranchResolver() throws Exception {
     class Resolver implements BranchResolver {
 
@@ -209,16 +164,6 @@ public class GitConfigurationSourceIntegrationTest {
 
     expectedException.expect(IllegalStateException.class);
     getSourceForRemoteRepoWithFilesProvider(configFilesProvider).getConfiguration(new DefaultEnvironment());
-  }
-
-  @Test
-  public void refreshShouldUpdateGetConfigurationResults() throws Exception {
-    try (GitConfigurationSource gitConfigurationSource = getSourceForRemoteRepoWithDefaults()) {
-      remoteRepo.changeProperty("application.properties", "some.setting", "changedValue");
-      gitConfigurationSource.refresh();
-
-      assertThat(gitConfigurationSource.getConfiguration()).contains(MapEntry.entry("some.setting", "changedValue"));
-    }
   }
 
   @Test

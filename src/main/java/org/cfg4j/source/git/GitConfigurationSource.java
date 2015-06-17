@@ -18,7 +18,6 @@ package org.cfg4j.source.git;
 import static java.util.Objects.requireNonNull;
 
 import org.cfg4j.source.ConfigurationSource;
-import org.cfg4j.source.context.DefaultEnvironment;
 import org.cfg4j.source.context.Environment;
 import org.cfg4j.source.context.MissingEnvironmentException;
 import org.cfg4j.utils.FileUtils;
@@ -94,15 +93,6 @@ public class GitConfigurationSource implements ConfigurationSource, Closeable {
           .call();
     } catch (GitAPIException e) {
       throw new GitConfigurationSourceException("Unable to clone repository: " + repositoryURI, e);
-    }
-  }
-
-  @Override
-  public Properties getConfiguration() {
-    try {
-      return getConfiguration(new DefaultEnvironment());
-    } catch (MissingEnvironmentException e) {
-      throw new IllegalStateException("Unable to load configuration", e);
     }
   }
 

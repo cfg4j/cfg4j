@@ -45,30 +45,8 @@ public class FallbackConfigurationSource implements ConfigurationSource {
   }
 
   /**
-   * Get configuration set from this source in a form of {@link Properties}. Uses default environment. The configuration
-   * set is a result of the first {@link #getConfiguration()} call to underlying sources that succeeds. Sources are
-   * called in a provided order.
-   *
-   * @return configuration set for default environment taken from the first source that works
-   * @throws IllegalStateException when unable to fetch configuration from any of the underlying sources
-   */
-  @Override
-  public Properties getConfiguration() {
-
-    for (ConfigurationSource source : sources) {
-      try {
-        return source.getConfiguration();
-      } catch (IllegalStateException e) {
-        // NOP
-      }
-    }
-
-    throw new IllegalStateException();
-  }
-
-  /**
    * Get configuration set for a given {@code environment} from this source in a form of {@link Properties}.
-   * Uses default environment. The configuration set is a result of the first {@link #getConfiguration()}
+   * The configuration set is a result of the first {@link #getConfiguration(Environment)}
    * call to underlying sources that succeeds. Sources are called in a provided order.
    *
    * @param environment environment to use

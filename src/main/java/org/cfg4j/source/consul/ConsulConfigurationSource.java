@@ -20,7 +20,6 @@ import com.orbitz.consul.KeyValueClient;
 import com.orbitz.consul.model.kv.Value;
 import org.cfg4j.source.ConfigurationSource;
 import org.cfg4j.source.SourceCommunicationException;
-import org.cfg4j.source.context.DefaultEnvironment;
 import org.cfg4j.source.context.Environment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,11 +68,6 @@ public class ConsulConfigurationSource implements ConfigurationSource {
     }
 
     refresh();
-  }
-
-  @Override
-  public Properties getConfiguration() {
-    return getConfiguration(new DefaultEnvironment());
   }
 
   @Override

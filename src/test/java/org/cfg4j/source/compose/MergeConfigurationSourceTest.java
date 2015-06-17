@@ -52,34 +52,10 @@ public class MergeConfigurationSourceTest {
     underlyingSources = new ConfigurationSource[5];
     for (int i = 0; i < underlyingSources.length; i++) {
       underlyingSources[i] = mock(ConfigurationSource.class);
-      when(underlyingSources[i].getConfiguration()).thenReturn(new Properties());
       when(underlyingSources[i].getConfiguration(any(Environment.class))).thenReturn(new Properties());
     }
 
     mergeConfigurationSource = new MergeConfigurationSource(underlyingSources);
-  }
-
-  @Test
-  public void getConfigurationShouldThrowWhenOneOfSourcesThrows() throws Exception {
-    when(underlyingSources[3].getConfiguration()).thenThrow(IllegalStateException.class);
-
-    expectedException.expect(IllegalStateException.class);
-    mergeConfigurationSource.getConfiguration();
-  }
-
-  @Test
-  public void getConfigurationShouldMergeConfigurations() throws Exception {
-    sourcesWithProps("prop1", "value1", "prop2", "value2");
-
-    assertThat(mergeConfigurationSource.getConfiguration()).containsOnly(MapEntry.entry("prop1", "value1"),
-        MapEntry.entry("prop2", "value2"));
-  }
-
-  @Test
-  public void getConfigurationShouldMergeConfigurationsWithCollidingKeys() throws Exception {
-    sourcesWithProps("prop", "value1", "prop", "value2");
-
-    assertThat(mergeConfigurationSource.getConfiguration()).containsOnly(MapEntry.entry("prop", "value2"));
   }
 
   @Test
@@ -139,14 +115,6 @@ public class MergeConfigurationSourceTest {
 
     for (int i = 0; i < properties.length; i++) {
       when(underlyingSources[i].getConfiguration(environment)).thenReturn(properties[i]);
-    }
-  }
-
-  private void sourcesWithProps(String... props) {
-    Properties[] properties = getProps(props);
-
-    for (int i = 0; i < properties.length; i++) {
-      when(underlyingSources[i].getConfiguration()).thenReturn(properties[i]);
     }
   }
 

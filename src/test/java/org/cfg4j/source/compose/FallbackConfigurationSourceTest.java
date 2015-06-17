@@ -61,23 +61,6 @@ public class FallbackConfigurationSourceTest {
   }
 
   @Test
-  public void getConfigurationShouldThrowWhenAllSourcesThrow() throws Exception {
-    makeAllSourcesThrow(IllegalStateException.class);
-
-    expectedException.expect(IllegalStateException.class);
-    fallbackConfigurationSource.getConfiguration();
-  }
-
-  @Test
-  public void getConfigurationShouldSelectFirstAvailableConfiguration() throws Exception {
-    makeAllSourcesThrow(IllegalStateException.class);
-    underlyingSources[LAST_SOURCE_INDEX] = mock(ConfigurationSource.class);
-    when(underlyingSources[LAST_SOURCE_INDEX].getConfiguration()).thenReturn(getProps("prop1", "value1")[0]);
-
-    assertThat(fallbackConfigurationSource.getConfiguration()).containsOnly(MapEntry.entry("prop1", "value1"));
-  }
-
-  @Test
   public void getConfiguration2ShouldThrowWhenAllSourcesThrowOnMissingEnvironment() throws Exception {
     makeAllSourcesThrow(MissingEnvironmentException.class);
 
@@ -130,7 +113,6 @@ public class FallbackConfigurationSourceTest {
 
   private void makeAllSourcesThrow(Class<? extends Throwable> exceptionClass) {
     for (ConfigurationSource underlyingSource : underlyingSources) {
-      when(underlyingSource.getConfiguration()).thenThrow(exceptionClass);
       when(underlyingSource.getConfiguration(any(Environment.class))).thenThrow(exceptionClass);
       doThrow(exceptionClass).when(underlyingSource).refresh();
     }

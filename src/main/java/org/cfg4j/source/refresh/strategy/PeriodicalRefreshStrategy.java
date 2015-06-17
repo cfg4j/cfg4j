@@ -38,20 +38,6 @@ public class PeriodicalRefreshStrategy implements RefreshStrategy {
   private final Timer timer;
 
   /**
-   * <b>Deprecated: use {@link #PeriodicalRefreshStrategy(long, TimeUnit)} instead.</b>
-   *
-   * Construct strategy that refreshes the resource every {@code refreshAfterMs} ms.
-   * First refresh will happen immediately after calling {@link #init(Refreshable)}. Each following
-   * refresh will happen {@code refreshAfterMs} ms after the previous one completed.
-   *
-   * @param refreshAfterMs time (in milliseconds) between refreshes
-   */
-  @Deprecated
-  public PeriodicalRefreshStrategy(long refreshAfterMs) {
-    this(refreshAfterMs, TimeUnit.MILLISECONDS);
-  }
-
-  /**
    * Construct strategy that refreshes the resource every {@code duration} (measured in {@code timeUnit}s).
    * First refresh will happen immediately after calling {@link #init(Refreshable)}. Each following
    * refresh will happen {@code refreshAfterMs} ms after the previous one completed.

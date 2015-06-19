@@ -65,7 +65,7 @@ public class ClasspathConfigurationSource implements ConfigurationSource {
 
     String pathPrefix = getPrefixFor(environment);
 
-    URL url = ClassLoader.getSystemResource(pathPrefix);
+    URL url = getClass().getClassLoader().getResource(pathPrefix);
     if (url == null) {
       throw new MissingEnvironmentException("Directory doesn't exist: " + environment.getName());
     }
@@ -75,7 +75,7 @@ public class ClasspathConfigurationSource implements ConfigurationSource {
         .collect(Collectors.toList());
 
     for (File file : files) {
-      try (InputStream input = ClassLoader.getSystemResourceAsStream(file.getPath())) {
+      try (InputStream input = getClass().getClassLoader().getResourceAsStream(file.getPath())) {
 
         if (input == null) {
           throw new IllegalStateException("Unable to load properties from classpath: " + file.getPath());

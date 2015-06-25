@@ -88,10 +88,10 @@ public class FallbackConfigurationSourceTest {
 
   @Test
   public void refreshShouldTryToRefreshAllSources() throws Exception {
-    fallbackConfigurationSource.refresh();
+    fallbackConfigurationSource.reload();
 
     for (ConfigurationSource underlyingSource : underlyingSources) {
-      verify(underlyingSource, atLeastOnce()).refresh();
+      verify(underlyingSource, atLeastOnce()).reload();
     }
   }
 
@@ -100,21 +100,21 @@ public class FallbackConfigurationSourceTest {
     makeAllSourcesThrow(new IllegalStateException());
 
     expectedException.expect(IllegalStateException.class);
-    fallbackConfigurationSource.refresh();
+    fallbackConfigurationSource.reload();
   }
 
   @Test
   public void refreshShouldIgnoreExceptionsIfAtLeastOneSourceSucceeds() throws Exception {
     makeAllSourcesThrow(new IllegalStateException());
-    doNothing().when(underlyingSources[LAST_SOURCE_INDEX]).refresh();
+    doNothing().when(underlyingSources[LAST_SOURCE_INDEX]).reload();
 
-    fallbackConfigurationSource.refresh();
+    fallbackConfigurationSource.reload();
   }
 
   private void makeAllSourcesThrow(Throwable exception) {
     for (ConfigurationSource underlyingSource : underlyingSources) {
       when(underlyingSource.getConfiguration(any(Environment.class))).thenThrow(exception);
-      doThrow(exception).when(underlyingSource).refresh();
+      doThrow(exception).when(underlyingSource).reload();
     }
   }
 

@@ -66,15 +66,15 @@ public class MergeConfigurationSource implements ConfigurationSource {
   }
 
   /**
-   * Request configuration refresh. When this method returns configuration should be reloaded for all underlying
+   * Request configuration reload. When this method returns configuration should be reloaded for all underlying
    * configuration sources.
    *
-   * @throws IllegalStateException when unable to refresh one of the underlying sources
+   * @throws IllegalStateException when unable to reload one of the underlying sources
    */
   @Override
-  public void refresh() {
+  public void reload() {
     for (ConfigurationSource source : sources) {
-      source.refresh();
+      source.reload();
     }
   }
 }

@@ -20,7 +20,7 @@ import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import org.cfg4j.source.refresh.Refreshable;
+import org.cfg4j.source.refresh.Reloadable;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -32,28 +32,28 @@ import java.util.concurrent.TimeUnit;
 
 
 @RunWith(MockitoJUnitRunner.class)
-public class PeriodicalRefreshStrategyTest {
+public class PeriodicalReloadableStrategyTest {
 
   @Rule
   public ExpectedException expectedException = ExpectedException.none();
 
   @Mock
-  private Refreshable refreshable;
+  private Reloadable reloadable;
 
   @Test
   public void shouldRefreshImmediatelyAfterInit() throws Exception {
-    PeriodicalRefreshStrategy strategy = new PeriodicalRefreshStrategy(60, TimeUnit.SECONDS);
-    strategy.init(refreshable);
+    PeriodicalReloadStrategy strategy = new PeriodicalReloadStrategy(60, TimeUnit.SECONDS);
+    strategy.init(reloadable);
     strategy.shutdown();
-    verify(refreshable, times(1)).refresh();
+    verify(reloadable, times(1)).reload();
   }
 
   @Test
   public void shouldRefreshPeriodically() throws Exception {
-    PeriodicalRefreshStrategy strategy = new PeriodicalRefreshStrategy(10, TimeUnit.MILLISECONDS);
-    strategy.init(refreshable);
+    PeriodicalReloadStrategy strategy = new PeriodicalReloadStrategy(10, TimeUnit.MILLISECONDS);
+    strategy.init(reloadable);
     Thread.sleep(50);
     strategy.shutdown();
-    verify(refreshable, atLeast(2)).refresh();
+    verify(reloadable, atLeast(2)).reload();
   }
 }

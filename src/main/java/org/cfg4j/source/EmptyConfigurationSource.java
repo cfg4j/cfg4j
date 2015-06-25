@@ -32,7 +32,7 @@ public class EmptyConfigurationSource implements ConfigurationSource {
   }
 
   @Override
-  public void refresh() {
+  public void reload() {
     // NOP
   }
 }

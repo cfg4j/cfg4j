@@ -139,7 +139,7 @@ public class ConsulConfigurationSourceIntegrationTest {
   public void getConfiguration2ShouldBeUpdatedByRefresh() throws Exception {
     dispatcher.toggleUsWest2();
 
-    source.refresh();
+    source.reload();
 
     Environment environment = new ImmutableEnvironment("us-west-2");
     assertThat(source.getConfiguration(environment)).contains(MapEntry.entry("featureA.toggle", "enabled"));
@@ -149,7 +149,7 @@ public class ConsulConfigurationSourceIntegrationTest {
   public void refreshShouldThrowOnConnectionFailure() throws Exception {
     server.shutdown();
     expectedException.expect(SourceCommunicationException.class);
-    source.refresh();
+    source.reload();
   }
 
   private void runMockServerOnPort(int port) throws IOException {

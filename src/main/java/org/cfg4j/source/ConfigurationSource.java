@@ -17,14 +17,14 @@ package org.cfg4j.source;
 
 import org.cfg4j.source.context.Environment;
 import org.cfg4j.source.context.MissingEnvironmentException;
-import org.cfg4j.source.refresh.Refreshable;
+import org.cfg4j.source.refresh.Reloadable;
 
 import java.util.Properties;
 
 /**
  * Provides access to configuration store and exposes configuration values in bulk {@link Properties} format.
  */
-public interface ConfigurationSource extends Refreshable {
+public interface ConfigurationSource extends Reloadable {
 
   /**
    * Get configuration set for a given {@code environment} from this source in a form of {@link Properties}.

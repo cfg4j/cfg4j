@@ -77,18 +77,18 @@ public class FallbackConfigurationSource implements ConfigurationSource {
   }
 
   /**
-   * Request configuration refresh. When this method returns configuration should be reloaded for at least
-   * one underlying source. Tries to refresh all sources. Refresh failures are ignored (unless all sources fail to refresh).
+   * Request configuration reload. When this method returns configuration should be reloaded for at least
+   * one underlying source. Tries to reload all sources. Refresh failures are ignored (unless all sources fail to reload).
    *
-   * @throws IllegalStateException when unable to refresh all of the underlying sources
+   * @throws IllegalStateException when unable to reload all of the underlying sources
    */
   @Override
-  public void refresh() {
+  public void reload() {
     boolean atLeastOneSuccess = false;
 
     for (ConfigurationSource source : sources) {
       try {
-        source.refresh();
+        source.reload();
         atLeastOneSuccess = true;
       } catch (IllegalStateException e) {
         // NOP
@@ -96,7 +96,7 @@ public class FallbackConfigurationSource implements ConfigurationSource {
     }
 
     if (!atLeastOneSuccess) {
-      throw new IllegalStateException("Unable to refresh any of the underlying sources");
+      throw new IllegalStateException("Unable to reload any of the underlying sources");
     }
   }
 

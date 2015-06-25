@@ -15,26 +15,26 @@
  */
 package org.cfg4j.source.refresh.strategy;
 
-import org.cfg4j.source.refresh.RefreshStrategy;
-import org.cfg4j.source.refresh.Refreshable;
+import org.cfg4j.source.refresh.ReloadStrategy;
+import org.cfg4j.source.refresh.Reloadable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * {@link RefreshStrategy} that refreshes the resource only once - the moment the {@link #init(Refreshable)} is called.
+ * {@link ReloadStrategy} that refreshes the resource only once - the moment the {@link #init(Reloadable)} is called.
  */
-public class OnInitRefreshStrategy implements RefreshStrategy {
+public class OnInitReloadStrategy implements ReloadStrategy {
 
-  private static final Logger LOG = LoggerFactory.getLogger(OnInitRefreshStrategy.class);
+  private static final Logger LOG = LoggerFactory.getLogger(OnInitReloadStrategy.class);
 
   @Override
-  public void init(Refreshable resource) {
-    LOG.info("Initializing " + OnInitRefreshStrategy.class);
-        resource.refresh();
+  public void init(Reloadable resource) {
+    LOG.info("Initializing " + OnInitReloadStrategy.class);
+    resource.reload();
   }
 
   @Override
   public void shutdown() {
-    LOG.info("Shutting down " + OnInitRefreshStrategy.class);
+    LOG.info("Shutting down " + OnInitReloadStrategy.class);
   }
 }

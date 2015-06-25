@@ -21,13 +21,13 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import org.cfg4j.source.refresh.RefreshStrategy;
+import org.cfg4j.source.ConfigurationSource;
+import org.cfg4j.source.refresh.ReloadStrategy;
+import org.cfg4j.source.refresh.Reloadable;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.cfg4j.source.ConfigurationSource;
-import org.cfg4j.source.refresh.Refreshable;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ConfigurationProviderBuilderTest {
@@ -41,23 +41,23 @@ public class ConfigurationProviderBuilderTest {
 
   @Test
   public void initializesStrategyOnBuild() throws Exception {
-    RefreshStrategy refreshStrategy = mock(RefreshStrategy.class);
+    ReloadStrategy reloadStrategy = mock(ReloadStrategy.class);
     builder
-        .withRefreshStrategy(refreshStrategy)
+        .withRefreshStrategy(reloadStrategy)
         .build();
 
-    verify(refreshStrategy, times(1)).init(any(Refreshable.class));
+    verify(reloadStrategy, times(1)).init(any(Reloadable.class));
   }
 
   @Test
   public void passesSourceToRefreshStrategy() throws Exception {
     ConfigurationSource configurationSource = mock(ConfigurationSource.class);
-    RefreshStrategy refreshStrategy = mock(RefreshStrategy.class);
+    ReloadStrategy reloadStrategy = mock(ReloadStrategy.class);
     builder
         .withConfigurationSource(configurationSource)
-        .withRefreshStrategy(refreshStrategy)
+        .withRefreshStrategy(reloadStrategy)
         .build();
 
-    verify(refreshStrategy, times(1)).init(configurationSource);
+    verify(reloadStrategy, times(1)).init(configurationSource);
   }
 }

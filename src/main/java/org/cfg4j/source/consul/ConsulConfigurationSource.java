@@ -67,7 +67,7 @@ public class ConsulConfigurationSource implements ConfigurationSource {
       throw new SourceCommunicationException("Can't connect to host: " + host + ":" + port, e);
     }
 
-    refresh();
+    reload();
   }
 
   @Override
@@ -95,7 +95,7 @@ public class ConsulConfigurationSource implements ConfigurationSource {
   }
 
   @Override
-  public void refresh() {
+  public void reload() {
     consulValues = new HashMap<>();
     List<Value> valueList;
 

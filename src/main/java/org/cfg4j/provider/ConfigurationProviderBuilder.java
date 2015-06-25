@@ -15,14 +15,14 @@
  */
 package org.cfg4j.provider;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.cfg4j.source.ConfigurationSource;
 import org.cfg4j.source.EmptyConfigurationSource;
 import org.cfg4j.source.context.DefaultEnvironment;
 import org.cfg4j.source.context.Environment;
-import org.cfg4j.source.refresh.RefreshStrategy;
-import org.cfg4j.source.refresh.strategy.OnInitRefreshStrategy;
+import org.cfg4j.source.refresh.ReloadStrategy;
+import org.cfg4j.source.refresh.strategy.OnInitReloadStrategy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A builder producing {@link ConfigurationProvider}s. If you don't specify the value for one the fields
@@ -34,7 +34,7 @@ public class ConfigurationProviderBuilder {
   private static final Logger LOG = LoggerFactory.getLogger(ConfigurationProviderBuilder.class);
 
   private ConfigurationSource configurationSource;
-  private RefreshStrategy refreshStrategy;
+  private ReloadStrategy reloadStrategy;
   private Environment environment;
 
   /**
@@ -43,13 +43,13 @@ public class ConfigurationProviderBuilder {
    * Default setup (override using with*() methods)
    * <ul>
    * <li>ConfigurationSource: {@link EmptyConfigurationSource}</li>
-   * <li>RefreshStrategy: {@link OnInitRefreshStrategy}</li>
+   * <li>ReloadStrategy: {@link OnInitReloadStrategy}</li>
    * <li>Environment: {@link DefaultEnvironment}</li>
    * </ul>
    */
   public ConfigurationProviderBuilder() {
     configurationSource = new EmptyConfigurationSource();
-    refreshStrategy = new OnInitRefreshStrategy();
+    reloadStrategy = new OnInitReloadStrategy();
     environment = new DefaultEnvironment();
   }
 
@@ -65,13 +65,13 @@ public class ConfigurationProviderBuilder {
   }
 
   /**
-   * Set {@link RefreshStrategy} for {@link ConfigurationProvider}s built by this builder
+   * Set {@link ReloadStrategy} for {@link ConfigurationProvider}s built by this builder
    *
-   * @param refreshStrategy {@link RefreshStrategy} to use
-   * @return this builder with {@link RefreshStrategy} set to {@code refreshStrategy}
+   * @param reloadStrategy {@link ReloadStrategy} to use
+   * @return this builder with {@link ReloadStrategy} set to {@code reloadStrategy}
    */
-  public ConfigurationProviderBuilder withRefreshStrategy(RefreshStrategy refreshStrategy) {
-    this.refreshStrategy = refreshStrategy;
+  public ConfigurationProviderBuilder withRefreshStrategy(ReloadStrategy reloadStrategy) {
+    this.reloadStrategy = reloadStrategy;
     return this;
   }
 
@@ -93,10 +93,10 @@ public class ConfigurationProviderBuilder {
    */
   public ConfigurationProvider build() {
     LOG.info("Initializing ConfigurationProvider with " + configurationSource.getClass() + " source, " +
-        refreshStrategy.getClass() + " refresh strategy and " + environment.getClass() + " environment" +
+        reloadStrategy.getClass() + " reload strategy and " + environment.getClass() + " environment" +
         "selection strategy.");
 
-    refreshStrategy.init(configurationSource);
+    reloadStrategy.init(configurationSource);
 
     return new SimpleConfigurationProvider(configurationSource, environment);
   }

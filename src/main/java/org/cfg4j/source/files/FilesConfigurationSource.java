@@ -89,7 +89,7 @@ public class FilesConfigurationSource implements ConfigurationSource {
   }
 
   @Override
-  public void refresh() {
+  public void reload() {
     // NOP
   }
 }

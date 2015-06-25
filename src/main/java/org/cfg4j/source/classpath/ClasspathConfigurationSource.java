@@ -91,7 +91,7 @@ public class ClasspathConfigurationSource implements ConfigurationSource {
   }
 
   @Override
-  public void refresh() {
+  public void reload() {
     // NOP
   }
 

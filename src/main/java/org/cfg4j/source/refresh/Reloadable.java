@@ -16,15 +16,15 @@
 package org.cfg4j.source.refresh;
 
 /**
- * Identifies resource that can be refreshed
+ * Identifies resource that can be reloaded.
  */
-public interface Refreshable {
+public interface Reloadable {
 
   /**
-   * Request configuration refresh. When this method returns configuration should be reloaded.
+   * Request resource reload. When this method returns resource should be reloaded.
    *
-   * @throws IllegalStateException when unable to refresh configuration
+   * @throws IllegalStateException when unable to reload resource
    */
-  void refresh();
+  void reload();
 
 }

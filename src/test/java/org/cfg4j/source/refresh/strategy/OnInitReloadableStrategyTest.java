@@ -19,33 +19,33 @@ package org.cfg4j.source.refresh.strategy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import org.cfg4j.source.refresh.Reloadable;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.cfg4j.source.refresh.Refreshable;
 
 @RunWith(MockitoJUnitRunner.class)
-public class OnInitRefreshStrategyTest {
+public class OnInitReloadableStrategyTest {
 
   @Mock
-  private Refreshable resource;
+  private Reloadable resource;
 
   @Test
   public void shouldRefreshResourceOnce() throws Exception {
-    OnInitRefreshStrategy refreshStrategy = new OnInitRefreshStrategy();
+    OnInitReloadStrategy refreshStrategy = new OnInitReloadStrategy();
     refreshStrategy.init(resource);
     refreshStrategy.shutdown();
 
-    verify(resource, times(1)).refresh();
+    verify(resource, times(1)).reload();
   }
 
   @Test
   public void shouldNotRefreshAfterClose() throws Exception {
-    OnInitRefreshStrategy refreshStrategy = new OnInitRefreshStrategy();
+    OnInitReloadStrategy refreshStrategy = new OnInitReloadStrategy();
     refreshStrategy.init(resource);
     refreshStrategy.shutdown();
 
-    verify(resource, times(1)).refresh();
+    verify(resource, times(1)).reload();
   }
 }

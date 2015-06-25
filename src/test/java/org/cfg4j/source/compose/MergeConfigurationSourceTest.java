@@ -95,19 +95,19 @@ public class MergeConfigurationSourceTest {
 
   @Test
   public void refreshShouldRefreshAllSources() throws Exception {
-    mergeConfigurationSource.refresh();
+    mergeConfigurationSource.reload();
 
     for (ConfigurationSource underlyingSource : underlyingSources) {
-      verify(underlyingSource, atLeastOnce()).refresh();
+      verify(underlyingSource, atLeastOnce()).reload();
     }
   }
 
   @Test
   public void refreshShouldThrowWhenOneOfSourcesThrows() throws Exception {
-    doThrow(IllegalStateException.class).when(underlyingSources[3]).refresh();
+    doThrow(IllegalStateException.class).when(underlyingSources[3]).reload();
 
     expectedException.expect(IllegalStateException.class);
-    mergeConfigurationSource.refresh();
+    mergeConfigurationSource.reload();
   }
 
   private void sourcesWithProps(Environment environment, String... props) {

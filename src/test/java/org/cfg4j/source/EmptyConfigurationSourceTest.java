@@ -48,7 +48,7 @@ public class EmptyConfigurationSourceTest {
 
   @Test
   public void refreshShouldNotChangeConfiguration() throws Exception {
-    source.refresh();
+    source.reload();
     assertThat(source.getConfiguration(new DefaultEnvironment())).isEmpty();
   }
 

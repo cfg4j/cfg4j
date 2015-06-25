@@ -170,7 +170,7 @@ public class GitConfigurationSourceIntegrationTest {
   public void refreshShouldUpdateGetConfiguration2OnDefaultBranch() throws Exception {
     try (GitConfigurationSource gitConfigurationSource = getSourceForRemoteRepoWithDefaults()) {
       remoteRepo.changeProperty("application.properties", "some.setting", "changedValue");
-      gitConfigurationSource.refresh();
+      gitConfigurationSource.reload();
 
       assertThat(gitConfigurationSource.getConfiguration(new DefaultEnvironment())).contains(MapEntry.entry("some.setting", "changedValue"));
     }
@@ -181,7 +181,7 @@ public class GitConfigurationSourceIntegrationTest {
     try (GitConfigurationSource gitConfigurationSource = getSourceForRemoteRepoWithDefaults()) {
       remoteRepo.changeBranchTo(TEST_ENV_BRANCH);
       remoteRepo.changeProperty("application.properties", "some.setting", "changedValue");
-      gitConfigurationSource.refresh();
+      gitConfigurationSource.reload();
 
       assertThat(gitConfigurationSource.getConfiguration(new ImmutableEnvironment(TEST_ENV_BRANCH))).contains(MapEntry.entry("some.setting", "changedValue"));
     }
@@ -193,7 +193,7 @@ public class GitConfigurationSourceIntegrationTest {
       remoteRepo.remove();
 
       expectedException.expect(IllegalStateException.class);
-      gitConfigurationSource.refresh();
+      gitConfigurationSource.reload();
     }
   }
 

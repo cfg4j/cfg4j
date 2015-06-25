@@ -122,7 +122,7 @@ public class GitConfigurationSource implements ConfigurationSource, Closeable {
   }
 
   @Override
-  public void refresh() {
+  public void reload() {
     try {
       LOG.debug("Refreshing configuration by pulling changes");
       clonedRepo.pull().call();

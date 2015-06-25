@@ -29,13 +29,4 @@ public class SourceCommunicationException extends RuntimeException {
   public SourceCommunicationException(String msg, Exception e) {
     super("Unable to communicate with configuration source: " + msg, e);
   }
-
-  /**
-   * Indicates problem when communicating with {@link ConfigurationSource}.
-   *
-   * @param msg the detail message
-   */
-  public SourceCommunicationException(String msg) {
-    super("Unable to communicate with configuration source: " + msg);
-  }
 }

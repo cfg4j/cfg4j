@@ -32,16 +32,16 @@ public class GitConfigurationSourceBuilder {
    * <p>
    * Default setup (override using with*() methods)
    * <ul>
-   * <li>BranchResolver: {@link EnvironmentBasedBranchResolver}</li>
-   * <li>PathResolver: {@link EnvironmentBasedPathResolver}</li>
+   * <li>BranchResolver: {@link FirstTokenBranchResolver}</li>
+   * <li>PathResolver: {@link AllButFirstTokenPathResolver}</li>
    * <li>ConfigFilesProvider: {@link DefaultConfigFilesProvider}</li>
    * <li>tmpPath: System.getProperty("java.io.tmpdir")</li>
    * <li>localRepositoryPathInTemp: "cfg4j-config-git-config-repository"</li>
    * </ul>
    */
   public GitConfigurationSourceBuilder() {
-    branchResolver = new EnvironmentBasedBranchResolver();
-    pathResolver = new EnvironmentBasedPathResolver();
+    branchResolver = new FirstTokenBranchResolver();
+    pathResolver = new AllButFirstTokenPathResolver();
     tmpPath = System.getProperty("java.io.tmpdir");
     localRepositoryPathInTemp = "cfg4j-git-config-repository";
     configFilesProvider = new DefaultConfigFilesProvider();

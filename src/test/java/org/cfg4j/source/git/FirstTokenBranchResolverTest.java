@@ -29,7 +29,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 
 @RunWith(MockitoJUnitRunner.class)
-public class EnvironmentBasedPathResolverTest {
+public class FirstTokenBranchResolverTest {
 
   @Rule
   public ExpectedException expectedException = ExpectedException.none();
@@ -37,38 +37,38 @@ public class EnvironmentBasedPathResolverTest {
   @Mock
   private Environment environment;
 
-  private EnvironmentBasedPathResolver pathResolver;
+  private FirstTokenBranchResolver branchResolver;
 
   @Before
   public void setUp() throws Exception {
-    pathResolver = new EnvironmentBasedPathResolver();
+    branchResolver = new FirstTokenBranchResolver();
   }
 
   @Test
-  public void shouldResolveEmptyStringToEmptyPath() throws Exception {
-    when(environment.getName()).thenReturn("us-west-1/");
+  public void shouldResolveEmptyStringToMaster() throws Exception {
+    when(environment.getName()).thenReturn("");
 
-    assertThat(pathResolver.getPathFor(environment)).isEqualTo("");
+    assertThat(branchResolver.getBranchNameFor(environment)).isEqualTo("master");
   }
 
   @Test
-  public void shouldDiscardFirstToken() throws Exception {
+  public void shouldResolveWhitespacesToMaster() throws Exception {
+    when(environment.getName()).thenReturn("   ");
+
+    assertThat(branchResolver.getBranchNameFor(environment)).isEqualTo("master");
+  }
+
+  @Test
+  public void shouldSupportSingleToken() throws Exception {
+    when(environment.getName()).thenReturn("us-west-1");
+
+    assertThat(branchResolver.getBranchNameFor(environment)).isEqualTo("us-west-1");
+  }
+
+  @Test
+  public void shouldUseFirstTokenAsBranchName() throws Exception {
     when(environment.getName()).thenReturn("us-west-1/local/path");
 
-    assertThat(pathResolver.getPathFor(environment)).isEqualTo("local/path");
-  }
-
-  @Test
-  public void shouldIgnoreMissingFirstToken() throws Exception {
-    when(environment.getName()).thenReturn("/local/path");
-
-    assertThat(pathResolver.getPathFor(environment)).isEqualTo("local/path");
-  }
-
-  @Test
-  public void shouldTreatMissingPathAsEmptyPath() throws Exception {
-    when(environment.getName()).thenReturn("us-west-1/");
-
-    assertThat(pathResolver.getPathFor(environment)).isEqualTo("");
+    assertThat(branchResolver.getBranchNameFor(environment)).isEqualTo("us-west-1");
   }
 }

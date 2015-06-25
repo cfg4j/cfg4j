@@ -18,6 +18,7 @@ package org.cfg4j.source.git;
 import static java.util.Objects.requireNonNull;
 
 import org.cfg4j.source.ConfigurationSource;
+import org.cfg4j.source.SourceCommunicationException;
 import org.cfg4j.source.context.Environment;
 import org.cfg4j.source.context.MissingEnvironmentException;
 import org.cfg4j.utils.FileUtils;
@@ -64,7 +65,8 @@ public class GitConfigurationSource implements ConfigurationSource, Closeable {
    * @param pathResolver              {@link PathResolver} used for extracting git path from an {@link Environment}
    * @param configFilesProvider       {@link ConfigFilesProvider} used for determining which files in repository should be read
    *                                  as config files
-   * @throws GitConfigurationSourceException when unable to clone repository
+   * @throws IllegalStateException        when unable to create directories for local repo clone
+   * @throws SourceCommunicationException when unable to clone repository
    */
   GitConfigurationSource(String repositoryURI, String tmpPath, String localRepositoryPathInTemp, BranchResolver branchResolver,
                          PathResolver pathResolver, ConfigFilesProvider configFilesProvider) {
@@ -81,10 +83,10 @@ public class GitConfigurationSource implements ConfigurationSource, Closeable {
       clonedRepoPath = File.createTempFile(localRepositoryPathInTemp, "", new File(tmpPath)).toPath();
       // This folder can't exist or JGit will throw NPE on clone
       if (!clonedRepoPath.toFile().delete()) {
-        throw new GitConfigurationSourceException("Unable to remove temp directory for local clone: " + localRepositoryPathInTemp);
+        throw new IllegalStateException("Unable to remove temp directory for local clone: " + localRepositoryPathInTemp);
       }
     } catch (IOException e) {
-      throw new GitConfigurationSourceException("Unable to create local clone directory: " + localRepositoryPathInTemp, e);
+      throw new IllegalStateException("Unable to create local clone directory: " + localRepositoryPathInTemp, e);
     }
 
     try {
@@ -93,7 +95,7 @@ public class GitConfigurationSource implements ConfigurationSource, Closeable {
           .setDirectory(clonedRepoPath.toFile())
           .call();
     } catch (GitAPIException e) {
-      throw new GitConfigurationSourceException("Unable to clone repository: " + repositoryURI, e);
+      throw new SourceCommunicationException("Unable to clone repository: " + repositoryURI, e);
     }
   }
 

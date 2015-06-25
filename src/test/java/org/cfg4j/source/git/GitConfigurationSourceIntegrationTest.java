@@ -18,6 +18,7 @@ package org.cfg4j.source.git;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.assertj.core.data.MapEntry;
+import org.cfg4j.source.SourceCommunicationException;
 import org.cfg4j.source.context.DefaultEnvironment;
 import org.cfg4j.source.context.Environment;
 import org.cfg4j.source.context.ImmutableEnvironment;
@@ -68,7 +69,7 @@ public class GitConfigurationSourceIntegrationTest {
 
   @Test
   public void shouldThrowWhenUnableToCreateLocalCloneOnNoTempDir() throws Exception {
-    expectedException.expect(GitConfigurationSourceException.class);
+    expectedException.expect(IllegalStateException.class);
 
     getSourceBuilderForRemoteRepoWithDefaults()
         .withTmpPath("/someNonexistentDir/lkfjalfcz")
@@ -79,7 +80,7 @@ public class GitConfigurationSourceIntegrationTest {
   @Test
   public void shouldThrowOnInvalidRemote() throws Exception {
     remoteRepo.remove();
-    expectedException.expect(GitConfigurationSourceException.class);
+    expectedException.expect(SourceCommunicationException.class);
     getSourceForRemoteRepoWithDefaults();
   }
 

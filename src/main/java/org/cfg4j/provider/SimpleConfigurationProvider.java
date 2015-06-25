@@ -61,23 +61,6 @@ public class SimpleConfigurationProvider implements ConfigurationProvider {
   }
 
   @Override
-  public String getProperty(String key) {
-    try {
-
-      String property = configurationSource.getConfiguration(environment).getProperty(key);
-
-      if (property == null) {
-        throw new NoSuchElementException("No configuration with key: " + key);
-      }
-
-      return property;
-
-    } catch (IllegalStateException e) {
-      throw new IllegalStateException("Couldn't fetch configuration from configuration source for key: " + key, e);
-    }
-  }
-
-  @Override
   public <T> T getProperty(String key, Class<T> type) {
     String propertyStr = getProperty(key);
 
@@ -100,6 +83,22 @@ public class SimpleConfigurationProvider implements ConfigurationProvider {
       return property;
     } catch (TypeParserException | NoSuchRegisteredParserException e) {
       throw new IllegalArgumentException("Unable to cast value \'" + propertyStr + "\' to " + genericType, e);
+    }
+  }
+
+  private String getProperty(String key) {
+    try {
+
+      String property = configurationSource.getConfiguration(environment).getProperty(key);
+
+      if (property == null) {
+        throw new NoSuchElementException("No configuration with key: " + key);
+      }
+
+      return property;
+
+    } catch (IllegalStateException e) {
+      throw new IllegalStateException("Couldn't fetch configuration from configuration source for key: " + key, e);
     }
   }
 

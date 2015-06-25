@@ -43,16 +43,6 @@ public interface ConfigurationProvider {
   Properties allConfigurationAsProperties();
 
   /**
-   * Get {@link String} configuration property
-   *
-   * @param key configuration key
-   * @return configuration value
-   * @throws NoSuchElementException when the provided {@code key} doesn't have a corresponding config value
-   * @throws IllegalStateException  when provider is unable to fetch configuration value for the given {@code key}
-   */
-  String getProperty(String key);
-
-  /**
    * Get a configuration property of a given basic {@code type}
    *
    * @param <T>  property type. Supported baic types: {@link BigDecimal}, {@link BigInteger}, {@link Boolean}, {@link Byte},
@@ -63,7 +53,7 @@ public interface ConfigurationProvider {
    * @param type {@link Class} for {@code <T>}
    * @return configuration value
    * @throws NoSuchElementException   when the provided {@code key} doesn't have a corresponding config value
-   * @throws IllegalArgumentException when property can't be coverted to {@code type}
+   * @throws IllegalArgumentException when property can't be converted to {@code type}
    * @throws IllegalStateException    when provider is unable to fetch configuration value for the given {@code key}
    */
   <T> T getProperty(String key, Class<T> type);

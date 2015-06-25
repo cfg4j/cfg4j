@@ -58,39 +58,6 @@ public class SimpleConfigurationProviderGetPropertyTest extends SimpleConfigurat
   }
 
   @Test
-  public void getPropertyShouldThrowWhenFetchingNonexistentKey() throws Exception {
-    when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(new Properties());
-
-    expectedException.expect(NoSuchElementException.class);
-    simpleConfigurationProvider.getProperty("some.property");
-  }
-
-  @Test
-  public void getPropertyShouldThrowWhenUnableToFetchKey() throws Exception {
-    when(configurationSource.getConfiguration(anyEnvironment())).thenThrow(new IllegalStateException());
-
-    expectedException.expect(IllegalStateException.class);
-    simpleConfigurationProvider.getProperty("some.property");
-  }
-
-  @Test
-  public void getPropertyShouldReturnStringPropertyFromSource() throws Exception {
-    when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(propertiesWith("some.property", "abc"));
-
-    String property = simpleConfigurationProvider.getProperty("some.property");
-    assertThat(property).isEqualTo("abc");
-  }
-
-  @Test
-  public void getPropertyShouldReactToSourceChanges() throws Exception {
-    when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(propertiesWith("some.property", "abc"));
-    when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(propertiesWith("some.property", "cde"));
-
-    String property = simpleConfigurationProvider.getProperty("some.property");
-    assertThat(property).isEqualTo("cde");
-  }
-
-  @Test
   public void getProperty2ShouldThrowWhenFetchingNonexistentKey() throws Exception {
     when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(new Properties());
 

@@ -17,7 +17,9 @@ package org.cfg4j.source.git;
 
 import org.cfg4j.source.context.Environment;
 
-import java.util.StringJoiner;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.util.Arrays;
 
 /**
  * Adapter for {@link Environment} to provide git path resolution through {@link PathResolver} interface.
@@ -31,15 +33,8 @@ import java.util.StringJoiner;
 public class AllButFirstTokenPathResolver implements PathResolver {
 
   @Override
-  public String getPathFor(Environment environment) {
+  public Path getPathFor(Environment environment) {
     String[] tokens = environment.getName().split("/");
-
-    StringJoiner stringJoiner = new StringJoiner("/");
-
-    for (int i = 1; i < tokens.length; i++) {
-      stringJoiner.add(tokens[i]);
-    }
-
-    return stringJoiner.toString();
+    return FileSystems.getDefault().getPath("", Arrays.copyOfRange(tokens, 1, tokens.length));
   }
 }

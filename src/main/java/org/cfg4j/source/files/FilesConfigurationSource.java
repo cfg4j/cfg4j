@@ -26,6 +26,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
@@ -64,21 +66,23 @@ public class FilesConfigurationSource implements ConfigurationSource {
   public Properties getConfiguration(Environment environment) {
     Properties properties = new Properties();
 
-    String path = environment.getName();
-    if (path.trim().isEmpty()) {
-      path = "/";
+    String rootPathStr = environment.getName();
+    if (rootPathStr.trim().isEmpty()) {
+      rootPathStr = "/";
     }
 
-    if (!new File(path).exists()) {
+    if (!new File(rootPathStr).exists()) {
       throw new MissingEnvironmentException("Directory doesn't exist: " + environment.getName());
     }
 
-    List<File> files = StreamSupport.stream(configFilesProvider.getConfigFiles().spliterator(), false)
-        .map(file -> new File(environment.getName() + "/" + file.getPath()))
+    Path rootPath = FileSystems.getDefault().getPath(rootPathStr);
+
+    List<Path> paths = StreamSupport.stream(configFilesProvider.getConfigFiles().spliterator(), false)
+        .map(rootPath::resolve)
         .collect(Collectors.toList());
 
-    for (File file : files) {
-      try (InputStream input = new FileInputStream(file.getPath())) {
+    for (Path path : paths) {
+      try (InputStream input = new FileInputStream(path.toFile())) {
         properties.load(input);
       } catch (IOException | IllegalArgumentException e) {
         throw new IllegalStateException("Unable to load properties from application.properties file", e);

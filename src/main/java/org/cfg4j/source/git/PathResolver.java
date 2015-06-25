@@ -17,6 +17,8 @@ package org.cfg4j.source.git;
 
 import org.cfg4j.source.context.Environment;
 
+import java.nio.file.Path;
+
 /**
  * Specifies path to use in git repository.
  */
@@ -29,6 +31,6 @@ public interface PathResolver {
    * @param environment environment to extract git path from
    * @return path
    */
-  String getPathFor(Environment environment);
+  Path getPathFor(Environment environment);
 
 }

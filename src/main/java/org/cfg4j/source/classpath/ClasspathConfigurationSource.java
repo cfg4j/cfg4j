@@ -22,10 +22,11 @@ import org.cfg4j.source.context.Environment;
 import org.cfg4j.source.context.MissingEnvironmentException;
 import org.cfg4j.source.git.ConfigFilesProvider;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
@@ -63,27 +64,27 @@ public class ClasspathConfigurationSource implements ConfigurationSource {
   public Properties getConfiguration(Environment environment) {
     Properties properties = new Properties();
 
-    String pathPrefix = getPrefixFor(environment);
+    Path pathPrefix = getPrefixFor(environment);
 
-    URL url = getClass().getClassLoader().getResource(pathPrefix);
+    URL url = getClass().getClassLoader().getResource(pathPrefix.toString());
     if (url == null) {
       throw new MissingEnvironmentException("Directory doesn't exist: " + environment.getName());
     }
 
-    List<File> files = StreamSupport.stream(configFilesProvider.getConfigFiles().spliterator(), false)
-        .map(file -> new File(pathPrefix + file.getPath()))
+    List<Path> paths = StreamSupport.stream(configFilesProvider.getConfigFiles().spliterator(), false)
+        .map(pathPrefix::resolve)
         .collect(Collectors.toList());
 
-    for (File file : files) {
-      try (InputStream input = getClass().getClassLoader().getResourceAsStream(file.getPath())) {
+    for (Path path : paths) {
+      try (InputStream input = getClass().getClassLoader().getResourceAsStream(path.toString())) {
 
         if (input == null) {
-          throw new IllegalStateException("Unable to load properties from classpath: " + file.getPath());
+          throw new IllegalStateException("Unable to load properties from classpath: " + path);
         }
 
         properties.load(input);
       } catch (IOException | IllegalArgumentException e) {
-        throw new IllegalStateException("Unable to load properties from classpath: " + file.getPath(), e);
+        throw new IllegalStateException("Unable to load properties from classpath: " + path, e);
       }
     }
 
@@ -95,7 +96,7 @@ public class ClasspathConfigurationSource implements ConfigurationSource {
     // NOP
   }
 
-  private String getPrefixFor(Environment environment) {
+  private Path getPrefixFor(Environment environment) {
     String path = environment.getName();
 
     if (!path.trim().isEmpty() && !path.endsWith("/")) {
@@ -106,6 +107,6 @@ public class ClasspathConfigurationSource implements ConfigurationSource {
       path = path.substring(1);
     }
 
-    return path;
+    return FileSystems.getDefault().getPath(path);
   }
 }

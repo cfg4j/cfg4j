@@ -16,6 +16,7 @@
 package org.cfg4j.source.git;
 
 import java.io.File;
+import java.nio.file.Path;
 
 /**
  * Provides configuration files to use.
@@ -26,6 +27,6 @@ public interface ConfigFilesProvider {
    * Provide a list of configuration files to use.
    * @return {@link Iterable} of configuration {@link File}s to use
    */
-  Iterable<File> getConfigFiles();
+  Iterable<Path> getConfigFiles();
 
 }

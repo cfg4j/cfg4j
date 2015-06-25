@@ -31,7 +31,8 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.io.File;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -45,6 +46,7 @@ public class FilesConfigurationSourceTest {
   private TempConfigurationFileRepo fileRepo;
   private ConfigFilesProvider configFilesProvider;
   private FilesConfigurationSource source;
+  private FileSystem fileSystem;
 
   @Before
   public void setUp() throws Exception {
@@ -54,8 +56,10 @@ public class FilesConfigurationSourceTest {
     fileRepo.changeProperty("malformed.properties", "otherConfig.setting", "\\uzzzzz");
     fileRepo.changeProperty("otherApplicationConfigs/application.properties", "some.setting", "otherAppSetting");
 
+    fileSystem = FileSystems.getDefault();
+
     configFilesProvider = () -> Collections.singletonList(
-        new File(fileRepo.getURI() + "/application.properties")
+        fileSystem.getPath(fileRepo.getURI() + "/application.properties")
     );
 
     source = new FilesConfigurationSource(configFilesProvider);
@@ -69,7 +73,7 @@ public class FilesConfigurationSourceTest {
   @Test
   public void getConfiguration2ShouldReadFromGivenPath() throws Exception {
     configFilesProvider = () -> Collections.singletonList(
-        new File("application.properties")
+        fileSystem.getPath("application.properties")
     );
 
     source = new FilesConfigurationSource(configFilesProvider);
@@ -82,8 +86,8 @@ public class FilesConfigurationSourceTest {
   @Test
   public void getConfiguration2ShouldReadFromGivenFiles() throws Exception {
     configFilesProvider = () -> Arrays.asList(
-        new File(fileRepo.getURI() + "/application.properties"),
-        new File(fileRepo.getURI() + "/otherConfig.properties")
+        fileSystem.getPath(fileRepo.getURI() + "/application.properties"),
+        fileSystem.getPath(fileRepo.getURI() + "/otherConfig.properties")
     );
 
     source = new FilesConfigurationSource(configFilesProvider);
@@ -107,7 +111,7 @@ public class FilesConfigurationSourceTest {
   @Test
   public void getConfiguration2ShouldThrowOnMalformedConfigFile() throws Exception {
     configFilesProvider = () -> Collections.singletonList(
-        new File(fileRepo.getURI() + "/malformed.properties")
+        fileSystem.getPath(fileRepo.getURI() + "/malformed.properties")
     );
 
     source = new FilesConfigurationSource(configFilesProvider);

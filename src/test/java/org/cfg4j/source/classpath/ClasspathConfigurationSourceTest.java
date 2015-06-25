@@ -30,7 +30,8 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.io.File;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -44,13 +45,15 @@ public class ClasspathConfigurationSourceTest {
   private TempConfigurationClasspathRepo classpathRepo;
   private ConfigFilesProvider configFilesProvider;
   private ClasspathConfigurationSource source;
+  private FileSystem fileSystem;
 
   @Before
   public void setUp() throws Exception {
     classpathRepo = new TempConfigurationClasspathRepo();
+    fileSystem = FileSystems.getDefault();
 
     configFilesProvider = () -> Collections.singletonList(
-        new File("application.properties")
+        fileSystem.getPath("application.properties")
     );
 
     source = new ClasspathConfigurationSource(configFilesProvider);
@@ -59,7 +62,7 @@ public class ClasspathConfigurationSourceTest {
   @Test
   public void getConfiguration2ShouldReadFromGivenPath() throws Exception {
     configFilesProvider = () -> Collections.singletonList(
-        new File("application.properties")
+        fileSystem.getPath("application.properties")
     );
 
     source = new ClasspathConfigurationSource(configFilesProvider);
@@ -72,8 +75,8 @@ public class ClasspathConfigurationSourceTest {
   @Test
   public void getConfiguration2ShouldReadFromGivenFiles() throws Exception {
     configFilesProvider = () -> Arrays.asList(
-        new File("application.properties"),
-        new File("otherConfig.properties")
+        fileSystem.getPath("application.properties"),
+        fileSystem.getPath("otherConfig.properties")
     );
 
     source = new ClasspathConfigurationSource(configFilesProvider);
@@ -89,7 +92,7 @@ public class ClasspathConfigurationSourceTest {
   @Test
   public void getConfiguration2ShouldThrowOnMissingConfigFile() throws Exception {
     configFilesProvider = () -> Collections.singletonList(
-        new File("nonexistent.properties")
+        fileSystem.getPath("nonexistent.properties")
     );
 
     source = new ClasspathConfigurationSource(configFilesProvider);
@@ -101,7 +104,7 @@ public class ClasspathConfigurationSourceTest {
   @Test
   public void getConfiguration2ShouldThrowOnMalformedConfigFile() throws Exception {
     configFilesProvider = () -> Collections.singletonList(
-        new File("malformed.properties")
+        fileSystem.getPath("malformed.properties")
     );
 
     source = new ClasspathConfigurationSource(configFilesProvider);

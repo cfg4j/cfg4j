@@ -34,6 +34,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
@@ -44,7 +45,7 @@ public class GitConfigurationSource implements ConfigurationSource, Closeable {
   private static final Logger LOG = LoggerFactory.getLogger(GitConfigurationSource.class);
 
   private final Git clonedRepo;
-  private final File clonedRepoPath;
+  private final Path clonedRepoPath;
   private final BranchResolver branchResolver;
   private final PathResolver pathResolver;
   private final ConfigFilesProvider configFilesProvider;
@@ -77,9 +78,9 @@ public class GitConfigurationSource implements ConfigurationSource, Closeable {
     LOG.info("Initializing " + GitConfigurationSource.class + " pointing to " + repositoryURI);
 
     try {
-      clonedRepoPath = File.createTempFile(localRepositoryPathInTemp, "", new File(tmpPath));
+      clonedRepoPath = File.createTempFile(localRepositoryPathInTemp, "", new File(tmpPath)).toPath();
       // This folder can't exist or JGit will throw NPE on clone
-      if (!clonedRepoPath.delete()) {
+      if (!clonedRepoPath.toFile().delete()) {
         throw new GitConfigurationSourceException("Unable to remove temp directory for local clone: " + localRepositoryPathInTemp);
       }
     } catch (IOException e) {
@@ -89,7 +90,7 @@ public class GitConfigurationSource implements ConfigurationSource, Closeable {
     try {
       clonedRepo = Git.cloneRepository()
           .setURI(repositoryURI)
-          .setDirectory(clonedRepoPath)
+          .setDirectory(clonedRepoPath.toFile())
           .call();
     } catch (GitAPIException e) {
       throw new GitConfigurationSourceException("Unable to clone repository: " + repositoryURI, e);
@@ -106,12 +107,12 @@ public class GitConfigurationSource implements ConfigurationSource, Closeable {
 
     Properties properties = new Properties();
 
-    List<File> files = StreamSupport.stream(configFilesProvider.getConfigFiles().spliterator(), false)
-        .map(file -> new File(clonedRepoPath + "/" + pathResolver.getPathFor(environment) + "/" + file.getPath()))
+    List<Path> paths = StreamSupport.stream(configFilesProvider.getConfigFiles().spliterator(), false)
+        .map(path -> clonedRepoPath.resolve(pathResolver.getPathFor(environment)).resolve(path))
         .collect(Collectors.toList());
 
-    for (File file : files) {
-      try (InputStream input = new FileInputStream(file.getPath())) {
+    for (Path path : paths) {
+      try (InputStream input = new FileInputStream(path.toFile())) {
         properties.load(input);
       } catch (IOException | IllegalArgumentException e) {
         throw new IllegalStateException("Unable to load properties from application.properties file", e);
@@ -135,7 +136,7 @@ public class GitConfigurationSource implements ConfigurationSource, Closeable {
   public void close() throws IOException {
     LOG.debug("Closing local repository: " + clonedRepoPath);
     clonedRepo.close();
-    FileUtils.deleteDir(clonedRepoPath);
+    FileUtils.deleteDir(clonedRepoPath.toFile());
   }
 
   private void checkoutToBranch(String branch) throws GitAPIException {

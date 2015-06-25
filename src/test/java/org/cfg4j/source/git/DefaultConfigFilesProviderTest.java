@@ -16,16 +16,12 @@
 package org.cfg4j.source.git;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.io.File;
+import java.nio.file.FileSystems;
 
 
 @RunWith(MockitoJUnitRunner.class)
@@ -34,6 +30,6 @@ public class DefaultConfigFilesProviderTest {
   @Test
   public void shouldProvideDefaultConfigFile() throws Exception {
     DefaultConfigFilesProvider provider = new DefaultConfigFilesProvider();
-    assertThat(provider.getConfigFiles()).containsExactly(new File("application.properties"));
+    assertThat(provider.getConfigFiles()).containsExactly(FileSystems.getDefault().getPath("application.properties"));
   }
 }

@@ -16,6 +16,7 @@
 package org.cfg4j.provider;
 
 import java.io.File;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
@@ -75,7 +76,8 @@ public interface ConfigurationProvider {
   /**
    * Create an instance of a given {@code type} that will be bound to this provider. Each time configuration changes the
    * bound object will be updated with the new values. Use {@code prefix} to specify the relative path to configuration
-   * values.
+   * values. Please note that each method of returned object can throw runtime exceptions. For details see javadoc for
+   * {@link BindInvocationHandler#invoke(Object, Method, Object[])}.
    *
    * @param <T>    interface describing configuration object to bind
    * @param prefix relative path to configuration values (e.g. "myContext" will map settings "myContext.someSetting",

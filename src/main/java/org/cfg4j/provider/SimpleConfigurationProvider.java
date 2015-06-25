@@ -25,10 +25,7 @@ import org.cfg4j.source.context.Environment;
 import org.cfg4j.source.context.MissingEnvironmentException;
 import org.cfg4j.validator.BindingValidator;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.lang.reflect.Type;
 import java.util.NoSuchElementException;
 import java.util.Properties;
 
@@ -105,26 +102,10 @@ public class SimpleConfigurationProvider implements ConfigurationProvider {
   @Override
   public <T> T bind(String prefix, Class<T> type) {
     @SuppressWarnings("unchecked")
-    T proxy = (T) Proxy.newProxyInstance(type.getClassLoader(), new Class<?>[]{type}, new BindInvocationHandler(prefix));
+    T proxy = (T) Proxy.newProxyInstance(type.getClassLoader(), new Class<?>[]{type}, new BindInvocationHandler(this, prefix));
 
     new BindingValidator().validate(proxy, type);
 
     return proxy;
   }
-
-  private class BindInvocationHandler implements InvocationHandler {
-
-    private final String prefix;
-
-    private BindInvocationHandler(String prefix) {
-      this.prefix = requireNonNull(prefix);
-    }
-
-    @Override
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-      Type returnType = method.getGenericReturnType();
-      return getProperty(prefix + (prefix.isEmpty() ? "" : ".") + method.getName(), () -> returnType);
-    }
-  }
-
 }

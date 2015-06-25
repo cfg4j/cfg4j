@@ -76,7 +76,7 @@ public class ConfigurationProviderBuilder {
   }
 
   /**
-   * Set {@link Environment} for {@link ConfigurationProviders}s built by this builder
+   * Set {@link Environment} for {@link ConfigurationProvider}s built by this builder
    *
    * @param environment {@link Environment} to use
    * @return this builder with {@link Environment} set to {@code environment}

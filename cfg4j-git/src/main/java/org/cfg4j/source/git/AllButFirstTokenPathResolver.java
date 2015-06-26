@@ -13,30 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package git;
+package org.cfg4j.source.git;
 
 import org.cfg4j.source.context.Environment;
 
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.util.Arrays;
+
 /**
- * Adapter for {@link Environment} to provide git branch resolution through {@link BranchResolver} interface.
+ * Adapter for {@link Environment} to provide git path resolution through {@link PathResolver} interface.
  * The adaptation process works as follows:
  * <ul>
  * <li>the environment name is split into tokens divided by "/"</li>
- * <li>first token is treated as a branch name</li>
- * <li>if the branch name is empty ("", or contains only whitespaces) then the "master" branch is used</li>
+ * <li>first token is discarded</li>
+ * <li>remaining tokens are re-combined and used as a path</li>
  * </ul>
  */
-public class FirstTokenBranchResolver implements BranchResolver {
+public class AllButFirstTokenPathResolver implements PathResolver {
 
   @Override
-  public String getBranchNameFor(Environment environment) {
+  public Path getPathFor(Environment environment) {
     String[] tokens = environment.getName().split("/");
-
-    String branchName = tokens[0].trim();
-    if (branchName.isEmpty()) {
-      branchName = "master";
-    }
-
-    return branchName;
+    return FileSystems.getDefault().getPath("", Arrays.copyOfRange(tokens, 1, tokens.length));
   }
 }

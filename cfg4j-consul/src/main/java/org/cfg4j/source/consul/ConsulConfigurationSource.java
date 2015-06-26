@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package consul;
+package org.cfg4j.source.consul;
 
 import com.orbitz.consul.Consul;
 import com.orbitz.consul.KeyValueClient;

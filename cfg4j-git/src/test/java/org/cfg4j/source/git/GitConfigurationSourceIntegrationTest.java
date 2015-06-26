@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package git;
+package org.cfg4j.source.git;
 
 import org.assertj.core.api.Assertions;
 import org.assertj.core.data.MapEntry;

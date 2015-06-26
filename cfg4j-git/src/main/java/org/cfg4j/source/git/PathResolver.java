@@ -13,22 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package git;
+package org.cfg4j.source.git;
 
 import org.cfg4j.source.context.Environment;
 
+import java.nio.file.Path;
+
 /**
- * Specifies git branch to use.
+ * Specifies path to use in git repository.
  */
-public interface BranchResolver {
+public interface PathResolver {
 
   /**
    * Extract git branch name to use for a given {@code environment}. For extraction mechanism details
    * refer to the implementing class javadoc.
    *
-   * @param environment environment to extract git branch name from
-   * @return branch name
+   * @param environment environment to extract git path from
+   * @return path
    */
-  String getBranchNameFor(Environment environment);
+  Path getPathFor(Environment environment);
 
 }

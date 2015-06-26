@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cfg4j.source.git;
+package git;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
+import org.assertj.core.api.StrictAssertions;
 import org.cfg4j.source.context.Environment;
 import org.junit.Before;
 import org.junit.Rule;
@@ -29,7 +29,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 
 @RunWith(MockitoJUnitRunner.class)
-public class AllButFirstTokenPathResolverTest {
+public class FirstTokenBranchResolverTest {
 
   @Rule
   public ExpectedException expectedException = ExpectedException.none();
@@ -37,38 +37,38 @@ public class AllButFirstTokenPathResolverTest {
   @Mock
   private Environment environment;
 
-  private AllButFirstTokenPathResolver pathResolver;
+  private FirstTokenBranchResolver branchResolver;
 
   @Before
   public void setUp() throws Exception {
-    pathResolver = new AllButFirstTokenPathResolver();
+    branchResolver = new FirstTokenBranchResolver();
   }
 
   @Test
-  public void shouldResolveEmptyStringToEmptyPath() throws Exception {
-    when(environment.getName()).thenReturn("us-west-1/");
+  public void shouldResolveEmptyStringToMaster() throws Exception {
+    when(environment.getName()).thenReturn("");
 
-    assertThat(pathResolver.getPathFor(environment).toString()).isEqualTo("");
+    StrictAssertions.assertThat(branchResolver.getBranchNameFor(environment)).isEqualTo("master");
   }
 
   @Test
-  public void shouldDiscardFirstToken() throws Exception {
+  public void shouldResolveWhitespacesToMaster() throws Exception {
+    when(environment.getName()).thenReturn("   ");
+
+    StrictAssertions.assertThat(branchResolver.getBranchNameFor(environment)).isEqualTo("master");
+  }
+
+  @Test
+  public void shouldSupportSingleToken() throws Exception {
+    when(environment.getName()).thenReturn("us-west-1");
+
+    StrictAssertions.assertThat(branchResolver.getBranchNameFor(environment)).isEqualTo("us-west-1");
+  }
+
+  @Test
+  public void shouldUseFirstTokenAsBranchName() throws Exception {
     when(environment.getName()).thenReturn("us-west-1/local/path");
 
-    assertThat(pathResolver.getPathFor(environment).toString()).isEqualTo("local/path");
-  }
-
-  @Test
-  public void shouldIgnoreMissingFirstToken() throws Exception {
-    when(environment.getName()).thenReturn("/local/path");
-
-    assertThat(pathResolver.getPathFor(environment).toString()).isEqualTo("local/path");
-  }
-
-  @Test
-  public void shouldTreatMissingPathAsEmptyPath() throws Exception {
-    when(environment.getName()).thenReturn("us-west-1/");
-
-    assertThat(pathResolver.getPathFor(environment).toString()).isEqualTo("");
+    StrictAssertions.assertThat(branchResolver.getBranchNameFor(environment)).isEqualTo("us-west-1");
   }
 }

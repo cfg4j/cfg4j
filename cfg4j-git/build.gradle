@@ -25,6 +25,9 @@ buildscript {
 // ----------- External module dependencies -----------
 
 dependencies {
+
+    compile group: "org.cfg4j", name: "cfg4j-core", version: "${artifactVersion}"
+
     compile group: "org.eclipse.jgit", name: "org.eclipse.jgit", version: "4.0.1.201506240215-r"
 }
 

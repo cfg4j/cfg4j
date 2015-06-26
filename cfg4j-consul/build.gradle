@@ -26,7 +26,9 @@ buildscript {
 
 dependencies {
 
-    compile group: "com.orbitz.consul", name: "consul-client", version: "0.9.6-"
+    compile group: "org.cfg4j", name: "cfg4j-core", version: "${artifactVersion}"
+
+    compile group: "com.orbitz.consul", name: "consul-client", version: "0.9.6-RC1"
     compile group: "org.apache.cxf", name: "cxf-rt-rs-client", version: "3.1.1"
     compile group: "org.apache.cxf", name: "cxf-rt-transports-http-hc", version: "3.1.1"
 

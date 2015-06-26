@@ -13,23 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cfg4j.source.git;
+package git;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.cfg4j.source.context.Environment;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+/**
+ * Specifies git branch to use.
+ */
+public interface BranchResolver {
 
-import java.nio.file.FileSystems;
+  /**
+   * Extract git branch name to use for a given {@code environment}. For extraction mechanism details
+   * refer to the implementing class javadoc.
+   *
+   * @param environment environment to extract git branch name from
+   * @return branch name
+   */
+  String getBranchNameFor(Environment environment);
 
-
-@RunWith(MockitoJUnitRunner.class)
-public class DefaultConfigFilesProviderTest {
-
-  @Test
-  public void shouldProvideDefaultConfigFile() throws Exception {
-    DefaultConfigFilesProvider provider = new DefaultConfigFilesProvider();
-    assertThat(provider.getConfigFiles()).containsExactly(FileSystems.getDefault().getPath("application.properties"));
-  }
 }

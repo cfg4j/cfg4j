@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cfg4j.source.git;
+package git;
 
 import java.nio.file.FileSystems;
 import java.nio.file.Path;

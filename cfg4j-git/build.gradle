@@ -29,6 +29,8 @@ dependencies {
     compile project(":cfg4j-core")
 
     compile group: "org.eclipse.jgit", name: "org.eclipse.jgit", version: "4.0.1.201506240215-r"
+
+    testCompile project(":cfg4j-core").sourceSets.test.output
 }
 
 // ----------- Task configurations -----------

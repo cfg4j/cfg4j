@@ -15,18 +15,18 @@
  */
 package org.cfg4j.provider;
 
+import static org.mockito.Matchers.any;
+
+import org.cfg4j.source.ConfigurationSource;
+import org.cfg4j.source.context.Environment;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.cfg4j.source.ConfigurationSource;
-import org.cfg4j.source.context.Environment;
 
 import java.util.Properties;
-
-import static org.mockito.Matchers.any;
 
 @RunWith(MockitoJUnitRunner.class)
 public abstract class SimpleConfigurationProviderAbstractTest {

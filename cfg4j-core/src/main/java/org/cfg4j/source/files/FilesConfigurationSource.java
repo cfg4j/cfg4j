@@ -17,10 +17,10 @@ package org.cfg4j.source.files;
 
 import static java.util.Objects.requireNonNull;
 
+import org.cfg4j.source.ConfigFilesProvider;
 import org.cfg4j.source.ConfigurationSource;
 import org.cfg4j.source.context.Environment;
 import org.cfg4j.source.context.MissingEnvironmentException;
-import org.cfg4j.source.git.ConfigFilesProvider;
 
 import java.io.File;
 import java.io.FileInputStream;

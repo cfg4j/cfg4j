@@ -17,6 +17,7 @@ package org.cfg4j.source.git;
 
 import org.assertj.core.api.Assertions;
 import org.assertj.core.data.MapEntry;
+import org.cfg4j.source.ConfigFilesProvider;
 import org.cfg4j.source.SourceCommunicationException;
 import org.cfg4j.source.context.DefaultEnvironment;
 import org.cfg4j.source.context.Environment;

@@ -17,6 +17,7 @@ package org.cfg4j.source.git;
 
 import static java.util.Objects.requireNonNull;
 
+import org.cfg4j.source.ConfigFilesProvider;
 import org.cfg4j.source.ConfigurationSource;
 import org.cfg4j.source.SourceCommunicationException;
 import org.cfg4j.source.context.Environment;

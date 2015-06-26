@@ -15,6 +15,9 @@
  */
 package org.cfg4j.source.git;
 
+import org.cfg4j.source.ConfigFilesProvider;
+import org.cfg4j.source.DefaultConfigFilesProvider;
+
 /**
  * Builder for {@link GitConfigurationSource}.
  */

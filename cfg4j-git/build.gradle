@@ -18,16 +18,14 @@
 buildscript {
 
     ext {
-        artifactName = "cfg4j-core"
+        artifactName = "cfg4j-git"
     }
 }
 
 // ----------- External module dependencies -----------
 
 dependencies {
-
-    // Types parsing
-    compile group: "com.github.drapostolos", name: "type-parser", version: "0.5.0"
+    compile group: "org.eclipse.jgit", name: "org.eclipse.jgit", version: "4.0.1.201506240215-r"
 }
 
 // ----------- Task configurations -----------

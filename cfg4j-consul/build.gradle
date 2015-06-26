@@ -18,7 +18,7 @@
 buildscript {
 
     ext {
-        artifactName = "cfg4j-core"
+        artifactName = "cfg4j-consul"
     }
 }
 
@@ -26,8 +26,11 @@ buildscript {
 
 dependencies {
 
-    // Types parsing
-    compile group: "com.github.drapostolos", name: "type-parser", version: "0.5.0"
+    compile group: "com.orbitz.consul", name: "consul-client", version: "0.9.6-"
+    compile group: "org.apache.cxf", name: "cxf-rt-rs-client", version: "3.1.1"
+    compile group: "org.apache.cxf", name: "cxf-rt-transports-http-hc", version: "3.1.1"
+
+    testCompile group: "com.squareup.okhttp", name: "mockwebserver", version: "2.4.0"
 }
 
 // ----------- Task configurations -----------

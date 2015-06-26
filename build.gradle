@@ -42,17 +42,16 @@ apply plugin: 'signing'
 repositories {
     mavenLocal()
     mavenCentral()
-    jcenter()
 }
 
 // ----------- External module dependencies -----------
 
 dependencies {
     // Git
-    compile group: "org.eclipse.jgit", name: "org.eclipse.jgit", version: "4.0.0.201506090130-r"
+    compile group: "org.eclipse.jgit", name: "org.eclipse.jgit", version: "4.0.1.201506240215-r"
 
     // Consul
-    compile group: "com.orbitz.consul", name: "consul-client", version: "0.9.4"
+    compile group: "com.orbitz.consul", name: "consul-client", version: "0.9.6-RC1"
     compile group: "org.apache.cxf", name: "cxf-rt-rs-client", version: "3.1.1"
     compile group: "org.apache.cxf", name: "cxf-rt-transports-http-hc", version: "3.1.1"
 
@@ -63,7 +62,7 @@ dependencies {
     compile group: "com.github.drapostolos", name: "type-parser", version: "0.5.0"
 
     testCompile group: "junit", name: "junit", version: "4.12"
-    testCompile group: "org.assertj", name: "assertj-core", version: "3.0.0"
+    testCompile group: "org.assertj", name: "assertj-core", version: "3.1.0"
     testCompile group: "org.mockito", name: "mockito-core", version: "1.10.19"
     testCompile group: "com.squareup.okhttp", name: "mockwebserver", version: "2.4.0"
 }

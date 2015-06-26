@@ -16,7 +16,6 @@
 package org.cfg4j.source.files;
 
 import org.cfg4j.utils.FileUtils;
-import org.eclipse.jgit.api.errors.GitAPIException;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -38,7 +37,7 @@ public class TempConfigurationFileRepo {
    *
    * @throws IOException when unable to create local directories
    */
-  public TempConfigurationFileRepo(String dirName) throws IOException, GitAPIException {
+  public TempConfigurationFileRepo(String dirName) throws IOException {
     dirPath = Files.createTempDirectory(dirName);
   }
 

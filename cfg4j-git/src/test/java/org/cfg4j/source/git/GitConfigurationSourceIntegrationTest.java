@@ -15,7 +15,8 @@
  */
 package org.cfg4j.source.git;
 
-import org.assertj.core.api.Assertions;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.assertj.core.data.MapEntry;
 import org.cfg4j.source.ConfigFilesProvider;
 import org.cfg4j.source.SourceCommunicationException;
@@ -97,7 +98,7 @@ public class GitConfigurationSourceIntegrationTest {
     try (GitConfigurationSource gitConfigurationSource = getSourceForRemoteRepoWithBranchResolver(new Resolver())) {
       Environment environment = new ImmutableEnvironment("ignoreMePlease");
 
-      Assertions.assertThat(gitConfigurationSource.getConfiguration(environment)).contains(MapEntry.entry("some.setting", "testValue"));
+      assertThat(gitConfigurationSource.getConfiguration(environment)).contains(MapEntry.entry("some.setting", "testValue"));
     }
   }
 
@@ -106,7 +107,7 @@ public class GitConfigurationSourceIntegrationTest {
     try (GitConfigurationSource gitConfigurationSource = getSourceForRemoteRepoWithDefaults()) {
       Environment environment = new ImmutableEnvironment(TEST_ENV_BRANCH);
 
-      Assertions.assertThat(gitConfigurationSource.getConfiguration(environment)).contains(MapEntry.entry("some.setting", "testValue"));
+      assertThat(gitConfigurationSource.getConfiguration(environment)).contains(MapEntry.entry("some.setting", "testValue"));
     }
   }
 
@@ -123,7 +124,7 @@ public class GitConfigurationSourceIntegrationTest {
     try (GitConfigurationSource gitConfigurationSource = getSourceForRemoteRepoWithPathResolver(new Resolver())) {
       Environment environment = new DefaultEnvironment();
 
-      Assertions.assertThat(gitConfigurationSource.getConfiguration(environment)).contains(MapEntry.entry("some.setting", "otherAppSetting"));
+      assertThat(gitConfigurationSource.getConfiguration(environment)).contains(MapEntry.entry("some.setting", "otherAppSetting"));
     }
   }
 
@@ -132,7 +133,7 @@ public class GitConfigurationSourceIntegrationTest {
     try (GitConfigurationSource gitConfigurationSource = getSourceForRemoteRepoWithDefaults()) {
       Environment environment = new ImmutableEnvironment("/otherApplicationConfigs/");
 
-      Assertions.assertThat(gitConfigurationSource.getConfiguration(environment)).contains(MapEntry.entry("some.setting", "otherAppSetting"));
+      assertThat(gitConfigurationSource.getConfiguration(environment)).contains(MapEntry.entry("some.setting", "otherAppSetting"));
     }
   }
 
@@ -142,7 +143,7 @@ public class GitConfigurationSourceIntegrationTest {
     Environment environment = new DefaultEnvironment();
 
     try (GitConfigurationSource gitConfigurationSource = getSourceForRemoteRepoWithFilesProvider(configFilesProvider)) {
-      Assertions.assertThat(gitConfigurationSource.getConfiguration(environment)).containsKeys("some.setting", "otherConfig.setting");
+      assertThat(gitConfigurationSource.getConfiguration(environment)).containsKeys("some.setting", "otherConfig.setting");
     }
   }
 
@@ -178,7 +179,7 @@ public class GitConfigurationSourceIntegrationTest {
       remoteRepo.changeProperty("application.properties", "some.setting", "changedValue");
       gitConfigurationSource.reload();
 
-      Assertions.assertThat(gitConfigurationSource.getConfiguration(new DefaultEnvironment())).contains(MapEntry.entry("some.setting", "changedValue"));
+      assertThat(gitConfigurationSource.getConfiguration(new DefaultEnvironment())).contains(MapEntry.entry("some.setting", "changedValue"));
     }
   }
 
@@ -189,7 +190,7 @@ public class GitConfigurationSourceIntegrationTest {
       remoteRepo.changeProperty("application.properties", "some.setting", "changedValue");
       gitConfigurationSource.reload();
 
-      Assertions.assertThat(gitConfigurationSource.getConfiguration(new ImmutableEnvironment(TEST_ENV_BRANCH))).contains(MapEntry.entry("some.setting", "changedValue"));
+      assertThat(gitConfigurationSource.getConfiguration(new ImmutableEnvironment(TEST_ENV_BRANCH))).contains(MapEntry.entry("some.setting", "changedValue"));
     }
   }
 

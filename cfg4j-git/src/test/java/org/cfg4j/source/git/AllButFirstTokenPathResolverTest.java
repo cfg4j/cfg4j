@@ -15,9 +15,9 @@
  */
 package org.cfg4j.source.git;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-import org.assertj.core.api.StrictAssertions;
 import org.cfg4j.source.context.Environment;
 import org.junit.Before;
 import org.junit.Rule;
@@ -48,27 +48,27 @@ public class AllButFirstTokenPathResolverTest {
   public void shouldResolveEmptyStringToEmptyPath() throws Exception {
     when(environment.getName()).thenReturn("us-west-1/");
 
-    StrictAssertions.assertThat(pathResolver.getPathFor(environment).toString()).isEqualTo("");
+    assertThat(pathResolver.getPathFor(environment).toString()).isEqualTo("");
   }
 
   @Test
   public void shouldDiscardFirstToken() throws Exception {
     when(environment.getName()).thenReturn("us-west-1/local/path");
 
-    StrictAssertions.assertThat(pathResolver.getPathFor(environment).toString()).isEqualTo("local/path");
+    assertThat(pathResolver.getPathFor(environment).toString()).isEqualTo("local/path");
   }
 
   @Test
   public void shouldIgnoreMissingFirstToken() throws Exception {
     when(environment.getName()).thenReturn("/local/path");
 
-    StrictAssertions.assertThat(pathResolver.getPathFor(environment).toString()).isEqualTo("local/path");
+    assertThat(pathResolver.getPathFor(environment).toString()).isEqualTo("local/path");
   }
 
   @Test
   public void shouldTreatMissingPathAsEmptyPath() throws Exception {
     when(environment.getName()).thenReturn("us-west-1/");
 
-    StrictAssertions.assertThat(pathResolver.getPathFor(environment).toString()).isEqualTo("");
+    assertThat(pathResolver.getPathFor(environment).toString()).isEqualTo("");
   }
 }

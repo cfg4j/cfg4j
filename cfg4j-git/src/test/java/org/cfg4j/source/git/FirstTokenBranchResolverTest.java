@@ -15,9 +15,9 @@
  */
 package org.cfg4j.source.git;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-import org.assertj.core.api.StrictAssertions;
 import org.cfg4j.source.context.Environment;
 import org.junit.Before;
 import org.junit.Rule;
@@ -48,27 +48,27 @@ public class FirstTokenBranchResolverTest {
   public void shouldResolveEmptyStringToMaster() throws Exception {
     when(environment.getName()).thenReturn("");
 
-    StrictAssertions.assertThat(branchResolver.getBranchNameFor(environment)).isEqualTo("master");
+    assertThat(branchResolver.getBranchNameFor(environment)).isEqualTo("master");
   }
 
   @Test
   public void shouldResolveWhitespacesToMaster() throws Exception {
     when(environment.getName()).thenReturn("   ");
 
-    StrictAssertions.assertThat(branchResolver.getBranchNameFor(environment)).isEqualTo("master");
+    assertThat(branchResolver.getBranchNameFor(environment)).isEqualTo("master");
   }
 
   @Test
   public void shouldSupportSingleToken() throws Exception {
     when(environment.getName()).thenReturn("us-west-1");
 
-    StrictAssertions.assertThat(branchResolver.getBranchNameFor(environment)).isEqualTo("us-west-1");
+    assertThat(branchResolver.getBranchNameFor(environment)).isEqualTo("us-west-1");
   }
 
   @Test
   public void shouldUseFirstTokenAsBranchName() throws Exception {
     when(environment.getName()).thenReturn("us-west-1/local/path");
 
-    StrictAssertions.assertThat(branchResolver.getBranchNameFor(environment)).isEqualTo("us-west-1");
+    assertThat(branchResolver.getBranchNameFor(environment)).isEqualTo("us-west-1");
   }
 }

@@ -15,7 +15,8 @@
  */
 package org.cfg4j.source;
 
-import org.assertj.core.api.Assertions;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -29,6 +30,6 @@ public class DefaultConfigFilesProviderTest {
   @Test
   public void shouldProvideDefaultConfigFile() throws Exception {
     DefaultConfigFilesProvider provider = new DefaultConfigFilesProvider();
-    Assertions.assertThat(provider.getConfigFiles()).containsExactly(FileSystems.getDefault().getPath("application.properties"));
+    assertThat(provider.getConfigFiles()).containsExactly(FileSystems.getDefault().getPath("application.properties"));
   }
 }

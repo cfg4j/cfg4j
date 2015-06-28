@@ -125,4 +125,16 @@ public class GitConfigurationSourceBuilder {
     return new GitConfigurationSource(repositoryURI, tmpPath, localRepositoryPathInTemp, branchResolver, pathResolver,
         configFilesProvider);
   }
+
+  @Override
+  public String toString() {
+    return "GitConfigurationSourceBuilder{" +
+        "branchResolver=" + branchResolver +
+        ", pathResolver=" + pathResolver +
+        ", repositoryURI='" + repositoryURI + '\'' +
+        ", tmpPath='" + tmpPath + '\'' +
+        ", localRepositoryPathInTemp='" + localRepositoryPathInTemp + '\'' +
+        ", configFilesProvider=" + configFilesProvider +
+        '}';
+  }
 }

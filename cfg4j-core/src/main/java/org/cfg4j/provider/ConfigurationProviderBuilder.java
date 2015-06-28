@@ -101,4 +101,12 @@ public class ConfigurationProviderBuilder {
     return new SimpleConfigurationProvider(configurationSource, environment);
   }
 
+  @Override
+  public String toString() {
+    return "ConfigurationProviderBuilder{" +
+        "configurationSource=" + configurationSource +
+        ", reloadStrategy=" + reloadStrategy +
+        ", environment=" + environment +
+        '}';
+  }
 }

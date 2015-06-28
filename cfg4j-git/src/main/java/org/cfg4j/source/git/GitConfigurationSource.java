@@ -158,4 +158,15 @@ public class GitConfigurationSource implements ConfigurationSource, Closeable {
     checkoutCommand
         .call();
   }
+
+  @Override
+  public String toString() {
+    return "GitConfigurationSource{" +
+        "clonedRepo=" + clonedRepo +
+        ", clonedRepoPath=" + clonedRepoPath +
+        ", branchResolver=" + branchResolver +
+        ", pathResolver=" + pathResolver +
+        ", configFilesProvider=" + configFilesProvider +
+        '}';
+  }
 }

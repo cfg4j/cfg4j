@@ -108,4 +108,12 @@ public class SimpleConfigurationProvider implements ConfigurationProvider {
 
     return proxy;
   }
+
+  @Override
+  public String toString() {
+    return "SimpleConfigurationProvider{" +
+        "configurationSource=" + configurationSource +
+        ", environment=" + environment +
+        '}';
+  }
 }

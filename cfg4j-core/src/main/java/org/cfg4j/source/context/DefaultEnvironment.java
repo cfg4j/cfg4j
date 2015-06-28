@@ -25,4 +25,9 @@ public class DefaultEnvironment extends ImmutableEnvironment {
   public DefaultEnvironment() {
     super("");
   }
+
+  @Override
+  public String toString() {
+    return "DefaultEnvironment{}";
+  }
 }

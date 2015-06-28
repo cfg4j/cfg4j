@@ -114,4 +114,12 @@ public class ConsulConfigurationSource implements ConfigurationSource {
       consulValues.put(value.getKey(), val);
     }
   }
+
+  @Override
+  public String toString() {
+    return "ConsulConfigurationSource{" +
+        "consulValues=" + consulValues +
+        ", kvClient=" + kvClient +
+        '}';
+  }
 }

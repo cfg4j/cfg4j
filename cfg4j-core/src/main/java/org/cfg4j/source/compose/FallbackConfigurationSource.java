@@ -21,6 +21,7 @@ import org.cfg4j.source.ConfigurationSource;
 import org.cfg4j.source.context.Environment;
 import org.cfg4j.source.context.MissingEnvironmentException;
 
+import java.util.Arrays;
 import java.util.Properties;
 
 /**
@@ -100,4 +101,10 @@ public class FallbackConfigurationSource implements ConfigurationSource {
     }
   }
 
+  @Override
+  public String toString() {
+    return "FallbackConfigurationSource{" +
+        "sources=" + Arrays.toString(sources) +
+        '}';
+  }
 }

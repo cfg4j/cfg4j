@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
@@ -39,6 +40,17 @@ import java.util.stream.StreamSupport;
 public class FilesConfigurationSource implements ConfigurationSource {
 
   private final ConfigFilesProvider configFilesProvider;
+
+  /**
+   * Construct {@link ConfigurationSource} backed by files. Uses "application.properties" file
+   * located in the path specified by the {@link Environment} provided to {@link #getConfiguration(Environment)}
+   * calls (see corresponding javadocs for detail).
+   */
+  public FilesConfigurationSource() {
+    this.configFilesProvider = () -> Collections.singletonList(
+        FileSystems.getDefault().getPath("application.properties")
+    );
+  }
 
   /**
    * Construct {@link ConfigurationSource} backed by files. File list should by provided by

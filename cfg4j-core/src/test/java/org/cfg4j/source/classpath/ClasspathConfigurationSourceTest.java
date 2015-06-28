@@ -52,21 +52,11 @@ public class ClasspathConfigurationSourceTest {
     classpathRepo = new TempConfigurationClasspathRepo();
     fileSystem = FileSystems.getDefault();
 
-    configFilesProvider = () -> Collections.singletonList(
-        fileSystem.getPath("application.properties")
-    );
-
-    source = new ClasspathConfigurationSource(configFilesProvider);
+    source = new ClasspathConfigurationSource();
   }
 
   @Test
   public void getConfigurationShouldReadFromGivenPath() throws Exception {
-    configFilesProvider = () -> Collections.singletonList(
-        fileSystem.getPath("application.properties")
-    );
-
-    source = new ClasspathConfigurationSource(configFilesProvider);
-
     Environment environment = new ImmutableEnvironment("/otherApplicationConfigs/");
 
     assertThat(source.getConfiguration(environment)).containsOnly(MapEntry.entry("some.setting", "otherAppSetting"));

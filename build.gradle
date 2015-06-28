@@ -42,7 +42,6 @@ apply plugin: 'signing'
 repositories {
     mavenLocal()
     mavenCentral()
-    jcenter()
 }
 
 // ----------- External module dependencies -----------
@@ -52,7 +51,7 @@ dependencies {
     compile group: "org.eclipse.jgit", name: "org.eclipse.jgit", version: "4.0.0.201506090130-r"
 
     // Consul
-    compile group: "com.orbitz.consul", name: "consul-client", version: "0.9.4"
+    compile group: "com.orbitz.consul", name: "consul-client", version: "0.9.6"
     compile group: "org.apache.cxf", name: "cxf-rt-rs-client", version: "3.1.1"
     compile group: "org.apache.cxf", name: "cxf-rt-transports-http-hc", version: "3.1.1"
 

@@ -57,8 +57,16 @@ public class ClasspathConfigurationSourceTest {
 
   @Test
   public void getConfigurationShouldReadFromGivenPath() throws Exception {
-    Environment environment = new ImmutableEnvironment("/otherApplicationConfigs/");
+    Environment environment = new ImmutableEnvironment("otherApplicationConfigs");
 
+    assertThat(source.getConfiguration(environment)).containsOnly(MapEntry.entry("some.setting", "otherAppSetting"));
+  }
+
+  @Test
+  public void getConfigurationShouldDisallowLeadingSlashInClasspathLocation() throws Exception {
+    Environment environment = new ImmutableEnvironment("/otherApplicationConfigs");
+
+    expectedException.expect(MissingEnvironmentException.class);
     assertThat(source.getConfiguration(environment)).containsOnly(MapEntry.entry("some.setting", "otherAppSetting"));
   }
 

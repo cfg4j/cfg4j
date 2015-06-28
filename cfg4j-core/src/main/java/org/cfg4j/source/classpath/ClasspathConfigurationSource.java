@@ -65,7 +65,8 @@ public class ClasspathConfigurationSource implements ConfigurationSource {
   /**
    * Get configuration set for a given {@code environment} from this source in a form of {@link Properties}.
    * {@link Environment} name is prepended to all file paths from {@link ConfigFilesProvider}
-   * to form an absolute configuration file path.
+   * to form an absolute configuration file path. Trailing slashes in environment name are not supported (due
+   * to Java disallowing classpath locations starting with slash).
    *
    * @param environment environment to use
    * @return configuration set for {@code environment}
@@ -76,7 +77,7 @@ public class ClasspathConfigurationSource implements ConfigurationSource {
   public Properties getConfiguration(Environment environment) {
     Properties properties = new Properties();
 
-    Path pathPrefix = getPrefixFor(environment);
+    Path pathPrefix = FileSystems.getDefault().getPath(environment.getName());
 
     URL url = getClass().getClassLoader().getResource(pathPrefix.toString());
     if (url == null) {
@@ -106,20 +107,6 @@ public class ClasspathConfigurationSource implements ConfigurationSource {
   @Override
   public void reload() {
     // NOP
-  }
-
-  private Path getPrefixFor(Environment environment) {
-    String path = environment.getName();
-
-    if (!path.trim().isEmpty() && !path.endsWith("/")) {
-      path += "/";
-    }
-
-    if (path.startsWith("/")) {
-      path = path.substring(1);
-    }
-
-    return FileSystems.getDefault().getPath(path);
   }
 
   @Override

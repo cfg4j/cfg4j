@@ -47,6 +47,7 @@ public class FilesConfigurationSourceTest {
   private ConfigFilesProvider configFilesProvider;
   private FilesConfigurationSource source;
   private FileSystem fileSystem;
+  private Environment environment;
 
   @Before
   public void setUp() throws Exception {
@@ -58,11 +59,9 @@ public class FilesConfigurationSourceTest {
 
     fileSystem = FileSystems.getDefault();
 
-    configFilesProvider = () -> Collections.singletonList(
-        fileSystem.getPath(fileRepo.getURI() + "/application.properties")
-    );
+    environment = new ImmutableEnvironment(fileRepo.getURI());
 
-    source = new FilesConfigurationSource(configFilesProvider);
+    source = new FilesConfigurationSource();
   }
 
   @After
@@ -71,13 +70,12 @@ public class FilesConfigurationSourceTest {
   }
 
   @Test
+  public void getConfigurationShouldReadFromDefaultFile() throws Exception {
+    assertThat(source.getConfiguration(environment)).containsOnly(MapEntry.entry("some.setting", "masterValue"));
+  }
+
+  @Test
   public void getConfigurationShouldReadFromGivenPath() throws Exception {
-    configFilesProvider = () -> Collections.singletonList(
-        fileSystem.getPath("application.properties")
-    );
-
-    source = new FilesConfigurationSource(configFilesProvider);
-
     Environment environment = new ImmutableEnvironment(fileRepo.getURI() + "/otherApplicationConfigs/");
 
     assertThat(source.getConfiguration(environment)).containsOnly(MapEntry.entry("some.setting", "otherAppSetting"));
@@ -86,8 +84,8 @@ public class FilesConfigurationSourceTest {
   @Test
   public void getConfigurationShouldReadFromGivenFiles() throws Exception {
     configFilesProvider = () -> Arrays.asList(
-        fileSystem.getPath(fileRepo.getURI() + "/application.properties"),
-        fileSystem.getPath(fileRepo.getURI() + "/otherConfig.properties")
+        fileSystem.getPath("application.properties"),
+        fileSystem.getPath("otherConfig.properties")
     );
 
     source = new FilesConfigurationSource(configFilesProvider);
@@ -111,7 +109,7 @@ public class FilesConfigurationSourceTest {
   @Test
   public void getConfigurationShouldThrowOnMalformedConfigFile() throws Exception {
     configFilesProvider = () -> Collections.singletonList(
-        fileSystem.getPath(fileRepo.getURI() + "/malformed.properties")
+        fileSystem.getPath("malformed.properties")
     );
 
     source = new FilesConfigurationSource(configFilesProvider);

@@ -7,7 +7,7 @@
 
 # Overview
 <img height="140px" align="right" src="https://github.com/cfg4j/cfg4j.github.io/blob/master/img/cfg4j.png">
-**cfg4j** ("Configuration for Java") is a **configuration library for Java distributed apps (and not only)**.
+**cfg4j** ("Configuration for Java") is a **configuration library for Java distributed apps** (and not only).
 
 #### Features:
 * Open source

@@ -44,7 +44,7 @@ public class FilesConfigurationSource implements ConfigurationSource {
   /**
    * Construct {@link ConfigurationSource} backed by files. Uses "application.properties" file
    * located in the path specified by the {@link Environment} provided to {@link #getConfiguration(Environment)}
-   * calls (see corresponding javadocs for detail).
+   * calls (see corresponding javadoc for detail).
    */
   public FilesConfigurationSource() {
     this.configFilesProvider = () -> Collections.singletonList(
@@ -53,10 +53,9 @@ public class FilesConfigurationSource implements ConfigurationSource {
   }
 
   /**
-   * Construct {@link ConfigurationSource} backed by files. File list should by provided by
+   * Construct {@link ConfigurationSource} backed by files. File paths should by provided by
    * {@link ConfigFilesProvider} and will be treated as relative paths to the environment provided in
-   * {@link #getConfiguration(Environment)} calls (see corresponding javadocs
-   * for detail).
+   * {@link #getConfiguration(Environment)} calls (see corresponding javadoc for detail).
    *
    * @param configFilesProvider {@link ConfigFilesProvider} supplying a list of configuration files to use
    */

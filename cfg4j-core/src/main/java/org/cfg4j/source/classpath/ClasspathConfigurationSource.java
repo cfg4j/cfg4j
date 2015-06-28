@@ -40,9 +40,9 @@ public class ClasspathConfigurationSource implements ConfigurationSource {
   private final ConfigFilesProvider configFilesProvider;
 
   /**
-   * Construct {@link ConfigurationSource} backed by classpath files. File list should by provided by
+   * Construct {@link ConfigurationSource} backed by classpath files. File paths should by provided by
    * {@link ConfigFilesProvider} and will be treated as relative paths to the environment provided in
-   * {@link #getConfiguration(Environment)} calls (see corresponding javadocs for detail).
+   * {@link #getConfiguration(Environment)} calls (see corresponding javadoc for detail).
    *
    * @param configFilesProvider {@link ConfigFilesProvider} supplying a list of configuration files to use
    */
@@ -52,8 +52,8 @@ public class ClasspathConfigurationSource implements ConfigurationSource {
 
   /**
    * Get configuration set for a given {@code environment} from this source in a form of {@link Properties}.
-   * Path provided by {@code environment} is prepended to all file paths from {@link ConfigFilesProvider} used
-   * at construction time.
+   * {@link Environment} name is prepended to all file paths from {@link ConfigFilesProvider}
+   * to form an absolute configuration file path.
    *
    * @param environment environment to use
    * @return configuration set for {@code environment}

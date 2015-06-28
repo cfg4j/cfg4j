@@ -6,6 +6,7 @@
 [![JavaDoc](https://img.shields.io/badge/javadoc-html-blue.svg)](http://www.javadoc.io/doc/org.cfg4j/cfg4j)
 
 # Overview
+<img height="140px" align="right" src="https://github.com/cfg4j/cfg4j.github.io/blob/master/img/cfg4j.png">
 **cfg4j** ("Configuration for Java") is a **distributed apps-oriented configuration library for Java**.
 
 #### Features:

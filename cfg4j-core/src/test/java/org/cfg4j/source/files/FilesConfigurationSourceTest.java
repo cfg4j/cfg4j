@@ -75,6 +75,12 @@ public class FilesConfigurationSourceTest {
   }
 
   @Test
+  public void getConfigurationShouldReadFromHomeForDefaultEnvironment() throws Exception {
+    System.setProperty("user.home", fileRepo.getURI() + "/otherApplicationConfigs");
+    assertThat(source.getConfiguration(new DefaultEnvironment())).containsOnly(MapEntry.entry("some.setting", "otherAppSetting"));
+  }
+
+  @Test
   public void getConfigurationShouldReadFromGivenPath() throws Exception {
     Environment environment = new ImmutableEnvironment(fileRepo.getURI() + "/otherApplicationConfigs/");
 
@@ -89,7 +95,7 @@ public class FilesConfigurationSourceTest {
     );
 
     source = new FilesConfigurationSource(configFilesProvider);
-    assertThat(source.getConfiguration(new DefaultEnvironment())).containsOnlyKeys("some.setting", "otherConfig.setting");
+    assertThat(source.getConfiguration(environment)).containsOnlyKeys("some.setting", "otherConfig.setting");
   }
 
   @Test
@@ -103,7 +109,7 @@ public class FilesConfigurationSourceTest {
     fileRepo.deleteFile("application.properties");
 
     expectedException.expect(IllegalStateException.class);
-    source.getConfiguration(new DefaultEnvironment());
+    source.getConfiguration(environment);
   }
 
   @Test
@@ -115,14 +121,14 @@ public class FilesConfigurationSourceTest {
     source = new FilesConfigurationSource(configFilesProvider);
 
     expectedException.expect(IllegalStateException.class);
-    source.getConfiguration(new DefaultEnvironment());
+    source.getConfiguration(environment);
   }
 
   @Test
-  public void refreshShouldUpdateGetConfigurationupdateOnDefaultBranch() throws Exception {
+  public void reloadShouldUpdateGetConfiguration() throws Exception {
     fileRepo.changeProperty("application.properties", "some.setting", "changedValue");
     source.reload();
 
-    assertThat(source.getConfiguration(new DefaultEnvironment())).containsOnly(MapEntry.entry("some.setting", "changedValue"));
+    assertThat(source.getConfiguration(environment)).containsOnly(MapEntry.entry("some.setting", "changedValue"));
   }
 }

@@ -79,16 +79,16 @@ public class FilesConfigurationSource implements ConfigurationSource {
   public Properties getConfiguration(Environment environment) {
     Properties properties = new Properties();
 
-    String rootPathStr = environment.getName();
-    if (rootPathStr.trim().isEmpty()) {
-      rootPathStr = "/";
+    Path rootPath;
+    if (environment.getName().trim().isEmpty()) {
+      rootPath = FileSystems.getDefault().getPath(System.getProperty("user.home"));
+    } else {
+      rootPath = FileSystems.getDefault().getPath(environment.getName());
     }
 
-    if (!new File(rootPathStr).exists()) {
-      throw new MissingEnvironmentException("Directory doesn't exist: " + environment.getName());
+    if (!rootPath.toFile().exists()) {
+      throw new MissingEnvironmentException("Directory doesn't exist: " + rootPath);
     }
-
-    Path rootPath = FileSystems.getDefault().getPath(rootPathStr);
 
     List<Path> paths = StreamSupport.stream(configFilesProvider.getConfigFiles().spliterator(), false)
         .map(rootPath::resolve)

@@ -27,6 +27,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
@@ -38,6 +39,17 @@ import java.util.stream.StreamSupport;
 public class ClasspathConfigurationSource implements ConfigurationSource {
 
   private final ConfigFilesProvider configFilesProvider;
+
+  /**
+   * Construct {@link ConfigurationSource} backed by classpath files. Uses "application.properties" file
+   * located in the path specified by the {@link Environment} provided to {@link #getConfiguration(Environment)}
+   * calls (see corresponding javadoc for detail).
+   */
+  public ClasspathConfigurationSource() {
+    this.configFilesProvider = () -> Collections.singletonList(
+        FileSystems.getDefault().getPath("application.properties")
+    );
+  }
 
   /**
    * Construct {@link ConfigurationSource} backed by classpath files. File paths should by provided by

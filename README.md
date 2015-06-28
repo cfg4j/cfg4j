@@ -6,24 +6,21 @@
 [![JavaDoc](https://img.shields.io/badge/javadoc-html-blue.svg)](http://www.javadoc.io/doc/org.cfg4j/cfg4j)
 
 # Overview
-**cfg4j** ("Configuration for Java") is a **distributed apps-oriented configuration library for Java**. It's very simple to use
- yet offers a comprehensive set of features:
-* Distributed environment support:
-    * Runtime configuration reload (periodical, push and custom)
-    * Caching
-    * Support for multi-tenant configuration sources (e.g. keep configuration for all your environments [test, preprod, prod] in one store)
-    * Handle network failures (e.g. re-try, fallback to another source)
-* Adapters for multiple configuration stores
-    * [Git](), [Consul](https://consul.io/), Files, Classpath,[ZooKeeper (WIP)](https://zookeeper.apache.org/) and MySQL (WIP)
-* Easy yet flexible configuration management:
-    * Merge configurations from different sources
-    * Validation
-    * POJO configuration objects binding
-* Modern design
-    * Extensible
-    * Well documented
-    * Heavily tested
-    * Dependency Injection-friendly
+<img height="140px" align="right" src="https://github.com/cfg4j/cfg4j.github.io/blob/master/img/cfg4j.png">
+**cfg4j** ("Configuration for Java") is a **configuration library for Java distributed apps** (and not only).
+
+#### Features:
+* Open source
+* **Easy to use**
+* **Auto-reloads** configuration
+* **Powerful** configuration mechanisms (interface **binding**, **multi-source** support with **fallback** strategy, **merging**, ...)
+* **Distributed-environment friendly** ( **caching**, support for **multiple environments** [test, preprod, prod], ...)
+* Reads configuration from: **[Consul](https://github.com/cfg4j/cfg4j-sample-apps/tree/master/consul-bind),
+ [Git repos](https://github.com/cfg4j/cfg4j-sample-apps/tree/master/git-bind),
+ [Files](https://github.com/cfg4j/cfg4j-sample-apps/tree/master/files-bind),
+ [Classpath](https://github.com/cfg4j/cfg4j-sample-apps/tree/master/classpath-bind), ...**
+* Seamless integration with **[Spring](https://spring.io/)**, **[Guice](https://github.com/google/guice)** and others
+* Modern design (extensible, heavily tested, well documented)
 
 # Usage
 

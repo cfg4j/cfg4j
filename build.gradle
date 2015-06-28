@@ -19,8 +19,7 @@ buildscript {
 
     ext {
         artifactGroup = "org.cfg4j"
-        artifactName = "cfg4j"
-        artifactVersion = "3.3.2"
+        artifactVersion = "4.0.0-SNAPSHOT"
     }
 
     repositories {
@@ -29,155 +28,140 @@ buildscript {
     }
 }
 
-// ----------- Plugins -----------
 
-apply plugin: "java"
-apply plugin: "idea"
-apply plugin: "jacoco"
-apply plugin: 'maven'
-apply plugin: 'signing'
+subprojects {
 
-// ----------- Repositories -----------
+    // ----------- Plugins -----------
+    apply plugin: "java"
+    apply plugin: "idea"
+    apply plugin: "jacoco"
+    apply plugin: 'maven'
+    apply plugin: 'signing'
 
-repositories {
-    mavenLocal()
-    mavenCentral()
-}
+    // ----------- Repositories -----------
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
 
-// ----------- External module dependencies -----------
+    // ----------- External module dependencies -----------
+    dependencies {
 
-dependencies {
-    // Git
-    compile group: "org.eclipse.jgit", name: "org.eclipse.jgit", version: "4.0.0.201506090130-r"
+        // Logging
+        compile group: "org.slf4j", name: "slf4j-api", version: "1.7.12"
 
-    // Consul
-    compile group: "com.orbitz.consul", name: "consul-client", version: "0.9.6"
-    compile group: "org.apache.cxf", name: "cxf-rt-rs-client", version: "3.1.1"
-    compile group: "org.apache.cxf", name: "cxf-rt-transports-http-hc", version: "3.1.1"
+        testCompile group: "junit", name: "junit", version: "4.12"
+        testCompile group: "org.assertj", name: "assertj-core", version: "3.1.0"
+        testCompile group: "org.mockito", name: "mockito-core", version: "1.10.19"
+    }
 
-    // Logging
-    compile group: "org.slf4j", name: "slf4j-api", version: "1.7.12"
+    // ----------- EXTRA tasks -----------
 
-    // Types parsing
-    compile group: "com.github.drapostolos", name: "type-parser", version: "0.5.0"
+    // Generate Gradle wrapper
+    task wrapper(type: Wrapper) {
+        gradleVersion = "2.4"
+    }
 
-    testCompile group: "junit", name: "junit", version: "4.12"
-    testCompile group: "org.assertj", name: "assertj-core", version: "3.0.0"
-    testCompile group: "org.mockito", name: "mockito-core", version: "1.10.19"
-    testCompile group: "com.squareup.okhttp", name: "mockwebserver", version: "2.4.0"
-}
+    task javadocJar(type: Jar) {
+        classifier = 'javadoc'
+        from javadoc
+    }
 
-// ----------- EXTRA tasks -----------
-
-// Generate Gradle wrapper
-task wrapper(type: Wrapper) {
-    gradleVersion = "2.4"
-}
-
-task javadocJar(type: Jar) {
-    classifier = 'javadoc'
-    from javadoc
-}
-
-task sourcesJar(type: Jar) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
+    task sourcesJar(type: Jar) {
+        classifier = 'sources'
+        from sourceSets.main.allSource
+    }
 
 // ----------- Task configurations -----------
-defaultTasks "clean", "build"
+    defaultTasks "clean", "build"
 
-compileJava {
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
-}
-
-jar {
-    baseName = "${artifactName}"
-    version = "${artifactVersion}"
-}
-
-jacocoTestReport {
-    reports {
-        xml.enabled false
-        html.enabled false
+    compileJava {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
     }
-}
 
-group = "${artifactGroup}"
-archivesBaseName = "${artifactName}"
-version = "${artifactVersion}"
+    jacocoTestReport {
+        reports {
+            xml.enabled false
+            html.enabled false
+        }
+    }
 
-artifacts {
-    archives javadocJar, sourcesJar
-}
+    group = "${artifactGroup}"
+    version = "${artifactVersion}"
 
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+    artifacts {
+        archives javadocJar, sourcesJar
+    }
 
-            def ossrhUsername = project.hasProperty("ossrhUsername") ? project.property("ossrhUsername") : ""
-            def ossrhPassword = project.hasProperty("ossrhPassword") ? project.property("ossrhPassword") : ""
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
-            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-                authentication(userName: ossrhUsername, password: ossrhPassword)
-            }
+                def ossrhUsername = project.hasProperty("ossrhUsername") ? project.property("ossrhUsername") : ""
+                def ossrhPassword = project.hasProperty("ossrhPassword") ? project.property("ossrhPassword") : ""
 
-            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-                authentication(userName: ossrhUsername, password: ossrhPassword)
-            }
-
-            pom.project {
-                name 'cfg4j'
-                packaging 'jar'
-                description 'Web service-oriented configuration library for Java'
-                url 'http://cfg4j.org'
-
-                scm {
-                    url 'git@github.com:cfg4j/cfg4j.git'
-                    connection 'scm:git:git@github.com:cfg4j/cfg4j.git'
-                    developerConnection 'scm:git:git@github.com:cfg4j/cfg4j.git'
+                repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                    authentication(userName: ossrhUsername, password: ossrhPassword)
                 }
 
+                snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                    authentication(userName: ossrhUsername, password: ossrhPassword)
+                }
 
-                licenses {
-                    license {
-                        name 'The Apache License, Version 2.0'
-                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                        distribution 'repo'
+                pom.project {
+                    name 'cfg4j'
+                    packaging 'jar'
+                    description 'Configuration library for Java distributed apps.'
+                    url 'http://cfg4j.org'
+
+                    scm {
+                        url 'git@github.com:cfg4j/cfg4j.git'
+                        connection 'scm:git:git@github.com:cfg4j/cfg4j.git'
+                        developerConnection 'scm:git:git@github.com:cfg4j/cfg4j.git'
                     }
-                }
 
-                developers {
-                    developer {
-                        id 'norbertpotocki'
-                        name 'Norbert Potocki'
-                        email 'norbert.potocki@nort.pl'
+
+                    licenses {
+                        license {
+                            name 'The Apache License, Version 2.0'
+                            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                            distribution 'repo'
+                        }
+                    }
+
+                    developers {
+                        developer {
+                            id 'norbertpotocki'
+                            name 'Norbert Potocki'
+                            email 'norbert.potocki@nort.pl'
+                        }
                     }
                 }
             }
         }
     }
-}
 
 
-signing {
-    required { gradle.taskGraph.hasTask(":uploadArchives") }
-    sign configurations.archives
-}
-
-gradle.taskGraph.whenReady { taskGraph ->
-    if (taskGraph.hasTask(":uploadArchives")) {
-        Console console = System.console()
-        console.printf "\n\nWe have to sign and upload artifacts to Maven Central Repository" +
-                "\n\nPlease enter your credentials.\n\n"
-
-        def signingPassword = console.readPassword("PGP Private Key Password: ")
-
-        allprojects { ext."signing.password" = signingPassword }
-
-
-        console.printf "\nThanks.\n\n"
+    signing {
+        required { gradle.taskGraph.hasTask(":cfg4j-core:uploadArchives") }
+        sign configurations.archives
     }
+
+    gradle.taskGraph.whenReady { taskGraph ->
+        if (taskGraph.hasTask(":cfg4j-core:uploadArchives")) {
+            Console console = System.console()
+            console.printf "\n\nWe have to sign and upload artifacts to Maven Central Repository" +
+                    "\n\nPlease enter your credentials.\n\n"
+
+            def signingPassword = console.readPassword("PGP Private Key Password: ")
+
+            allprojects { ext."signing.password" = signingPassword }
+
+
+            console.printf "\nThanks.\n\n"
+        }
+    }
+
 }

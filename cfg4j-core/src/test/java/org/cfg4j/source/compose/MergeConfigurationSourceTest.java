@@ -59,7 +59,7 @@ public class MergeConfigurationSourceTest {
   }
 
   @Test
-  public void getConfiguration2ShouldThrowWhenOneOfSourcesThrowsOnMissingEnvironment() throws Exception {
+  public void getConfigurationShouldThrowWhenOneOfSourcesThrowsOnMissingEnvironment() throws Exception {
     when(underlyingSources[1].getConfiguration(any())).thenThrow(new MissingEnvironmentException(""));
 
     expectedException.expect(MissingEnvironmentException.class);
@@ -67,7 +67,7 @@ public class MergeConfigurationSourceTest {
   }
 
   @Test
-  public void getConfiguration2ShouldThrowWhenOneOfSourcesThrows() throws Exception {
+  public void getConfigurationShouldThrowWhenOneOfSourcesThrows() throws Exception {
     when(underlyingSources[3].getConfiguration(any())).thenThrow(new IllegalStateException());
 
     expectedException.expect(IllegalStateException.class);
@@ -75,7 +75,7 @@ public class MergeConfigurationSourceTest {
   }
 
   @Test
-  public void getConfiguration2ShouldMergeConfigurations() throws Exception {
+  public void getConfigurationShouldMergeConfigurations() throws Exception {
     Environment environment = new ImmutableEnvironment("test");
 
     sourcesWithProps(environment, "prop1", "value1", "prop2", "value2");
@@ -85,7 +85,7 @@ public class MergeConfigurationSourceTest {
   }
 
   @Test
-  public void getConfiguration2ShouldMergeConfigurationsWithCollidingKeys() throws Exception {
+  public void getConfigurationShouldMergeConfigurationsWithCollidingKeys() throws Exception {
     Environment environment = new ImmutableEnvironment("test");
 
     sourcesWithProps(environment, "prop", "value1", "prop", "value2");

@@ -60,7 +60,7 @@ public class ClasspathConfigurationSourceTest {
   }
 
   @Test
-  public void getConfiguration2ShouldReadFromGivenPath() throws Exception {
+  public void getConfigurationShouldReadFromGivenPath() throws Exception {
     configFilesProvider = () -> Collections.singletonList(
         fileSystem.getPath("application.properties")
     );
@@ -73,7 +73,7 @@ public class ClasspathConfigurationSourceTest {
   }
 
   @Test
-  public void getConfiguration2ShouldReadFromGivenFiles() throws Exception {
+  public void getConfigurationShouldReadFromGivenFiles() throws Exception {
     configFilesProvider = () -> Arrays.asList(
         fileSystem.getPath("application.properties"),
         fileSystem.getPath("otherConfig.properties")
@@ -84,13 +84,13 @@ public class ClasspathConfigurationSourceTest {
   }
 
   @Test
-  public void getConfiguration2ShouldThrowOnMissingEnvironment() throws Exception {
+  public void getConfigurationShouldThrowOnMissingEnvironment() throws Exception {
     expectedException.expect(MissingEnvironmentException.class);
     source.getConfiguration(new ImmutableEnvironment("awlerijawoetinawwerlkjn"));
   }
 
   @Test
-  public void getConfiguration2ShouldThrowOnMissingConfigFile() throws Exception {
+  public void getConfigurationShouldThrowOnMissingConfigFile() throws Exception {
     configFilesProvider = () -> Collections.singletonList(
         fileSystem.getPath("nonexistent.properties")
     );
@@ -102,7 +102,7 @@ public class ClasspathConfigurationSourceTest {
   }
 
   @Test
-  public void getConfiguration2ShouldThrowOnMalformedConfigFile() throws Exception {
+  public void getConfigurationShouldThrowOnMalformedConfigFile() throws Exception {
     configFilesProvider = () -> Collections.singletonList(
         fileSystem.getPath("malformed.properties")
     );
@@ -114,7 +114,7 @@ public class ClasspathConfigurationSourceTest {
   }
 
   @Test
-  public void reloadShouldUpdateGetConfiguration2OnDefaultBranch() throws Exception {
+  public void reloadShouldUpdategetConfigurationOnDefaultBranch() throws Exception {
     classpathRepo.changeProperty("application.properties", "some.setting", "changedValue");
     source.reload();
 

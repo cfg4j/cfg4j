@@ -61,7 +61,7 @@ public class FallbackConfigurationSourceTest {
   }
 
   @Test
-  public void getConfiguration2ShouldThrowWhenAllSourcesThrowOnMissingEnvironment() throws Exception {
+  public void getConfigurationShouldThrowWhenAllSourcesThrowOnMissingEnvironment() throws Exception {
     makeAllSourcesThrow(new MissingEnvironmentException(""));
 
     expectedException.expect(MissingEnvironmentException.class);
@@ -69,7 +69,7 @@ public class FallbackConfigurationSourceTest {
   }
 
   @Test
-  public void getConfiguration2ShouldThrowWhenAllSourcesThrow() throws Exception {
+  public void getConfigurationShouldThrowWhenAllSourcesThrow() throws Exception {
     makeAllSourcesThrow(new IllegalStateException());
 
     expectedException.expect(IllegalStateException.class);
@@ -77,7 +77,7 @@ public class FallbackConfigurationSourceTest {
   }
 
   @Test
-  public void getConfiguration2ShouldSelectFirstAvailableConfiguration() throws Exception {
+  public void getConfigurationShouldSelectFirstAvailableConfiguration() throws Exception {
     makeAllSourcesThrow(new IllegalStateException());
     underlyingSources[LAST_SOURCE_INDEX] = mock(ConfigurationSource.class);
     when(underlyingSources[LAST_SOURCE_INDEX].getConfiguration(any(Environment.class))).thenReturn(getProps("prop1", "value1")[0]);

@@ -47,4 +47,11 @@ public abstract class GenericType<T> implements GenericTypeInterface {
   public Type getType() {
     return type;
   }
+
+  @Override
+  public String toString() {
+    return "GenericType{" +
+        "type=" + type +
+        '}';
+  }
 }

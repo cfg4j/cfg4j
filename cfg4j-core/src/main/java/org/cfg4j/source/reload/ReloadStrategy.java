@@ -16,7 +16,7 @@
 package org.cfg4j.source.reload;
 
 /**
- * Defines a reload strategy. An object to be refreshed will be passed through {@link #init(Reloadable)} method.
+ * Defines a reload strategy. An object to be reloaded will be passed through {@link #init(Reloadable)} method.
  * To reload it invoke {@link Reloadable#reload()} method.
  * Call to the {@link #shutdown()} method indicates that the {@link Reloadable#reload()} should not be called ever again.
  */
@@ -24,14 +24,14 @@ public interface ReloadStrategy {
 
   /**
    * Call to this method indicates that the strategy should be initialized and run (if applicable). Provided {@code resource}
-   * can be refreshed when necessary through a call to the {@link Reloadable#reload()} method.
+   * can be reloaded when necessary through a call to the {@link Reloadable#reload()} method.
    *
-   * @param resource resource to be refreshed
+   * @param resource resource to be reloaded
    */
   void init(Reloadable resource);
 
   /**
-   * Call to this method inidicates that the resource provided in {@link #init(Reloadable)} call should not be refreshed ever again.
+   * Call to this method indicates that the resource provided in {@link #init(Reloadable)} call should not be reloaded ever again.
    */
   void shutdown();
 

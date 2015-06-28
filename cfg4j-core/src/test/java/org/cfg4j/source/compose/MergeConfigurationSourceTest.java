@@ -94,7 +94,7 @@ public class MergeConfigurationSourceTest {
   }
 
   @Test
-  public void refreshShouldRefreshAllSources() throws Exception {
+  public void reloadShouldReloadAllSources() throws Exception {
     mergeConfigurationSource.reload();
 
     for (ConfigurationSource underlyingSource : underlyingSources) {
@@ -103,7 +103,7 @@ public class MergeConfigurationSourceTest {
   }
 
   @Test
-  public void refreshShouldThrowWhenOneOfSourcesThrows() throws Exception {
+  public void reloadShouldThrowWhenOneOfSourcesThrows() throws Exception {
     doThrow(IllegalStateException.class).when(underlyingSources[3]).reload();
 
     expectedException.expect(IllegalStateException.class);

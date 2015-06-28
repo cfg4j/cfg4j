@@ -42,7 +42,7 @@ public class PeriodicalReloadableStrategyTest {
   private Reloadable reloadable;
 
   @Test
-  public void shouldRefreshImmediatelyAfterInit() throws Exception {
+  public void shouldReloadImmediatelyAfterInit() throws Exception {
     PeriodicalReloadStrategy strategy = new PeriodicalReloadStrategy(60, TimeUnit.SECONDS);
     strategy.init(reloadable);
     strategy.shutdown();
@@ -50,7 +50,7 @@ public class PeriodicalReloadableStrategyTest {
   }
 
   @Test
-  public void shouldRefreshPeriodically() throws Exception {
+  public void shouldReloadPeriodically() throws Exception {
     PeriodicalReloadStrategy strategy = new PeriodicalReloadStrategy(10, TimeUnit.MILLISECONDS);
     strategy.init(reloadable);
     Thread.sleep(50);

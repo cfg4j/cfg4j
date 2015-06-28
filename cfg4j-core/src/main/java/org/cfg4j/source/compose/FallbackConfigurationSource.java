@@ -79,7 +79,7 @@ public class FallbackConfigurationSource implements ConfigurationSource {
 
   /**
    * Request configuration reload. When this method returns configuration should be reloaded for at least
-   * one underlying source. Tries to reload all sources. Refresh failures are ignored (unless all sources fail to reload).
+   * one underlying source. Tries to reload all sources. Reload failures are ignored (unless all sources fail to reload).
    *
    * @throws IllegalStateException when unable to reload all of the underlying sources
    */

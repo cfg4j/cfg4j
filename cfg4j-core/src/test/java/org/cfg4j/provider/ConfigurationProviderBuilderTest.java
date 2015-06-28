@@ -44,7 +44,7 @@ public class ConfigurationProviderBuilderTest {
   public void initializesStrategyOnBuild() throws Exception {
     ReloadStrategy reloadStrategy = mock(ReloadStrategy.class);
     builder
-        .withRefreshStrategy(reloadStrategy)
+        .withReloadStrategy(reloadStrategy)
         .withEnvironment(new DefaultEnvironment())
         .build();
 
@@ -52,12 +52,12 @@ public class ConfigurationProviderBuilderTest {
   }
 
   @Test
-  public void passesSourceToRefreshStrategy() throws Exception {
+  public void passesSourceToReloadStrategy() throws Exception {
     ConfigurationSource configurationSource = mock(ConfigurationSource.class);
     ReloadStrategy reloadStrategy = mock(ReloadStrategy.class);
     builder
         .withConfigurationSource(configurationSource)
-        .withRefreshStrategy(reloadStrategy)
+        .withReloadStrategy(reloadStrategy)
         .build();
 
     verify(reloadStrategy, times(1)).init(configurationSource);

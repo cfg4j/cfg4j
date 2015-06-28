@@ -174,7 +174,7 @@ public class GitConfigurationSourceIntegrationTest {
   }
 
   @Test
-  public void refreshShouldUpdateGetConfiguration2OnDefaultBranch() throws Exception {
+  public void reloadShouldUpdateGetConfiguration2OnDefaultBranch() throws Exception {
     try (GitConfigurationSource gitConfigurationSource = getSourceForRemoteRepoWithDefaults()) {
       remoteRepo.changeProperty("application.properties", "some.setting", "changedValue");
       gitConfigurationSource.reload();
@@ -184,7 +184,7 @@ public class GitConfigurationSourceIntegrationTest {
   }
 
   @Test
-  public void refreshShouldUpdateGetConfiguration2OnNonDefaultBranch() throws Exception {
+  public void reloadShouldUpdateGetConfiguration2OnNonDefaultBranch() throws Exception {
     try (GitConfigurationSource gitConfigurationSource = getSourceForRemoteRepoWithDefaults()) {
       remoteRepo.changeBranchTo(TEST_ENV_BRANCH);
       remoteRepo.changeProperty("application.properties", "some.setting", "changedValue");
@@ -195,7 +195,7 @@ public class GitConfigurationSourceIntegrationTest {
   }
 
   @Test
-  public void refreshShouldThrowOnSyncProblems() throws Exception {
+  public void reloadShouldThrowOnSyncProblems() throws Exception {
     try (GitConfigurationSource gitConfigurationSource = getSourceForRemoteRepoWithDefaults()) {
       remoteRepo.remove();
 

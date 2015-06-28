@@ -136,7 +136,7 @@ public class ConsulConfigurationSourceIntegrationTest {
   }
 
   @Test
-  public void getConfiguration2ShouldBeUpdatedByRefresh() throws Exception {
+  public void getConfiguration2ShouldBeUpdatedByReload() throws Exception {
     dispatcher.toggleUsWest2();
 
     source.reload();
@@ -146,7 +146,7 @@ public class ConsulConfigurationSourceIntegrationTest {
   }
 
   @Test
-  public void refreshShouldThrowOnConnectionFailure() throws Exception {
+  public void reloadShouldThrowOnConnectionFailure() throws Exception {
     server.shutdown();
     expectedException.expect(SourceCommunicationException.class);
     source.reload();

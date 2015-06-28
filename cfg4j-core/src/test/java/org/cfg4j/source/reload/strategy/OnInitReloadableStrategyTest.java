@@ -33,19 +33,19 @@ public class OnInitReloadableStrategyTest {
   private Reloadable resource;
 
   @Test
-  public void shouldRefreshResourceOnce() throws Exception {
-    OnInitReloadStrategy refreshStrategy = new OnInitReloadStrategy();
-    refreshStrategy.init(resource);
-    refreshStrategy.shutdown();
+  public void shouldreloadResourceOnce() throws Exception {
+    OnInitReloadStrategy reloadStrategy = new OnInitReloadStrategy();
+    reloadStrategy.init(resource);
+    reloadStrategy.shutdown();
 
     verify(resource, times(1)).reload();
   }
 
   @Test
-  public void shouldNotRefreshAfterClose() throws Exception {
-    OnInitReloadStrategy refreshStrategy = new OnInitReloadStrategy();
-    refreshStrategy.init(resource);
-    refreshStrategy.shutdown();
+  public void shouldNotreloadAfterClose() throws Exception {
+    OnInitReloadStrategy reloadStrategy = new OnInitReloadStrategy();
+    reloadStrategy.init(resource);
+    reloadStrategy.shutdown();
 
     verify(resource, times(1)).reload();
   }

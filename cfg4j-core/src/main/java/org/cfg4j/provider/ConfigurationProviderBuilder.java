@@ -70,7 +70,7 @@ public class ConfigurationProviderBuilder {
    * @param reloadStrategy {@link ReloadStrategy} to use
    * @return this builder with {@link ReloadStrategy} set to {@code reloadStrategy}
    */
-  public ConfigurationProviderBuilder withRefreshStrategy(ReloadStrategy reloadStrategy) {
+  public ConfigurationProviderBuilder withReloadStrategy(ReloadStrategy reloadStrategy) {
     this.reloadStrategy = reloadStrategy;
     return this;
   }

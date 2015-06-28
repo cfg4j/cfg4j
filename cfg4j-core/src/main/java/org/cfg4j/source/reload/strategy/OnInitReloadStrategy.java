@@ -21,7 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * {@link ReloadStrategy} that refreshes the resource only once - the moment the {@link #init(Reloadable)} is called.
+ * {@link ReloadStrategy} that reloads the resource only once - the moment the {@link #init(Reloadable)} is called.
  */
 public class OnInitReloadStrategy implements ReloadStrategy {
 

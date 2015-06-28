@@ -27,7 +27,7 @@ import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 /**
- * {@link ReloadStrategy} that refreshes the resource periodically. It spawns a background tread!
+ * {@link ReloadStrategy} that reloads the resource periodically. It spawns a background tread!
  */
 public class PeriodicalReloadStrategy implements ReloadStrategy {
 
@@ -38,11 +38,11 @@ public class PeriodicalReloadStrategy implements ReloadStrategy {
   private final Timer timer;
 
   /**
-   * Construct strategy that refreshes the resource every {@code duration} (measured in {@code timeUnit}s).
+   * Construct strategy that reloads the resource every {@code duration} (measured in {@code timeUnit}s).
    * First reload will happen immediately after calling {@link #init(Reloadable)}. Each following
-   * reload will happen {@code refreshAfterMs} ms after the previous one completed.
+   * reload will happen {@code duration} (measured in {@code timeUnit}s) after the previous one completed.
    *
-   * @param duration time (in {@code timeUnit}) between refreshes
+   * @param duration time (in {@code timeUnit}) between reloads
    * @param timeUnit time unit to use
    */
   public PeriodicalReloadStrategy(long duration, TimeUnit timeUnit) {
@@ -53,7 +53,7 @@ public class PeriodicalReloadStrategy implements ReloadStrategy {
 
   @Override
   public void init(Reloadable resource) {
-    LOG.info("Initializing " + PeriodicalReloadStrategy.class + "with reload time of " + duration + timeUnit);
+    LOG.info("Initializing " + PeriodicalReloadStrategy.class + " with reload time of " + duration + timeUnit);
 
     resource.reload();
 

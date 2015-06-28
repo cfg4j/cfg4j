@@ -37,4 +37,9 @@ public class OnInitReloadStrategy implements ReloadStrategy {
   public void shutdown() {
     LOG.info("Shutting down " + OnInitReloadStrategy.class);
   }
+
+  @Override
+  public String toString() {
+    return "OnInitReloadStrategy{}";
+  }
 }

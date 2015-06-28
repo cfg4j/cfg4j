@@ -70,4 +70,13 @@ public class PeriodicalReloadStrategy implements ReloadStrategy {
     LOG.info("Shutting down " + PeriodicalReloadStrategy.class);
     timer.cancel();
   }
+
+  @Override
+  public String toString() {
+    return "PeriodicalReloadStrategy{" +
+        "duration=" + duration +
+        ", timeUnit=" + timeUnit +
+        ", timer=" + timer +
+        '}';
+  }
 }

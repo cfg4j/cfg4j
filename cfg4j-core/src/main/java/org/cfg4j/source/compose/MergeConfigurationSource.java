@@ -21,6 +21,7 @@ import org.cfg4j.source.ConfigurationSource;
 import org.cfg4j.source.context.Environment;
 import org.cfg4j.source.context.MissingEnvironmentException;
 
+import java.util.Arrays;
 import java.util.Properties;
 
 /**
@@ -76,5 +77,12 @@ public class MergeConfigurationSource implements ConfigurationSource {
     for (ConfigurationSource source : sources) {
       source.reload();
     }
+  }
+
+  @Override
+  public String toString() {
+    return "MergeConfigurationSource{" +
+        "sources=" + Arrays.toString(sources) +
+        '}';
   }
 }

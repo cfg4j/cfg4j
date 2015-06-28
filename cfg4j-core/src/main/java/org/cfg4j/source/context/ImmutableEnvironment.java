@@ -37,4 +37,11 @@ public class ImmutableEnvironment implements Environment {
   public String getName() {
     return envName;
   }
+
+  @Override
+  public String toString() {
+    return "ImmutableEnvironment{" +
+        "envName='" + envName + '\'' +
+        '}';
+  }
 }

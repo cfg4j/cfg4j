@@ -35,4 +35,9 @@ public class EmptyConfigurationSource implements ConfigurationSource {
   public void reload() {
     // NOP
   }
+
+  @Override
+  public String toString() {
+    return "EmptyConfigurationSource{}";
+  }
 }

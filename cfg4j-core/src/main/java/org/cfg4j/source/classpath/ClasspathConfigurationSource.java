@@ -109,4 +109,11 @@ public class ClasspathConfigurationSource implements ConfigurationSource {
 
     return FileSystems.getDefault().getPath(path);
   }
+
+  @Override
+  public String toString() {
+    return "ClasspathConfigurationSource{" +
+        "configFilesProvider=" + configFilesProvider +
+        '}';
+  }
 }

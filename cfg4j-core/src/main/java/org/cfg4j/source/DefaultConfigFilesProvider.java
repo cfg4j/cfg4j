@@ -28,4 +28,9 @@ public class DefaultConfigFilesProvider implements ConfigFilesProvider {
   public Iterable<Path> getConfigFiles() {
     return Collections.singletonList(FileSystems.getDefault().getPath("application.properties"));
   }
+
+  @Override
+  public String toString() {
+    return "DefaultConfigFilesProvider{}";
+  }
 }

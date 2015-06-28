@@ -71,7 +71,7 @@ public class FilesConfigurationSourceTest {
   }
 
   @Test
-  public void getConfiguration2ShouldReadFromGivenPath() throws Exception {
+  public void getConfigurationShouldReadFromGivenPath() throws Exception {
     configFilesProvider = () -> Collections.singletonList(
         fileSystem.getPath("application.properties")
     );
@@ -84,7 +84,7 @@ public class FilesConfigurationSourceTest {
   }
 
   @Test
-  public void getConfiguration2ShouldReadFromGivenFiles() throws Exception {
+  public void getConfigurationShouldReadFromGivenFiles() throws Exception {
     configFilesProvider = () -> Arrays.asList(
         fileSystem.getPath(fileRepo.getURI() + "/application.properties"),
         fileSystem.getPath(fileRepo.getURI() + "/otherConfig.properties")
@@ -95,13 +95,13 @@ public class FilesConfigurationSourceTest {
   }
 
   @Test
-  public void getConfiguration2ShouldThrowOnMissingEnvironment() throws Exception {
+  public void getConfigurationShouldThrowOnMissingEnvironment() throws Exception {
     expectedException.expect(MissingEnvironmentException.class);
     source.getConfiguration(new ImmutableEnvironment("awlerijawoetinawwerlkjn"));
   }
 
   @Test
-  public void getConfiguration2ShouldThrowOnMissingConfigFile() throws Exception {
+  public void getConfigurationShouldThrowOnMissingConfigFile() throws Exception {
     fileRepo.deleteFile("application.properties");
 
     expectedException.expect(IllegalStateException.class);
@@ -109,7 +109,7 @@ public class FilesConfigurationSourceTest {
   }
 
   @Test
-  public void getConfiguration2ShouldThrowOnMalformedConfigFile() throws Exception {
+  public void getConfigurationShouldThrowOnMalformedConfigFile() throws Exception {
     configFilesProvider = () -> Collections.singletonList(
         fileSystem.getPath(fileRepo.getURI() + "/malformed.properties")
     );
@@ -121,7 +121,7 @@ public class FilesConfigurationSourceTest {
   }
 
   @Test
-  public void refreshShouldUpdateGetConfiguration2OnDefaultBranch() throws Exception {
+  public void refreshShouldUpdateGetConfigurationupdateOnDefaultBranch() throws Exception {
     fileRepo.changeProperty("application.properties", "some.setting", "changedValue");
     source.reload();
 

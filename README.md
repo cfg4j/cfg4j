@@ -38,7 +38,7 @@ Head to [the documentation](http://cfg4j.org).
 #### Gradle
 ```groovy
 dependencies {
-  compile group: "org.cfg4j", name:"cfg4j", version: "3.3.1"
+  compile group: "org.cfg4j", name:"cfg4j", version: "3.3.2"
 }
 ```
 
@@ -48,7 +48,7 @@ dependencies {
   <dependency>
     <groupId>org.cfg4j</groupId>
     <artifactId>cfg4j</artifactId>
-    <version>3.3.1</version>
+    <version>3.3.2</version>
   </dependency>
 </dependencies>
 ```

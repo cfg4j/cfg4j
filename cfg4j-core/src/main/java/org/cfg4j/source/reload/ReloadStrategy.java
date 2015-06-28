@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cfg4j.source.refresh;
+package org.cfg4j.source.reload;
 
 /**
  * Defines a reload strategy. An object to be refreshed will be passed through {@link #init(Reloadable)} method.

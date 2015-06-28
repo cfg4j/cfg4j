@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package org.cfg4j.source.refresh.strategy;
+package org.cfg4j.source.reload.strategy;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import org.cfg4j.source.refresh.Reloadable;
+import org.cfg4j.source.reload.Reloadable;
+import org.cfg4j.source.reload.strategy.OnInitReloadStrategy;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;

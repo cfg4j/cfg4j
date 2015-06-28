@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cfg4j.source.refresh.strategy;
+package org.cfg4j.source.reload.strategy;
 
 import static java.util.Objects.requireNonNull;
 
-import org.cfg4j.source.refresh.ReloadStrategy;
-import org.cfg4j.source.refresh.Reloadable;
+import org.cfg4j.source.reload.ReloadStrategy;
+import org.cfg4j.source.reload.Reloadable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

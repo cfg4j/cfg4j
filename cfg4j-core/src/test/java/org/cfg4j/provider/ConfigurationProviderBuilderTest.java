@@ -23,8 +23,8 @@ import static org.mockito.Mockito.verify;
 
 import org.cfg4j.source.ConfigurationSource;
 import org.cfg4j.source.context.DefaultEnvironment;
-import org.cfg4j.source.refresh.ReloadStrategy;
-import org.cfg4j.source.refresh.Reloadable;
+import org.cfg4j.source.reload.ReloadStrategy;
+import org.cfg4j.source.reload.Reloadable;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -17,7 +17,7 @@ package org.cfg4j.source;
 
 import org.cfg4j.source.context.Environment;
 import org.cfg4j.source.context.MissingEnvironmentException;
-import org.cfg4j.source.refresh.Reloadable;
+import org.cfg4j.source.reload.Reloadable;
 
 import java.util.Properties;
 

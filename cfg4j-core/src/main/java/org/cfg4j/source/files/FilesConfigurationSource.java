@@ -54,8 +54,9 @@ public class FilesConfigurationSource implements ConfigurationSource {
 
   /**
    * Get configuration set for a given {@code environment} from this source in a form of {@link Properties}.
-   * Path provided by {@code environment} is prepended to all file paths from {@link ConfigFilesProvider} used
-   * at construction time.
+   * {@link Environment} name is prepended to all file paths from {@link ConfigFilesProvider}
+   * to form an absolute configuration file path. If environment name is empty paths are treated as relative
+   * to the user's home directory location.
    *
    * @param environment environment to use
    * @return configuration set for {@code environment}

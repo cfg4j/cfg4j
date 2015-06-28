@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
@@ -39,6 +40,17 @@ import java.util.stream.StreamSupport;
 public class FilesConfigurationSource implements ConfigurationSource {
 
   private final ConfigFilesProvider configFilesProvider;
+
+  /**
+   * Construct {@link ConfigurationSource} backed by files. Uses "application.properties" file
+   * located in the path specified by the {@link Environment} provided to {@link #getConfiguration(Environment)}
+   * calls (see corresponding javadocs for detail).
+   */
+  public FilesConfigurationSource() {
+    this.configFilesProvider = () -> Collections.singletonList(
+        FileSystems.getDefault().getPath("application.properties")
+    );
+  }
 
   /**
    * Construct {@link ConfigurationSource} backed by files. File list should by provided by
@@ -54,8 +66,9 @@ public class FilesConfigurationSource implements ConfigurationSource {
 
   /**
    * Get configuration set for a given {@code environment} from this source in a form of {@link Properties}.
-   * Path provided by {@code environment} is prepended to all file paths from {@link ConfigFilesProvider} used
-   * at construction time.
+   * {@link Environment} name is prepended to all file paths from {@link ConfigFilesProvider}
+   * to form an absolute configuration file path. If environment name is empty paths are treated as relative
+   * to the user's home directory location.
    *
    * @param environment environment to use
    * @return configuration set for {@code environment}
@@ -66,16 +79,16 @@ public class FilesConfigurationSource implements ConfigurationSource {
   public Properties getConfiguration(Environment environment) {
     Properties properties = new Properties();
 
-    String rootPathStr = environment.getName();
-    if (rootPathStr.trim().isEmpty()) {
-      rootPathStr = "/";
+    Path rootPath;
+    if (environment.getName().trim().isEmpty()) {
+      rootPath = FileSystems.getDefault().getPath(System.getProperty("user.home"));
+    } else {
+      rootPath = FileSystems.getDefault().getPath(environment.getName());
     }
 
-    if (!new File(rootPathStr).exists()) {
-      throw new MissingEnvironmentException("Directory doesn't exist: " + environment.getName());
+    if (!rootPath.toFile().exists()) {
+      throw new MissingEnvironmentException("Directory doesn't exist: " + rootPath);
     }
-
-    Path rootPath = FileSystems.getDefault().getPath(rootPathStr);
 
     List<Path> paths = StreamSupport.stream(configFilesProvider.getConfigFiles().spliterator(), false)
         .map(rootPath::resolve)

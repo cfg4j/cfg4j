@@ -47,6 +47,7 @@ public class FilesConfigurationSourceTest {
   private ConfigFilesProvider configFilesProvider;
   private FilesConfigurationSource source;
   private FileSystem fileSystem;
+  private Environment environment;
 
   @Before
   public void setUp() throws Exception {
@@ -58,11 +59,9 @@ public class FilesConfigurationSourceTest {
 
     fileSystem = FileSystems.getDefault();
 
-    configFilesProvider = () -> Collections.singletonList(
-        fileSystem.getPath(fileRepo.getURI() + "/application.properties")
-    );
+    environment = new ImmutableEnvironment(fileRepo.getURI());
 
-    source = new FilesConfigurationSource(configFilesProvider);
+    source = new FilesConfigurationSource();
   }
 
   @After
@@ -71,60 +70,65 @@ public class FilesConfigurationSourceTest {
   }
 
   @Test
-  public void getConfiguration2ShouldReadFromGivenPath() throws Exception {
-    configFilesProvider = () -> Collections.singletonList(
-        fileSystem.getPath("application.properties")
-    );
+  public void getConfigurationShouldReadFromDefaultFile() throws Exception {
+    assertThat(source.getConfiguration(environment)).containsOnly(MapEntry.entry("some.setting", "masterValue"));
+  }
 
-    source = new FilesConfigurationSource(configFilesProvider);
+  @Test
+  public void getConfigurationShouldReadFromHomeForDefaultEnvironment() throws Exception {
+    System.setProperty("user.home", fileRepo.getURI() + "/otherApplicationConfigs");
+    assertThat(source.getConfiguration(new DefaultEnvironment())).containsOnly(MapEntry.entry("some.setting", "otherAppSetting"));
+  }
 
+  @Test
+  public void getConfigurationShouldReadFromGivenPath() throws Exception {
     Environment environment = new ImmutableEnvironment(fileRepo.getURI() + "/otherApplicationConfigs/");
 
     assertThat(source.getConfiguration(environment)).containsOnly(MapEntry.entry("some.setting", "otherAppSetting"));
   }
 
   @Test
-  public void getConfiguration2ShouldReadFromGivenFiles() throws Exception {
+  public void getConfigurationShouldReadFromGivenFiles() throws Exception {
     configFilesProvider = () -> Arrays.asList(
-        fileSystem.getPath(fileRepo.getURI() + "/application.properties"),
-        fileSystem.getPath(fileRepo.getURI() + "/otherConfig.properties")
+        fileSystem.getPath("application.properties"),
+        fileSystem.getPath("otherConfig.properties")
     );
 
     source = new FilesConfigurationSource(configFilesProvider);
-    assertThat(source.getConfiguration(new DefaultEnvironment())).containsOnlyKeys("some.setting", "otherConfig.setting");
+    assertThat(source.getConfiguration(environment)).containsOnlyKeys("some.setting", "otherConfig.setting");
   }
 
   @Test
-  public void getConfiguration2ShouldThrowOnMissingEnvironment() throws Exception {
+  public void getConfigurationShouldThrowOnMissingEnvironment() throws Exception {
     expectedException.expect(MissingEnvironmentException.class);
     source.getConfiguration(new ImmutableEnvironment("awlerijawoetinawwerlkjn"));
   }
 
   @Test
-  public void getConfiguration2ShouldThrowOnMissingConfigFile() throws Exception {
+  public void getConfigurationShouldThrowOnMissingConfigFile() throws Exception {
     fileRepo.deleteFile("application.properties");
 
     expectedException.expect(IllegalStateException.class);
-    source.getConfiguration(new DefaultEnvironment());
+    source.getConfiguration(environment);
   }
 
   @Test
-  public void getConfiguration2ShouldThrowOnMalformedConfigFile() throws Exception {
+  public void getConfigurationShouldThrowOnMalformedConfigFile() throws Exception {
     configFilesProvider = () -> Collections.singletonList(
-        fileSystem.getPath(fileRepo.getURI() + "/malformed.properties")
+        fileSystem.getPath("malformed.properties")
     );
 
     source = new FilesConfigurationSource(configFilesProvider);
 
     expectedException.expect(IllegalStateException.class);
-    source.getConfiguration(new DefaultEnvironment());
+    source.getConfiguration(environment);
   }
 
   @Test
-  public void refreshShouldUpdateGetConfiguration2OnDefaultBranch() throws Exception {
+  public void reloadShouldUpdateGetConfiguration() throws Exception {
     fileRepo.changeProperty("application.properties", "some.setting", "changedValue");
     source.reload();
 
-    assertThat(source.getConfiguration(new DefaultEnvironment())).containsOnly(MapEntry.entry("some.setting", "changedValue"));
+    assertThat(source.getConfiguration(environment)).containsOnly(MapEntry.entry("some.setting", "changedValue"));
   }
 }

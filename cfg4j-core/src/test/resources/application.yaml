@@ -1,0 +1,4 @@
+some:
+  setting: masterValue
+  integerSetting: 42
+  listSetting: 1,2,3,4

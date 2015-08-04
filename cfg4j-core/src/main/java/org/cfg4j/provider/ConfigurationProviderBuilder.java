@@ -92,9 +92,10 @@ public class ConfigurationProviderBuilder {
    * @return new {@link ConfigurationProvider}
    */
   public ConfigurationProvider build() {
-    LOG.info("Initializing ConfigurationProvider with " + configurationSource.getClass() + " source, " +
-        reloadStrategy.getClass() + " reload strategy and " + environment.getClass() + " environment" +
-        "selection strategy.");
+    LOG.info("Initializing ConfigurationProvider with "
+        + configurationSource.getClass().getCanonicalName() + " source, "
+        + reloadStrategy.getClass().getCanonicalName() + " reload strategy and "
+        + environment.getClass().getCanonicalName() + " environment");
 
     reloadStrategy.init(configurationSource);
 

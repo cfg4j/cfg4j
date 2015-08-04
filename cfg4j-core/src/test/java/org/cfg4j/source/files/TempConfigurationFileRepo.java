@@ -85,7 +85,7 @@ public class TempConfigurationFileRepo {
    * @throws IOException when unable to remove directory
    */
   public void remove() throws IOException {
-    FileUtils.deleteDir(new File(getURI()));
+    new FileUtils().deleteDir(new File(getURI()));
   }
 
   private void writePropertyToFile(String propFilePath, String key, String value) throws IOException {

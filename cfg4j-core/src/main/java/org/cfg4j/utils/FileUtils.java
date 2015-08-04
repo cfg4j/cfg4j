@@ -21,11 +21,20 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * Operations on files.
+ */
 public class FileUtils {
 
   private static final Logger LOG = LoggerFactory.getLogger(FileUtils.class);
 
-  public static void deleteDir(File directory) throws IOException {
+  /**
+   * Delete directory or file.
+   *
+   * @param directory directory to delete
+   * @throws IOException when directory can't be deleted
+   */
+  public void deleteDir(File directory) throws IOException {
     if (directory.exists()) {
       File[] files = directory.listFiles();
 

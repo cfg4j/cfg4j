@@ -53,7 +53,8 @@ public class PeriodicalReloadStrategy implements ReloadStrategy {
 
   @Override
   public void init(Reloadable resource) {
-    LOG.info("Initializing " + PeriodicalReloadStrategy.class + " with reload time of " + duration + timeUnit);
+    LOG.info("Initializing " + PeriodicalReloadStrategy.class
+        + " with reload time of " + duration + " " + timeUnit.toString().toLowerCase());
 
     resource.reload();
 

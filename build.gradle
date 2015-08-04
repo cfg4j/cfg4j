@@ -25,6 +25,11 @@ buildscript {
     repositories {
         mavenLocal()
         mavenCentral()
+        jcenter()
+    }
+
+    dependencies {
+        classpath group: "com.github.ben-manes", name: "gradle-versions-plugin", version: "0.11.3"
     }
 }
 
@@ -35,8 +40,9 @@ subprojects {
     apply plugin: "java"
     apply plugin: "idea"
     apply plugin: "jacoco"
-    apply plugin: 'maven'
-    apply plugin: 'signing'
+    apply plugin: "maven"
+    apply plugin: "signing"
+    apply plugin: "com.github.ben-manes.versions"
 
     // ----------- Repositories -----------
     repositories {

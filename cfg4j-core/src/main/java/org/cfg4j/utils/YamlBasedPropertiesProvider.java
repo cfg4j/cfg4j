@@ -100,6 +100,7 @@ public class YamlBasedPropertiesProvider implements PropertiesProvider {
   /**
    * Flatten multi-level map.
    */
+  @SuppressWarnings("unchecked")
   private Map<String, Object> flatten(Map<String, Object> source) {
     Map<String, Object> result = new LinkedHashMap<>();
 

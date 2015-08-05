@@ -20,7 +20,7 @@
  [Files](https://github.com/cfg4j/cfg4j-sample-apps/tree/master/files-bind),
  [Classpath](https://github.com/cfg4j/cfg4j-sample-apps/tree/master/classpath-bind), ...**
 * Seamless integration with **[Spring](https://spring.io/)**, **[Guice](https://github.com/google/guice)** and others
-* Modern design (extensible, heavily tested, well documented)
+* Modern design (extensible, heavily tested, well [documented](http://cfg4j.org))
 
 # Usage
 

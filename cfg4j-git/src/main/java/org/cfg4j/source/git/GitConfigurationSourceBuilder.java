@@ -17,6 +17,9 @@ package org.cfg4j.source.git;
 
 import org.cfg4j.source.ConfigFilesProvider;
 import org.cfg4j.source.DefaultConfigFilesProvider;
+import org.cfg4j.utils.PropertiesProviderSelector;
+import org.cfg4j.utils.PropertyBasedPropertiesProvider;
+import org.cfg4j.utils.YamlBasedPropertiesProvider;
 
 /**
  * Builder for {@link GitConfigurationSource}.
@@ -29,6 +32,7 @@ public class GitConfigurationSourceBuilder {
   private String tmpPath;
   private String localRepositoryPathInTemp;
   private ConfigFilesProvider configFilesProvider;
+  private PropertiesProviderSelector propertiesProviderSelector;
 
   /**
    * Construct {@link GitConfigurationSource}s builder
@@ -40,6 +44,8 @@ public class GitConfigurationSourceBuilder {
    * <li>ConfigFilesProvider: {@link DefaultConfigFilesProvider}</li>
    * <li>tmpPath: System.getProperty("java.io.tmpdir")</li>
    * <li>localRepositoryPathInTemp: "cfg4j-config-git-config-repository"</li>
+   * <li>propertiesProviderSelector: {@link PropertiesProviderSelector} with {@link PropertyBasedPropertiesProvider}
+   * and {@link YamlBasedPropertiesProvider} providers</li>
    * </ul>
    */
   public GitConfigurationSourceBuilder() {
@@ -48,6 +54,9 @@ public class GitConfigurationSourceBuilder {
     tmpPath = System.getProperty("java.io.tmpdir");
     localRepositoryPathInTemp = "cfg4j-git-config-repository";
     configFilesProvider = new DefaultConfigFilesProvider();
+    propertiesProviderSelector = new PropertiesProviderSelector(
+        new PropertyBasedPropertiesProvider(), new YamlBasedPropertiesProvider()
+    );
   }
 
   /**
@@ -123,7 +132,7 @@ public class GitConfigurationSourceBuilder {
    */
   public GitConfigurationSource build() {
     return new GitConfigurationSource(repositoryURI, tmpPath, localRepositoryPathInTemp, branchResolver, pathResolver,
-        configFilesProvider);
+        configFilesProvider, propertiesProviderSelector);
   }
 
   @Override

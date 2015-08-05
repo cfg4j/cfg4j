@@ -16,21 +16,32 @@
 
 package org.cfg4j.utils;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
 /**
- * Transforms {@link InputStream} into {@link Properties}.
+ * {@link PropertiesProvider} that interprets given stream as properties file.
  */
-public interface PropertiesProvider {
+public class PropertyBasedPropertiesProvider implements PropertiesProvider {
 
   /**
-   * Get {@link Properties} for a given {@code inputStream}.
+   * Get {@link Properties} for a given {@code inputStream} treating it as a properties file.
    *
-   * @param inputStream input stream to convert
+   * @param inputStream input stream representing properties file
    * @return properties representing values from {@code inputStream}
    * @throws IllegalStateException when unable to read properties
    */
-  Properties getProperties(InputStream inputStream);
+  @Override
+  public Properties getProperties(InputStream inputStream) {
+    Properties properties = new Properties();
 
+    try {
+      properties.load(inputStream);
+    } catch (IOException | IllegalArgumentException e) {
+      throw new IllegalStateException("Unable to load properties from provided stream", e);
+    }
+
+    return properties;
+  }
 }

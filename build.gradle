@@ -56,6 +56,9 @@ subprojects {
         // Logging
         compile group: "org.slf4j", name: "slf4j-api", version: "1.7.12"
 
+        // YAML
+        compile group: "org.yaml", name: "snakeyaml", version: '1.15'
+
         testCompile group: "junit", name: "junit", version: "4.12"
         testCompile group: "org.assertj", name: "assertj-core", version: "3.1.0"
         testCompile group: "org.mockito", name: "mockito-core", version: "1.10.19"

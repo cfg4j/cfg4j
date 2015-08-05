@@ -21,8 +21,11 @@ import org.cfg4j.source.ConfigFilesProvider;
 import org.cfg4j.source.ConfigurationSource;
 import org.cfg4j.source.context.Environment;
 import org.cfg4j.source.context.MissingEnvironmentException;
+import org.cfg4j.utils.PropertiesProvider;
+import org.cfg4j.utils.PropertiesProviderSelector;
+import org.cfg4j.utils.PropertyBasedPropertiesProvider;
+import org.cfg4j.utils.YamlBasedPropertiesProvider;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,6 +43,7 @@ import java.util.stream.StreamSupport;
 public class FilesConfigurationSource implements ConfigurationSource {
 
   private final ConfigFilesProvider configFilesProvider;
+  private final PropertiesProviderSelector propertiesProviderSelector;
 
   /**
    * Construct {@link ConfigurationSource} backed by files. Uses "application.properties" file
@@ -47,20 +51,37 @@ public class FilesConfigurationSource implements ConfigurationSource {
    * calls (see corresponding javadoc for detail).
    */
   public FilesConfigurationSource() {
-    this.configFilesProvider = () -> Collections.singletonList(
+    this(() -> Collections.singletonList(
         FileSystems.getDefault().getPath("application.properties")
-    );
+    ));
   }
 
   /**
    * Construct {@link ConfigurationSource} backed by files. File paths should by provided by
    * {@link ConfigFilesProvider} and will be treated as relative paths to the environment provided in
-   * {@link #getConfiguration(Environment)} calls (see corresponding javadoc for detail).
+   * {@link #getConfiguration(Environment)} calls (see corresponding javadoc for detail). Configuration
+   * file type is detected using file extension (see {@link PropertiesProviderSelector}).
    *
    * @param configFilesProvider {@link ConfigFilesProvider} supplying a list of configuration files to use
    */
   public FilesConfigurationSource(ConfigFilesProvider configFilesProvider) {
+    this(configFilesProvider, new PropertiesProviderSelector(
+        new PropertyBasedPropertiesProvider(), new YamlBasedPropertiesProvider()
+    ));
+  }
+
+  /**
+   * Construct {@link ConfigurationSource} backed by files. File paths should by provided by
+   * {@link ConfigFilesProvider} and will be treated as relative paths to the environment provided in
+   * {@link #getConfiguration(Environment)} calls (see corresponding javadoc for detail). Configuration
+   * file type is detected using file extension (see {@link PropertiesProviderSelector}).
+   *
+   * @param configFilesProvider        {@link ConfigFilesProvider} supplying a list of configuration files to use
+   * @param propertiesProviderSelector selector used for choosing {@link PropertiesProvider} based on a configuration file extension
+   */
+  public FilesConfigurationSource(ConfigFilesProvider configFilesProvider, PropertiesProviderSelector propertiesProviderSelector) {
     this.configFilesProvider = requireNonNull(configFilesProvider);
+    this.propertiesProviderSelector = requireNonNull(propertiesProviderSelector);
   }
 
   /**
@@ -95,9 +116,12 @@ public class FilesConfigurationSource implements ConfigurationSource {
 
     for (Path path : paths) {
       try (InputStream input = new FileInputStream(path.toFile())) {
-        properties.load(input);
-      } catch (IOException | IllegalArgumentException e) {
-        throw new IllegalStateException("Unable to load properties from application.properties file", e);
+
+        PropertiesProvider provider = propertiesProviderSelector.getProvider(path.getFileName().toString());
+        properties.putAll(provider.getProperties(input));
+
+      } catch (IOException e) {
+        throw new IllegalStateException("Unable to load properties from file: " + path, e);
       }
     }
 

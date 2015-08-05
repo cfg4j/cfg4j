@@ -23,6 +23,8 @@ import org.cfg4j.source.SourceCommunicationException;
 import org.cfg4j.source.context.Environment;
 import org.cfg4j.source.context.MissingEnvironmentException;
 import org.cfg4j.utils.FileUtils;
+import org.cfg4j.utils.PropertiesProvider;
+import org.cfg4j.utils.PropertiesProviderSelector;
 import org.eclipse.jgit.api.CheckoutCommand;
 import org.eclipse.jgit.api.CreateBranchCommand;
 import org.eclipse.jgit.api.Git;
@@ -51,6 +53,7 @@ public class GitConfigurationSource implements ConfigurationSource, Closeable {
   private final BranchResolver branchResolver;
   private final PathResolver pathResolver;
   private final ConfigFilesProvider configFilesProvider;
+  private final PropertiesProviderSelector propertiesProviderSelector;
 
   /**
    * Note: use {@link GitConfigurationSourceBuilder} for building instances of this class.
@@ -59,21 +62,24 @@ public class GitConfigurationSource implements ConfigurationSource, Closeable {
    * clone of the repository in the {@code localRepositoryPathInTemp} directory under {@code tmpPath} path.
    * Uses provided {@code branchResolver} and {@code pathResolver} for branch and path resolution.
    *
-   * @param repositoryURI             URI to the remote git repository
-   * @param tmpPath                   path to the tmp directory
-   * @param localRepositoryPathInTemp name of the local directory keeping the repository clone
-   * @param branchResolver            {@link BranchResolver} used for extracting git branch from an {@link Environment}
-   * @param pathResolver              {@link PathResolver} used for extracting git path from an {@link Environment}
-   * @param configFilesProvider       {@link ConfigFilesProvider} used for determining which files in repository should be read
-   *                                  as config files
+   * @param repositoryURI              URI to the remote git repository
+   * @param tmpPath                    path to the tmp directory
+   * @param localRepositoryPathInTemp  name of the local directory keeping the repository clone
+   * @param branchResolver             {@link BranchResolver} used for extracting git branch from an {@link Environment}
+   * @param pathResolver               {@link PathResolver} used for extracting git path from an {@link Environment}
+   * @param configFilesProvider        {@link ConfigFilesProvider} used for determining which files in repository should be read
+   * @param propertiesProviderSelector selector used for choosing {@link PropertiesProvider} based on a configuration file extension
+   *                                   as config files
    * @throws IllegalStateException        when unable to create directories for local repo clone
    * @throws SourceCommunicationException when unable to clone repository
    */
   GitConfigurationSource(String repositoryURI, String tmpPath, String localRepositoryPathInTemp, BranchResolver branchResolver,
-                         PathResolver pathResolver, ConfigFilesProvider configFilesProvider) {
+                         PathResolver pathResolver, ConfigFilesProvider configFilesProvider,
+                         PropertiesProviderSelector propertiesProviderSelector) {
     this.branchResolver = requireNonNull(branchResolver);
     this.pathResolver = requireNonNull(pathResolver);
     this.configFilesProvider = requireNonNull(configFilesProvider);
+    this.propertiesProviderSelector = requireNonNull(propertiesProviderSelector);
     requireNonNull(tmpPath);
     requireNonNull(localRepositoryPathInTemp);
     requireNonNull(repositoryURI);
@@ -116,8 +122,11 @@ public class GitConfigurationSource implements ConfigurationSource, Closeable {
 
     for (Path path : paths) {
       try (InputStream input = new FileInputStream(path.toFile())) {
-        properties.load(input);
-      } catch (IOException | IllegalArgumentException e) {
+
+        PropertiesProvider provider = propertiesProviderSelector.getProvider(path.getFileName().toString());
+        properties.putAll(provider.getProperties(input));
+
+      } catch (IOException e) {
         throw new IllegalStateException("Unable to load properties from application.properties file", e);
       }
     }

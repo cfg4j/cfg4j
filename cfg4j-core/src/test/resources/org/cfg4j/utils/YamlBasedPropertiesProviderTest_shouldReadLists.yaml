@@ -1,0 +1,6 @@
+whitelist:
+  - a
+  - b
+  - 33
+
+blacklist: [x, y, z]

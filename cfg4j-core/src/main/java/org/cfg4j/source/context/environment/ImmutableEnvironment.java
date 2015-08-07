@@ -13,24 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.cfg4j.source.context.environment;
 
-package org.cfg4j.utils;
-
-import java.io.InputStream;
-import java.util.Properties;
+import static java.util.Objects.requireNonNull;
 
 /**
- * Transforms {@link InputStream} into {@link Properties}.
+ * {@link Environment} that never changes.
  */
-public interface PropertiesProvider {
+public class ImmutableEnvironment implements Environment {
+
+  private final String envName;
 
   /**
-   * Get {@link Properties} for a given {@code inputStream}.
+   * Construct environment named {@code envName}. This name never changes.
    *
-   * @param inputStream input stream to convert
-   * @return properties representing values from {@code inputStream}
-   * @throws IllegalStateException when unable to read properties
+   * @param envName environment name to use
    */
-  Properties getProperties(InputStream inputStream);
+  public ImmutableEnvironment(String envName) {
+    this.envName = requireNonNull(envName);
+  }
 
+  @Override
+  public String getName() {
+    return envName;
+  }
+
+  @Override
+  public String toString() {
+    return "ImmutableEnvironment{" +
+        "envName='" + envName + '\'' +
+        '}';
+  }
 }

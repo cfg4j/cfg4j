@@ -13,35 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cfg4j.source.context;
+package org.cfg4j.source.context.filesprovider;
 
-import static java.util.Objects.requireNonNull;
+import java.io.File;
+import java.nio.file.Path;
 
 /**
- * {@link Environment} that never changes.
+ * Provides configuration files to use.
  */
-public class ImmutableEnvironment implements Environment {
-
-  private final String envName;
+public interface ConfigFilesProvider {
 
   /**
-   * Construct environment named {@code envName}. This name never changes.
-   *
-   * @param envName environment name to use
+   * Provide a list of configuration files to use.
+   * @return {@link Iterable} of configuration {@link File}s to use
    */
-  public ImmutableEnvironment(String envName) {
-    this.envName = requireNonNull(envName);
-  }
+  Iterable<Path> getConfigFiles();
 
-  @Override
-  public String getName() {
-    return envName;
-  }
-
-  @Override
-  public String toString() {
-    return "ImmutableEnvironment{" +
-        "envName='" + envName + '\'' +
-        '}';
-  }
 }

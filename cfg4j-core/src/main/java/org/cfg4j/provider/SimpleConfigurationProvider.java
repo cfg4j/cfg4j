@@ -21,8 +21,8 @@ import com.github.drapostolos.typeparser.NoSuchRegisteredParserException;
 import com.github.drapostolos.typeparser.TypeParser;
 import com.github.drapostolos.typeparser.TypeParserException;
 import org.cfg4j.source.ConfigurationSource;
-import org.cfg4j.source.context.Environment;
-import org.cfg4j.source.context.MissingEnvironmentException;
+import org.cfg4j.source.context.environment.Environment;
+import org.cfg4j.source.context.environment.MissingEnvironmentException;
 import org.cfg4j.validator.BindingValidator;
 
 import java.lang.reflect.Proxy;

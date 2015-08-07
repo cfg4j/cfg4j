@@ -13,20 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cfg4j.source;
+package org.cfg4j.source.empty;
 
-import java.io.File;
-import java.nio.file.Path;
+import org.cfg4j.source.ConfigurationSource;
+import org.cfg4j.source.context.environment.Environment;
+
+import java.util.Properties;
 
 /**
- * Provides configuration files to use.
+ * Empty {@link ConfigurationSource}
  */
-public interface ConfigFilesProvider {
+public class EmptyConfigurationSource implements ConfigurationSource {
 
-  /**
-   * Provide a list of configuration files to use.
-   * @return {@link Iterable} of configuration {@link File}s to use
-   */
-  Iterable<Path> getConfigFiles();
+  private static final Properties properties = new Properties();
 
+  @Override
+  public Properties getConfiguration(Environment environment) {
+    return properties;
+  }
+
+  @Override
+  public void reload() {
+    // NOP
+  }
+
+  @Override
+  public String toString() {
+    return "EmptyConfigurationSource{}";
+  }
 }

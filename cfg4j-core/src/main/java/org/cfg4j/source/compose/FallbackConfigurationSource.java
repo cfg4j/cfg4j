@@ -18,8 +18,8 @@ package org.cfg4j.source.compose;
 import static java.util.Objects.requireNonNull;
 
 import org.cfg4j.source.ConfigurationSource;
-import org.cfg4j.source.context.Environment;
-import org.cfg4j.source.context.MissingEnvironmentException;
+import org.cfg4j.source.context.environment.Environment;
+import org.cfg4j.source.context.environment.MissingEnvironmentException;
 
 import java.util.Arrays;
 import java.util.Properties;
@@ -47,7 +47,7 @@ public class FallbackConfigurationSource implements ConfigurationSource {
 
   /**
    * Get configuration set for a given {@code environment} from this source in a form of {@link Properties}.
-   * The configuration set is a result of the first {@link #getConfiguration(Environment)}
+   * The configuration set is a result of the first {@link ConfigurationSource#getConfiguration(Environment)}
    * call to underlying sources that succeeds. Sources are called in a provided order.
    *
    * @param environment environment to use

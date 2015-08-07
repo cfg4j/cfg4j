@@ -13,20 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cfg4j.source.context;
+package org.cfg4j.source.context.environment;
 
-import static org.assertj.core.api.Assertions.assertThat;
+/**
+ * Configuration environment.
+ */
+public interface Environment {
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+  /**
+   * Name of the environment.
+   *
+   * @return environment name
+   */
+  String getName();
 
-
-@RunWith(MockitoJUnitRunner.class)
-public class DefaultEnvironmentTest {
-
-  @Test
-  public void shouldUseEmptyStringAsEnvName() throws Exception {
-    assertThat(new DefaultEnvironment().getName()).isEmpty();
-  }
 }

@@ -18,7 +18,7 @@ package org.cfg4j.provider;
 import static org.mockito.Matchers.any;
 
 import org.cfg4j.source.ConfigurationSource;
-import org.cfg4j.source.context.Environment;
+import org.cfg4j.source.context.environment.Environment;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;

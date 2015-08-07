@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.cfg4j.utils;
+package org.cfg4j.source.context.propertiesprovider;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -44,7 +44,7 @@ public class PropertyBasedPropertiesProviderTest {
 
   @Test
   public void shouldLoadProperties() throws Exception {
-    String path = "org/cfg4j/utils/PropertyBasedPropertiesProviderTest_shouldLoadProperties.properties";
+    String path = "org/cfg4j/source/propertiesprovider/PropertyBasedPropertiesProviderTest_shouldLoadProperties.properties";
 
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
       assertThat(provider.getProperties(input)).containsExactly(MapEntry.entry("property", "abc"));
@@ -53,7 +53,7 @@ public class PropertyBasedPropertiesProviderTest {
 
   @Test
   public void shouldThrowOnMalformedFile() throws Exception {
-    String path = "org/cfg4j/utils/PropertyBasedPropertiesProviderTest_shouldThrowOnMalformedFile.properties";
+    String path = "org/cfg4j/source/propertiesprovider/PropertyBasedPropertiesProviderTest_shouldThrowOnMalformedFile.properties";
 
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
       expectedException.expect(IllegalStateException.class);

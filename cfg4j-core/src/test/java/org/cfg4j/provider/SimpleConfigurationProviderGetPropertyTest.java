@@ -19,8 +19,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.cfg4j.source.context.ImmutableEnvironment;
-import org.cfg4j.source.context.MissingEnvironmentException;
+import org.cfg4j.source.context.environment.ImmutableEnvironment;
+import org.cfg4j.source.context.environment.MissingEnvironmentException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;

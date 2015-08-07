@@ -16,9 +16,9 @@
 package org.cfg4j.provider;
 
 import org.cfg4j.source.ConfigurationSource;
-import org.cfg4j.source.EmptyConfigurationSource;
-import org.cfg4j.source.context.DefaultEnvironment;
-import org.cfg4j.source.context.Environment;
+import org.cfg4j.source.context.environment.DefaultEnvironment;
+import org.cfg4j.source.context.environment.Environment;
+import org.cfg4j.source.empty.EmptyConfigurationSource;
 import org.cfg4j.source.reload.ReloadStrategy;
 import org.cfg4j.source.reload.strategy.OnInitReloadStrategy;
 import org.slf4j.Logger;

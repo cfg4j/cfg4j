@@ -18,7 +18,7 @@ package org.cfg4j.source.git;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-import org.cfg4j.source.context.Environment;
+import org.cfg4j.source.context.environment.Environment;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;

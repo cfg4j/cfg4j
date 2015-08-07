@@ -18,8 +18,8 @@ package org.cfg4j.source.compose;
 import static java.util.Objects.requireNonNull;
 
 import org.cfg4j.source.ConfigurationSource;
-import org.cfg4j.source.context.Environment;
-import org.cfg4j.source.context.MissingEnvironmentException;
+import org.cfg4j.source.context.environment.Environment;
+import org.cfg4j.source.context.environment.MissingEnvironmentException;
 
 import java.util.Arrays;
 import java.util.Properties;

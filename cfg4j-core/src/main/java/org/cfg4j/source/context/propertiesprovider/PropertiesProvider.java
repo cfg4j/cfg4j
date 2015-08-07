@@ -13,22 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cfg4j.source.context;
 
-import static org.assertj.core.api.Assertions.assertThat;
+package org.cfg4j.source.context.propertiesprovider;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import java.io.InputStream;
+import java.util.Properties;
 
+/**
+ * Transforms {@link InputStream} into {@link Properties}.
+ */
+public interface PropertiesProvider {
 
-@RunWith(MockitoJUnitRunner.class)
-public class ImmutableEnvironmentTest {
+  /**
+   * Get {@link Properties} for a given {@code inputStream}.
+   *
+   * @param inputStream input stream to convert
+   * @return properties representing values from {@code inputStream}
+   * @throws IllegalStateException when unable to read properties
+   */
+  Properties getProperties(InputStream inputStream);
 
-  @Test
-  public void shouldReturnConstantEnvName() throws Exception {
-    String environmentName = "sampleEnvironment";
-    ImmutableEnvironment strategy = new ImmutableEnvironment(environmentName);
-    assertThat(strategy.getName()).isEqualTo(environmentName);
-  }
 }

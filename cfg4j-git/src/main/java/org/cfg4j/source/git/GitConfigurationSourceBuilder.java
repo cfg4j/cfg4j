@@ -15,8 +15,8 @@
  */
 package org.cfg4j.source.git;
 
-import org.cfg4j.source.ConfigFilesProvider;
-import org.cfg4j.source.DefaultConfigFilesProvider;
+import org.cfg4j.source.context.filesprovider.ConfigFilesProvider;
+import org.cfg4j.source.context.filesprovider.DefaultConfigFilesProvider;
 import org.cfg4j.utils.PropertiesProviderSelector;
 import org.cfg4j.utils.PropertyBasedPropertiesProvider;
 import org.cfg4j.utils.YamlBasedPropertiesProvider;

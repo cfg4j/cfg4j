@@ -15,7 +15,7 @@
  */
 package org.cfg4j.source.git;
 
-import org.cfg4j.source.context.Environment;
+import org.cfg4j.source.context.environment.Environment;
 
 /**
  * Adapter for {@link Environment} to provide git branch resolution through {@link BranchResolver} interface.

@@ -13,20 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cfg4j.source;
+package org.cfg4j.source.context.environment;
 
-import java.io.File;
-import java.nio.file.Path;
+import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * Provides configuration files to use.
- */
-public interface ConfigFilesProvider {
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.runners.MockitoJUnitRunner;
 
-  /**
-   * Provide a list of configuration files to use.
-   * @return {@link Iterable} of configuration {@link File}s to use
-   */
-  Iterable<Path> getConfigFiles();
 
+@RunWith(MockitoJUnitRunner.class)
+public class DefaultEnvironmentTest {
+
+  @Test
+  public void shouldUseEmptyStringAsEnvName() throws Exception {
+    assertThat(new DefaultEnvironment().getName()).isEmpty();
+  }
 }

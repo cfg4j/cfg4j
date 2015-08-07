@@ -13,18 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cfg4j.source.context;
+package org.cfg4j.source.context.filesprovider;
+
+import java.io.File;
+import java.nio.file.Path;
 
 /**
- * Configuration environment.
+ * Provides configuration files to use.
  */
-public interface Environment {
+public interface ConfigFilesProvider {
 
   /**
-   * Name of the environment.
-   *
-   * @return environment name
+   * Provide a list of configuration files to use.
+   * @return {@link Iterable} of configuration {@link File}s to use
    */
-  String getName();
+  Iterable<Path> getConfigFiles();
 
 }

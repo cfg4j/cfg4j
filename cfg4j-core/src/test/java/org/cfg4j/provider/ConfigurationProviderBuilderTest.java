@@ -22,7 +22,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import org.cfg4j.source.ConfigurationSource;
-import org.cfg4j.source.context.DefaultEnvironment;
+import org.cfg4j.source.context.environment.DefaultEnvironment;
 import org.cfg4j.source.reload.ReloadStrategy;
 import org.cfg4j.source.reload.Reloadable;
 import org.junit.Before;

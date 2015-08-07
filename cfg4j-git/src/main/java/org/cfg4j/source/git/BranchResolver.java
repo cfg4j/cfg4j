@@ -15,7 +15,7 @@
  */
 package org.cfg4j.source.git;
 
-import org.cfg4j.source.context.Environment;
+import org.cfg4j.source.context.environment.Environment;
 
 /**
  * Specifies git branch to use.

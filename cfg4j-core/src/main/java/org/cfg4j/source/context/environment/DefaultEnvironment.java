@@ -13,24 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cfg4j.source;
-
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
-import java.util.Collections;
+package org.cfg4j.source.context.environment;
 
 /**
- * Provides default configuration file (i.e. application.properties).
+ * Environment named "" (empty string).
  */
-public class DefaultConfigFilesProvider implements ConfigFilesProvider {
-
-  @Override
-  public Iterable<Path> getConfigFiles() {
-    return Collections.singletonList(FileSystems.getDefault().getPath("application.properties"));
+public class DefaultEnvironment extends ImmutableEnvironment {
+  /**
+   * Constructs environment named "" (empty string).
+   */
+  public DefaultEnvironment() {
+    super("");
   }
 
   @Override
   public String toString() {
-    return "DefaultConfigFilesProvider{}";
+    return "DefaultEnvironment{}";
   }
 }

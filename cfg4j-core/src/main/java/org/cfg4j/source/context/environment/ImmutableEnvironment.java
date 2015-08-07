@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cfg4j.source.context;
+package org.cfg4j.source.context.environment;
 
 import static java.util.Objects.requireNonNull;
 

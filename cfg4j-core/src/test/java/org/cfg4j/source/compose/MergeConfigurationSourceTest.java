@@ -25,9 +25,9 @@ import static org.mockito.Mockito.when;
 
 import org.assertj.core.data.MapEntry;
 import org.cfg4j.source.ConfigurationSource;
-import org.cfg4j.source.context.Environment;
-import org.cfg4j.source.context.ImmutableEnvironment;
-import org.cfg4j.source.context.MissingEnvironmentException;
+import org.cfg4j.source.context.environment.Environment;
+import org.cfg4j.source.context.environment.ImmutableEnvironment;
+import org.cfg4j.source.context.environment.MissingEnvironmentException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;

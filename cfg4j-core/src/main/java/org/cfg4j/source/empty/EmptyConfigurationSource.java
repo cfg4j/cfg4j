@@ -13,22 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cfg4j.source.context;
+package org.cfg4j.source.empty;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.cfg4j.source.ConfigurationSource;
+import org.cfg4j.source.context.environment.Environment;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import java.util.Properties;
 
+/**
+ * Empty {@link ConfigurationSource}
+ */
+public class EmptyConfigurationSource implements ConfigurationSource {
 
-@RunWith(MockitoJUnitRunner.class)
-public class ImmutableEnvironmentTest {
+  private static final Properties properties = new Properties();
 
-  @Test
-  public void shouldReturnConstantEnvName() throws Exception {
-    String environmentName = "sampleEnvironment";
-    ImmutableEnvironment strategy = new ImmutableEnvironment(environmentName);
-    assertThat(strategy.getName()).isEqualTo(environmentName);
+  @Override
+  public Properties getConfiguration(Environment environment) {
+    return properties;
+  }
+
+  @Override
+  public void reload() {
+    // NOP
+  }
+
+  @Override
+  public String toString() {
+    return "EmptyConfigurationSource{}";
   }
 }

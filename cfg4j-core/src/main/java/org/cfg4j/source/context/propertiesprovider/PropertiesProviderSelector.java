@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.cfg4j.utils;
+package org.cfg4j.source.context.propertiesprovider;
 
 import static java.util.Objects.requireNonNull;
 

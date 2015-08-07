@@ -21,10 +21,10 @@ import org.cfg4j.source.ConfigurationSource;
 import org.cfg4j.source.context.environment.Environment;
 import org.cfg4j.source.context.environment.MissingEnvironmentException;
 import org.cfg4j.source.context.filesprovider.ConfigFilesProvider;
-import org.cfg4j.utils.PropertiesProvider;
-import org.cfg4j.utils.PropertiesProviderSelector;
-import org.cfg4j.utils.PropertyBasedPropertiesProvider;
-import org.cfg4j.utils.YamlBasedPropertiesProvider;
+import org.cfg4j.source.context.propertiesprovider.PropertiesProvider;
+import org.cfg4j.source.context.propertiesprovider.PropertiesProviderSelector;
+import org.cfg4j.source.context.propertiesprovider.PropertyBasedPropertiesProvider;
+import org.cfg4j.source.context.propertiesprovider.YamlBasedPropertiesProvider;
 
 import java.io.FileInputStream;
 import java.io.IOException;

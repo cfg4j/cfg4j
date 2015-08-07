@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.cfg4j.utils;
+package org.cfg4j.source.context.propertiesprovider;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;

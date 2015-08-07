@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.cfg4j.utils;
+package org.cfg4j.source.context.propertiesprovider;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -44,7 +44,7 @@ public class YamlBasedPropertiesProviderTest {
 
   @Test
   public void shouldReadSingleValues() throws Exception {
-    String path = "org/cfg4j/utils/YamlBasedPropertiesProviderTest_shouldReadSingleValues.yaml";
+    String path = "org/cfg4j/source/propertiesprovider/YamlBasedPropertiesProviderTest_shouldReadSingleValues.yaml";
 
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
       assertThat(provider.getProperties(input)).containsExactly(MapEntry.entry("setting", "masterValue"),
@@ -54,7 +54,7 @@ public class YamlBasedPropertiesProviderTest {
 
   @Test
   public void shouldReadNestedValues() throws Exception {
-    String path = "org/cfg4j/utils/YamlBasedPropertiesProviderTest_shouldReadNestedValues.yaml";
+    String path = "org/cfg4j/source/propertiesprovider/YamlBasedPropertiesProviderTest_shouldReadNestedValues.yaml";
 
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
       assertThat(provider.getProperties(input)).containsExactly(MapEntry.entry("some.setting", "masterValue"),
@@ -64,7 +64,7 @@ public class YamlBasedPropertiesProviderTest {
 
   @Test
   public void shouldReadLists() throws Exception {
-    String path = "org/cfg4j/utils/YamlBasedPropertiesProviderTest_shouldReadLists.yaml";
+    String path = "org/cfg4j/source/propertiesprovider/YamlBasedPropertiesProviderTest_shouldReadLists.yaml";
 
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
       assertThat(provider.getProperties(input)).containsOnly(MapEntry.entry("whitelist", "a,b,33"),
@@ -74,7 +74,7 @@ public class YamlBasedPropertiesProviderTest {
 
   @Test
   public void shouldReadTextBlock() throws Exception {
-    String path = "org/cfg4j/utils/YamlBasedPropertiesProviderTest_shouldReadTextBlock.yaml";
+    String path = "org/cfg4j/source/propertiesprovider/YamlBasedPropertiesProviderTest_shouldReadTextBlock.yaml";
 
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
       assertThat(provider.getProperties(input)).containsExactly(MapEntry.entry("content", "I'm just a text block document"));
@@ -83,7 +83,7 @@ public class YamlBasedPropertiesProviderTest {
 
   @Test
   public void shouldSupportReferences() throws Exception {
-    String path = "org/cfg4j/utils/YamlBasedPropertiesProviderTest_shouldSupportReferences.yaml";
+    String path = "org/cfg4j/source/propertiesprovider/YamlBasedPropertiesProviderTest_shouldSupportReferences.yaml";
 
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
       assertThat(provider.getProperties(input)).containsOnly(
@@ -95,7 +95,7 @@ public class YamlBasedPropertiesProviderTest {
 
   @Test
   public void shouldThrowForNonYamlFile() throws Exception {
-    String path = "org/cfg4j/utils/YamlBasedPropertiesProviderTest_shouldThrowForNonYamlFile.yaml";
+    String path = "org/cfg4j/source/propertiesprovider/YamlBasedPropertiesProviderTest_shouldThrowForNonYamlFile.yaml";
 
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
       expectedException.expect(IllegalStateException.class);

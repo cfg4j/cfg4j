@@ -30,20 +30,21 @@ import java.util.NoSuchElementException;
 import java.util.Properties;
 
 /**
- * Basic implementation of {@link ConfigurationProvider}
+ * Basic implementation of {@link ConfigurationProvider}. To construct this provider use {@link ConfigurationProviderBuilder}.
  */
-public class SimpleConfigurationProvider implements ConfigurationProvider {
+class SimpleConfigurationProvider implements ConfigurationProvider {
 
   private final ConfigurationSource configurationSource;
   private final Environment environment;
 
   /**
    * {@link ConfigurationProvider} backed by provided {@link ConfigurationSource} and using {@code environment}
-   * to select environment.
+   * to select environment. To construct this provider use {@link ConfigurationProviderBuilder}.
+   *
    * @param configurationSource source for configuration
-   * @param environment {@link Environment} to use
+   * @param environment         {@link Environment} to use
    */
-  public SimpleConfigurationProvider(ConfigurationSource configurationSource, Environment environment) {
+  SimpleConfigurationProvider(ConfigurationSource configurationSource, Environment environment) {
     this.configurationSource = requireNonNull(configurationSource);
     this.environment = requireNonNull(environment);
   }

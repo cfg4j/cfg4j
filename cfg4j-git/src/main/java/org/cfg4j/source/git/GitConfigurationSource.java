@@ -44,6 +44,11 @@ import java.util.Properties;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+/**
+ * Note: use {@link GitConfigurationSourceBuilder} for building instances of this class.
+ * <p>
+ * Read configuration from the remote GIT repository. Keeps a local clone of the repository.
+ */
 public class GitConfigurationSource implements ConfigurationSource, Closeable {
 
   private static final Logger LOG = LoggerFactory.getLogger(GitConfigurationSource.class);

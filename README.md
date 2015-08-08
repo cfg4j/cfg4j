@@ -1,5 +1,5 @@
 [![GitHub license](https://img.shields.io/github/license/cfg4j/cfg4j.svg)](https://github.com/cfg4j/cfg4j/blob/master/LICENSE)
-[![Maven Central](https://img.shields.io/maven-central/v/org.cfg4j/cfg4j.svg)](http://search.maven.org/#search|ga|1|org.cfg4j.cfg4j-core)
+[![Maven Central](https://img.shields.io/maven-central/v/org.cfg4j/cfg4j-core.svg)](http://search.maven.org/#search|ga|1|org.cfg4j.cfg4j-core)
 [![Travis](https://img.shields.io/travis/cfg4j/cfg4j.svg)](https://travis-ci.org/cfg4j/cfg4j)
 [![Documentation](https://img.shields.io/badge/documentation-www.cfg4j.org-blue.svg)](http://cfg4j.org)
 [![Examples](https://img.shields.io/badge/demo-here-blue.svg)](https://github.com/cfg4j/cfg4j-sample-apps)

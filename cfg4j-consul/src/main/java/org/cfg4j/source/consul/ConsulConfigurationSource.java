@@ -24,7 +24,6 @@ import org.cfg4j.source.context.environment.Environment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.HashMap;
@@ -32,39 +31,35 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-public class ConsulConfigurationSource implements ConfigurationSource {
+/**
+ * Note: use {@link ConsulConfigurationSourceBuilder} for building instances of this class.
+ * <p>
+ * Read configuration from the Consul K-V store.
+ */
+class ConsulConfigurationSource implements ConfigurationSource {
 
   private static final Logger LOG = LoggerFactory.getLogger(ConsulConfigurationSource.class);
-
-  /**
-   * Default Consul HTTP API host.
-   */
-  public static final String DEFAULT_HTTP_HOST = "localhost";
-
-  /**
-   * Default Consul HTTP API port.
-   */
-  public static final int DEFAULT_HTTP_PORT = 8500;
 
   private final KeyValueClient kvClient;
   private Map<String, String> consulValues;
 
-  public ConsulConfigurationSource() {
-    this(DEFAULT_HTTP_HOST, DEFAULT_HTTP_PORT);
-  }
-
-  public ConsulConfigurationSource(URL url) {
-    this(url.getHost(), url.getPort());
-  }
-
-  private ConsulConfigurationSource(String host, int port) {
+  /**
+   * Note: use {@link ConsulConfigurationSourceBuilder} for building instances of this class.
+   * <p>
+   * Read configuration from the Consul K-V store located at {@code host}:{@code port}.
+   *
+   * @param host Consul host to connect to
+   * @param port Consul port to connect to
+   * @throws SourceCommunicationException when unable to connect to Consul client
+   */
+  ConsulConfigurationSource(String host, int port) {
     try {
       LOG.info("Connecting to Consul client at " + host + ":" + port);
 
       Consul consul = Consul.newClient(host, port);
       kvClient = consul.keyValueClient();
     } catch (Exception e) {
-      throw new SourceCommunicationException("Can't connect to host: " + host + ":" + port, e);
+      throw new SourceCommunicationException("Can't connect to host " + host + ":" + port, e);
     }
 
     reload();

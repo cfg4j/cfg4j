@@ -34,7 +34,6 @@ import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 
@@ -83,8 +82,11 @@ public class ConsulConfigurationSourceIntegrationTest {
   @Before
   public void setUp() throws Exception {
     dispatcher = new ModifiableDispatcher();
-    runMockServerOnPort(ConsulConfigurationSource.DEFAULT_HTTP_PORT);
-    source = new ConsulConfigurationSource(server.getUrl(""));
+    runMockServer();
+    source = new ConsulConfigurationSourceBuilder()
+        .withHost(server.getHostName())
+        .withPort(server.getPort())
+        .build();
   }
 
   @After
@@ -93,17 +95,7 @@ public class ConsulConfigurationSourceIntegrationTest {
   }
 
   @Test
-  public void shouldConnectToLocalhostAgentByDefault() throws Exception {
-    source = new ConsulConfigurationSource();
-    RecordedRequest request = server.takeRequest(0, TimeUnit.MILLISECONDS);
-    assertThat(request).isNotNull();
-  }
-
-  @Test
   public void shouldConnectToSpecifiedAgent() throws Exception {
-    server.shutdown();
-    runMockServerOnPort(ConsulConfigurationSource.DEFAULT_HTTP_PORT + 1);
-    source = new ConsulConfigurationSource(new URL("http", "localhost", ConsulConfigurationSource.DEFAULT_HTTP_PORT + 1, ""));
     RecordedRequest request = server.takeRequest(0, TimeUnit.MILLISECONDS);
     assertThat(request).isNotNull();
   }
@@ -112,31 +104,28 @@ public class ConsulConfigurationSourceIntegrationTest {
   public void shouldThrowOnConnectionFailure() throws Exception {
     server.shutdown();
     expectedException.expect(SourceCommunicationException.class);
-    source = new ConsulConfigurationSource();
+    source = new ConsulConfigurationSourceBuilder()
+        .withHost(server.getHostName())
+        .withPort(server.getPort())
+        .build();
   }
 
   @Test
-  public void shouldThrowOnConnectionFailure2() throws Exception {
-    expectedException.expect(SourceCommunicationException.class);
-    source = new ConsulConfigurationSource(new URL("http", "localhost", ConsulConfigurationSource.DEFAULT_HTTP_PORT + 1, ""));
-  }
-
-  @Test
-  public void getConfiguration2ShouldReturnAllKeysFromGivenEnvironment() throws Exception {
+  public void getConfigurationShouldReturnAllKeysFromGivenEnvironment() throws Exception {
     Environment environment = new ImmutableEnvironment("us-west-1");
 
     assertThat(source.getConfiguration(environment)).contains(MapEntry.entry("featureA.toggle", "disabled"));
   }
 
   @Test
-  public void getConfiguration2ShouldIgnoreLeadginSlashInGivenEnvironment() throws Exception {
+  public void getConfigurationShouldIgnoreLeadginSlashInGivenEnvironment() throws Exception {
     Environment environment = new ImmutableEnvironment("/us-west-1");
 
     assertThat(source.getConfiguration(environment)).contains(MapEntry.entry("featureA.toggle", "disabled"));
   }
 
   @Test
-  public void getConfiguration2ShouldBeUpdatedByReload() throws Exception {
+  public void getConfigurationShouldBeUpdatedByReload() throws Exception {
     dispatcher.toggleUsWest2();
 
     source.reload();
@@ -152,9 +141,9 @@ public class ConsulConfigurationSourceIntegrationTest {
     source.reload();
   }
 
-  private void runMockServerOnPort(int port) throws IOException {
+  private void runMockServer() throws IOException {
     server = new MockWebServer();
     server.setDispatcher(dispatcher);
-    server.start(port);
+    server.start(0);
   }
 }

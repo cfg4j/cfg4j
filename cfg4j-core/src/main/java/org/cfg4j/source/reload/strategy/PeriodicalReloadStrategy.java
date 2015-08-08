@@ -22,12 +22,15 @@ import org.cfg4j.source.reload.Reloadable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 /**
- * {@link ReloadStrategy} that reloads the resource periodically. It spawns a background tread!
+ * {@link ReloadStrategy} that reloads resources periodically. Supports multiple resources. It spawns a tread.
  */
 public class PeriodicalReloadStrategy implements ReloadStrategy {
 
@@ -36,11 +39,14 @@ public class PeriodicalReloadStrategy implements ReloadStrategy {
   private final long duration;
   private final TimeUnit timeUnit;
   private final Timer timer;
+  private final Map<Reloadable, TimerTask> tasks;
 
   /**
    * Construct strategy that reloads the resource every {@code duration} (measured in {@code timeUnit}s).
-   * First reload will happen immediately after calling {@link #init(Reloadable)}. Each following
-   * reload will happen {@code duration} (measured in {@code timeUnit}s) after the previous one completed.
+   * First reload will happen immediately after calling {@link #register(Reloadable)}. Each following
+   * reload will happen {@code duration} (measured in {@code timeUnit}s) after the previous one completed
+   * until the resource is deregistered with a call to {@link #deregister(Reloadable)} method. Supports
+   * multiple resources.
    *
    * @param duration time (in {@code timeUnit}) between reloads
    * @param timeUnit time unit to use
@@ -48,28 +54,36 @@ public class PeriodicalReloadStrategy implements ReloadStrategy {
   public PeriodicalReloadStrategy(long duration, TimeUnit timeUnit) {
     this.duration = duration;
     this.timeUnit = requireNonNull(timeUnit);
+    tasks = Collections.synchronizedMap(new HashMap<>());
     timer = new Timer();
   }
 
   @Override
-  public void init(Reloadable resource) {
-    LOG.info("Initializing " + PeriodicalReloadStrategy.class
+  public void register(Reloadable resource) {
+    LOG.info("Registering resource " + resource
         + " with reload time of " + duration + " " + timeUnit.toString().toLowerCase());
 
     resource.reload();
 
-    timer.schedule(new TimerTask() {
+    TimerTask timerTask = new TimerTask() {
       @Override
       public void run() {
         resource.reload();
       }
-    }, timeUnit.toMillis(duration), timeUnit.toMillis(duration));
+    };
+
+    tasks.put(resource, timerTask);
+    timer.schedule(timerTask, timeUnit.toMillis(duration), timeUnit.toMillis(duration));
   }
 
   @Override
-  public void shutdown() {
-    LOG.info("Shutting down " + PeriodicalReloadStrategy.class);
-    timer.cancel();
+  public void deregister(Reloadable resource) {
+    LOG.info("Deregistering resource " + resource);
+
+    TimerTask timerTask = tasks.remove(resource);
+    if (timerTask != null) {
+      timerTask.cancel();
+    }
   }
 
   @Override

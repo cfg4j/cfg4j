@@ -20,7 +20,7 @@ import org.cfg4j.source.context.environment.DefaultEnvironment;
 import org.cfg4j.source.context.environment.Environment;
 import org.cfg4j.source.empty.EmptyConfigurationSource;
 import org.cfg4j.source.reload.ReloadStrategy;
-import org.cfg4j.source.reload.strategy.OnInitReloadStrategy;
+import org.cfg4j.source.reload.strategy.ImmediateReloadStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,13 +43,13 @@ public class ConfigurationProviderBuilder {
    * Default setup (override using with*() methods)
    * <ul>
    * <li>ConfigurationSource: {@link EmptyConfigurationSource}</li>
-   * <li>ReloadStrategy: {@link OnInitReloadStrategy}</li>
+   * <li>ReloadStrategy: {@link ImmediateReloadStrategy}</li>
    * <li>Environment: {@link DefaultEnvironment}</li>
    * </ul>
    */
   public ConfigurationProviderBuilder() {
     configurationSource = new EmptyConfigurationSource();
-    reloadStrategy = new OnInitReloadStrategy();
+    reloadStrategy = new ImmediateReloadStrategy();
     environment = new DefaultEnvironment();
   }
 
@@ -97,7 +97,7 @@ public class ConfigurationProviderBuilder {
         + reloadStrategy.getClass().getCanonicalName() + " reload strategy and "
         + environment.getClass().getCanonicalName() + " environment");
 
-    reloadStrategy.init(configurationSource);
+    reloadStrategy.register(configurationSource);
 
     return new SimpleConfigurationProvider(configurationSource, environment);
   }

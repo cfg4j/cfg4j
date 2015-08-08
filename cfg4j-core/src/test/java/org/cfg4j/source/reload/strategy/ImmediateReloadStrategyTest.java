@@ -20,32 +20,30 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import org.cfg4j.source.reload.Reloadable;
-import org.cfg4j.source.reload.strategy.OnInitReloadStrategy;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class OnInitReloadableStrategyTest {
+public class ImmediateReloadStrategyTest {
 
   @Mock
   private Reloadable resource;
 
   @Test
-  public void shouldreloadResourceOnce() throws Exception {
-    OnInitReloadStrategy reloadStrategy = new OnInitReloadStrategy();
-    reloadStrategy.init(resource);
-    reloadStrategy.shutdown();
+  public void shouldReloadResourceOnce() throws Exception {
+    ImmediateReloadStrategy reloadStrategy = new ImmediateReloadStrategy();
+    reloadStrategy.register(resource);
 
     verify(resource, times(1)).reload();
   }
 
   @Test
-  public void shouldNotreloadAfterClose() throws Exception {
-    OnInitReloadStrategy reloadStrategy = new OnInitReloadStrategy();
-    reloadStrategy.init(resource);
-    reloadStrategy.shutdown();
+  public void shouldNotReloadWhenDeregistrated() throws Exception {
+    ImmediateReloadStrategy reloadStrategy = new ImmediateReloadStrategy();
+    reloadStrategy.register(resource);
+    reloadStrategy.deregister(resource);
 
     verify(resource, times(1)).reload();
   }

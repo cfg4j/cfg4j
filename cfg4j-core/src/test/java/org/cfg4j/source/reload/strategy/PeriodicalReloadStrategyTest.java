@@ -21,7 +21,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import org.cfg4j.source.reload.Reloadable;
-import org.cfg4j.source.reload.strategy.PeriodicalReloadStrategy;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -33,7 +32,7 @@ import java.util.concurrent.TimeUnit;
 
 
 @RunWith(MockitoJUnitRunner.class)
-public class PeriodicalReloadableStrategyTest {
+public class PeriodicalReloadStrategyTest {
 
   @Rule
   public ExpectedException expectedException = ExpectedException.none();
@@ -41,20 +40,45 @@ public class PeriodicalReloadableStrategyTest {
   @Mock
   private Reloadable reloadable;
 
+  @Mock
+  private Reloadable reloadable2;
+
   @Test
-  public void shouldReloadImmediatelyAfterInit() throws Exception {
+  public void shouldReloadImmediatelyAfterRegistered() throws Exception {
     PeriodicalReloadStrategy strategy = new PeriodicalReloadStrategy(60, TimeUnit.SECONDS);
-    strategy.init(reloadable);
-    strategy.shutdown();
+    strategy.register(reloadable);
+    strategy.deregister(reloadable);
     verify(reloadable, times(1)).reload();
   }
 
   @Test
   public void shouldReloadPeriodically() throws Exception {
-    PeriodicalReloadStrategy strategy = new PeriodicalReloadStrategy(10, TimeUnit.MILLISECONDS);
-    strategy.init(reloadable);
-    Thread.sleep(50);
-    strategy.shutdown();
-    verify(reloadable, atLeast(2)).reload();
+    PeriodicalReloadStrategy strategy = new PeriodicalReloadStrategy(5, TimeUnit.MILLISECONDS);
+    strategy.register(reloadable);
+    Thread.sleep(20);
+    strategy.deregister(reloadable);
+    verify(reloadable, atLeast(4)).reload();
+  }
+
+  @Test
+  public void shouldSupportMultipleResources() throws Exception {
+    PeriodicalReloadStrategy strategy = new PeriodicalReloadStrategy(5, TimeUnit.MILLISECONDS);
+    strategy.register(reloadable);
+    strategy.register(reloadable2);
+    Thread.sleep(20);
+    verify(reloadable, atLeast(4)).reload();
+    verify(reloadable2, atLeast(4)).reload();
+  }
+
+  @Test
+  public void shouldDeregister() throws Exception {
+    PeriodicalReloadStrategy strategy = new PeriodicalReloadStrategy(5, TimeUnit.MILLISECONDS);
+    strategy.register(reloadable);
+    strategy.register(reloadable2);
+    Thread.sleep(20);
+    strategy.deregister(reloadable);
+    Thread.sleep(20);
+    strategy.deregister(reloadable2);
+    verify(reloadable2, atLeast(8)).reload();
   }
 }

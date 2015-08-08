@@ -21,25 +21,25 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * {@link ReloadStrategy} that reloads the resource only once - the moment the {@link #init(Reloadable)} is called.
+ * {@link ReloadStrategy} that reloads the resource only once - the moment the {@link #register(Reloadable)} is called.
  */
-public class OnInitReloadStrategy implements ReloadStrategy {
+public class ImmediateReloadStrategy implements ReloadStrategy {
 
-  private static final Logger LOG = LoggerFactory.getLogger(OnInitReloadStrategy.class);
+  private static final Logger LOG = LoggerFactory.getLogger(ImmediateReloadStrategy.class);
 
   @Override
-  public void init(Reloadable resource) {
-    LOG.info("Initializing " + OnInitReloadStrategy.class);
+  public void register(Reloadable resource) {
+    LOG.info("Registering resource " + resource);
     resource.reload();
   }
 
   @Override
-  public void shutdown() {
-    LOG.info("Shutting down " + OnInitReloadStrategy.class);
+  public void deregister(Reloadable resource) {
+    LOG.info("Deregistering resource " + resource);
   }
 
   @Override
   public String toString() {
-    return "OnInitReloadStrategy{}";
+    return "ImmediateReloadStrategy{}";
   }
 }

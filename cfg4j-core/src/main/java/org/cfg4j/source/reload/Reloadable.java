@@ -21,7 +21,7 @@ package org.cfg4j.source.reload;
 public interface Reloadable {
 
   /**
-   * Request resource reload. When this method returns resource should be reloaded.
+   * Request resource reload. Resource should be fully reloaded before this method returns.
    *
    * @throws IllegalStateException when unable to reload resource
    */

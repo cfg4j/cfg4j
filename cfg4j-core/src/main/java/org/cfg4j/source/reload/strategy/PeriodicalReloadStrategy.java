@@ -39,8 +39,9 @@ public class PeriodicalReloadStrategy implements ReloadStrategy {
 
   /**
    * Construct strategy that reloads the resource every {@code duration} (measured in {@code timeUnit}s).
-   * First reload will happen immediately after calling {@link #init(Reloadable)}. Each following
-   * reload will happen {@code duration} (measured in {@code timeUnit}s) after the previous one completed.
+   * First reload will happen immediately after calling {@link #register(Reloadable)}. Each following
+   * reload will happen {@code duration} (measured in {@code timeUnit}s) after the previous one completed
+   * until the resource is deregistered with a call to {@link #deregister(Reloadable)} method.
    *
    * @param duration time (in {@code timeUnit}) between reloads
    * @param timeUnit time unit to use

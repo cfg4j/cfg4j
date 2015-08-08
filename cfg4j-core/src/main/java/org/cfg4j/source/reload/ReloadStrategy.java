@@ -26,13 +26,15 @@ public interface ReloadStrategy {
    * Register a {@link Reloadable} resource with this strategy. It should take control of reloading the {@code resource}. Strategy should
    * invoke {@link Reloadable#reload()} method to reload the resource.
    *
-   * @param resource resource to be reloaded
+   * @param resource resource to be registered
    */
   void register(Reloadable resource);
 
   /**
    * De-register {@link Reloadable} resource from this strategy. Call to this method indicates that the resource
    * should not be reloaded anymore by this strategy.
+   *
+   * @param resource resource to be deregistered
    */
   void deregister(Reloadable resource);
 

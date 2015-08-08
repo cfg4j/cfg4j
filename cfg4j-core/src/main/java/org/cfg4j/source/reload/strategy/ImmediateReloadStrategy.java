@@ -23,9 +23,9 @@ import org.slf4j.LoggerFactory;
 /**
  * {@link ReloadStrategy} that reloads the resource only once - the moment the {@link #register(Reloadable)} is called.
  */
-public class OnInitReloadStrategy implements ReloadStrategy {
+public class ImmediateReloadStrategy implements ReloadStrategy {
 
-  private static final Logger LOG = LoggerFactory.getLogger(OnInitReloadStrategy.class);
+  private static final Logger LOG = LoggerFactory.getLogger(ImmediateReloadStrategy.class);
 
   @Override
   public void register(Reloadable resource) {
@@ -40,6 +40,6 @@ public class OnInitReloadStrategy implements ReloadStrategy {
 
   @Override
   public String toString() {
-    return "OnInitReloadStrategy{}";
+    return "ImmediateReloadStrategy{}";
   }
 }

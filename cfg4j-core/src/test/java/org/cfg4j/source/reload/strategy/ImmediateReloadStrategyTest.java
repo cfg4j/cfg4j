@@ -20,21 +20,20 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import org.cfg4j.source.reload.Reloadable;
-import org.cfg4j.source.reload.strategy.OnInitReloadStrategy;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class OnInitReloadableStrategyTest {
+public class ImmediateReloadStrategyTest {
 
   @Mock
   private Reloadable resource;
 
   @Test
   public void shouldreloadResourceOnce() throws Exception {
-    OnInitReloadStrategy reloadStrategy = new OnInitReloadStrategy();
+    ImmediateReloadStrategy reloadStrategy = new ImmediateReloadStrategy();
     reloadStrategy.init(resource);
     reloadStrategy.shutdown();
 
@@ -43,7 +42,7 @@ public class OnInitReloadableStrategyTest {
 
   @Test
   public void shouldNotreloadAfterClose() throws Exception {
-    OnInitReloadStrategy reloadStrategy = new OnInitReloadStrategy();
+    ImmediateReloadStrategy reloadStrategy = new ImmediateReloadStrategy();
     reloadStrategy.init(resource);
     reloadStrategy.shutdown();
 

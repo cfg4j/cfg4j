@@ -97,7 +97,7 @@ public class ConfigurationProviderBuilder {
         + reloadStrategy.getClass().getCanonicalName() + " reload strategy and "
         + environment.getClass().getCanonicalName() + " environment");
 
-    reloadStrategy.init(configurationSource);
+    reloadStrategy.register(configurationSource);
 
     return new SimpleConfigurationProvider(configurationSource, environment);
   }

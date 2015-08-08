@@ -48,7 +48,7 @@ public class ConfigurationProviderBuilderTest {
         .withEnvironment(new DefaultEnvironment())
         .build();
 
-    verify(reloadStrategy, times(1)).init(any(Reloadable.class));
+    verify(reloadStrategy, times(1)).register(any(Reloadable.class));
   }
 
   @Test
@@ -60,6 +60,6 @@ public class ConfigurationProviderBuilderTest {
         .withReloadStrategy(reloadStrategy)
         .build();
 
-    verify(reloadStrategy, times(1)).init(configurationSource);
+    verify(reloadStrategy, times(1)).register(configurationSource);
   }
 }

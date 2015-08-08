@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-public class ConsulConfigurationSource implements ConfigurationSource {
+class ConsulConfigurationSource implements ConfigurationSource {
 
   private static final Logger LOG = LoggerFactory.getLogger(ConsulConfigurationSource.class);
 

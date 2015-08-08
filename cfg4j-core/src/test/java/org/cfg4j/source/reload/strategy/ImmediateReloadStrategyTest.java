@@ -32,19 +32,18 @@ public class ImmediateReloadStrategyTest {
   private Reloadable resource;
 
   @Test
-  public void shouldreloadResourceOnce() throws Exception {
+  public void shouldReloadResourceOnce() throws Exception {
     ImmediateReloadStrategy reloadStrategy = new ImmediateReloadStrategy();
-    reloadStrategy.init(resource);
-    reloadStrategy.shutdown();
+    reloadStrategy.register(resource);
 
     verify(resource, times(1)).reload();
   }
 
   @Test
-  public void shouldNotreloadAfterClose() throws Exception {
+  public void shouldNotReloadWhenDeregistrated() throws Exception {
     ImmediateReloadStrategy reloadStrategy = new ImmediateReloadStrategy();
-    reloadStrategy.init(resource);
-    reloadStrategy.shutdown();
+    reloadStrategy.register(resource);
+    reloadStrategy.deregister(resource);
 
     verify(resource, times(1)).reload();
   }

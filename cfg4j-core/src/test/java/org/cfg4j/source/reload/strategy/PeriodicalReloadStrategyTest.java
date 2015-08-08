@@ -40,6 +40,9 @@ public class PeriodicalReloadStrategyTest {
   @Mock
   private Reloadable reloadable;
 
+  @Mock
+  private Reloadable reloadable2;
+
   @Test
   public void shouldReloadImmediatelyAfterRegistered() throws Exception {
     PeriodicalReloadStrategy strategy = new PeriodicalReloadStrategy(60, TimeUnit.SECONDS);
@@ -50,10 +53,32 @@ public class PeriodicalReloadStrategyTest {
 
   @Test
   public void shouldReloadPeriodically() throws Exception {
-    PeriodicalReloadStrategy strategy = new PeriodicalReloadStrategy(10, TimeUnit.MILLISECONDS);
+    PeriodicalReloadStrategy strategy = new PeriodicalReloadStrategy(5, TimeUnit.MILLISECONDS);
     strategy.register(reloadable);
-    Thread.sleep(50);
+    Thread.sleep(20);
     strategy.deregister(reloadable);
-    verify(reloadable, atLeast(2)).reload();
+    verify(reloadable, atLeast(4)).reload();
+  }
+
+  @Test
+  public void shouldSupportMultipleResources() throws Exception {
+    PeriodicalReloadStrategy strategy = new PeriodicalReloadStrategy(5, TimeUnit.MILLISECONDS);
+    strategy.register(reloadable);
+    strategy.register(reloadable2);
+    Thread.sleep(20);
+    verify(reloadable, atLeast(4)).reload();
+    verify(reloadable2, atLeast(4)).reload();
+  }
+
+  @Test
+  public void shouldDeregister() throws Exception {
+    PeriodicalReloadStrategy strategy = new PeriodicalReloadStrategy(5, TimeUnit.MILLISECONDS);
+    strategy.register(reloadable);
+    strategy.register(reloadable2);
+    Thread.sleep(20);
+    strategy.deregister(reloadable);
+    Thread.sleep(20);
+    strategy.deregister(reloadable2);
+    verify(reloadable2, atLeast(8)).reload();
   }
 }

@@ -49,7 +49,7 @@ import java.util.stream.StreamSupport;
  * <p>
  * Read configuration from the remote GIT repository. Keeps a local clone of the repository.
  */
-public class GitConfigurationSource implements ConfigurationSource, Closeable {
+class GitConfigurationSource implements ConfigurationSource, Closeable {
 
   private static final Logger LOG = LoggerFactory.getLogger(GitConfigurationSource.class);
 

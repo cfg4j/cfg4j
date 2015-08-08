@@ -31,6 +31,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+/**
+ * Note: use {@link ConsulConfigurationSourceBuilder} for building instances of this class.
+ * <p>
+ * Read configuration from the Consul K-V store.
+ */
 class ConsulConfigurationSource implements ConfigurationSource {
 
   private static final Logger LOG = LoggerFactory.getLogger(ConsulConfigurationSource.class);
@@ -38,6 +43,15 @@ class ConsulConfigurationSource implements ConfigurationSource {
   private final KeyValueClient kvClient;
   private Map<String, String> consulValues;
 
+  /**
+   * Note: use {@link ConsulConfigurationSourceBuilder} for building instances of this class.
+   * <p>
+   * Read configuration from the Consul K-V store located at {@code host}:{@code port}.
+   *
+   * @param host Consul host to connect to
+   * @param port Consul port to connect to
+   * @throws SourceCommunicationException when unable to connect to Consul client
+   */
   ConsulConfigurationSource(String host, int port) {
     try {
       LOG.info("Connecting to Consul client at " + host + ":" + port);
@@ -45,7 +59,7 @@ class ConsulConfigurationSource implements ConfigurationSource {
       Consul consul = Consul.newClient(host, port);
       kvClient = consul.keyValueClient();
     } catch (Exception e) {
-      throw new SourceCommunicationException("Can't connect to host: " + host + ":" + port, e);
+      throw new SourceCommunicationException("Can't connect to host " + host + ":" + port, e);
     }
 
     reload();

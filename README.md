@@ -35,7 +35,13 @@ Head to [the documentation](http://cfg4j.org).
 #### Gradle
 ```groovy
 dependencies {
-  compile group: "org.cfg4j", name:"cfg4j", version: "3.3.2"
+  compile group: "org.cfg4j", name:"cfg4j-core", version: "4.0.0"
+  
+  // For Consul integration
+  compile group: "org.cfg4j", name:"cfg4j-consul", version: "4.0.0"
+  
+  // For git integration
+  compile group: "org.cfg4j", name:"cfg4j-git", version: "4.0.0"
 }
 ```
 
@@ -44,8 +50,20 @@ dependencies {
 <dependencies>
   <dependency>
     <groupId>org.cfg4j</groupId>
-    <artifactId>cfg4j</artifactId>
-    <version>3.3.2</version>
+    <artifactId>cfg4j-core</artifactId>
+    <version>4.0.0</version>
+  </dependency>
+  <!-- For Consul integration -->
+  <dependency> 
+    <groupId>org.cfg4j</groupId>
+    <artifactId>cfg4j-consul</artifactId>
+    <version>4.0.0</version>
+  </dependency>
+  <!-- For git integration -->
+  <dependency>
+    <groupId>org.cfg4j</groupId>
+    <artifactId>cfg4j-git</artifactId>
+    <version>4.0.0</version>
   </dependency>
 </dependencies>
 ```
@@ -66,8 +84,13 @@ public class Cfg4jPoweredApplication {
   }
 
   public static void main(String... args) {
-    ConfigurationProvider configurationProvider =
-        ConfigurationProviders.backedByGit("https://github.com/cfg4j/cfg4j-git-sample-config.git");
+    ConfigurationSource source = new GitConfigurationSourceBuilder()
+      .withRepositoryURI("https://github.com/cfg4j/cfg4j-git-sample-config.git")
+      .build();
+      
+    ConfigurationProvider provider = new ConfigurationProviderBuilder()
+      .withConfigurationSource(source)
+      .build();
     
     SampleConfig config = configurationProvider.bind("reksio", SampleConfig.class);
     

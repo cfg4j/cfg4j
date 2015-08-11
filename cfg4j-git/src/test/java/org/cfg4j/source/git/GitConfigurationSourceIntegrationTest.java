@@ -30,9 +30,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -45,7 +44,6 @@ public class GitConfigurationSourceIntegrationTest {
   public ExpectedException expectedException = ExpectedException.none();
 
   private TempConfigurationGitRepo remoteRepo;
-  private FileSystem fileSystem;
 
   @Before
   public void setUp() throws Exception {
@@ -59,8 +57,6 @@ public class GitConfigurationSourceIntegrationTest {
     remoteRepo.changeProperty("application.properties", "some.setting", "testValue");
 
     remoteRepo.changeBranchTo(DEFAULT_BRANCH);
-
-    fileSystem = FileSystems.getDefault();
   }
 
   @After
@@ -117,7 +113,7 @@ public class GitConfigurationSourceIntegrationTest {
 
       @Override
       public Path getPathFor(Environment environment) {
-        return fileSystem.getPath("otherApplicationConfigs");
+        return Paths.get("otherApplicationConfigs");
       }
     }
 
@@ -139,7 +135,7 @@ public class GitConfigurationSourceIntegrationTest {
 
   @Test
   public void getConfiguration2ShouldReadFromGivenFiles() throws Exception {
-    ConfigFilesProvider configFilesProvider = () -> Arrays.asList(fileSystem.getPath("application.properties"), fileSystem.getPath("otherConfig.properties"));
+    ConfigFilesProvider configFilesProvider = () -> Arrays.asList(Paths.get("application.properties"), Paths.get("otherConfig.properties"));
     Environment environment = new DefaultEnvironment();
 
     try (GitConfigurationSource gitConfigurationSource = getSourceForRemoteRepoWithFilesProvider(configFilesProvider)) {
@@ -167,7 +163,7 @@ public class GitConfigurationSourceIntegrationTest {
 
   @Test
   public void getConfiguration2ShouldThrowOnMalformedConfigFile() throws Exception {
-    ConfigFilesProvider configFilesProvider = () -> Collections.singletonList(fileSystem.getPath("malformed.properties"));
+    ConfigFilesProvider configFilesProvider = () -> Collections.singletonList(Paths.get("malformed.properties"));
 
     expectedException.expect(IllegalStateException.class);
     getSourceForRemoteRepoWithFilesProvider(configFilesProvider).getConfiguration(new DefaultEnvironment());

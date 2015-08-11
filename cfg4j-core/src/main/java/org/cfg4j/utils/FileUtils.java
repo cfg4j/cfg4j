@@ -15,18 +15,18 @@
  */
 package org.cfg4j.utils;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 
 /**
  * Operations on files.
  */
 public class FileUtils {
-
-  private static final Logger LOG = LoggerFactory.getLogger(FileUtils.class);
 
   /**
    * Delete directory or file.
@@ -35,27 +35,18 @@ public class FileUtils {
    * @throws IOException when directory can't be deleted
    */
   public void deleteDir(File directory) throws IOException {
-    if (directory.exists()) {
-      File[] files = directory.listFiles();
-
-      if (files != null) {
-        for (File file : files) {
-          if (file.isDirectory()) {
-            deleteDir(file);
-          } else {
-            LOG.debug("Removing file: " + directory.getAbsolutePath());
-            if (!file.delete()) {
-              throw new IOException("Unable to delete file: " + file.getAbsolutePath());
-            }
-          }
-        }
+    Files.walkFileTree(directory.toPath(), new SimpleFileVisitor<Path>() {
+      @Override
+      public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+        Files.delete(file);
+        return FileVisitResult.CONTINUE;
       }
 
-      LOG.debug("Removing directory: " + directory.getAbsolutePath());
-      if (!directory.delete()) {
-        throw new IOException("Unable to delete directory: " + directory.getAbsolutePath());
+      @Override
+      public FileVisitResult postVisitDirectory(Path dir, IOException exception) throws IOException {
+        Files.delete(dir);
+        return FileVisitResult.CONTINUE;
       }
-    }
+    });
   }
-
 }

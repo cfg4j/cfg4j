@@ -21,6 +21,9 @@ import org.cfg4j.source.context.propertiesprovider.PropertiesProviderSelector;
 import org.cfg4j.source.context.propertiesprovider.PropertyBasedPropertiesProvider;
 import org.cfg4j.source.context.propertiesprovider.YamlBasedPropertiesProvider;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 /**
  * Builder for {@link GitConfigurationSource}.
  */
@@ -29,8 +32,8 @@ public class GitConfigurationSourceBuilder {
   private BranchResolver branchResolver;
   private PathResolver pathResolver;
   private String repositoryURI;
-  private String tmpPath;
-  private String localRepositoryPathInTemp;
+  private Path tmpPath;
+  private String tmpRepoPrefix;
   private ConfigFilesProvider configFilesProvider;
   private PropertiesProviderSelector propertiesProviderSelector;
 
@@ -43,7 +46,7 @@ public class GitConfigurationSourceBuilder {
    * <li>PathResolver: {@link AllButFirstTokenPathResolver}</li>
    * <li>ConfigFilesProvider: {@link DefaultConfigFilesProvider}</li>
    * <li>tmpPath: System.getProperty("java.io.tmpdir")</li>
-   * <li>localRepositoryPathInTemp: "cfg4j-config-git-config-repository"</li>
+   * <li>tmpRepoPrefix: "cfg4j-config-git-config-repository"</li>
    * <li>propertiesProviderSelector: {@link PropertiesProviderSelector} with {@link PropertyBasedPropertiesProvider}
    * and {@link YamlBasedPropertiesProvider} providers</li>
    * </ul>
@@ -51,8 +54,8 @@ public class GitConfigurationSourceBuilder {
   public GitConfigurationSourceBuilder() {
     branchResolver = new FirstTokenBranchResolver();
     pathResolver = new AllButFirstTokenPathResolver();
-    tmpPath = System.getProperty("java.io.tmpdir");
-    localRepositoryPathInTemp = "cfg4j-git-config-repository";
+    tmpPath = Paths.get(System.getProperty("java.io.tmpdir"));
+    tmpRepoPrefix = "cfg4j-git-config-repository";
     configFilesProvider = new DefaultConfigFilesProvider();
     propertiesProviderSelector = new PropertiesProviderSelector(
         new PropertyBasedPropertiesProvider(), new YamlBasedPropertiesProvider()
@@ -93,24 +96,52 @@ public class GitConfigurationSourceBuilder {
   }
 
   /**
+   * DEPRECATED: Use {@link #withTmpPath(Path)} instead.
+   * <p>
    * Set temporary dir path for {@link GitConfigurationSource}s built by this builder
    *
    * @param tmpPath temporary dir path to use
    * @return this builder with temporary dir path set to {@code tmpPath}
    */
+  @Deprecated
   public GitConfigurationSourceBuilder withTmpPath(String tmpPath) {
+    this.tmpPath = Paths.get(tmpPath);
+    return this;
+  }
+
+  /**
+   * Set temporary dir path for {@link GitConfigurationSource}s built by this builder
+   *
+   * @param tmpPath temporary dir path to use
+   * @return this builder with temporary dir path set to {@code tmpPath}
+   */
+  public GitConfigurationSourceBuilder withTmpPath(Path tmpPath) {
     this.tmpPath = tmpPath;
+    return this;
+  }
+
+  /**
+   * DEPRECATED: Use {@link #withTmpRepoPrefix(String)} instead.
+   * <p>
+   * Set relative repository path in temporary dir for {@link GitConfigurationSource}s built by this builder
+   *
+   * @param localRepositoryPathInTemp relative repository path in temporary dir to use
+   * @return this builder with relative repository path in temporary dir set to {@code tmpRepoPrefix}
+   */
+  @Deprecated
+  public GitConfigurationSourceBuilder withLocalRepositoryPathInTemp(String localRepositoryPathInTemp) {
+    this.tmpRepoPrefix = localRepositoryPathInTemp;
     return this;
   }
 
   /**
    * Set relative repository path in temporary dir for {@link GitConfigurationSource}s built by this builder
    *
-   * @param localRepositoryPathInTemp relative repository path in temporary dir to use
-   * @return this builder with relative repository path in temporary dir set to {@code localRepositoryPathInTemp}
+   * @param tmpRepoPrefix relative repository path in temporary dir to use
+   * @return this builder with relative repository path in temporary dir set to {@code tmpRepoPrefix}
    */
-  public GitConfigurationSourceBuilder withLocalRepositoryPathInTemp(String localRepositoryPathInTemp) {
-    this.localRepositoryPathInTemp = localRepositoryPathInTemp;
+  public GitConfigurationSourceBuilder withTmpRepoPrefix(String tmpRepoPrefix) {
+    this.tmpRepoPrefix = tmpRepoPrefix;
     return this;
   }
 
@@ -131,7 +162,7 @@ public class GitConfigurationSourceBuilder {
    * @return new {@link GitConfigurationSource}
    */
   public GitConfigurationSource build() {
-    return new GitConfigurationSource(repositoryURI, tmpPath, localRepositoryPathInTemp, branchResolver, pathResolver,
+    return new GitConfigurationSource(repositoryURI, tmpPath, tmpRepoPrefix, branchResolver, pathResolver,
         configFilesProvider, propertiesProviderSelector);
   }
 
@@ -142,7 +173,7 @@ public class GitConfigurationSourceBuilder {
         ", pathResolver=" + pathResolver +
         ", repositoryURI='" + repositoryURI + '\'' +
         ", tmpPath='" + tmpPath + '\'' +
-        ", localRepositoryPathInTemp='" + localRepositoryPathInTemp + '\'' +
+        ", tmpRepoPrefix='" + tmpRepoPrefix + '\'' +
         ", configFilesProvider=" + configFilesProvider +
         '}';
   }

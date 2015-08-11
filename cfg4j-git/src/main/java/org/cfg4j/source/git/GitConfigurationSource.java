@@ -151,7 +151,7 @@ class GitConfigurationSource implements ConfigurationSource, Closeable {
   public void close() throws IOException {
     LOG.debug("Closing local repository: " + clonedRepoPath);
     clonedRepo.close();
-    new FileUtils().deleteDir(clonedRepoPath.toFile());
+    new FileUtils().deleteDir(clonedRepoPath);
   }
 
   private void checkoutToBranch(String branch) throws GitAPIException {

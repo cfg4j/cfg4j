@@ -59,7 +59,7 @@ public class TempConfigurationFileRepo {
    * @param filePath relative file path to delete
    */
   public void deleteFile(Path filePath) throws IOException {
-    new FileUtils().deleteDir(dirPath.resolve(filePath).toFile());
+    new FileUtils().deleteDir(dirPath.resolve(filePath));
   }
 
   /**
@@ -68,7 +68,7 @@ public class TempConfigurationFileRepo {
    * @throws IOException when unable to remove directory
    */
   public void remove() throws IOException {
-    new FileUtils().deleteDir(dirPath.toFile());
+    new FileUtils().deleteDir(dirPath);
   }
 
   private void writePropertyToFile(Path propFilePath, String key, String value) throws IOException {

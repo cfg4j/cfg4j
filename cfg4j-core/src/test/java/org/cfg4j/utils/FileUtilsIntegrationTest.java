@@ -46,7 +46,7 @@ public class FileUtilsIntegrationTest {
   public void shouldDeleteFile() throws Exception {
     Path tempFile = Files.createTempFile("", "");
 
-    fileUtils.deleteDir(tempFile.toFile());
+    fileUtils.deleteDir(tempFile);
 
     assertThat(Files.exists(tempFile)).isFalse();
   }
@@ -55,7 +55,7 @@ public class FileUtilsIntegrationTest {
   public void shouldDeleteDirectory() throws Exception {
     Path tempDirectory = Files.createTempDirectory("");
 
-    fileUtils.deleteDir(tempDirectory.toFile());
+    fileUtils.deleteDir(tempDirectory);
 
     assertThat(Files.exists(tempDirectory)).isFalse();
   }
@@ -66,7 +66,7 @@ public class FileUtilsIntegrationTest {
     Path tempDirectory = Files.createTempDirectory("");
     Files.createTempFile(tempDirectory, "", "");
 
-    fileUtils.deleteDir(tempDirectory.toFile());
+    fileUtils.deleteDir(tempDirectory);
 
     assertThat(Files.exists(tempDirectory)).isFalse();
   }
@@ -76,7 +76,7 @@ public class FileUtilsIntegrationTest {
     Path tempDirectory = Files.createTempDirectory("");
     Files.createTempDirectory(tempDirectory, "");
 
-    fileUtils.deleteDir(tempDirectory.toFile());
+    fileUtils.deleteDir(tempDirectory);
 
     assertThat(Files.exists(tempDirectory)).isFalse();
   }

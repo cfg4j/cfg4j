@@ -15,7 +15,6 @@
  */
 package org.cfg4j.utils;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -34,8 +33,8 @@ public class FileUtils {
    * @param directory directory to delete
    * @throws IOException when directory can't be deleted
    */
-  public void deleteDir(File directory) throws IOException {
-    Files.walkFileTree(directory.toPath(), new SimpleFileVisitor<Path>() {
+  public void deleteDir(Path directory) throws IOException {
+    Files.walkFileTree(directory, new SimpleFileVisitor<Path>() {
       @Override
       public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
         Files.delete(file);

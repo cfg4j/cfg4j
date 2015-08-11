@@ -50,12 +50,12 @@ public class FilesConfigurationSourceTest {
   @Before
   public void setUp() throws Exception {
     fileRepo = new TempConfigurationFileRepo("cfg4j-test-repo");
-    fileRepo.changeProperty("application.properties", "some.setting", "masterValue");
-    fileRepo.changeProperty("otherConfig.properties", "otherConfig.setting", "masterValue");
-    fileRepo.changeProperty("malformed.properties", "otherConfig.setting", "\\uzzzzz");
-    fileRepo.changeProperty("otherApplicationConfigs/application.properties", "some.setting", "otherAppSetting");
+    fileRepo.changeProperty(Paths.get("application.properties"), "some.setting", "masterValue");
+    fileRepo.changeProperty(Paths.get("otherConfig.properties"), "otherConfig.setting", "masterValue");
+    fileRepo.changeProperty(Paths.get("malformed.properties"), "otherConfig.setting", "\\uzzzzz");
+    fileRepo.changeProperty(Paths.get("otherApplicationConfigs/application.properties"), "some.setting", "otherAppSetting");
 
-    environment = new ImmutableEnvironment(fileRepo.getURI());
+    environment = new ImmutableEnvironment(fileRepo.dirPath.toString());
 
     source = new FilesConfigurationSource();
   }
@@ -72,13 +72,13 @@ public class FilesConfigurationSourceTest {
 
   @Test
   public void getConfigurationShouldReadFromHomeForDefaultEnvironment() throws Exception {
-    System.setProperty("user.home", fileRepo.getURI() + "/otherApplicationConfigs");
+    System.setProperty("user.home", fileRepo.dirPath.resolve("otherApplicationConfigs").toString());
     assertThat(source.getConfiguration(new DefaultEnvironment())).containsOnly(MapEntry.entry("some.setting", "otherAppSetting"));
   }
 
   @Test
   public void getConfigurationShouldReadFromGivenPath() throws Exception {
-    Environment environment = new ImmutableEnvironment(fileRepo.getURI() + "/otherApplicationConfigs/");
+    Environment environment = new ImmutableEnvironment(fileRepo.dirPath.resolve("otherApplicationConfigs").toString());
 
     assertThat(source.getConfiguration(environment)).containsOnly(MapEntry.entry("some.setting", "otherAppSetting"));
   }
@@ -102,7 +102,7 @@ public class FilesConfigurationSourceTest {
 
   @Test
   public void getConfigurationShouldThrowOnMissingConfigFile() throws Exception {
-    fileRepo.deleteFile("application.properties");
+    fileRepo.deleteFile(Paths.get("application.properties"));
 
     expectedException.expect(IllegalStateException.class);
     source.getConfiguration(environment);
@@ -122,7 +122,7 @@ public class FilesConfigurationSourceTest {
 
   @Test
   public void reloadShouldUpdateGetConfiguration() throws Exception {
-    fileRepo.changeProperty("application.properties", "some.setting", "changedValue");
+    fileRepo.changeProperty(Paths.get("application.properties"), "some.setting", "changedValue");
     source.reload();
 
     assertThat(source.getConfiguration(environment)).containsOnly(MapEntry.entry("some.setting", "changedValue"));

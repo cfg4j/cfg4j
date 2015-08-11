@@ -29,8 +29,8 @@ import org.cfg4j.source.context.propertiesprovider.YamlBasedPropertiesProvider;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
@@ -52,7 +52,7 @@ public class FilesConfigurationSource implements ConfigurationSource {
    */
   public FilesConfigurationSource() {
     this(() -> Collections.singletonList(
-        FileSystems.getDefault().getPath("application.properties")
+        Paths.get("application.properties")
     ));
   }
 
@@ -101,9 +101,9 @@ public class FilesConfigurationSource implements ConfigurationSource {
 
     Path rootPath;
     if (environment.getName().trim().isEmpty()) {
-      rootPath = FileSystems.getDefault().getPath(System.getProperty("user.home"));
+      rootPath = Paths.get(System.getProperty("user.home"));
     } else {
-      rootPath = FileSystems.getDefault().getPath(environment.getName());
+      rootPath = Paths.get(environment.getName());
     }
 
     if (!rootPath.toFile().exists()) {

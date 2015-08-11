@@ -69,8 +69,8 @@ public class GitConfigurationSourceIntegrationTest {
     expectedException.expect(IllegalStateException.class);
 
     getSourceBuilderForRemoteRepoWithDefaults()
-        .withTmpPath("/someNonexistentDir/lkfjalfcz")
-        .withLocalRepositoryPathInTemp("existing-path")
+        .withTmpPath(Paths.get("/someNonexistentDir/lkfjalfcz"))
+        .withTmpRepoPrefix("existing-path")
         .build();
   }
 

@@ -49,7 +49,7 @@ public class FilesConfigurationSourceTest {
 
   @Before
   public void setUp() throws Exception {
-    fileRepo = new TempConfigurationFileRepo("cfg4j-test-repo");
+    fileRepo = new TempConfigurationFileRepo("org.cfg4j-test-repo");
     fileRepo.changeProperty(Paths.get("application.properties"), "some.setting", "masterValue");
     fileRepo.changeProperty(Paths.get("otherConfig.properties"), "otherConfig.setting", "masterValue");
     fileRepo.changeProperty(Paths.get("malformed.properties"), "otherConfig.setting", "\\uzzzzz");

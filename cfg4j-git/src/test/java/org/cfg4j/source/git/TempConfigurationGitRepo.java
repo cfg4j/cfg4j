@@ -21,6 +21,7 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Ref;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
@@ -64,19 +65,6 @@ class TempConfigurationGitRepo extends TempConfigurationFileRepo {
   }
 
   /**
-   * Delete {@code branch}.
-   *
-   * @param branch branch name to delete
-   * @throws GitAPIException when unable to delete branch.
-   */
-  public void deleteBranch(String branch) throws GitAPIException {
-    repo.branchDelete()
-        .setBranchNames(branch)
-        .setForce(true)
-        .call();
-  }
-
-  /**
    * Change the {@code key} property to {@code value} and store it in a {@code propFilePath} properties file. Commits
    * the change.
    *
@@ -87,7 +75,7 @@ class TempConfigurationGitRepo extends TempConfigurationFileRepo {
    * @throws GitAPIException when unable to commit changes
    */
   @Override
-  public void changeProperty(String propFilePath, String key, String value) throws IOException {
+  public void changeProperty(Path propFilePath, String key, String value) throws IOException {
     super.changeProperty(propFilePath, key, value);
     try {
       commitChanges();
@@ -103,12 +91,12 @@ class TempConfigurationGitRepo extends TempConfigurationFileRepo {
    * @throws GitAPIException when unable to commit changes
    */
   @Override
-  public void deleteFile(String filePath) throws IOException {
+  public void deleteFile(Path filePath) throws IOException {
     try {
       super.deleteFile(filePath);
 
       repo.rm()
-          .addFilepattern(filePath)
+          .addFilepattern(filePath.toString())
           .call();
 
       commitChanges();
@@ -119,18 +107,22 @@ class TempConfigurationGitRepo extends TempConfigurationFileRepo {
   }
 
   /**
-   * Remove this repository.
-   *
-   * @throws IOException when unable to remove directory
+   * Remove this repository. Silently fails if repo already removed.
    */
   @Override
-  public void remove() throws IOException {
-    repo.close();
-    super.remove();
+  public void remove() {
+    try {
+      repo.close();
+      super.remove();
+    } catch (IOException e) {
+      // NOP
+    }
   }
 
   private Git createLocalRepo(Path path) throws IOException, GitAPIException {
-    path.toFile().delete();
+    System.out.println(path);
+    Files.delete(path);
+
     return Git.init()
         .setDirectory(path.toFile())
         .call();

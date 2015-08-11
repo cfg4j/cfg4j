@@ -29,8 +29,8 @@ import org.cfg4j.source.context.propertiesprovider.YamlBasedPropertiesProvider;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
@@ -52,7 +52,7 @@ public class ClasspathConfigurationSource implements ConfigurationSource {
    */
   public ClasspathConfigurationSource() {
     this(() -> Collections.singletonList(
-        FileSystems.getDefault().getPath("application.properties")
+        Paths.get("application.properties")
     ));
   }
 
@@ -98,7 +98,7 @@ public class ClasspathConfigurationSource implements ConfigurationSource {
   public Properties getConfiguration(Environment environment) {
     Properties properties = new Properties();
 
-    Path pathPrefix = FileSystems.getDefault().getPath(environment.getName());
+    Path pathPrefix = Paths.get(environment.getName());
 
     URL url = getClass().getClassLoader().getResource(pathPrefix.toString());
     if (url == null) {

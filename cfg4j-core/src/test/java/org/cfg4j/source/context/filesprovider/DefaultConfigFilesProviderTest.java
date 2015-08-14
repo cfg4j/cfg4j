@@ -21,7 +21,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.nio.file.FileSystems;
+import java.nio.file.Paths;
 
 
 @RunWith(MockitoJUnitRunner.class)
@@ -30,6 +30,6 @@ public class DefaultConfigFilesProviderTest {
   @Test
   public void shouldProvideDefaultConfigFile() throws Exception {
     DefaultConfigFilesProvider provider = new DefaultConfigFilesProvider();
-    assertThat(provider.getConfigFiles()).containsExactly(FileSystems.getDefault().getPath("application.properties"));
+    assertThat(provider.getConfigFiles()).containsExactly(Paths.get("application.properties"));
   }
 }

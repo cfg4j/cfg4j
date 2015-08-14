@@ -57,7 +57,7 @@ public class PeriodicalReloadStrategyTest {
     strategy.register(reloadable);
     Thread.sleep(20);
     strategy.deregister(reloadable);
-    verify(reloadable, atLeast(4)).reload();
+    verify(reloadable, atLeast(3)).reload();
   }
 
   @Test
@@ -66,8 +66,8 @@ public class PeriodicalReloadStrategyTest {
     strategy.register(reloadable);
     strategy.register(reloadable2);
     Thread.sleep(20);
-    verify(reloadable, atLeast(4)).reload();
-    verify(reloadable2, atLeast(4)).reload();
+    verify(reloadable, atLeast(3)).reload();
+    verify(reloadable2, atLeast(3)).reload();
   }
 
   @Test
@@ -79,6 +79,6 @@ public class PeriodicalReloadStrategyTest {
     strategy.deregister(reloadable);
     Thread.sleep(20);
     strategy.deregister(reloadable2);
-    verify(reloadable2, atLeast(6)).reload();
+    verify(reloadable2, atLeast(5)).reload();
   }
 }

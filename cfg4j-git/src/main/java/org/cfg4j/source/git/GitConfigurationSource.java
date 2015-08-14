@@ -34,10 +34,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Properties;
@@ -64,12 +64,12 @@ class GitConfigurationSource implements ConfigurationSource, Closeable {
    * Note: use {@link GitConfigurationSourceBuilder} for building instances of this class.
    * <p>
    * Read configuration from the remote GIT repository residing at {@code repositoryURI}. Keeps a local
-   * clone of the repository in the {@code localRepositoryPathInTemp} directory under {@code tmpPath} path.
+   * clone of the repository in the {@code tmpRepoPrefix} directory under {@code tmpPath} path.
    * Uses provided {@code branchResolver} and {@code pathResolver} for branch and path resolution.
    *
    * @param repositoryURI              URI to the remote git repository
    * @param tmpPath                    path to the tmp directory
-   * @param localRepositoryPathInTemp  name of the local directory keeping the repository clone
+   * @param tmpRepoPrefix              prefix for the name of the local directory keeping the repository clone
    * @param branchResolver             {@link BranchResolver} used for extracting git branch from an {@link Environment}
    * @param pathResolver               {@link PathResolver} used for extracting git path from an {@link Environment}
    * @param configFilesProvider        {@link ConfigFilesProvider} used for determining which files in repository should be read
@@ -78,7 +78,7 @@ class GitConfigurationSource implements ConfigurationSource, Closeable {
    * @throws IllegalStateException        when unable to create directories for local repo clone
    * @throws SourceCommunicationException when unable to clone repository
    */
-  GitConfigurationSource(String repositoryURI, String tmpPath, String localRepositoryPathInTemp, BranchResolver branchResolver,
+  GitConfigurationSource(String repositoryURI, Path tmpPath, String tmpRepoPrefix, BranchResolver branchResolver,
                          PathResolver pathResolver, ConfigFilesProvider configFilesProvider,
                          PropertiesProviderSelector propertiesProviderSelector) {
     this.branchResolver = requireNonNull(branchResolver);
@@ -86,19 +86,17 @@ class GitConfigurationSource implements ConfigurationSource, Closeable {
     this.configFilesProvider = requireNonNull(configFilesProvider);
     this.propertiesProviderSelector = requireNonNull(propertiesProviderSelector);
     requireNonNull(tmpPath);
-    requireNonNull(localRepositoryPathInTemp);
+    requireNonNull(tmpRepoPrefix);
     requireNonNull(repositoryURI);
 
     LOG.info("Initializing " + GitConfigurationSource.class + " pointing to " + repositoryURI);
 
     try {
-      clonedRepoPath = File.createTempFile(localRepositoryPathInTemp, "", new File(tmpPath)).toPath();
+      clonedRepoPath = Files.createTempDirectory(tmpPath, tmpRepoPrefix);
       // This folder can't exist or JGit will throw NPE on clone
-      if (!clonedRepoPath.toFile().delete()) {
-        throw new IllegalStateException("Unable to remove temp directory for local clone: " + localRepositoryPathInTemp);
-      }
+      Files.delete(clonedRepoPath);
     } catch (IOException e) {
-      throw new IllegalStateException("Unable to create local clone directory: " + localRepositoryPathInTemp, e);
+      throw new IllegalStateException("Unable to create local clone directory: " + tmpRepoPrefix, e);
     }
 
     try {
@@ -153,7 +151,7 @@ class GitConfigurationSource implements ConfigurationSource, Closeable {
   public void close() throws IOException {
     LOG.debug("Closing local repository: " + clonedRepoPath);
     clonedRepo.close();
-    new FileUtils().deleteDir(clonedRepoPath.toFile());
+    new FileUtils().deleteDir(clonedRepoPath);
   }
 
   private void checkoutToBranch(String branch) throws GitAPIException {

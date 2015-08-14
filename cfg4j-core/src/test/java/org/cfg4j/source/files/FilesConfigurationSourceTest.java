@@ -31,8 +31,7 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -46,20 +45,17 @@ public class FilesConfigurationSourceTest {
   private TempConfigurationFileRepo fileRepo;
   private ConfigFilesProvider configFilesProvider;
   private FilesConfigurationSource source;
-  private FileSystem fileSystem;
   private Environment environment;
 
   @Before
   public void setUp() throws Exception {
-    fileRepo = new TempConfigurationFileRepo("cfg4j-test-repo");
-    fileRepo.changeProperty("application.properties", "some.setting", "masterValue");
-    fileRepo.changeProperty("otherConfig.properties", "otherConfig.setting", "masterValue");
-    fileRepo.changeProperty("malformed.properties", "otherConfig.setting", "\\uzzzzz");
-    fileRepo.changeProperty("otherApplicationConfigs/application.properties", "some.setting", "otherAppSetting");
+    fileRepo = new TempConfigurationFileRepo("org.cfg4j-test-repo");
+    fileRepo.changeProperty(Paths.get("application.properties"), "some.setting", "masterValue");
+    fileRepo.changeProperty(Paths.get("otherConfig.properties"), "otherConfig.setting", "masterValue");
+    fileRepo.changeProperty(Paths.get("malformed.properties"), "otherConfig.setting", "\\uzzzzz");
+    fileRepo.changeProperty(Paths.get("otherApplicationConfigs/application.properties"), "some.setting", "otherAppSetting");
 
-    fileSystem = FileSystems.getDefault();
-
-    environment = new ImmutableEnvironment(fileRepo.getURI());
+    environment = new ImmutableEnvironment(fileRepo.dirPath.toString());
 
     source = new FilesConfigurationSource();
   }
@@ -76,13 +72,13 @@ public class FilesConfigurationSourceTest {
 
   @Test
   public void getConfigurationShouldReadFromHomeForDefaultEnvironment() throws Exception {
-    System.setProperty("user.home", fileRepo.getURI() + "/otherApplicationConfigs");
+    System.setProperty("user.home", fileRepo.dirPath.resolve("otherApplicationConfigs").toString());
     assertThat(source.getConfiguration(new DefaultEnvironment())).containsOnly(MapEntry.entry("some.setting", "otherAppSetting"));
   }
 
   @Test
   public void getConfigurationShouldReadFromGivenPath() throws Exception {
-    Environment environment = new ImmutableEnvironment(fileRepo.getURI() + "/otherApplicationConfigs/");
+    Environment environment = new ImmutableEnvironment(fileRepo.dirPath.resolve("otherApplicationConfigs").toString());
 
     assertThat(source.getConfiguration(environment)).containsOnly(MapEntry.entry("some.setting", "otherAppSetting"));
   }
@@ -90,8 +86,8 @@ public class FilesConfigurationSourceTest {
   @Test
   public void getConfigurationShouldReadFromGivenFiles() throws Exception {
     configFilesProvider = () -> Arrays.asList(
-        fileSystem.getPath("application.properties"),
-        fileSystem.getPath("otherConfig.properties")
+        Paths.get("application.properties"),
+        Paths.get("otherConfig.properties")
     );
 
     source = new FilesConfigurationSource(configFilesProvider);
@@ -106,7 +102,7 @@ public class FilesConfigurationSourceTest {
 
   @Test
   public void getConfigurationShouldThrowOnMissingConfigFile() throws Exception {
-    fileRepo.deleteFile("application.properties");
+    fileRepo.deleteFile(Paths.get("application.properties"));
 
     expectedException.expect(IllegalStateException.class);
     source.getConfiguration(environment);
@@ -115,7 +111,7 @@ public class FilesConfigurationSourceTest {
   @Test
   public void getConfigurationShouldThrowOnMalformedConfigFile() throws Exception {
     configFilesProvider = () -> Collections.singletonList(
-        fileSystem.getPath("malformed.properties")
+        Paths.get("malformed.properties")
     );
 
     source = new FilesConfigurationSource(configFilesProvider);
@@ -126,7 +122,7 @@ public class FilesConfigurationSourceTest {
 
   @Test
   public void reloadShouldUpdateGetConfiguration() throws Exception {
-    fileRepo.changeProperty("application.properties", "some.setting", "changedValue");
+    fileRepo.changeProperty(Paths.get("application.properties"), "some.setting", "changedValue");
     source.reload();
 
     assertThat(source.getConfiguration(environment)).containsOnly(MapEntry.entry("some.setting", "changedValue"));

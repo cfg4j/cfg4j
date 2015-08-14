@@ -15,8 +15,8 @@
  */
 package org.cfg4j.source.context.filesprovider;
 
-import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
 
 /**
@@ -26,7 +26,7 @@ public class DefaultConfigFilesProvider implements ConfigFilesProvider {
 
   @Override
   public Iterable<Path> getConfigFiles() {
-    return Collections.singletonList(FileSystems.getDefault().getPath("application.properties"));
+    return Collections.singletonList(Paths.get("application.properties"));
   }
 
   @Override

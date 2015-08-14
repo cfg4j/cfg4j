@@ -30,8 +30,7 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -45,12 +44,10 @@ public class ClasspathConfigurationSourceTest {
   private TempConfigurationClasspathRepo classpathRepo;
   private ConfigFilesProvider configFilesProvider;
   private ClasspathConfigurationSource source;
-  private FileSystem fileSystem;
 
   @Before
   public void setUp() throws Exception {
     classpathRepo = new TempConfigurationClasspathRepo();
-    fileSystem = FileSystems.getDefault();
 
     source = new ClasspathConfigurationSource();
   }
@@ -73,8 +70,8 @@ public class ClasspathConfigurationSourceTest {
   @Test
   public void getConfigurationShouldReadFromGivenFiles() throws Exception {
     configFilesProvider = () -> Arrays.asList(
-        fileSystem.getPath("application.properties"),
-        fileSystem.getPath("otherConfig.properties")
+        Paths.get("application.properties"),
+        Paths.get("otherConfig.properties")
     );
 
     source = new ClasspathConfigurationSource(configFilesProvider);
@@ -90,7 +87,7 @@ public class ClasspathConfigurationSourceTest {
   @Test
   public void getConfigurationShouldThrowOnMissingConfigFile() throws Exception {
     configFilesProvider = () -> Collections.singletonList(
-        fileSystem.getPath("nonexistent.properties")
+        Paths.get("nonexistent.properties")
     );
 
     source = new ClasspathConfigurationSource(configFilesProvider);
@@ -102,7 +99,7 @@ public class ClasspathConfigurationSourceTest {
   @Test
   public void getConfigurationShouldThrowOnMalformedConfigFile() throws Exception {
     configFilesProvider = () -> Collections.singletonList(
-        fileSystem.getPath("malformed.properties")
+        Paths.get("malformed.properties")
     );
 
     source = new ClasspathConfigurationSource(configFilesProvider);

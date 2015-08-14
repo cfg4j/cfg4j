@@ -17,7 +17,6 @@ package org.cfg4j.source.files;
 
 import org.cfg4j.utils.FileUtils;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -29,7 +28,7 @@ import java.nio.file.Path;
  */
 public class TempConfigurationFileRepo {
 
-  protected Path dirPath;
+  public Path dirPath;
 
   /**
    * Create temporary, local file repository. When you're done using it remove it by invoking {@link #remove()}
@@ -42,15 +41,6 @@ public class TempConfigurationFileRepo {
   }
 
   /**
-   * Get absolute path to this repository.
-   *
-   * @return path to the repository
-   */
-  public String getURI() {
-    return dirPath.toAbsolutePath().toString();
-  }
-
-  /**
    * Change the {@code key} property to {@code value} and store it in a {@code propFilePath} properties file
    *
    * @param propFilePath relative path to the properties file in this repository
@@ -58,14 +48,9 @@ public class TempConfigurationFileRepo {
    * @param value        property value
    * @throws IOException     when unable to modify properties file
    */
-  public void changeProperty(String propFilePath, String key, String value) throws IOException {
-    createRequiredDirsForFile(propFilePath);
+  public void changeProperty(Path propFilePath, String key, String value) throws IOException {
+    Files.createDirectories(dirPath.resolve(propFilePath).getParent());
     writePropertyToFile(propFilePath, key, value);
-  }
-
-  private void createRequiredDirsForFile(String propFilePath) {
-    int lastSlashPos = propFilePath.lastIndexOf("/") == -1 ? 0 : propFilePath.lastIndexOf("/");
-    new File(getURI() + "/" + propFilePath.substring(0, lastSlashPos)).mkdirs();
   }
 
   /**
@@ -73,10 +58,8 @@ public class TempConfigurationFileRepo {
    *
    * @param filePath relative file path to delete
    */
-  public void deleteFile(String filePath) throws IOException {
-    if (!new File(dirPath + "/" + filePath).delete()) {
-      throw new IllegalStateException("Unable to delete file: " + filePath);
-    }
+  public void deleteFile(Path filePath) throws IOException {
+    new FileUtils().deleteDir(dirPath.resolve(filePath));
   }
 
   /**
@@ -85,11 +68,11 @@ public class TempConfigurationFileRepo {
    * @throws IOException when unable to remove directory
    */
   public void remove() throws IOException {
-    new FileUtils().deleteDir(new File(getURI()));
+    new FileUtils().deleteDir(dirPath);
   }
 
-  private void writePropertyToFile(String propFilePath, String key, String value) throws IOException {
-    OutputStream out = new FileOutputStream(getURI() + "/" + propFilePath);
+  private void writePropertyToFile(Path propFilePath, String key, String value) throws IOException {
+    OutputStream out = new FileOutputStream(dirPath.resolve(propFilePath).toFile());
     out.write((key + "=" + value).getBytes());
     out.close();
   }

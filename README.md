@@ -16,7 +16,7 @@
 * **Powerful** configuration mechanisms (interface **binding**, **multi-source** support with **fallback** strategy, **merging**, ...)
 * **Distributed-environment friendly** ( **caching**, support for **multiple environments** [test, preprod, prod], ...)
 * Reads configuration from: **[Consul](https://github.com/cfg4j/cfg4j-sample-apps/tree/master/consul-bind),
- [Git repos](https://github.com/cfg4j/cfg4j-sample-apps/tree/master/git-bind),
+ [Git repos (YAML and/or properties)](https://github.com/cfg4j/cfg4j-sample-apps/tree/master/git-bind),
  [Files](https://github.com/cfg4j/cfg4j-sample-apps/tree/master/files-bind),
  [Classpath](https://github.com/cfg4j/cfg4j-sample-apps/tree/master/classpath-bind), ...**
 * Seamless integration with **[Spring](https://spring.io/)**, **[Guice](https://github.com/google/guice)** and others

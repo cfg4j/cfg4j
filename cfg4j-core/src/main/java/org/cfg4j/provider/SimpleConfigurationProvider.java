@@ -87,13 +87,13 @@ class SimpleConfigurationProvider implements ConfigurationProvider {
   private String getProperty(String key) {
     try {
 
-      String property = configurationSource.getConfiguration(environment).getProperty(key);
+      Object property = configurationSource.getConfiguration(environment).get(key);
 
       if (property == null) {
         throw new NoSuchElementException("No configuration with key: " + key);
       }
 
-      return property;
+      return property.toString();
 
     } catch (IllegalStateException e) {
       throw new IllegalStateException("Couldn't fetch configuration from configuration source for key: " + key, e);

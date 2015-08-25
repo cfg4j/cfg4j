@@ -18,6 +18,7 @@ package org.cfg4j.provider;
 import static java.util.Objects.requireNonNull;
 
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.NoSuchElementException;
@@ -44,14 +45,16 @@ class BindInvocationHandler implements InvocationHandler {
   }
 
   /**
-   * @throws NoSuchElementException   when the provided {@code key} doesn't have a corresponding config value
-   * @throws IllegalArgumentException when property can't be converted to {@code type}
-   * @throws IllegalStateException    when provider is unable to fetch configuration value for the given {@code key}
+   * @throws NoSuchElementException    when the provided {@code key} doesn't have a corresponding config value
+   * @throws IllegalArgumentException  when property can't be converted to {@code type}
+   * @throws IllegalStateException     when provider is unable to fetch configuration value for the given {@code key}
+   * @throws InvocationTargetException when invoked an Object-level (e.g. {@link Object#hashCode()}) method and it throws an exception.
+   * @throws IllegalAccessException    when invoked an Object-level (e.g. {@link Object#hashCode()}) method and it is inaccessible.
    */
   @Override
-  public Object invoke(Object proxy, Method method, Object[] args) {
+  public Object invoke(Object proxy, Method method, Object[] args) throws InvocationTargetException, IllegalAccessException {
     if (isObjectMethod(method)) {
-      return null;
+      return method.invoke(this, args);
     }
 
     Type returnType = method.getGenericReturnType();

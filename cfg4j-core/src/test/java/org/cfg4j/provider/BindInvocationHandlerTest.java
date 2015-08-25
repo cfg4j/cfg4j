@@ -104,85 +104,29 @@ public class BindInvocationHandlerTest {
     handler.invoke(this, this.getClass().getMethod("stringMethod"), new Object[]{});
   }
 
-
   @Test
-  public void shouldNotPassCallToGetClass() throws Exception {
-    when(configurationProvider.getProperty(eq("getClass"), any(GenericTypeInterface.class))).thenThrow(new NoSuchElementException());
-    BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
-
-    handler.invoke(this, this.getClass().getMethod("getClass"), new Object[]{});
-  }
-
-  @Test
-  public void shouldNotPassCallToHashCode() throws Exception {
-    when(configurationProvider.getProperty(eq("hashCode"), any(GenericTypeInterface.class))).thenThrow(new NoSuchElementException());
-    BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
-
-    handler.invoke(this, this.getClass().getMethod("hashCode"), new Object[]{});
-  }
-
-  @Test
-  public void shouldNotPassCallToEquals() throws Exception {
-    when(configurationProvider.getProperty(eq("equals"), any(GenericTypeInterface.class))).thenThrow(new NoSuchElementException());
-    BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
-
-    handler.invoke(this, this.getClass().getMethod("equals", Object.class), new Object[]{});
-  }
-
-  @Test
-  public void shouldNotPassCallToToString() throws Exception {
-    when(configurationProvider.getProperty(eq("toString"), any(GenericTypeInterface.class))).thenThrow(new NoSuchElementException());
-    BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
-
-    handler.invoke(this, this.getClass().getMethod("toString"), new Object[]{});
-  }
-
-  @Test
-  public void shouldNotPassCallToNotify() throws Exception {
-    when(configurationProvider.getProperty(eq("notify"), any(GenericTypeInterface.class))).thenThrow(new NoSuchElementException());
-    BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
-
-    handler.invoke(this, this.getClass().getMethod("notify"), new Object[]{});
-  }
-
-  @Test
-  public void shouldNotPassCallToNotifyAll() throws Exception {
-    when(configurationProvider.getProperty(eq("notifyAll"), any(GenericTypeInterface.class))).thenThrow(new NoSuchElementException());
-    BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
-
-    handler.invoke(this, this.getClass().getMethod("notifyAll"), new Object[]{});
-  }
-
-  @Test
-  public void shouldNotPassCallToWait() throws Exception {
-    when(configurationProvider.getProperty(eq("wait"), any(GenericTypeInterface.class))).thenThrow(new NoSuchElementException());
-    BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
-
-    handler.invoke(this, this.getClass().getMethod("wait"), new Object[]{});
-  }
-
-  @Test
-  public void shouldNotPassCallToWait2() throws Exception {
-    when(configurationProvider.getProperty(eq("wait"), any(GenericTypeInterface.class))).thenThrow(new NoSuchElementException());
-    BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
-
-    handler.invoke(this, this.getClass().getMethod("wait", long.class), new Object[]{});
-  }
-
-  @Test
-  public void shouldNotPassCallToWait3() throws Exception {
-    when(configurationProvider.getProperty(eq("wait"), any(GenericTypeInterface.class))).thenThrow(new NoSuchElementException());
-    BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
-
-    handler.invoke(this, this.getClass().getMethod("wait", long.class, int.class), new Object[]{});
-  }
-
-  @Test
-  public void shouldPassCallToNonObjectMethodWithCollidingName() throws Exception {
+  public void shouldPassCallToNonObjectLevelMethodWithCollidingName() throws Exception {
     when(configurationProvider.getProperty(eq("equals"), any(GenericTypeInterface.class))).thenReturn(true);
     BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
 
     assertThat((boolean) handler.invoke(this, this.getClass().getMethod("equals", String.class), new Object[]{})).isTrue();
+  }
+
+  @Test
+  public void shouldPassCallToNonObjectLevelMethodWithCollidingNameAndDifferentNumberOfParams() throws Exception {
+    when(configurationProvider.getProperty(eq("equals"), any(GenericTypeInterface.class))).thenReturn(true);
+    BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
+
+    assertThat((boolean) handler.invoke(this, this.getClass().getMethod("equals", String.class, String.class), new Object[]{})).isTrue();
+  }
+
+  @Test
+  public void shouldInvokeObjectLevelMethod() throws Exception {
+    when(configurationProvider.getProperty(eq("hashCode"), any(GenericTypeInterface.class))).thenThrow(new NoSuchElementException());
+    BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
+
+    int hashCode = (int) handler.invoke(this, this.getClass().getMethod("hashCode"), new Object[]{});
+    assertThat(hashCode).isEqualTo(handler.hashCode());
   }
 
   // For "mocking" java.lang.reflect.Method
@@ -196,6 +140,10 @@ public class BindInvocationHandlerTest {
 
   // Name collision with {@link Object#equals(Object)} (but with different parameters)
   public boolean equals(String param) {
+    return true;
+  }
+
+  public boolean equals(String param1, String param2) {
     return true;
   }
 }

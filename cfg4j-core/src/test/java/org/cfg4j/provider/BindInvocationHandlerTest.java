@@ -78,7 +78,7 @@ public class BindInvocationHandlerTest {
   }
 
   @Test
-  public void shouldShouldPassNoSuchElementException() throws Exception {
+  public void shouldPassNoSuchElementException() throws Exception {
     when(configurationProvider.getProperty(anyString(), any(GenericTypeInterface.class))).thenThrow(new NoSuchElementException());
     BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
 
@@ -87,7 +87,7 @@ public class BindInvocationHandlerTest {
   }
 
   @Test
-  public void shouldShouldPassIllegalArgumentException() throws Exception {
+  public void shouldPassIllegalArgumentException() throws Exception {
     when(configurationProvider.getProperty(anyString(), any(GenericTypeInterface.class))).thenThrow(new IllegalArgumentException());
     BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
 
@@ -96,7 +96,7 @@ public class BindInvocationHandlerTest {
   }
 
   @Test
-  public void shouldShouldIllegalStateException() throws Exception {
+  public void shouldPassIllegalStateException() throws Exception {
     when(configurationProvider.getProperty(anyString(), any(GenericTypeInterface.class))).thenThrow(new IllegalStateException());
     BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
 

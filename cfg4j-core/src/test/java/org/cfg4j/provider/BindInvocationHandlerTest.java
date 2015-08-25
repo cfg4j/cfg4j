@@ -126,15 +126,7 @@ public class BindInvocationHandlerTest {
     when(configurationProvider.getProperty(eq("equals"), any(GenericTypeInterface.class))).thenThrow(new NoSuchElementException());
     BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
 
-    handler.invoke(this, this.getClass().getMethod("equals"), new Object[]{});
-  }
-
-  @Test
-  public void shouldNotPassCallToClone() throws Exception {
-    when(configurationProvider.getProperty(eq("clone"), any(GenericTypeInterface.class))).thenThrow(new NoSuchElementException());
-    BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
-
-    handler.invoke(this, this.getClass().getMethod("clone"), new Object[]{});
+    handler.invoke(this, this.getClass().getMethod("equals", Object.class), new Object[]{});
   }
 
   @Test
@@ -170,14 +162,28 @@ public class BindInvocationHandlerTest {
   }
 
   @Test
-  public void shouldNotPassCallToFinalize() throws Exception {
-    when(configurationProvider.getProperty(eq("finalize"), any(GenericTypeInterface.class))).thenThrow(new NoSuchElementException());
+  public void shouldNotPassCallToWait2() throws Exception {
+    when(configurationProvider.getProperty(eq("wait"), any(GenericTypeInterface.class))).thenThrow(new NoSuchElementException());
     BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
 
-    handler.invoke(this, this.getClass().getMethod("finalize"), new Object[]{});
+    handler.invoke(this, this.getClass().getMethod("wait", long.class), new Object[]{});
   }
 
+  @Test
+  public void shouldNotPassCallToWait3() throws Exception {
+    when(configurationProvider.getProperty(eq("wait"), any(GenericTypeInterface.class))).thenThrow(new NoSuchElementException());
+    BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
 
+    handler.invoke(this, this.getClass().getMethod("wait", long.class, int.class), new Object[]{});
+  }
+
+  @Test
+  public void shouldPassCallToNonObjectMethodWithCollidingName() throws Exception {
+    when(configurationProvider.getProperty(eq("equals"), any(GenericTypeInterface.class))).thenReturn(true);
+    BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
+
+    assertThat((boolean) handler.invoke(this, this.getClass().getMethod("equals", String.class), new Object[]{})).isTrue();
+  }
 
   // For "mocking" java.lang.reflect.Method
   public String stringMethod() {
@@ -186,5 +192,10 @@ public class BindInvocationHandlerTest {
 
   public Map<List<Integer>, Boolean> mapMethod() {
     return null;
+  }
+
+  // Name collision with {@link Object#equals(Object)} (but with different parameters)
+  public boolean equals(String param) {
+    return true;
   }
 }

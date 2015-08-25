@@ -50,7 +50,42 @@ class BindInvocationHandler implements InvocationHandler {
    */
   @Override
   public Object invoke(Object proxy, Method method, Object[] args) {
+    if (isObjectMethod(method)) {
+      return null;
+    }
+
     Type returnType = method.getGenericReturnType();
     return simpleConfigurationProvider.getProperty(prefix + (prefix.isEmpty() ? "" : ".") + method.getName(), () -> returnType);
   }
+
+  /**
+   * Check if method is defined by Object class (e.g. {@link Object#hashCode()}.
+   */
+  private boolean isObjectMethod(Method method) {
+    for (Method objectMethod : Object.class.getMethods()) {
+      if (method.getName().equals(objectMethod.getName())) {
+        if (equalParamTypes(objectMethod.getParameterTypes(), method.getParameterTypes())) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * Check if two arrays of parameter types are equal.
+   */
+  private boolean equalParamTypes(Class<?>[] params1, Class<?>[] params2) {
+    if (params1.length == params2.length) {
+      for (int i = 0; i < params1.length; i++) {
+        if (params1[i] != params2[i]) {
+          return false;
+        }
+      }
+      return true;
+    }
+    return false;
+  }
+
 }

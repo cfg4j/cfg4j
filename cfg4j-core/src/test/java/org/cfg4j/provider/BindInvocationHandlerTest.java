@@ -104,6 +104,81 @@ public class BindInvocationHandlerTest {
     handler.invoke(this, this.getClass().getMethod("stringMethod"), new Object[]{});
   }
 
+
+  @Test
+  public void shouldNotPassCallToGetClass() throws Exception {
+    when(configurationProvider.getProperty(eq("getClass"), any(GenericTypeInterface.class))).thenThrow(new NoSuchElementException());
+    BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
+
+    handler.invoke(this, this.getClass().getMethod("getClass"), new Object[]{});
+  }
+
+  @Test
+  public void shouldNotPassCallToHashCode() throws Exception {
+    when(configurationProvider.getProperty(eq("hashCode"), any(GenericTypeInterface.class))).thenThrow(new NoSuchElementException());
+    BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
+
+    handler.invoke(this, this.getClass().getMethod("hashCode"), new Object[]{});
+  }
+
+  @Test
+  public void shouldNotPassCallToEquals() throws Exception {
+    when(configurationProvider.getProperty(eq("equals"), any(GenericTypeInterface.class))).thenThrow(new NoSuchElementException());
+    BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
+
+    handler.invoke(this, this.getClass().getMethod("equals"), new Object[]{});
+  }
+
+  @Test
+  public void shouldNotPassCallToClone() throws Exception {
+    when(configurationProvider.getProperty(eq("clone"), any(GenericTypeInterface.class))).thenThrow(new NoSuchElementException());
+    BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
+
+    handler.invoke(this, this.getClass().getMethod("clone"), new Object[]{});
+  }
+
+  @Test
+  public void shouldNotPassCallToToString() throws Exception {
+    when(configurationProvider.getProperty(eq("toString"), any(GenericTypeInterface.class))).thenThrow(new NoSuchElementException());
+    BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
+
+    handler.invoke(this, this.getClass().getMethod("toString"), new Object[]{});
+  }
+
+  @Test
+  public void shouldNotPassCallToNotify() throws Exception {
+    when(configurationProvider.getProperty(eq("notify"), any(GenericTypeInterface.class))).thenThrow(new NoSuchElementException());
+    BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
+
+    handler.invoke(this, this.getClass().getMethod("notify"), new Object[]{});
+  }
+
+  @Test
+  public void shouldNotPassCallToNotifyAll() throws Exception {
+    when(configurationProvider.getProperty(eq("notifyAll"), any(GenericTypeInterface.class))).thenThrow(new NoSuchElementException());
+    BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
+
+    handler.invoke(this, this.getClass().getMethod("notifyAll"), new Object[]{});
+  }
+
+  @Test
+  public void shouldNotPassCallToWait() throws Exception {
+    when(configurationProvider.getProperty(eq("wait"), any(GenericTypeInterface.class))).thenThrow(new NoSuchElementException());
+    BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
+
+    handler.invoke(this, this.getClass().getMethod("wait"), new Object[]{});
+  }
+
+  @Test
+  public void shouldNotPassCallToFinalize() throws Exception {
+    when(configurationProvider.getProperty(eq("finalize"), any(GenericTypeInterface.class))).thenThrow(new NoSuchElementException());
+    BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
+
+    handler.invoke(this, this.getClass().getMethod("finalize"), new Object[]{});
+  }
+
+
+
   // For "mocking" java.lang.reflect.Method
   public String stringMethod() {
     return null;

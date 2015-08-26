@@ -19,8 +19,12 @@
  [Git repos (YAML and/or properties)](https://github.com/cfg4j/cfg4j-sample-apps/tree/master/git-bind),
  [Files](https://github.com/cfg4j/cfg4j-sample-apps/tree/master/files-bind),
  [Classpath](https://github.com/cfg4j/cfg4j-sample-apps/tree/master/classpath-bind), ...**
-* Seamless integration with **[Spring](https://spring.io/)**, **[Guice](https://github.com/google/guice)** and others
-* Modern design (extensible, heavily tested, well [documented](http://cfg4j.org))
+* Modern design
+  * Seamless integration with DI containers: **[Spring](https://spring.io/)**, **[Guice](https://github.com/google/guice)** and others
+  * Exposes performance metrics by integration with **[Metrics library](http://metrics.dropwizard.io)**
+  * Extensible (see the list of **plugins** below)
+  * Heavily tested (**99% code coverage**)
+  * Well [documented](http://cfg4j.org)
 
 # Usage
 

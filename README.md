@@ -25,6 +25,7 @@
   * Extensible (see the list of **plugins** below)
   * Heavily tested (**99% code coverage**)
   * Well [documented](http://cfg4j.org)
+  * Java 8+ required
 
 # Usage
 

@@ -16,7 +16,6 @@
 
 package org.cfg4j.source.reload.strategy;
 
-import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -49,36 +48,5 @@ public class PeriodicalReloadStrategyTest {
     strategy.register(reloadable);
     strategy.deregister(reloadable);
     verify(reloadable, times(1)).reload();
-  }
-
-  @Test
-  public void shouldReloadPeriodically() throws Exception {
-    PeriodicalReloadStrategy strategy = new PeriodicalReloadStrategy(5, TimeUnit.MILLISECONDS);
-    strategy.register(reloadable);
-    Thread.sleep(20);
-    strategy.deregister(reloadable);
-    verify(reloadable, atLeast(3)).reload();
-  }
-
-  @Test
-  public void shouldSupportMultipleResources() throws Exception {
-    PeriodicalReloadStrategy strategy = new PeriodicalReloadStrategy(5, TimeUnit.MILLISECONDS);
-    strategy.register(reloadable);
-    strategy.register(reloadable2);
-    Thread.sleep(20);
-    verify(reloadable, atLeast(3)).reload();
-    verify(reloadable2, atLeast(3)).reload();
-  }
-
-  @Test
-  public void shouldDeregister() throws Exception {
-    PeriodicalReloadStrategy strategy = new PeriodicalReloadStrategy(5, TimeUnit.MILLISECONDS);
-    strategy.register(reloadable);
-    strategy.register(reloadable2);
-    Thread.sleep(20);
-    strategy.deregister(reloadable);
-    Thread.sleep(20);
-    strategy.deregister(reloadable2);
-    verify(reloadable2, atLeast(5)).reload();
   }
 }

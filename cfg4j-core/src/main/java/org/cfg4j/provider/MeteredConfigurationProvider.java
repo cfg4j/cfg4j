@@ -37,8 +37,6 @@ import java.util.Properties;
 class MeteredConfigurationProvider implements ConfigurationProvider {
 
   private final SimpleConfigurationProvider delegate;
-  private final MetricRegistry metricRegistry;
-  private final String metricPrefix;
 
   private final Timer allConfigurationAsPropertiesTimer;
   private final Timer getPropertyTimer;
@@ -47,21 +45,21 @@ class MeteredConfigurationProvider implements ConfigurationProvider {
 
   /**
    * Create decorator for given {@code delegate} and using {@code metricRegistry} for constructing metrics. Each metric will
-   * be prefixed with {@code metricPrefix} and a following dot.
+   * be prefixed with {@code metricPrefix}
    *
    * @param metricRegistry metric registry to hold execution metrics
    * @param metricPrefix   prefix for metric names (trailing dot will be added to it)
    * @param delegate       configuration provider to monitor
    */
   MeteredConfigurationProvider(MetricRegistry metricRegistry, String metricPrefix, SimpleConfigurationProvider delegate) {
-    this.metricRegistry = requireNonNull(metricRegistry);
+    requireNonNull(metricRegistry);
+    requireNonNull(metricPrefix);
     this.delegate = requireNonNull(delegate);
-    this.metricPrefix = metricPrefix;
 
-    allConfigurationAsPropertiesTimer = metricRegistry.timer(metricPrefix + ".allConfigurationAsProperties");
-    getPropertyTimer = metricRegistry.timer(metricPrefix + ".getProperty");
-    getPropertyGenericTimer = metricRegistry.timer(metricPrefix + ".getPropertyGeneric");
-    bindTimer = metricRegistry.timer(metricPrefix + ".bind");
+    allConfigurationAsPropertiesTimer = metricRegistry.timer(metricPrefix + "allConfigurationAsProperties");
+    getPropertyTimer = metricRegistry.timer(metricPrefix + "getProperty");
+    getPropertyGenericTimer = metricRegistry.timer(metricPrefix + "getPropertyGeneric");
+    bindTimer = metricRegistry.timer(metricPrefix + "bind");
   }
 
   @Override

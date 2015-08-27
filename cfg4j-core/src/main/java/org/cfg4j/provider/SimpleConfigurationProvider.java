@@ -25,6 +25,7 @@ import org.cfg4j.source.context.environment.Environment;
 import org.cfg4j.source.context.environment.MissingEnvironmentException;
 import org.cfg4j.validator.BindingValidator;
 
+import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.NoSuchElementException;
 import java.util.Properties;
@@ -102,8 +103,27 @@ class SimpleConfigurationProvider implements ConfigurationProvider {
 
   @Override
   public <T> T bind(String prefix, Class<T> type) {
+    return bind(this, prefix, type);
+  }
+
+  /**
+   * Create an instance of a given {@code type} that will be bound to the {@code configurationProvider}. Each time configuration changes the
+   * bound object will be updated with the new values. Use {@code prefix} to specify the relative path to configuration
+   * values. Please note that each method of returned object can throw runtime exceptions. For details see javadoc for
+   * {@link BindInvocationHandler#invoke(Object, Method, Object[])}.
+   *
+   * @param <T>    interface describing configuration object to bind
+   * @param prefix relative path to configuration values (e.g. "myContext" will map settings "myContext.someSetting",
+   *               "myContext.someOtherSetting")
+   * @param type   {@link Class} for {@code <T>}
+   * @return configuration object bound to this {@link ConfigurationProvider}
+   * @throws NoSuchElementException   when the provided {@code key} doesn't have a corresponding config value
+   * @throws IllegalArgumentException when property can't be coverted to {@code type}
+   * @throws IllegalStateException    when provider is unable to fetch configuration value for the given {@code key}
+   */
+  <T> T bind(ConfigurationProvider configurationProvider, String prefix, Class<T> type) {
     @SuppressWarnings("unchecked")
-    T proxy = (T) Proxy.newProxyInstance(type.getClassLoader(), new Class<?>[]{type}, new BindInvocationHandler(this, prefix));
+    T proxy = (T) Proxy.newProxyInstance(type.getClassLoader(), new Class<?>[]{type}, new BindInvocationHandler(configurationProvider, prefix));
 
     new BindingValidator().validate(proxy, type);
 

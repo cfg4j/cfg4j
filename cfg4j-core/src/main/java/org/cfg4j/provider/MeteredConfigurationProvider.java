@@ -27,10 +27,10 @@ import java.util.Properties;
  * Decorator for {@link SimpleConfigurationProvider} that emits execution metrics. It emits the following metrics (each of those prefixed
  * with a string passed at construction time):
  * <ul>
- * <li>.allConfigurationAsProperties</li>
- * <li>.getProperty</li>
- * <li>.getPropertyGeneric</li>
- * <li>.bind</li>
+ * <li>allConfigurationAsProperties</li>
+ * <li>getProperty</li>
+ * <li>getPropertyGeneric</li>
+ * <li>bind</li>
  * </ul>
  * Each of those metrics is of {@link Timer} type (i.e. includes execution time percentiles, execution count, etc.)
  */

@@ -15,6 +15,9 @@
  */
 package org.cfg4j.provider;
 
+import static java.util.Objects.requireNonNull;
+
+import com.codahale.metrics.MetricRegistry;
 import org.cfg4j.source.ConfigurationSource;
 import org.cfg4j.source.context.environment.DefaultEnvironment;
 import org.cfg4j.source.context.environment.Environment;
@@ -23,6 +26,8 @@ import org.cfg4j.source.reload.ReloadStrategy;
 import org.cfg4j.source.reload.strategy.ImmediateReloadStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Optional;
 
 /**
  * A builder producing {@link ConfigurationProvider}s. If you don't specify the value for one the fields
@@ -36,25 +41,30 @@ public class ConfigurationProviderBuilder {
   private ConfigurationSource configurationSource;
   private ReloadStrategy reloadStrategy;
   private Environment environment;
+  private Optional<MetricRegistry> metricRegistry;
+  private String prefix;
 
   /**
-   * Construct {@link ConfigurationProvider}s builder
+   * Construct {@link ConfigurationProvider}s builder.
    * <p>
    * Default setup (override using with*() methods)
    * <ul>
    * <li>ConfigurationSource: {@link EmptyConfigurationSource}</li>
    * <li>ReloadStrategy: {@link ImmediateReloadStrategy}</li>
    * <li>Environment: {@link DefaultEnvironment}</li>
+   * <li>Metrics: disabled</li>
    * </ul>
    */
   public ConfigurationProviderBuilder() {
     configurationSource = new EmptyConfigurationSource();
     reloadStrategy = new ImmediateReloadStrategy();
     environment = new DefaultEnvironment();
+    metricRegistry = Optional.empty();
+    prefix = "";
   }
 
   /**
-   * Set {@link ConfigurationSource} for {@link ConfigurationProvider}s built by this builder
+   * Set {@link ConfigurationSource} for {@link ConfigurationProvider}s built by this builder.
    *
    * @param configurationSource {@link ConfigurationSource} to use
    * @return this builder with {@link ConfigurationSource} set to {@code configurationSource}
@@ -65,7 +75,7 @@ public class ConfigurationProviderBuilder {
   }
 
   /**
-   * Set {@link ReloadStrategy} for {@link ConfigurationProvider}s built by this builder
+   * Set {@link ReloadStrategy} for {@link ConfigurationProvider}s built by this builder.
    *
    * @param reloadStrategy {@link ReloadStrategy} to use
    * @return this builder with {@link ReloadStrategy} set to {@code reloadStrategy}
@@ -76,7 +86,7 @@ public class ConfigurationProviderBuilder {
   }
 
   /**
-   * Set {@link Environment} for {@link ConfigurationProvider}s built by this builder
+   * Set {@link Environment} for {@link ConfigurationProvider}s built by this builder.
    *
    * @param environment {@link Environment} to use
    * @return this builder with {@link Environment} set to {@code environment}
@@ -87,7 +97,21 @@ public class ConfigurationProviderBuilder {
   }
 
   /**
-   * Build a {@link ConfigurationProvider} using this builder's configuration
+   * Enable metrics emission for {@link ConfigurationProvider}s built by this builder. All metrics will be registered
+   * with {@code metricRegistry} and prefixed by {@code prefix}.
+   *
+   * @param metricRegistry metric registry for registering metrics
+   * @param prefix         prefix for metric names
+   * @return this builder
+   */
+  public ConfigurationProviderBuilder withMetrics(MetricRegistry metricRegistry, String prefix) {
+    this.metricRegistry = Optional.of(metricRegistry);
+    this.prefix = requireNonNull(prefix);
+    return this;
+  }
+
+  /**
+   * Build a {@link ConfigurationProvider} using this builder's configuration.
    *
    * @return new {@link ConfigurationProvider}
    */
@@ -99,7 +123,13 @@ public class ConfigurationProviderBuilder {
 
     reloadStrategy.register(configurationSource);
 
-    return new SimpleConfigurationProvider(configurationSource, environment);
+    SimpleConfigurationProvider configurationProvider = new SimpleConfigurationProvider(configurationSource, environment);
+
+    if (metricRegistry.isPresent()) {
+      return new MeteredConfigurationProvider(metricRegistry.get(), prefix, configurationProvider);
+    }
+
+    return configurationProvider;
   }
 
   @Override

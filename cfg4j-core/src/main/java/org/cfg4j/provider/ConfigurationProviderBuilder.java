@@ -19,6 +19,7 @@ import static java.util.Objects.requireNonNull;
 
 import com.codahale.metrics.MetricRegistry;
 import org.cfg4j.source.ConfigurationSource;
+import org.cfg4j.source.compose.MergeConfigurationSource;
 import org.cfg4j.source.context.environment.DefaultEnvironment;
 import org.cfg4j.source.context.environment.Environment;
 import org.cfg4j.source.empty.EmptyConfigurationSource;
@@ -105,8 +106,8 @@ public class ConfigurationProviderBuilder {
    * @return this builder
    */
   public ConfigurationProviderBuilder withMetrics(MetricRegistry metricRegistry, String prefix) {
-    this.metricRegistry = Optional.of(metricRegistry);
     this.prefix = requireNonNull(prefix);
+    this.metricRegistry = Optional.of(metricRegistry);
     return this;
   }
 
@@ -122,6 +123,10 @@ public class ConfigurationProviderBuilder {
         + environment.getClass().getCanonicalName() + " environment");
 
     reloadStrategy.register(configurationSource);
+
+    if (metricRegistry.isPresent()) {
+      configurationSource = new MergeConfigurationSource(configurationSource);
+    }
 
     SimpleConfigurationProvider configurationProvider = new SimpleConfigurationProvider(configurationSource, environment);
 

@@ -122,14 +122,14 @@ public class ConfigurationProviderBuilder {
         + reloadStrategy.getClass().getCanonicalName() + " reload strategy and "
         + environment.getClass().getCanonicalName() + " environment");
 
-    reloadStrategy.register(configurationSource);
-
+    ConfigurationSource configurationSource = this.configurationSource;
     if (metricRegistry.isPresent()) {
       configurationSource = new MeteredConfigurationSource(metricRegistry.get(), prefix, configurationSource);
     }
 
-    SimpleConfigurationProvider configurationProvider = new SimpleConfigurationProvider(configurationSource, environment);
+    reloadStrategy.register(configurationSource);
 
+    SimpleConfigurationProvider configurationProvider = new SimpleConfigurationProvider(configurationSource, environment);
     if (metricRegistry.isPresent()) {
       return new MeteredConfigurationProvider(metricRegistry.get(), prefix, configurationProvider);
     }

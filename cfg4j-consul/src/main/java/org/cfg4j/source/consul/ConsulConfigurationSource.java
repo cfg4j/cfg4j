@@ -24,8 +24,6 @@ import org.cfg4j.source.context.environment.Environment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -102,12 +100,17 @@ class ConsulConfigurationSource implements ConfigurationSource {
     }
 
     for (Value value : valueList) {
-      String val = new String(Base64.getDecoder().decode(value.getValue().getBytes(StandardCharsets.UTF_8)));
+      String val = "";
+
+      if (value.getValueAsString().isPresent()) {
+        val = value.getValueAsString().get();
+      }
 
       LOG.trace("Consul provided configuration key: " + value.getKey() + " with value: " + val);
 
       consulValues.put(value.getKey(), val);
     }
+
   }
 
   @Override

@@ -19,10 +19,10 @@ import static java.util.Objects.requireNonNull;
 
 import com.codahale.metrics.MetricRegistry;
 import org.cfg4j.source.ConfigurationSource;
-import org.cfg4j.source.compose.MergeConfigurationSource;
 import org.cfg4j.source.context.environment.DefaultEnvironment;
 import org.cfg4j.source.context.environment.Environment;
 import org.cfg4j.source.empty.EmptyConfigurationSource;
+import org.cfg4j.source.metered.MeteredConfigurationSource;
 import org.cfg4j.source.reload.ReloadStrategy;
 import org.cfg4j.source.reload.strategy.ImmediateReloadStrategy;
 import org.slf4j.Logger;
@@ -125,7 +125,7 @@ public class ConfigurationProviderBuilder {
     reloadStrategy.register(configurationSource);
 
     if (metricRegistry.isPresent()) {
-      configurationSource = new MergeConfigurationSource(configurationSource);
+      configurationSource = new MeteredConfigurationSource(metricRegistry.get(), prefix, configurationSource);
     }
 
     SimpleConfigurationProvider configurationProvider = new SimpleConfigurationProvider(configurationSource, environment);

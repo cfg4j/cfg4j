@@ -34,7 +34,7 @@ import java.util.Properties;
  * </ul>
  * Each of those metrics is of {@link Timer} type (i.e. includes execution time percentiles, execution count, etc.)
  */
-class MeteredConfigurationSource implements ConfigurationSource {
+public class MeteredConfigurationSource implements ConfigurationSource {
 
   private final ConfigurationSource delegate;
 
@@ -49,7 +49,7 @@ class MeteredConfigurationSource implements ConfigurationSource {
    * @param metricPrefix   prefix for metric names (trailing dot will be added to it)
    * @param delegate       configuration provider to monitor
    */
-  MeteredConfigurationSource(MetricRegistry metricRegistry, String metricPrefix, ConfigurationSource delegate) {
+  public MeteredConfigurationSource(MetricRegistry metricRegistry, String metricPrefix, ConfigurationSource delegate) {
     requireNonNull(metricRegistry);
     requireNonNull(metricPrefix);
     this.delegate = requireNonNull(delegate);

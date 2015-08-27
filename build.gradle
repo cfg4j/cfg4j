@@ -57,7 +57,7 @@ subprojects {
         compile group: "org.slf4j", name: "slf4j-api", version: "1.7.12"
 
         // YAML
-        compile group: "org.yaml", name: "snakeyaml", version: '1.15'
+        compile group: "org.yaml", name: "snakeyaml", version: '1.16'
 
         // Metrics
         compile group: "io.dropwizard.metrics", name: "metrics-core", version: "3.1.2"

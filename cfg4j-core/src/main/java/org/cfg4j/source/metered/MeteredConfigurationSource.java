@@ -29,8 +29,8 @@ import java.util.Properties;
  * Decorator for {@link ConfigurationSource} that emits execution metrics. It emits the following metrics (each of those prefixed
  * with a string passed at construction time):
  * <ul>
- * <li>getConfiguration</li>
- * <li>reload</li>
+ * <li>source.getConfiguration</li>
+ * <li>source.reload</li>
  * </ul>
  * Each of those metrics is of {@link Timer} type (i.e. includes execution time percentiles, execution count, etc.)
  */
@@ -54,8 +54,8 @@ public class MeteredConfigurationSource implements ConfigurationSource {
     requireNonNull(metricPrefix);
     this.delegate = requireNonNull(delegate);
 
-    getConfigurationTimer = metricRegistry.timer(metricPrefix + "getConfiguration");
-    reloadTimer = metricRegistry.timer(metricPrefix + "reload");
+    getConfigurationTimer = metricRegistry.timer(metricPrefix + "source.getConfiguration");
+    reloadTimer = metricRegistry.timer(metricPrefix + "source.reload");
   }
 
   @Override

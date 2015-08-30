@@ -39,6 +39,7 @@ public class EmptyConfigurationSourceTest {
   @Before
   public void setUp() throws Exception {
     source = new EmptyConfigurationSource();
+    source.init();
   }
 
   @Test

@@ -58,6 +58,7 @@ public class FallbackConfigurationSourceTest {
     }
 
     fallbackConfigurationSource = new FallbackConfigurationSource(underlyingSources);
+    fallbackConfigurationSource.init();
   }
 
   @Test
@@ -84,6 +85,29 @@ public class FallbackConfigurationSourceTest {
 
     assertThat(fallbackConfigurationSource.getConfiguration(mock(Environment.class)))
         .containsOnly(MapEntry.entry("prop1", "value1"));
+  }
+
+  @Test
+  public void initShouldTryToInitializeAllSources() throws Exception {
+    for (ConfigurationSource underlyingSource : underlyingSources) {
+      verify(underlyingSource, atLeastOnce()).init();
+    }
+  }
+
+  @Test
+  public void initShouldThrowWhenAllSourcesThrow() throws Exception {
+    makeAllSourcesThrow(new IllegalStateException());
+
+    expectedException.expect(IllegalStateException.class);
+    fallbackConfigurationSource.init();
+  }
+
+  @Test
+  public void initShouldIgnoreExceptionsIfAtLeastOneSourceSucceeds() throws Exception {
+    makeAllSourcesThrow(new IllegalStateException());
+    doNothing().when(underlyingSources[LAST_SOURCE_INDEX]).init();
+
+    fallbackConfigurationSource.init();
   }
 
   @Test
@@ -115,6 +139,7 @@ public class FallbackConfigurationSourceTest {
     for (ConfigurationSource underlyingSource : underlyingSources) {
       when(underlyingSource.getConfiguration(any(Environment.class))).thenThrow(exception);
       doThrow(exception).when(underlyingSource).reload();
+      doThrow(exception).when(underlyingSource).init();
     }
   }
 

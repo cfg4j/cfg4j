@@ -127,6 +127,8 @@ public class ConfigurationProviderBuilder {
       configurationSource = new MeteredConfigurationSource(metricRegistry.get(), prefix, configurationSource);
     }
 
+    configurationSource.init();
+
     reloadStrategy.register(configurationSource);
 
     SimpleConfigurationProvider configurationProvider = new SimpleConfigurationProvider(configurationSource, environment);

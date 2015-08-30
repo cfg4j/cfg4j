@@ -31,7 +31,7 @@ import java.util.Collections;
 
 
 @RunWith(MockitoJUnitRunner.class)
-public class SimpleConfigurationProviderIntegrationTest {
+public class SimpleConfigurationProviderWithClasspathIntegrationTest {
 
   @Rule
   public ExpectedException expectedException = ExpectedException.none();

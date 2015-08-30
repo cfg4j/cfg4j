@@ -65,21 +65,23 @@ public class GitConfigurationSourceIntegrationTest {
   }
 
   @Test
-  public void shouldThrowWhenUnableToCreateLocalCloneOnNoTempDir() throws Exception {
+  public void initShouldThrowWhenUnableToCreateLocalCloneOnNoTempDir() throws Exception {
     expectedException.expect(IllegalStateException.class);
 
     getSourceBuilderForRemoteRepoWithDefaults()
         .withTmpPath(Paths.get("/someNonexistentDir/lkfjalfcz"))
         .withTmpRepoPrefix("existing-path")
-        .build();
+        .build()
+        .init();
   }
 
   @Test
-  public void shouldThrowOnInvalidRemote() throws Exception {
+  public void initShouldThrowOnInvalidRemote() throws Exception {
     expectedException.expect(SourceCommunicationException.class);
     new GitConfigurationSourceBuilder()
         .withRepositoryURI("")
-        .build();
+        .build()
+        .init();
   }
 
   @Test
@@ -202,25 +204,40 @@ public class GitConfigurationSourceIntegrationTest {
   }
 
   private GitConfigurationSource getSourceForRemoteRepoWithDefaults() {
-    return getSourceBuilderForRemoteRepoWithDefaults().build();
+    GitConfigurationSource source = getSourceBuilderForRemoteRepoWithDefaults().build();
+    source.init();
+
+    return source;
   }
 
   private GitConfigurationSource getSourceForRemoteRepoWithBranchResolver(BranchResolver branchResolver) {
-    return getSourceBuilderForRemoteRepoWithDefaults()
+    GitConfigurationSource source = getSourceBuilderForRemoteRepoWithDefaults()
         .withBranchResolver(branchResolver)
         .build();
+
+    source.init();
+
+    return source;
   }
 
   private GitConfigurationSource getSourceForRemoteRepoWithPathResolver(PathResolver pathResolver) {
-    return getSourceBuilderForRemoteRepoWithDefaults()
+    GitConfigurationSource source = getSourceBuilderForRemoteRepoWithDefaults()
         .withPathResolver(pathResolver)
         .build();
+
+    source.init();
+
+    return source;
   }
 
   private GitConfigurationSource getSourceForRemoteRepoWithFilesProvider(ConfigFilesProvider configFilesProvider) {
-    return getSourceBuilderForRemoteRepoWithDefaults()
+    GitConfigurationSource source = getSourceBuilderForRemoteRepoWithDefaults()
         .withConfigFilesProvider(configFilesProvider)
         .build();
+
+    source.init();
+
+    return source;
   }
 
   private GitConfigurationSourceBuilder getSourceBuilderForRemoteRepoWithDefaults() {

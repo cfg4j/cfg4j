@@ -66,6 +66,13 @@ public class MergeConfigurationSource implements ConfigurationSource {
     return properties;
   }
 
+  @Override
+  public void init() {
+    for (ConfigurationSource source : sources) {
+      source.init();
+    }
+  }
+
   /**
    * Request configuration reload. When this method returns configuration should be reloaded for all underlying
    * configuration sources.

@@ -56,6 +56,7 @@ public class MergeConfigurationSourceTest {
     }
 
     mergeConfigurationSource = new MergeConfigurationSource(underlyingSources);
+    mergeConfigurationSource.init();
   }
 
   @Test
@@ -91,6 +92,13 @@ public class MergeConfigurationSourceTest {
     sourcesWithProps(environment, "prop", "value1", "prop", "value2");
 
     assertThat(mergeConfigurationSource.getConfiguration(environment)).containsOnly(MapEntry.entry("prop", "value2"));
+  }
+
+  @Test
+  public void initShouldInitializeAllSources() throws Exception {
+    for (ConfigurationSource underlyingSource : underlyingSources) {
+      verify(underlyingSource, atLeastOnce()).init();
+    }
   }
 
   @Test

@@ -87,6 +87,8 @@ public class ConsulConfigurationSourceIntegrationTest {
         .withHost(server.getHostName())
         .withPort(server.getPort())
         .build();
+
+    source.init();
   }
 
   @After
@@ -101,13 +103,15 @@ public class ConsulConfigurationSourceIntegrationTest {
   }
 
   @Test
-  public void shouldThrowOnConnectionFailure() throws Exception {
+  public void initShouldThrowOnConnectionFailure() throws Exception {
     server.shutdown();
-    expectedException.expect(SourceCommunicationException.class);
     source = new ConsulConfigurationSourceBuilder()
         .withHost(server.getHostName())
         .withPort(server.getPort())
         .build();
+
+    expectedException.expect(SourceCommunicationException.class);
+    source.init();
   }
 
   @Test

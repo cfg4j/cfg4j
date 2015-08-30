@@ -15,6 +15,8 @@
  */
 package org.cfg4j.source.consul;
 
+import static java.util.Objects.requireNonNull;
+
 import com.orbitz.consul.Consul;
 import com.orbitz.consul.KeyValueClient;
 import com.orbitz.consul.model.kv.Value;
@@ -38,8 +40,10 @@ class ConsulConfigurationSource implements ConfigurationSource {
 
   private static final Logger LOG = LoggerFactory.getLogger(ConsulConfigurationSource.class);
 
-  private final KeyValueClient kvClient;
+  private KeyValueClient kvClient;
   private Map<String, String> consulValues;
+  private final String host;
+  private final int port;
 
   /**
    * Note: use {@link ConsulConfigurationSourceBuilder} for building instances of this class.
@@ -51,16 +55,8 @@ class ConsulConfigurationSource implements ConfigurationSource {
    * @throws SourceCommunicationException when unable to connect to Consul client
    */
   ConsulConfigurationSource(String host, int port) {
-    try {
-      LOG.info("Connecting to Consul client at " + host + ":" + port);
-
-      Consul consul = Consul.newClient(host, port);
-      kvClient = consul.keyValueClient();
-    } catch (Exception e) {
-      throw new SourceCommunicationException("Can't connect to host " + host + ":" + port, e);
-    }
-
-    reload();
+    this.host = requireNonNull(host);
+    this.port = port;
   }
 
   @Override
@@ -85,6 +81,20 @@ class ConsulConfigurationSource implements ConfigurationSource {
     }
 
     return properties;
+  }
+
+  @Override
+  public void init() {
+    try {
+      LOG.info("Connecting to Consul client at " + host + ":" + port);
+
+      Consul consul = Consul.newClient(host, port);
+      kvClient = consul.keyValueClient();
+    } catch (Exception e) {
+      throw new SourceCommunicationException("Can't connect to host " + host + ":" + port, e);
+    }
+
+    reload();
   }
 
   @Override

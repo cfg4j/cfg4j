@@ -52,7 +52,6 @@ class ConsulConfigurationSource implements ConfigurationSource {
    *
    * @param host Consul host to connect to
    * @param port Consul port to connect to
-   * @throws SourceCommunicationException when unable to connect to Consul client
    */
   ConsulConfigurationSource(String host, int port) {
     this.host = requireNonNull(host);
@@ -83,6 +82,9 @@ class ConsulConfigurationSource implements ConfigurationSource {
     return properties;
   }
 
+  /**
+   * @throws SourceCommunicationException when unable to connect to Consul client
+   */
   @Override
   public void init() {
     try {

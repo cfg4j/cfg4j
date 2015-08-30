@@ -61,6 +61,7 @@ public class MeteredConfigurationSourceTest {
     when(metricRegistry.timer(anyString())).thenReturn(timer);
 
     source = new MeteredConfigurationSource(metricRegistry, "configSource", delegate);
+    source.init();
   }
 
   @Test
@@ -76,5 +77,10 @@ public class MeteredConfigurationSourceTest {
     source.reload();
 
     verify(delegate, times(1)).reload();
+  }
+
+  @Test
+  public void initShouldCallDelegate() throws Exception {
+    verify(delegate, times(1)).init();
   }
 }

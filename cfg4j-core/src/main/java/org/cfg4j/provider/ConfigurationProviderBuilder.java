@@ -18,6 +18,7 @@ package org.cfg4j.provider;
 import static java.util.Objects.requireNonNull;
 
 import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.Timer;
 import org.cfg4j.source.ConfigurationSource;
 import org.cfg4j.source.context.environment.DefaultEnvironment;
 import org.cfg4j.source.context.environment.Environment;
@@ -99,7 +100,21 @@ public class ConfigurationProviderBuilder {
 
   /**
    * Enable metrics emission for {@link ConfigurationProvider}s built by this builder. All metrics will be registered
-   * with {@code metricRegistry} and prefixed by {@code prefix}.
+   * with {@code metricRegistry} and prefixed by {@code prefix}. Provider built by this builder will emit the following metrics:
+   * <p>Provider-level metrics:</p>
+   * <ul>
+   * <li>allConfigurationAsProperties</li>
+   * <li>getProperty</li>
+   * <li>getPropertyGeneric</li>
+   * <li>bind</li>
+   * </ul>
+   * <p>Source-level metrics</p>
+   * <ul>
+   * <li>source.getConfiguration</li>
+   * <li>source.init</li>
+   * <li>source.reload</li>
+   * </ul>
+   * Each of those metrics is of {@link Timer} type (i.e. includes execution time percentiles, execution count, etc.)
    *
    * @param metricRegistry metric registry for registering metrics
    * @param prefix         prefix for metric names

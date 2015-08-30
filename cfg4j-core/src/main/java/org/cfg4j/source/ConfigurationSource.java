@@ -36,4 +36,12 @@ public interface ConfigurationSource extends Reloadable {
    * @throws IllegalStateException       when unable to fetch configuration
    */
   Properties getConfiguration(Environment environment);
+
+  /**
+   * Initialize this source. This method has to be called before any other method of this instance.
+   *
+   * @throws IllegalStateException        when source was improperly configured
+   * @throws SourceCommunicationException when unable to communicate with source
+   */
+  void init();
 }

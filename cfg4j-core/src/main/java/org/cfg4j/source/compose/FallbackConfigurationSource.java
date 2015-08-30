@@ -77,6 +77,24 @@ public class FallbackConfigurationSource implements ConfigurationSource {
     throw new IllegalStateException();
   }
 
+  @Override
+  public void init() {
+    boolean atLeastOneSuccess = false;
+
+    for (ConfigurationSource source : sources) {
+      try {
+        source.init();
+        atLeastOneSuccess = true;
+      } catch (IllegalStateException e) {
+        // NOP
+      }
+    }
+
+    if (!atLeastOneSuccess) {
+      throw new IllegalStateException("Unable to initialize any of the underlying sources");
+    }
+  }
+
   /**
    * Request configuration reload. When this method returns configuration should be reloaded for at least
    * one underlying source. Tries to reload all sources. Reload failures are ignored (unless all sources fail to reload).

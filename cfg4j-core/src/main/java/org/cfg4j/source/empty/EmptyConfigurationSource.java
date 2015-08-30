@@ -33,6 +33,11 @@ public class EmptyConfigurationSource implements ConfigurationSource {
   }
 
   @Override
+  public void init() {
+    // NOP
+  }
+
+  @Override
   public void reload() {
     // NOP
   }

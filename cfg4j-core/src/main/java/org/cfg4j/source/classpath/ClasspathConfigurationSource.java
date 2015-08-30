@@ -128,6 +128,11 @@ public class ClasspathConfigurationSource implements ConfigurationSource {
   }
 
   @Override
+  public void init() {
+    // NOP
+  }
+
+  @Override
   public void reload() {
     // NOP
   }

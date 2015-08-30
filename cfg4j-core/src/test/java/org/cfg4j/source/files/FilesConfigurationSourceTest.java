@@ -58,6 +58,7 @@ public class FilesConfigurationSourceTest {
     environment = new ImmutableEnvironment(fileRepo.dirPath.toString());
 
     source = new FilesConfigurationSource();
+    source.init();
   }
 
   @After

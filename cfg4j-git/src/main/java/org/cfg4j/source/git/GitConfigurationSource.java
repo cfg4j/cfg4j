@@ -53,12 +53,15 @@ class GitConfigurationSource implements ConfigurationSource, Closeable {
 
   private static final Logger LOG = LoggerFactory.getLogger(GitConfigurationSource.class);
 
-  private final Git clonedRepo;
-  private final Path clonedRepoPath;
   private final BranchResolver branchResolver;
   private final PathResolver pathResolver;
   private final ConfigFilesProvider configFilesProvider;
   private final PropertiesProviderSelector propertiesProviderSelector;
+  private final String repositoryURI;
+  private final Path tmpPath;
+  private final String tmpRepoPrefix;
+  private Git clonedRepo;
+  private Path clonedRepoPath;
 
   /**
    * Note: use {@link GitConfigurationSourceBuilder} for building instances of this class.
@@ -75,8 +78,6 @@ class GitConfigurationSource implements ConfigurationSource, Closeable {
    * @param configFilesProvider        {@link ConfigFilesProvider} used for determining which files in repository should be read
    * @param propertiesProviderSelector selector used for choosing {@link PropertiesProvider} based on a configuration file extension
    *                                   as config files
-   * @throws IllegalStateException        when unable to create directories for local repo clone
-   * @throws SourceCommunicationException when unable to clone repository
    */
   GitConfigurationSource(String repositoryURI, Path tmpPath, String tmpRepoPrefix, BranchResolver branchResolver,
                          PathResolver pathResolver, ConfigFilesProvider configFilesProvider,
@@ -85,28 +86,9 @@ class GitConfigurationSource implements ConfigurationSource, Closeable {
     this.pathResolver = requireNonNull(pathResolver);
     this.configFilesProvider = requireNonNull(configFilesProvider);
     this.propertiesProviderSelector = requireNonNull(propertiesProviderSelector);
-    requireNonNull(tmpPath);
-    requireNonNull(tmpRepoPrefix);
-    requireNonNull(repositoryURI);
-
-    LOG.info("Initializing " + GitConfigurationSource.class + " pointing to " + repositoryURI);
-
-    try {
-      clonedRepoPath = Files.createTempDirectory(tmpPath, tmpRepoPrefix);
-      // This folder can't exist or JGit will throw NPE on clone
-      Files.delete(clonedRepoPath);
-    } catch (IOException e) {
-      throw new IllegalStateException("Unable to create local clone directory: " + tmpRepoPrefix, e);
-    }
-
-    try {
-      clonedRepo = Git.cloneRepository()
-          .setURI(repositoryURI)
-          .setDirectory(clonedRepoPath.toFile())
-          .call();
-    } catch (GitAPIException e) {
-      throw new SourceCommunicationException("Unable to clone repository: " + repositoryURI, e);
-    }
+    this.repositoryURI = requireNonNull(repositoryURI);
+    this.tmpPath = requireNonNull(tmpPath);
+    this.tmpRepoPrefix = requireNonNull(tmpRepoPrefix);
   }
 
   @Override
@@ -135,6 +117,32 @@ class GitConfigurationSource implements ConfigurationSource, Closeable {
     }
 
     return properties;
+  }
+
+  /**
+   * @throws IllegalStateException        when unable to create directories for local repo clone
+   * @throws SourceCommunicationException when unable to clone repository
+   */
+  @Override
+  public void init() {
+    LOG.info("Initializing " + GitConfigurationSource.class + " pointing to " + repositoryURI);
+
+    try {
+      clonedRepoPath = Files.createTempDirectory(tmpPath, tmpRepoPrefix);
+      // This folder can't exist or JGit will throw NPE on clone
+      Files.delete(clonedRepoPath);
+    } catch (IOException e) {
+      throw new IllegalStateException("Unable to create local clone directory: " + tmpRepoPrefix, e);
+    }
+
+    try {
+      clonedRepo = Git.cloneRepository()
+          .setURI(repositoryURI)
+          .setDirectory(clonedRepoPath.toFile())
+          .call();
+    } catch (GitAPIException e) {
+      throw new SourceCommunicationException("Unable to clone repository: " + repositoryURI, e);
+    }
   }
 
   @Override

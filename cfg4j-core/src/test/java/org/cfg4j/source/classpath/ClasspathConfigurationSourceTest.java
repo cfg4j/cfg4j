@@ -50,6 +50,7 @@ public class ClasspathConfigurationSourceTest {
     classpathRepo = new TempConfigurationClasspathRepo();
 
     source = new ClasspathConfigurationSource();
+    source.init();
   }
 
   @Test

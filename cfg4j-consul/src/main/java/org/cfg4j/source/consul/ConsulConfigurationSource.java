@@ -101,7 +101,7 @@ class ConsulConfigurationSource implements ConfigurationSource {
 
   @Override
   public void reload() {
-    consulValues = new HashMap<>();
+    Map<String, String> newConsulValues = new HashMap<>();
     List<Value> valueList;
 
     try {
@@ -120,9 +120,10 @@ class ConsulConfigurationSource implements ConfigurationSource {
 
       LOG.trace("Consul provided configuration key: " + value.getKey() + " with value: " + val);
 
-      consulValues.put(value.getKey(), val);
+      newConsulValues.put(value.getKey(), val);
     }
 
+    consulValues = newConsulValues;
   }
 
   @Override

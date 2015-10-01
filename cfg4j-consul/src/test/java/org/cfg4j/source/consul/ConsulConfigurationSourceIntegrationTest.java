@@ -34,6 +34,8 @@ import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 
@@ -143,6 +145,19 @@ public class ConsulConfigurationSourceIntegrationTest {
     server.shutdown();
     expectedException.expect(SourceCommunicationException.class);
     source.reload();
+  }
+
+  @Test
+  public void shouldReturnOldValuesDuringReload() throws Exception {
+    new Timer().schedule(new TimerTask() {
+      @Override
+      public void run() {
+        source.reload();
+      }
+    }, 0);
+
+    Environment environment = new ImmutableEnvironment("us-west-1");
+    assertThat(source.getConfiguration(environment)).contains(MapEntry.entry("featureA.toggle", "disabled"));
   }
 
   private void runMockServer() throws IOException {

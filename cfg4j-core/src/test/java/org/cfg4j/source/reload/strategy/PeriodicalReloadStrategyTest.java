@@ -55,9 +55,9 @@ public class PeriodicalReloadStrategyTest {
   }
 
   @Test
-  public void shouldSurpassException() throws Exception {
+  public void shouldSuppressException() throws Exception {
     doThrow(new IllegalStateException()).when(reloadable).reload();
-    PeriodicalReloadStrategy strategy = new PeriodicalReloadStrategy(1, TimeUnit.SECONDS);
+    PeriodicalReloadStrategy strategy = new PeriodicalReloadStrategy(60, TimeUnit.SECONDS);
 
     strategy.register(reloadable);
 

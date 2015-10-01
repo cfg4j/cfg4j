@@ -16,8 +16,10 @@
 
 package org.cfg4j.source.reload.strategy;
 
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import org.cfg4j.source.reload.Reloadable;
 import org.junit.Rule;
@@ -45,8 +47,20 @@ public class PeriodicalReloadStrategyTest {
   @Test
   public void shouldReloadImmediatelyAfterRegistered() throws Exception {
     PeriodicalReloadStrategy strategy = new PeriodicalReloadStrategy(60, TimeUnit.SECONDS);
+
     strategy.register(reloadable);
     strategy.deregister(reloadable);
+
+    verify(reloadable, times(1)).reload();
+  }
+
+  @Test
+  public void shouldSuppressException() throws Exception {
+    doThrow(new IllegalStateException()).when(reloadable).reload();
+    PeriodicalReloadStrategy strategy = new PeriodicalReloadStrategy(60, TimeUnit.SECONDS);
+
+    strategy.register(reloadable);
+
     verify(reloadable, times(1)).reload();
   }
 }

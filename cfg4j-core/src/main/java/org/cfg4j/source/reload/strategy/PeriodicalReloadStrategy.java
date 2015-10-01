@@ -63,14 +63,18 @@ public class PeriodicalReloadStrategy implements ReloadStrategy {
     LOG.info("Registering resource " + resource
         + " with reload time of " + duration + " " + timeUnit.toString().toLowerCase());
 
-    resource.reload();
-
     TimerTask timerTask = new TimerTask() {
       @Override
       public void run() {
-        resource.reload();
+        try {
+          resource.reload();
+        } catch (Exception e) {
+          LOG.warn("Periodical resource reload failed. Will re-try at the next scheduled time.", e);
+        }
       }
     };
+
+    timerTask.run();
 
     tasks.put(resource, timerTask);
     timer.schedule(timerTask, timeUnit.toMillis(duration), timeUnit.toMillis(duration));

@@ -53,8 +53,10 @@ public class YamlBasedPropertiesProvider implements PropertiesProvider {
 
       Object object = yaml.load(reader);
 
-      Map<String, Object> yamlAsMap = convertToMap(object);
-      properties.putAll(flatten(yamlAsMap));
+      if (object != null) {
+        Map<String, Object> yamlAsMap = convertToMap(object);
+        properties.putAll(flatten(yamlAsMap));
+      }
 
       return properties;
 

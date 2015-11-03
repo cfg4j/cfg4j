@@ -40,13 +40,13 @@ Head to [the documentation](http://cfg4j.org).
 #### Gradle
 ```groovy
 dependencies {
-  compile group: "org.cfg4j", name:"cfg4j-core", version: "4.1.2"
+  compile group: "org.cfg4j", name:"cfg4j-core", version: "4.1.3"
   
   // For Consul integration
-  compile group: "org.cfg4j", name:"cfg4j-consul", version: "4.1.2"
+  compile group: "org.cfg4j", name:"cfg4j-consul", version: "4.1.3"
   
   // For git integration
-  compile group: "org.cfg4j", name:"cfg4j-git", version: "4.1.2"
+  compile group: "org.cfg4j", name:"cfg4j-git", version: "4.1.3"
 }
 ```
 
@@ -56,19 +56,19 @@ dependencies {
   <dependency>
     <groupId>org.cfg4j</groupId>
     <artifactId>cfg4j-core</artifactId>
-    <version>4.1.2</version>
+    <version>4.1.3</version>
   </dependency>
   <!-- For Consul integration -->
   <dependency> 
     <groupId>org.cfg4j</groupId>
     <artifactId>cfg4j-consul</artifactId>
-    <version>4.1.2</version>
+    <version>4.1.3</version>
   </dependency>
   <!-- For git integration -->
   <dependency>
     <groupId>org.cfg4j</groupId>
     <artifactId>cfg4j-git</artifactId>
-    <version>4.1.2</version>
+    <version>4.1.3</version>
   </dependency>
 </dependencies>
 ```

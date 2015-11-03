@@ -101,6 +101,15 @@ public class YamlBasedPropertiesProviderTest {
       expectedException.expect(IllegalStateException.class);
       provider.getProperties(input);
     }
+  }
+
+  @Test
+  public void shouldSupportEmptyDocument() throws Exception {
+    String path = "org/cfg4j/source/propertiesprovider/YamlBasedPropertiesProviderTest_shouldSupportEmptyDocument.yaml";
+
+    try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
+      assertThat(provider.getProperties(input)).isEmpty();
+    }
 
   }
 }

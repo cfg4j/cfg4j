@@ -60,7 +60,7 @@ public class PeriodicalReloadStrategy implements ReloadStrategy {
 
   @Override
   public void register(Reloadable resource) {
-    LOG.info("Registering resource " + resource
+    LOG.debug("Registering resource " + resource
         + " with reload time of " + duration + " " + timeUnit.toString().toLowerCase());
 
     TimerTask timerTask = new TimerTask() {
@@ -82,7 +82,7 @@ public class PeriodicalReloadStrategy implements ReloadStrategy {
 
   @Override
   public void deregister(Reloadable resource) {
-    LOG.info("Deregistering resource " + resource);
+    LOG.debug("De-registering resource " + resource);
 
     TimerTask timerTask = tasks.remove(resource);
     if (timerTask != null) {

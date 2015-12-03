@@ -29,13 +29,13 @@ public class ImmediateReloadStrategy implements ReloadStrategy {
 
   @Override
   public void register(Reloadable resource) {
-    LOG.info("Registering resource " + resource);
+    LOG.debug("Registering resource " + resource);
     resource.reload();
   }
 
   @Override
   public void deregister(Reloadable resource) {
-    LOG.info("Deregistering resource " + resource);
+    LOG.debug("De-registering resource " + resource);
   }
 
   @Override

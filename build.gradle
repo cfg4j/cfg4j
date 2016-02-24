@@ -33,6 +33,10 @@ buildscript {
     }
 }
 
+// Generate Gradle wrapper
+task wrapper(type: Wrapper) {
+    gradleVersion = "2.11"
+}
 
 subprojects {
 
@@ -71,7 +75,7 @@ subprojects {
 
     // Generate Gradle wrapper
     task wrapper(type: Wrapper) {
-        gradleVersion = "2.4"
+        gradleVersion = "2.11"
     }
 
     task javadocJar(type: Jar) {

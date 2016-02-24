@@ -72,12 +72,6 @@ subprojects {
     }
 
     // ----------- EXTRA tasks -----------
-
-    // Generate Gradle wrapper
-    task wrapper(type: Wrapper) {
-        gradleVersion = "2.11"
-    }
-
     task javadocJar(type: Jar) {
         classifier = 'javadoc'
         from javadoc

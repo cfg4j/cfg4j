@@ -28,12 +28,14 @@
   * Java 8+ required
 
 # Usage
+Read [an article about configuration management using cfg4j](http://potocki.io/post/141230472743/configuration-management-for-distributed-systems).
+
+## Detailed documentation
+Head to [the documentation](http://cfg4j.org).
 
 ## Sample apps
 Explore the code of the [sample apps](https://github.com/cfg4j/cfg4j-sample-apps).
 
-## Detailed documentation
-Head to [the documentation](http://cfg4j.org).
 
 ## Quick start
 ### Setting up dependency

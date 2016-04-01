@@ -54,12 +54,12 @@ public class PeriodicalReloadStrategy implements ReloadStrategy {
   public PeriodicalReloadStrategy(long duration, TimeUnit timeUnit) {
     this.duration = duration;
     this.timeUnit = requireNonNull(timeUnit);
-    tasks = Collections.synchronizedMap(new HashMap<>());
+    tasks = Collections.synchronizedMap(new HashMap<Reloadable, TimerTask>());
     timer = new Timer();
   }
 
   @Override
-  public void register(Reloadable resource) {
+  public void register(final Reloadable resource) {
     LOG.debug("Registering resource " + resource
         + " with reload time of " + duration + " " + timeUnit.toString().toLowerCase());
 

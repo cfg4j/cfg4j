@@ -51,9 +51,14 @@ public class FilesConfigurationSource implements ConfigurationSource {
    * calls (see corresponding javadoc for detail).
    */
   public FilesConfigurationSource() {
-    this(() -> Collections.singletonList(
-        Paths.get("application.properties")
-    ));
+    this(new ConfigFilesProvider() {
+      @Override
+      public Iterable<Path> getConfigFiles() {
+        return Collections.singletonList(
+            Paths.get("application.properties")
+        );
+      }
+    });
   }
 
   /**

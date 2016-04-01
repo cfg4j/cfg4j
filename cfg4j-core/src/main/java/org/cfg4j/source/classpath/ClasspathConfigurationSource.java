@@ -31,11 +31,10 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 /**
  * {@link ConfigurationSource} reading configuration from classpath files.
@@ -51,9 +50,14 @@ public class ClasspathConfigurationSource implements ConfigurationSource {
    * calls (see corresponding javadoc for detail).
    */
   public ClasspathConfigurationSource() {
-    this(() -> Collections.singletonList(
-        Paths.get("application.properties")
-    ));
+    this(new ConfigFilesProvider() {
+      @Override
+      public Iterable<Path> getConfigFiles() {
+        return Collections.singletonList(
+            Paths.get("application.properties")
+        );
+      }
+    });
   }
 
   /**
@@ -105,9 +109,10 @@ public class ClasspathConfigurationSource implements ConfigurationSource {
       throw new MissingEnvironmentException("Directory doesn't exist: " + environment.getName());
     }
 
-    List<Path> paths = StreamSupport.stream(configFilesProvider.getConfigFiles().spliterator(), false)
-        .map(pathPrefix::resolve)
-        .collect(Collectors.toList());
+    List<Path> paths = new ArrayList<>();
+    for (Path path : configFilesProvider.getConfigFiles()) {
+      paths.add(pathPrefix.resolve(path));
+    }
 
     for (Path path : paths) {
       try (InputStream input = getClass().getClassLoader().getResourceAsStream(path.toString())) {

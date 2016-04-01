@@ -39,10 +39,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 /**
  * Note: use {@link GitConfigurationSourceBuilder} for building instances of this class.
@@ -101,9 +100,10 @@ class GitConfigurationSource implements ConfigurationSource, Closeable {
 
     Properties properties = new Properties();
 
-    List<Path> paths = StreamSupport.stream(configFilesProvider.getConfigFiles().spliterator(), false)
-        .map(path -> clonedRepoPath.resolve(pathResolver.getPathFor(environment)).resolve(path))
-        .collect(Collectors.toList());
+    List<Path> paths = new ArrayList<>();
+    for (Path path : configFilesProvider.getConfigFiles()) {
+      paths.add(clonedRepoPath.resolve(pathResolver.getPathFor(environment)).resolve(path));
+    }
 
     for (Path path : paths) {
       try (InputStream input = new FileInputStream(path.toFile())) {
@@ -168,7 +168,7 @@ class GitConfigurationSource implements ConfigurationSource, Closeable {
         .setName(branch);
 
     List<Ref> refList = clonedRepo.branchList().call();
-    if (!refList.stream().anyMatch(ref -> ref.getName().replace("refs/heads/", "").equals(branch))) {
+    if (!anyRefMatches(refList, branch)) {
       checkoutCommand = checkoutCommand
           .setCreateBranch(true)
           .setUpstreamMode(CreateBranchCommand.SetupUpstreamMode.TRACK)
@@ -177,6 +177,16 @@ class GitConfigurationSource implements ConfigurationSource, Closeable {
 
     checkoutCommand
         .call();
+  }
+
+  private boolean anyRefMatches(List<Ref> refList, String branch) {
+    for (Ref ref : refList) {
+      if (ref.getName().replace("refs/heads/", "").equals(branch)) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   @Override

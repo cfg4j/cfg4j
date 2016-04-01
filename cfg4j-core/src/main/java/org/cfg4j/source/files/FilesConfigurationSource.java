@@ -31,11 +31,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 /**
  * {@link ConfigurationSource} reading configuration from local files.
@@ -51,9 +50,14 @@ public class FilesConfigurationSource implements ConfigurationSource {
    * calls (see corresponding javadoc for detail).
    */
   public FilesConfigurationSource() {
-    this(() -> Collections.singletonList(
-        Paths.get("application.properties")
-    ));
+    this(new ConfigFilesProvider() {
+      @Override
+      public Iterable<Path> getConfigFiles() {
+        return Collections.singletonList(
+            Paths.get("application.properties")
+        );
+      }
+    });
   }
 
   /**
@@ -110,9 +114,10 @@ public class FilesConfigurationSource implements ConfigurationSource {
       throw new MissingEnvironmentException("Directory doesn't exist: " + rootPath);
     }
 
-    List<Path> paths = StreamSupport.stream(configFilesProvider.getConfigFiles().spliterator(), false)
-        .map(rootPath::resolve)
-        .collect(Collectors.toList());
+    List<Path> paths = new ArrayList<>();
+    for (Path path : configFilesProvider.getConfigFiles()) {
+      paths.add(rootPath.resolve(path));
+    }
 
     for (Path path : paths) {
       try (InputStream input = new FileInputStream(path.toFile())) {

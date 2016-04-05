@@ -54,7 +54,7 @@ class TempConfigurationGitRepo extends TempConfigurationFileRepo {
     boolean createBranch = true;
 
     List<Ref> refList = repo.branchList().call();
-    if (refList.stream().anyMatch(ref -> ref.getName().replace("refs/heads/", "").equals(branch))) {
+    if (anyRefMatches(refList, branch)) {
       createBranch = false;
     }
 
@@ -136,5 +136,15 @@ class TempConfigurationGitRepo extends TempConfigurationFileRepo {
     repo.commit()
         .setMessage("config change")
         .call();
+  }
+
+  private boolean anyRefMatches(List<Ref> refList, String branch) {
+    for (Ref ref : refList) {
+      if (ref.getName().replace("refs/heads/", "").equals(branch)) {
+        return true;
+      }
+    }
+
+    return false;
   }
 }

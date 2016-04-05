@@ -29,7 +29,6 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.StringJoiner;
 
 /**
  * {@link PropertiesProvider} that interprets given stream as YAML file.
@@ -116,11 +115,16 @@ public class YamlBasedPropertiesProvider implements PropertiesProvider {
           result.put(key + "." + subkey, subMap.get(subkey));
         }
       } else if (value instanceof Collection) {
-        StringJoiner joiner = new StringJoiner(",");
+        StringBuilder joiner = new StringBuilder();
+        String separator = "";
 
         for (Object element : ((Collection) value)) {
           Map<String, Object> subMap = flatten(Collections.singletonMap(key, element));
-          joiner.add(subMap.entrySet().iterator().next().getValue().toString());
+          joiner
+              .append(separator)
+              .append(subMap.entrySet().iterator().next().getValue().toString());
+
+          separator = ",";
         }
 
         result.put(key, joiner.toString());

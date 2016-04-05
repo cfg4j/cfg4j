@@ -74,7 +74,7 @@ public class BindInvocationHandlerTest {
     handler.invoke(this, this.getClass().getMethod("mapMethod"), new Object[]{});
 
     verify(configurationProvider, times(1)).getProperty(eq("mapMethod"), captor.capture());
-    assertThat(captor.getValue().getType().getTypeName()).isEqualTo("java.util.Map<java.util.List<java.lang.Integer>, java.lang.Boolean>");
+    assertThat(captor.getValue().getType().toString()).isEqualTo("java.util.Map<java.util.List<java.lang.Integer>, java.lang.Boolean>");
   }
 
   @Test

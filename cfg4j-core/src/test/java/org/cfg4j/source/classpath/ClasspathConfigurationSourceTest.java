@@ -30,6 +30,7 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
@@ -70,10 +71,15 @@ public class ClasspathConfigurationSourceTest {
 
   @Test
   public void getConfigurationShouldReadFromGivenFiles() throws Exception {
-    configFilesProvider = () -> Arrays.asList(
-        Paths.get("application.properties"),
-        Paths.get("otherConfig.properties")
-    );
+    configFilesProvider = new ConfigFilesProvider() {
+      @Override
+      public Iterable<Path> getConfigFiles() {
+        return Arrays.asList(
+            Paths.get("application.properties"),
+            Paths.get("otherConfig.properties")
+        );
+      }
+    };
 
     source = new ClasspathConfigurationSource(configFilesProvider);
     assertThat(source.getConfiguration(new DefaultEnvironment())).containsOnlyKeys("some.setting", "otherConfig.setting");
@@ -87,9 +93,14 @@ public class ClasspathConfigurationSourceTest {
 
   @Test
   public void getConfigurationShouldThrowOnMissingConfigFile() throws Exception {
-    configFilesProvider = () -> Collections.singletonList(
-        Paths.get("nonexistent.properties")
-    );
+    configFilesProvider = new ConfigFilesProvider() {
+      @Override
+      public Iterable<Path> getConfigFiles() {
+        return Collections.singletonList(
+            Paths.get("nonexistent.properties")
+        );
+      }
+    };
 
     source = new ClasspathConfigurationSource(configFilesProvider);
 
@@ -99,9 +110,14 @@ public class ClasspathConfigurationSourceTest {
 
   @Test
   public void getConfigurationShouldThrowOnMalformedConfigFile() throws Exception {
-    configFilesProvider = () -> Collections.singletonList(
-        Paths.get("malformed.properties")
-    );
+    configFilesProvider = new ConfigFilesProvider() {
+      @Override
+      public Iterable<Path> getConfigFiles() {
+        return Collections.singletonList(
+            Paths.get("malformed.properties")
+        );
+      }
+    };
 
     source = new ClasspathConfigurationSource(configFilesProvider);
 

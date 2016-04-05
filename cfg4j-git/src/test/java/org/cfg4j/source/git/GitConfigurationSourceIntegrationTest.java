@@ -37,8 +37,8 @@ import java.util.Collections;
 
 public class GitConfigurationSourceIntegrationTest {
 
-  public static final String DEFAULT_BRANCH = "master";
-  public static final String TEST_ENV_BRANCH = "testEnvBranch";
+  private static final String DEFAULT_BRANCH = "master";
+  private static final String TEST_ENV_BRANCH = "testEnvBranch";
 
   @Rule
   public ExpectedException expectedException = ExpectedException.none();
@@ -138,7 +138,12 @@ public class GitConfigurationSourceIntegrationTest {
 
   @Test
   public void getConfiguration2ShouldReadFromGivenFiles() throws Exception {
-    ConfigFilesProvider configFilesProvider = () -> Arrays.asList(Paths.get("application.properties"), Paths.get("otherConfig.properties"));
+    ConfigFilesProvider configFilesProvider = new ConfigFilesProvider() {
+      @Override
+      public Iterable<Path> getConfigFiles() {
+        return Arrays.asList(Paths.get("application.properties"), Paths.get("otherConfig.properties"));
+      }
+    };
     Environment environment = new DefaultEnvironment();
 
     try (GitConfigurationSource gitConfigurationSource = getSourceForRemoteRepoWithFilesProvider(configFilesProvider)) {
@@ -166,7 +171,12 @@ public class GitConfigurationSourceIntegrationTest {
 
   @Test
   public void getConfiguration2ShouldThrowOnMalformedConfigFile() throws Exception {
-    ConfigFilesProvider configFilesProvider = () -> Collections.singletonList(Paths.get("malformed.properties"));
+    ConfigFilesProvider configFilesProvider = new ConfigFilesProvider() {
+      @Override
+      public Iterable<Path> getConfigFiles() {
+        return Collections.singletonList(Paths.get("malformed.properties"));
+      }
+    };
 
     expectedException.expect(IllegalStateException.class);
     getSourceForRemoteRepoWithFilesProvider(configFilesProvider).getConfiguration(new DefaultEnvironment());

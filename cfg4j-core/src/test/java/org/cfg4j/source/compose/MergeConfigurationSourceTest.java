@@ -33,6 +33,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
+import org.mockito.Matchers;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.Properties;
@@ -61,7 +62,7 @@ public class MergeConfigurationSourceTest {
 
   @Test
   public void getConfigurationShouldThrowWhenOneOfSourcesThrowsOnMissingEnvironment() throws Exception {
-    when(underlyingSources[1].getConfiguration(any())).thenThrow(new MissingEnvironmentException(""));
+    when(underlyingSources[1].getConfiguration(Matchers.<Environment>any())).thenThrow(new MissingEnvironmentException(""));
 
     expectedException.expect(MissingEnvironmentException.class);
     mergeConfigurationSource.getConfiguration(new ImmutableEnvironment("test"));
@@ -69,7 +70,7 @@ public class MergeConfigurationSourceTest {
 
   @Test
   public void getConfigurationShouldThrowWhenOneOfSourcesThrows() throws Exception {
-    when(underlyingSources[3].getConfiguration(any())).thenThrow(new IllegalStateException());
+    when(underlyingSources[3].getConfiguration(Matchers.<Environment>any())).thenThrow(new IllegalStateException());
 
     expectedException.expect(IllegalStateException.class);
     mergeConfigurationSource.getConfiguration(new ImmutableEnvironment("test"));

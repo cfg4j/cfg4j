@@ -29,8 +29,6 @@ import org.cfg4j.source.reload.strategy.ImmediateReloadStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Optional;
-
 /**
  * A builder producing {@link ConfigurationProvider}s. If you don't specify the value for one the fields
  * then the default value will be provided - read the constructor's documentation to learn
@@ -43,7 +41,7 @@ public class ConfigurationProviderBuilder {
   private ConfigurationSource configurationSource;
   private ReloadStrategy reloadStrategy;
   private Environment environment;
-  private Optional<MetricRegistry> metricRegistry;
+  private MetricRegistry metricRegistry;
   private String prefix;
 
   /**
@@ -61,7 +59,6 @@ public class ConfigurationProviderBuilder {
     configurationSource = new EmptyConfigurationSource();
     reloadStrategy = new ImmediateReloadStrategy();
     environment = new DefaultEnvironment();
-    metricRegistry = Optional.empty();
     prefix = "";
   }
 
@@ -122,7 +119,7 @@ public class ConfigurationProviderBuilder {
    */
   public ConfigurationProviderBuilder withMetrics(MetricRegistry metricRegistry, String prefix) {
     this.prefix = requireNonNull(prefix);
-    this.metricRegistry = Optional.of(metricRegistry);
+    this.metricRegistry = metricRegistry;
     return this;
   }
 
@@ -138,8 +135,8 @@ public class ConfigurationProviderBuilder {
         + environment.getClass().getCanonicalName() + " environment");
 
     ConfigurationSource configurationSource = this.configurationSource;
-    if (metricRegistry.isPresent()) {
-      configurationSource = new MeteredConfigurationSource(metricRegistry.get(), prefix, configurationSource);
+    if (metricRegistry != null) {
+      configurationSource = new MeteredConfigurationSource(metricRegistry, prefix, configurationSource);
     }
 
     configurationSource.init();
@@ -147,8 +144,8 @@ public class ConfigurationProviderBuilder {
     reloadStrategy.register(configurationSource);
 
     SimpleConfigurationProvider configurationProvider = new SimpleConfigurationProvider(configurationSource, environment);
-    if (metricRegistry.isPresent()) {
-      return new MeteredConfigurationProvider(metricRegistry.get(), prefix, configurationProvider);
+    if (metricRegistry != null) {
+      return new MeteredConfigurationProvider(metricRegistry, prefix, configurationProvider);
     }
 
     return configurationProvider;

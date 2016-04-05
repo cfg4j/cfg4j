@@ -54,7 +54,7 @@ public class BindingValidatorTest {
     bindingValidator = new BindingValidator();
 
     when(configPojo.someSetting()).thenReturn(0);
-    when(configPojo.otherSetting()).thenReturn(Collections.emptyList());
+    when(configPojo.otherSetting()).thenReturn(Collections.<Boolean>emptyList());
   }
 
   @Test

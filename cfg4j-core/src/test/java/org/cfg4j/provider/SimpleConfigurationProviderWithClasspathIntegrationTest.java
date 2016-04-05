@@ -20,12 +20,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.cfg4j.source.ConfigurationSource;
 import org.cfg4j.source.classpath.ClasspathConfigurationSource;
+import org.cfg4j.source.context.filesprovider.ConfigFilesProvider;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
 
@@ -54,8 +56,13 @@ public class SimpleConfigurationProviderWithClasspathIntegrationTest {
     assertThat(provider.getProperty("someSetting", Integer.class)).isEqualTo(42);
   }
 
-  private ConfigurationProvider getConfigurationProvider(String path) {
-    ConfigurationSource source = new ClasspathConfigurationSource(() -> Collections.singleton(Paths.get(path)));
+  private ConfigurationProvider getConfigurationProvider(final String path) {
+    ConfigurationSource source = new ClasspathConfigurationSource(new ConfigFilesProvider() {
+      @Override
+      public Iterable<Path> getConfigFiles() {
+        return Collections.singleton(Paths.get(path));
+      }
+    });
 
     return new ConfigurationProviderBuilder()
         .withConfigurationSource(source)

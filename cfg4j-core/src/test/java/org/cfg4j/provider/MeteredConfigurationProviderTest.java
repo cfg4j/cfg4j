@@ -42,7 +42,6 @@ import java.util.Properties;
 public class MeteredConfigurationProviderTest {
 
   public interface ConfigPojo {
-    Integer someSetting();
   }
 
   @Rule
@@ -92,7 +91,8 @@ public class MeteredConfigurationProviderTest {
 
   @Test
   public void bindShouldCallDelegate() throws Exception {
-    ConfigPojo configPojo = () -> null;
+    ConfigPojo configPojo = new ConfigPojo() {
+    };
     when(delegate.bind(any(ConfigurationProvider.class), eq(""), eq(ConfigPojo.class))).thenReturn(configPojo);
 
     assertThat(provider.bind("", ConfigPojo.class)).isEqualTo(configPojo);

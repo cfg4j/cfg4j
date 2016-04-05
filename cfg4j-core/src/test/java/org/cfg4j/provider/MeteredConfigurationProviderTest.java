@@ -92,7 +92,12 @@ public class MeteredConfigurationProviderTest {
 
   @Test
   public void bindShouldCallDelegate() throws Exception {
-    ConfigPojo configPojo = () -> null;
+    ConfigPojo configPojo = new ConfigPojo() {
+      @Override
+      public Integer someSetting() {
+        return null;
+      }
+    };
     when(delegate.bind(any(ConfigurationProvider.class), eq(""), eq(ConfigPojo.class))).thenReturn(configPojo);
 
     assertThat(provider.bind("", ConfigPojo.class)).isEqualTo(configPojo);

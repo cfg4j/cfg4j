@@ -42,7 +42,6 @@ import java.util.Properties;
 public class MeteredConfigurationProviderTest {
 
   public interface ConfigPojo {
-    Integer someSetting();
   }
 
   @Rule
@@ -93,10 +92,6 @@ public class MeteredConfigurationProviderTest {
   @Test
   public void bindShouldCallDelegate() throws Exception {
     ConfigPojo configPojo = new ConfigPojo() {
-      @Override
-      public Integer someSetting() {
-        return null;
-      }
     };
     when(delegate.bind(any(ConfigurationProvider.class), eq(""), eq(ConfigPojo.class))).thenReturn(configPojo);
 

@@ -37,8 +37,8 @@ import java.util.Collections;
 
 public class GitConfigurationSourceIntegrationTest {
 
-  public static final String DEFAULT_BRANCH = "master";
-  public static final String TEST_ENV_BRANCH = "testEnvBranch";
+  private static final String DEFAULT_BRANCH = "master";
+  private static final String TEST_ENV_BRANCH = "testEnvBranch";
 
   @Rule
   public ExpectedException expectedException = ExpectedException.none();

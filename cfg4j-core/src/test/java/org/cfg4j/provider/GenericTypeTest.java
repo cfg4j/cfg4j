@@ -51,6 +51,6 @@ public class GenericTypeTest {
     GenericType<List<Integer>> genericType = new GenericType<List<Integer>>() {
     };
 
-    assertThat(genericType.getType().getTypeName()).isEqualTo("java.util.List<java.lang.Integer>");
+    assertThat(genericType.getType().toString()).isEqualTo("java.util.List<java.lang.Integer>");
   }
 }

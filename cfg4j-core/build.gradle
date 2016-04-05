@@ -28,7 +28,6 @@ dependencies {
 
     // Types parsing
     compile group: "com.github.drapostolos", name: "type-parser", version: "0.5.0"
-    compile group: "com.google.guava", name: "guava", version: "19.0"
 }
 
 // ----------- Task configurations -----------

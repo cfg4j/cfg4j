@@ -39,7 +39,7 @@ class TempConfigurationGitRepo extends TempConfigurationFileRepo {
    * @throws IOException     when unable to create local directories
    * @throws GitAPIException when unable to execute git operations
    */
-  public TempConfigurationGitRepo(String dirName) throws IOException, GitAPIException {
+  TempConfigurationGitRepo(String dirName) throws IOException, GitAPIException {
     super(dirName);
     repo = createLocalRepo(dirPath);
   }
@@ -50,7 +50,7 @@ class TempConfigurationGitRepo extends TempConfigurationFileRepo {
    * @param branch branch to activate
    * @throws GitAPIException when unable to change branch.
    */
-  public void changeBranchTo(String branch) throws GitAPIException {
+  void changeBranchTo(String branch) throws GitAPIException {
     boolean createBranch = true;
 
     List<Ref> refList = repo.branchList().call();
@@ -120,7 +120,6 @@ class TempConfigurationGitRepo extends TempConfigurationFileRepo {
   }
 
   private Git createLocalRepo(Path path) throws IOException, GitAPIException {
-    System.out.println(path);
     Files.delete(path);
 
     return Git.init()

@@ -52,7 +52,7 @@ public class ConsulConfigurationSourceIntegrationTest {
 
     private boolean usWest2Toggle = false;
 
-    public void toggleUsWest2() {
+    void toggleUsWest2() {
       usWest2Toggle = !usWest2Toggle;
     }
 
@@ -124,7 +124,7 @@ public class ConsulConfigurationSourceIntegrationTest {
   }
 
   @Test
-  public void getConfigurationShouldIgnoreLeadginSlashInGivenEnvironment() throws Exception {
+  public void getConfigurationShouldIgnoreLeadingSlashInGivenEnvironment() throws Exception {
     Environment environment = new ImmutableEnvironment("/us-west-1");
 
     assertThat(source.getConfiguration(environment)).contains(MapEntry.entry("featureA.toggle", "disabled"));
@@ -138,6 +138,30 @@ public class ConsulConfigurationSourceIntegrationTest {
 
     Environment environment = new ImmutableEnvironment("us-west-2");
     assertThat(source.getConfiguration(environment)).contains(MapEntry.entry("featureA.toggle", "enabled"));
+  }
+
+  @Test
+  public void getConfigurationShouldThrowBeforeInitCalled() throws Exception {
+    source = new ConsulConfigurationSourceBuilder()
+        .withHost(server.getHostName())
+        .withPort(server.getPort())
+        .build();
+
+    expectedException.expect(IllegalStateException.class);
+    source.getConfiguration(new ImmutableEnvironment(""));
+  }
+
+  @Test
+  public void getConfigurationShouldThrowAfterFailedReload() throws Exception {
+    server.shutdown();
+    try {
+      source.reload();
+    } catch (Exception e) {
+      // NOP
+    }
+
+    expectedException.expect(IllegalStateException.class);
+    source.getConfiguration(new ImmutableEnvironment(""));
   }
 
   @Test

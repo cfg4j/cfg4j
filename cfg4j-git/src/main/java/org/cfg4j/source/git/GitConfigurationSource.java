@@ -61,6 +61,7 @@ class GitConfigurationSource implements ConfigurationSource, Closeable {
   private final String tmpRepoPrefix;
   private Git clonedRepo;
   private Path clonedRepoPath;
+  private boolean initialized;
 
   /**
    * Note: use {@link GitConfigurationSourceBuilder} for building instances of this class.
@@ -88,10 +89,16 @@ class GitConfigurationSource implements ConfigurationSource, Closeable {
     this.repositoryURI = requireNonNull(repositoryURI);
     this.tmpPath = requireNonNull(tmpPath);
     this.tmpRepoPrefix = requireNonNull(tmpRepoPrefix);
+
+    initialized = false;
   }
 
   @Override
   public Properties getConfiguration(Environment environment) {
+    if (!initialized) {
+      throw new IllegalStateException("Configuration source has to be successfully initialized before you request configuration.");
+    }
+
     try {
       checkoutToBranch(branchResolver.getBranchNameFor(environment));
     } catch (GitAPIException e) {
@@ -143,6 +150,8 @@ class GitConfigurationSource implements ConfigurationSource, Closeable {
     } catch (GitAPIException e) {
       throw new SourceCommunicationException("Unable to clone repository: " + repositoryURI, e);
     }
+
+    initialized = true;
   }
 
   @Override
@@ -151,6 +160,7 @@ class GitConfigurationSource implements ConfigurationSource, Closeable {
       LOG.debug("Reloading configuration by pulling changes");
       clonedRepo.pull().call();
     } catch (GitAPIException e) {
+      initialized = false;
       throw new IllegalStateException("Unable to pull from remote repository", e);
     }
   }

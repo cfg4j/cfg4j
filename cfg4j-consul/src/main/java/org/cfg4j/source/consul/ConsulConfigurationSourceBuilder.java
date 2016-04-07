@@ -15,6 +15,9 @@
  */
 package org.cfg4j.source.consul;
 
+import org.cfg4j.source.context.environment.Environment;
+import org.cfg4j.source.context.environment.ImmutableEnvironment;
+
 /**
  * Builder for {@link ConsulConfigurationSource}.
  */
@@ -22,6 +25,7 @@ public class ConsulConfigurationSourceBuilder {
 
   private String host;
   private int port;
+  private Environment environment;
 
   /**
    * Construct {@link ConsulConfigurationSource}s builder
@@ -35,6 +39,7 @@ public class ConsulConfigurationSourceBuilder {
   public ConsulConfigurationSourceBuilder() {
     host = "localhost";
     port = 8500;
+    environment = new ImmutableEnvironment("/");
   }
 
   /**
@@ -60,12 +65,23 @@ public class ConsulConfigurationSourceBuilder {
   }
 
   /**
+   * Set the {@link Environment} to use as your Consul Key Prefix root for configuration.
+   *
+   * @param environment a {@link Environment} interpreted as a Consul Key Prefix
+   * @return this builder with the Environment set to the provided Environment
+     */
+  public ConsulConfigurationSourceBuilder withEnvironment(Environment environment) {
+    this.environment = environment;
+    return this;
+  }
+
+  /**
    * Build a {@link ConsulConfigurationSource} using this builder's configuration
    *
    * @return new {@link ConsulConfigurationSource}
    */
   public ConsulConfigurationSource build() {
-    return new ConsulConfigurationSource(host, port);
+    return new ConsulConfigurationSource(host, port,environment);
   }
 
   @Override
@@ -73,6 +89,7 @@ public class ConsulConfigurationSourceBuilder {
     return "ConsulConfigurationSource{" +
         "host=" + host +
         ", port=" + port +
+        ", environment=" + environment +
         '}';
   }
 }

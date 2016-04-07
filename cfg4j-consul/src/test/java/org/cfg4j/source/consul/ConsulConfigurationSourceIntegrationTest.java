@@ -141,6 +141,19 @@ public class ConsulConfigurationSourceIntegrationTest {
   }
 
   @Test
+  public void getConfigurationShouldThrowAfterFailedReload() throws Exception {
+    server.shutdown();
+    try {
+      source.reload();
+    } catch (Exception e) {
+      // NOP
+    }
+
+    expectedException.expect(SourceCommunicationException.class);
+    source.getConfiguration(new ImmutableEnvironment(""));
+  }
+
+  @Test
   public void reloadShouldThrowOnConnectionFailure() throws Exception {
     server.shutdown();
     expectedException.expect(SourceCommunicationException.class);

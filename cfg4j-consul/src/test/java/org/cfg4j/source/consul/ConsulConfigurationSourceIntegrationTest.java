@@ -152,6 +152,7 @@ public class ConsulConfigurationSourceIntegrationTest {
   @Test
   public void getConfigurationWithSourceEnvironmentSetShouldReturnOnlyKeysInEnvironment() throws Exception {
     Environment environment = new ImmutableEnvironment("/us-west-1");
+    Environment noEnvironment = new ImmutableEnvironment("");
 
     ConsulConfigurationSource source = new ConsulConfigurationSourceBuilder()
             .withHost(server.getHostName())
@@ -162,7 +163,7 @@ public class ConsulConfigurationSourceIntegrationTest {
     source.init();
 
     // Match with any prefix, we shouldn't have gotten us-west-2 data back
-    assertThat(source.getConfiguration(() -> "")).doesNotContain(MapEntry.entry("featureB.toggle", "disabled"));
+    assertThat(source.getConfiguration(noEnvironment)).doesNotContain(MapEntry.entry("featureB.toggle", "disabled"));
 
     assertThat(source.getConfiguration(environment)).contains(MapEntry.entry("featureA.toggle", "disabled"));
   }

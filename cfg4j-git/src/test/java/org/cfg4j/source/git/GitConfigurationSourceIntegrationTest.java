@@ -183,6 +183,14 @@ public class GitConfigurationSourceIntegrationTest {
   }
 
   @Test
+  public void getConfigurationShouldThrowBeforeInitCalled() throws Exception {
+    try (GitConfigurationSource gitConfigurationSource = getSourceBuilderForRemoteRepoWithDefaults().build()) {
+      expectedException.expect(IllegalStateException.class);
+      gitConfigurationSource.getConfiguration(new ImmutableEnvironment(""));
+    }
+  }
+
+  @Test
   public void getConfigurationShouldThrowAfterFailedReload() throws Exception {
     try (GitConfigurationSource gitConfigurationSource = getSourceForRemoteRepoWithDefaults()) {
       remoteRepo.remove();

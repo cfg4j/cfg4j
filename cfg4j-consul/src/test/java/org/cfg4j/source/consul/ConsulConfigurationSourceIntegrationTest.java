@@ -52,7 +52,7 @@ public class ConsulConfigurationSourceIntegrationTest {
 
     private boolean usWest2Toggle = false;
 
-    public void toggleUsWest2() {
+    void toggleUsWest2() {
       usWest2Toggle = !usWest2Toggle;
     }
 

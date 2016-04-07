@@ -18,6 +18,7 @@ package org.cfg4j.source.compose;
 import static java.util.Objects.requireNonNull;
 
 import org.cfg4j.source.ConfigurationSource;
+import org.cfg4j.source.SourceCommunicationException;
 import org.cfg4j.source.context.environment.Environment;
 import org.cfg4j.source.context.environment.MissingEnvironmentException;
 
@@ -85,7 +86,7 @@ public class FallbackConfigurationSource implements ConfigurationSource {
       try {
         source.init();
         atLeastOneSuccess = true;
-      } catch (IllegalStateException e) {
+      } catch (IllegalStateException | SourceCommunicationException e) {
         // NOP
       }
     }
@@ -109,7 +110,7 @@ public class FallbackConfigurationSource implements ConfigurationSource {
       try {
         source.reload();
         atLeastOneSuccess = true;
-      } catch (IllegalStateException e) {
+      } catch (IllegalStateException | SourceCommunicationException e) {
         // NOP
       }
     }

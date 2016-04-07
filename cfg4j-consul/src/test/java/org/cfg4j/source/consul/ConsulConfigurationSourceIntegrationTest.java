@@ -124,7 +124,7 @@ public class ConsulConfigurationSourceIntegrationTest {
   }
 
   @Test
-  public void getConfigurationShouldIgnoreLeadginSlashInGivenEnvironment() throws Exception {
+  public void getConfigurationShouldIgnoreLeadingSlashInGivenEnvironment() throws Exception {
     Environment environment = new ImmutableEnvironment("/us-west-1");
 
     assertThat(source.getConfiguration(environment)).contains(MapEntry.entry("featureA.toggle", "disabled"));

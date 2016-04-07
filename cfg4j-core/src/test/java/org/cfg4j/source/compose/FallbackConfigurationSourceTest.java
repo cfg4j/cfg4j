@@ -26,6 +26,7 @@ import static org.mockito.Mockito.when;
 
 import org.assertj.core.data.MapEntry;
 import org.cfg4j.source.ConfigurationSource;
+import org.cfg4j.source.SourceCommunicationException;
 import org.cfg4j.source.context.environment.Environment;
 import org.cfg4j.source.context.environment.MissingEnvironmentException;
 import org.junit.Before;
@@ -103,8 +104,16 @@ public class FallbackConfigurationSourceTest {
   }
 
   @Test
-  public void initShouldIgnoreExceptionsIfAtLeastOneSourceSucceeds() throws Exception {
+  public void initShouldIgnoreIllegalStateExceptionsIfAtLeastOneSourceSucceeds() throws Exception {
     makeAllSourcesThrow(new IllegalStateException());
+    doNothing().when(underlyingSources[LAST_SOURCE_INDEX]).init();
+
+    fallbackConfigurationSource.init();
+  }
+
+  @Test
+  public void initShouldIgnoreSourceCommunicationExceptionsIfAtLeastOneSourceSucceeds() throws Exception {
+    makeAllSourcesThrow(new SourceCommunicationException("", null));
     doNothing().when(underlyingSources[LAST_SOURCE_INDEX]).init();
 
     fallbackConfigurationSource.init();
@@ -128,8 +137,16 @@ public class FallbackConfigurationSourceTest {
   }
 
   @Test
-  public void reloadShouldIgnoreExceptionsIfAtLeastOneSourceSucceeds() throws Exception {
+  public void reloadShouldIgnoreIllegalStateExceptionsIfAtLeastOneSourceSucceeds() throws Exception {
     makeAllSourcesThrow(new IllegalStateException());
+    doNothing().when(underlyingSources[LAST_SOURCE_INDEX]).reload();
+
+    fallbackConfigurationSource.reload();
+  }
+
+  @Test
+  public void reloadShouldIgnoreExceptionsIfAtLeastOneSourceSucceeds() throws Exception {
+    makeAllSourcesThrow(new SourceCommunicationException("", null));
     doNothing().when(underlyingSources[LAST_SOURCE_INDEX]).reload();
 
     fallbackConfigurationSource.reload();

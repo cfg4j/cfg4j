@@ -149,7 +149,7 @@ public class ConsulConfigurationSourceIntegrationTest {
       // NOP
     }
 
-    expectedException.expect(SourceCommunicationException.class);
+    expectedException.expect(IllegalStateException.class);
     source.getConfiguration(new ImmutableEnvironment(""));
   }
 

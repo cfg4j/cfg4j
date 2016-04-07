@@ -44,6 +44,7 @@ class ConsulConfigurationSource implements ConfigurationSource {
   private Map<String, String> consulValues;
   private final String host;
   private final int port;
+  private boolean initialized;
 
   /**
    * Note: use {@link ConsulConfigurationSourceBuilder} for building instances of this class.
@@ -56,11 +57,17 @@ class ConsulConfigurationSource implements ConfigurationSource {
   ConsulConfigurationSource(String host, int port) {
     this.host = requireNonNull(host);
     this.port = port;
+
+    initialized = false;
   }
 
   @Override
   public Properties getConfiguration(Environment environment) {
     LOG.trace("Requesting configuration for environment: " + environment.getName());
+
+    if (!initialized) {
+      throw new IllegalStateException("Configuration source has to be successfully initialized before you request configuration.");
+    }
 
     Properties properties = new Properties();
     String path = environment.getName();
@@ -97,6 +104,7 @@ class ConsulConfigurationSource implements ConfigurationSource {
     }
 
     reload();
+    initialized = true;
   }
 
   @Override
@@ -108,6 +116,7 @@ class ConsulConfigurationSource implements ConfigurationSource {
       LOG.debug("Reloading configuration from Consuls' K-V store");
       valueList = kvClient.getValues("/");
     } catch (Exception e) {
+      initialized = false;
       throw new SourceCommunicationException("Can't get values from k-v store", e);
     }
 

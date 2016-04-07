@@ -141,6 +141,17 @@ public class ConsulConfigurationSourceIntegrationTest {
   }
 
   @Test
+  public void getConfigurationShouldThrowBeforeInitCalled() throws Exception {
+    source = new ConsulConfigurationSourceBuilder()
+        .withHost(server.getHostName())
+        .withPort(server.getPort())
+        .build();
+
+    expectedException.expect(IllegalStateException.class);
+    source.getConfiguration(new ImmutableEnvironment(""));
+  }
+
+  @Test
   public void getConfigurationShouldThrowAfterFailedReload() throws Exception {
     server.shutdown();
     try {

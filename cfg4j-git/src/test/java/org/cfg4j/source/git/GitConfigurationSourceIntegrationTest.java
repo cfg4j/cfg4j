@@ -85,7 +85,7 @@ public class GitConfigurationSourceIntegrationTest {
   }
 
   @Test
-  public void getConfiguration2ShouldUseBranchResolver() throws Exception {
+  public void getConfigurationShouldUseBranchResolver() throws Exception {
     class Resolver implements BranchResolver {
 
       @Override
@@ -102,7 +102,7 @@ public class GitConfigurationSourceIntegrationTest {
   }
 
   @Test
-  public void getConfiguration2ShouldReadConfigFromGivenBranch() throws Exception {
+  public void getConfigurationShouldReadConfigFromGivenBranch() throws Exception {
     try (GitConfigurationSource gitConfigurationSource = getSourceForRemoteRepoWithDefaults()) {
       Environment environment = new ImmutableEnvironment(TEST_ENV_BRANCH);
 
@@ -111,7 +111,7 @@ public class GitConfigurationSourceIntegrationTest {
   }
 
   @Test
-  public void getConfiguration2ShouldUsePathResolver() throws Exception {
+  public void getConfigurationShouldUsePathResolver() throws Exception {
     class Resolver implements PathResolver {
 
       @Override
@@ -128,7 +128,7 @@ public class GitConfigurationSourceIntegrationTest {
   }
 
   @Test
-  public void getConfiguration2ShouldReadFromGivenPath() throws Exception {
+  public void getConfigurationShouldReadFromGivenPath() throws Exception {
     try (GitConfigurationSource gitConfigurationSource = getSourceForRemoteRepoWithDefaults()) {
       Environment environment = new ImmutableEnvironment("/otherApplicationConfigs/");
 
@@ -137,7 +137,7 @@ public class GitConfigurationSourceIntegrationTest {
   }
 
   @Test
-  public void getConfiguration2ShouldReadFromGivenFiles() throws Exception {
+  public void getConfigurationShouldReadFromGivenFiles() throws Exception {
     ConfigFilesProvider configFilesProvider = new ConfigFilesProvider() {
       @Override
       public Iterable<Path> getConfigFiles() {
@@ -152,7 +152,7 @@ public class GitConfigurationSourceIntegrationTest {
   }
 
   @Test
-  public void getConfiguration2ShouldThrowOnMissingBranch() throws Exception {
+  public void getConfigurationShouldThrowOnMissingBranch() throws Exception {
     try (GitConfigurationSource gitConfigurationSource = getSourceForRemoteRepoWithDefaults()) {
       expectedException.expect(MissingEnvironmentException.class);
       gitConfigurationSource.getConfiguration(new ImmutableEnvironment("nonExistentBranch"));
@@ -160,7 +160,7 @@ public class GitConfigurationSourceIntegrationTest {
   }
 
   @Test
-  public void getConfiguration2ShouldThrowOnMissingConfigFile() throws Exception {
+  public void getConfigurationShouldThrowOnMissingConfigFile() throws Exception {
     remoteRepo.deleteFile(Paths.get("application.properties"));
 
     try (GitConfigurationSource gitConfigurationSource = getSourceForRemoteRepoWithDefaults()) {
@@ -170,7 +170,7 @@ public class GitConfigurationSourceIntegrationTest {
   }
 
   @Test
-  public void getConfiguration2ShouldThrowOnMalformedConfigFile() throws Exception {
+  public void getConfigurationShouldThrowOnMalformedConfigFile() throws Exception {
     ConfigFilesProvider configFilesProvider = new ConfigFilesProvider() {
       @Override
       public Iterable<Path> getConfigFiles() {
@@ -183,7 +183,7 @@ public class GitConfigurationSourceIntegrationTest {
   }
 
   @Test
-  public void reloadShouldUpdateGetConfiguration2OnDefaultBranch() throws Exception {
+  public void reloadShouldUpdateGetConfigurationOnDefaultBranch() throws Exception {
     try (GitConfigurationSource gitConfigurationSource = getSourceForRemoteRepoWithDefaults()) {
       remoteRepo.changeProperty(Paths.get("application.properties"), "some.setting", "changedValue");
       gitConfigurationSource.reload();
@@ -193,7 +193,7 @@ public class GitConfigurationSourceIntegrationTest {
   }
 
   @Test
-  public void reloadShouldUpdateGetConfiguration2OnNonDefaultBranch() throws Exception {
+  public void reloadShouldUpdateGetConfigurationOnNonDefaultBranch() throws Exception {
     try (GitConfigurationSource gitConfigurationSource = getSourceForRemoteRepoWithDefaults()) {
       remoteRepo.changeBranchTo(TEST_ENV_BRANCH);
       remoteRepo.changeProperty(Paths.get("application.properties"), "some.setting", "changedValue");

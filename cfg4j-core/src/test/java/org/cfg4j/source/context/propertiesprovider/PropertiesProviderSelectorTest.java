@@ -65,6 +65,11 @@ public class PropertiesProviderSelectorTest {
   }
 
   @Test
+  public void shouldReturnYamlProviderForYml() throws Exception {
+    assertThat(selector.getProvider("test.yml")).isEqualTo(yamlProvider);
+  }
+
+  @Test
   public void shouldReturnPropertiesProviderForNonYaml() throws Exception {
     assertThat(selector.getProvider("test.properties")).isEqualTo(propertiesProvider);
   }

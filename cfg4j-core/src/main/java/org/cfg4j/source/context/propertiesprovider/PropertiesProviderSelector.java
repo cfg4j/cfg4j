@@ -45,7 +45,7 @@ public class PropertiesProviderSelector {
    * @return provider for the give file type
    */
   public PropertiesProvider getProvider(String filename) {
-    if (filename.endsWith(".yaml")) {
+    if (filename.endsWith(".yaml") || filename.endsWith(".yml")) {
       return yamlProvider;
     } else {
       return propertiesProvider;

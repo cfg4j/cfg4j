@@ -18,7 +18,6 @@ package org.cfg4j.source.system;
 
 import org.cfg4j.source.context.environment.DefaultEnvironment;
 import org.cfg4j.source.context.environment.Environment;
-import org.cfg4j.source.empty.EmptyConfigurationSource;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;

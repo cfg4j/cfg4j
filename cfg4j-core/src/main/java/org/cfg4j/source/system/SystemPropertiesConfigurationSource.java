@@ -24,23 +24,23 @@ import java.util.Properties;
  * {@link ConfigurationSource} providing all system properties.
  */
 public class SystemPropertiesConfigurationSource implements ConfigurationSource {
-    @Override
-    public Properties getConfiguration(Environment environment) {
-        return System.getProperties();
-    }
+  @Override
+  public Properties getConfiguration(Environment environment) {
+    return System.getProperties();
+  }
 
-    @Override
-    public void init() {
-        // NOP
-    }
+  @Override
+  public void init() {
+    // NOP
+  }
 
-    @Override
-    public void reload() {
-        // NOP
-    }
+  @Override
+  public void reload() {
+    // NOP
+  }
 
-    @Override
-    public String toString() {
-        return "SystemPropertiesConfigurationSource{}";
-    }
+  @Override
+  public String toString() {
+    return "SystemPropertiesConfigurationSource{}";
+  }
 }

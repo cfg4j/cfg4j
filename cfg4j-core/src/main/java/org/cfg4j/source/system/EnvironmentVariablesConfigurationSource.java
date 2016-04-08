@@ -26,28 +26,28 @@ import java.util.Properties;
  */
 public class EnvironmentVariablesConfigurationSource implements ConfigurationSource {
 
-    @Override
-    public Properties getConfiguration(Environment environment) {
-        Properties properties = new Properties();
+  @Override
+  public Properties getConfiguration(Environment environment) {
+    Properties properties = new Properties();
 
-        Map<String, String> env = System.getenv();
-        properties.putAll(env);
+    Map<String, String> env = System.getenv();
+    properties.putAll(env);
 
-        return properties;
-    }
+    return properties;
+  }
 
-    @Override
-    public void init() {
-        // NOP
-    }
+  @Override
+  public void init() {
+    // NOP
+  }
 
-    @Override
-    public void reload() {
-        // NOP
-    }
+  @Override
+  public void reload() {
+    // NOP
+  }
 
-    @Override
-    public String toString() {
-        return "EnvironmentVariablesConfigurationSource{}";
-    }
+  @Override
+  public String toString() {
+    return "EnvironmentVariablesConfigurationSource{}";
+  }
 }

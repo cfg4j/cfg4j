@@ -34,6 +34,7 @@ import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.IOException;
+import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
@@ -138,6 +139,15 @@ public class ConsulConfigurationSourceIntegrationTest {
 
     Environment environment = new ImmutableEnvironment("us-west-2");
     assertThat(source.getConfiguration(environment)).contains(MapEntry.entry("featureA.toggle", "enabled"));
+  }
+
+  @Test
+  public void getConfigurationShouldNotChangeBetweenReloads() throws Exception {
+    Properties configurationBefore = source.getConfiguration(new ImmutableEnvironment("us-west-2"));
+    dispatcher.toggleUsWest2();
+    Properties configurationAfter = source.getConfiguration(new ImmutableEnvironment("us-west-2"));
+
+    assertThat(configurationBefore).isEqualTo(configurationAfter);
   }
 
   @Test

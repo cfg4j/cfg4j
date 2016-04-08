@@ -126,7 +126,7 @@ public class ClasspathConfigurationSourceTest {
   }
 
   @Test
-  public void reloadShouldUpdategetConfigurationOnDefaultBranch() throws Exception {
+  public void reloadShouldUpdateGetConfigurationOnDefaultBranch() throws Exception {
     classpathRepo.changeProperty("application.properties", "some.setting", "changedValue");
     source.reload();
 

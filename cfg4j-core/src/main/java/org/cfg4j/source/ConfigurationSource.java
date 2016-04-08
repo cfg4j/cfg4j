@@ -28,7 +28,8 @@ public interface ConfigurationSource extends Reloadable {
 
   /**
    * Get configuration set for a given {@code environment} from this source in a form of {@link Properties}.
-   * Provided {@link Environment} will be used to determine which environment to use.
+   * Provided {@link Environment} will be used to determine which environment to use. The result returned by this
+   * method should not change between two consecutive calls to the {@link #reload()} method.
    *
    * @param environment environment to use
    * @return configuration set for {@code environment}

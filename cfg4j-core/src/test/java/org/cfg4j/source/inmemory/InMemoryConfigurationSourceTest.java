@@ -61,6 +61,15 @@ public class InMemoryConfigurationSourceTest {
   }
 
   @Test
+  public void getConfigurationShouldNotChangeBetweenReloads() throws Exception {
+    Properties configurationBefore = source.getConfiguration(new DefaultEnvironment());
+    properties.put("other.setting", "hello Norbert!");
+    Properties configurationAfter = source.getConfiguration(new DefaultEnvironment());
+
+    assertThat(configurationBefore).isEqualTo(configurationAfter);
+  }
+
+  @Test
   public void reloadShouldReactToChangesToSourceProperties() throws Exception {
     properties.put("other.setting", "hello");
     source.reload();

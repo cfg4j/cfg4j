@@ -98,7 +98,7 @@ class ConsulConfigurationSource implements ConfigurationSource {
     try {
       LOG.info("Connecting to Consul client at " + host + ":" + port);
 
-      Consul consul =  Consul.builder().withHostAndPort(HostAndPort.fromParts(host,port)).build();
+      Consul consul = Consul.builder().withHostAndPort(HostAndPort.fromParts(host, port)).build();
 
       kvClient = consul.keyValueClient();
     } catch (Exception e) {

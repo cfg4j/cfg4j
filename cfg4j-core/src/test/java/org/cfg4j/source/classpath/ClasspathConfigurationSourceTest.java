@@ -35,6 +35,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Properties;
 
 
 @RunWith(MockitoJUnitRunner.class)
@@ -129,6 +130,15 @@ public class ClasspathConfigurationSourceTest {
 
     expectedException.expect(IllegalStateException.class);
     source.getConfiguration(new DefaultEnvironment());
+  }
+
+  @Test
+  public void getConfigurationShouldNotChangeBetweenReloads() throws Exception {
+    Properties configurationBefore = source.getConfiguration(new DefaultEnvironment());
+    classpathRepo.changeProperty("application.properties", "some.setting", "changedValue2");
+    Properties configurationAfter = source.getConfiguration(new DefaultEnvironment());
+
+    assertThat(configurationBefore).isEqualTo(configurationAfter);
   }
 
   @Test

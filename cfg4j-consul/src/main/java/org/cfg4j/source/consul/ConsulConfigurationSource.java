@@ -17,6 +17,7 @@ package org.cfg4j.source.consul;
 
 import static java.util.Objects.requireNonNull;
 
+import com.google.common.net.HostAndPort;
 import com.orbitz.consul.Consul;
 import com.orbitz.consul.KeyValueClient;
 import com.orbitz.consul.model.kv.Value;
@@ -97,7 +98,8 @@ class ConsulConfigurationSource implements ConfigurationSource {
     try {
       LOG.info("Connecting to Consul client at " + host + ":" + port);
 
-      Consul consul = Consul.newClient(host, port);
+      Consul consul =  Consul.builder().withHostAndPort(HostAndPort.fromParts(host,port)).build();
+
       kvClient = consul.keyValueClient();
     } catch (Exception e) {
       throw new SourceCommunicationException("Can't connect to host " + host + ":" + port, e);

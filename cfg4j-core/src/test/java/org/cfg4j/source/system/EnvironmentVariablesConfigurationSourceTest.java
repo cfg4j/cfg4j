@@ -18,17 +18,27 @@ package org.cfg4j.source.system;
 
 import org.cfg4j.source.context.environment.DefaultEnvironment;
 import org.cfg4j.source.context.environment.Environment;
+import org.cfg4j.source.context.environment.ImmutableEnvironment;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.internal.exceptions.ExceptionIncludingMockitoWarnings;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({EnvironmentVariablesConfigurationSource.class})
 public class EnvironmentVariablesConfigurationSourceTest {
 
   @Rule
@@ -56,5 +66,38 @@ public class EnvironmentVariablesConfigurationSourceTest {
   @Test
   public void shouldReturnPathForAnyEnvironment() throws Exception {
     assertThat(source.getConfiguration(mock(Environment.class))).containsKey("PATH");
+  }
+
+  @Test
+  public void shouldReturnAllVariablesInNamespace() throws Exception {
+    // Given
+    EnvironmentVariablesConfigurationSource mockSource = new EnvironmentVariablesConfigurationSource();
+    PowerMockito.mockStatic(System.class);
+
+    final String namespace = "APPLICATION_NAME";
+    Environment nameSpaced = new ImmutableEnvironment(namespace);
+    Environment nameSpaceTrailingUnderscore = new ImmutableEnvironment(namespace + "_");
+
+    Map<String,String> mockEnv = new HashMap<String, String>() {{
+      put("PATH","/usr/bin");
+      put(namespace + "_PROFILE", "PROD");
+      put(namespace + "_USER", "TEST");
+    }};
+
+    // When
+    Mockito.when(System.getenv()).thenReturn(mockEnv);
+    mockSource.init();
+
+    // Then
+    Properties config = mockSource.getConfiguration(nameSpaced);
+    assertThat(config.containsKey("PROFILE"));
+    assertThat(config.containsKey("USER"));
+    assertThat(!config.containsKey("PATH"));
+
+    // Then
+    Properties configUnderscoreEnv = mockSource.getConfiguration(nameSpaceTrailingUnderscore);
+    assertThat(configUnderscoreEnv.containsKey("PROFILE"));
+    assertThat(configUnderscoreEnv.containsKey("USER"));
+    assertThat(!configUnderscoreEnv.containsKey("PATH"));
   }
 }

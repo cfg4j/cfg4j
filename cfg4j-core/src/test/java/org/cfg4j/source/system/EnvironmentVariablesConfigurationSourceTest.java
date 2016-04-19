@@ -16,6 +16,9 @@
 
 package org.cfg4j.source.system;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+
 import org.cfg4j.source.context.environment.DefaultEnvironment;
 import org.cfg4j.source.context.environment.Environment;
 import org.cfg4j.source.context.environment.ImmutableEnvironment;
@@ -25,7 +28,6 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.mockito.internal.exceptions.ExceptionIncludingMockitoWarnings;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -33,9 +35,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({EnvironmentVariablesConfigurationSource.class})
@@ -78,8 +77,8 @@ public class EnvironmentVariablesConfigurationSourceTest {
     Environment nameSpaced = new ImmutableEnvironment(namespace);
     Environment nameSpaceTrailingUnderscore = new ImmutableEnvironment(namespace + "_");
 
-    Map<String,String> mockEnv = new HashMap<String, String>() {{
-      put("PATH","/usr/bin");
+    Map<String, String> mockEnv = new HashMap<String, String>() {{
+      put("PATH", "/usr/bin");
       put(namespace + "_PROFILE", "PROD");
       put(namespace + "_USER", "TEST");
     }};

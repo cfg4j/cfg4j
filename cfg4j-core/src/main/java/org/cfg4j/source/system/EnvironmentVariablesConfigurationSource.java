@@ -35,7 +35,7 @@ public class EnvironmentVariablesConfigurationSource implements ConfigurationSou
   private final static char propertiesDelimiter = '.';
 
 
-  private Map<String,String> environmentVariables = new HashMap<>();
+  private Map<String, String> environmentVariables = new HashMap<>();
   private boolean initialized = false;
 
   @Override
@@ -48,8 +48,8 @@ public class EnvironmentVariablesConfigurationSource implements ConfigurationSou
 
     String environmentContext = formatEnvironmetContext(environment);
 
-    for(Map.Entry<String, String> entry : environmentVariables.entrySet()) {
-      if(entry.getKey().startsWith(environmentContext)) {
+    for (Map.Entry<String, String> entry : environmentVariables.entrySet()) {
+      if (entry.getKey().startsWith(environmentContext)) {
         properties.put(convertToPropertiesKey(entry.getKey(), environmentContext), entry.getValue());
       }
     }
@@ -81,11 +81,11 @@ public class EnvironmentVariablesConfigurationSource implements ConfigurationSou
    *
    * @param environmentVariableKey The Env Variable Name, possibly prefixed with the {@link Environment} which
    *                               in this context serves as a way to namespace variables
-   * @param environmentContext The Environment context in format: ENVIRONMENTNAME_
+   * @param environmentContext     The Environment context in format: ENVIRONMENTNAME_
    * @return A {@link String} with the environment prefix removed and all underscores converted to periods
-     */
+   */
   private static String convertToPropertiesKey(String environmentVariableKey, String environmentContext) {
-    return environmentVariableKey.substring(environmentContext.length()).replace(envDelimiter,propertiesDelimiter);
+    return environmentVariableKey.substring(environmentContext.length()).replace(envDelimiter, propertiesDelimiter);
   }
 
   /**
@@ -93,11 +93,11 @@ public class EnvironmentVariablesConfigurationSource implements ConfigurationSou
    *
    * @param environment The provided {@link Environment} context
    * @return The formatted {@link String} of the {@link Environment} context
-     */
+   */
   private static String formatEnvironmetContext(Environment environment) {
     String environmentName = environment.getName();
 
-    if(environmentName == null || environmentName.isEmpty()) {
+    if (environmentName == null || environmentName.isEmpty()) {
       return "";
     } else {
       return environmentName.endsWith("_") ? environmentName : environmentName + "_";

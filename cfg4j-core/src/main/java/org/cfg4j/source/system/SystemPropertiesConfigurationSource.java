@@ -24,6 +24,7 @@ import java.util.Properties;
  * {@link ConfigurationSource} providing all system properties.
  */
 public class SystemPropertiesConfigurationSource implements ConfigurationSource {
+
   @Override
   public Properties getConfiguration(Environment environment) {
     return (Properties) System.getProperties().clone();

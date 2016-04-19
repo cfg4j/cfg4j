@@ -31,9 +31,8 @@ import java.util.Properties;
 public class EnvironmentVariablesConfigurationSource implements ConfigurationSource {
 
   private static final Logger LOG = LoggerFactory.getLogger(EnvironmentVariablesConfigurationSource.class);
-  private final static char envDelimiter = '_';
-  private final static char propertiesDelimiter = '.';
-
+  private final static char ENV_DELIMITER = '_';
+  private final static char PROPERTIES_DELIMITER = '.';
 
   private Map<String, String> environmentVariables = new HashMap<>();
   private boolean initialized = false;
@@ -46,7 +45,7 @@ public class EnvironmentVariablesConfigurationSource implements ConfigurationSou
 
     Properties properties = new Properties();
 
-    String environmentContext = formatEnvironmetContext(environment);
+    String environmentContext = formatEnvironmentContext(environment);
 
     for (Map.Entry<String, String> entry : environmentVariables.entrySet()) {
       if (entry.getKey().startsWith(environmentContext)) {
@@ -85,7 +84,7 @@ public class EnvironmentVariablesConfigurationSource implements ConfigurationSou
    * @return A {@link String} with the environment prefix removed and all underscores converted to periods
    */
   private static String convertToPropertiesKey(String environmentVariableKey, String environmentContext) {
-    return environmentVariableKey.substring(environmentContext.length()).replace(envDelimiter, propertiesDelimiter);
+    return environmentVariableKey.substring(environmentContext.length()).replace(ENV_DELIMITER, PROPERTIES_DELIMITER);
   }
 
   /**
@@ -94,7 +93,7 @@ public class EnvironmentVariablesConfigurationSource implements ConfigurationSou
    * @param environment The provided {@link Environment} context
    * @return The formatted {@link String} of the {@link Environment} context
    */
-  private static String formatEnvironmetContext(Environment environment) {
+  private static String formatEnvironmentContext(Environment environment) {
     String environmentName = environment.getName();
 
     if (environmentName == null || environmentName.isEmpty()) {

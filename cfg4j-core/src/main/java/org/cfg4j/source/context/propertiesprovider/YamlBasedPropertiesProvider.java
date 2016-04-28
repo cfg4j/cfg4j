@@ -23,7 +23,11 @@ import org.yaml.snakeyaml.scanner.ScannerException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * {@link PropertiesProvider} that interprets given stream as YAML file.

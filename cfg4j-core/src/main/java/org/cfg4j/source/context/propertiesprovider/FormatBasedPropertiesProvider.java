@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public abstract class FormatBasedPropertiesProvider implements PropertiesProvider {
+abstract class FormatBasedPropertiesProvider implements PropertiesProvider {
 
   /**
    * Flatten multi-level map.

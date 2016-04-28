@@ -16,6 +16,8 @@
 
 package org.cfg4j.source.context.propertiesprovider;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.assertj.core.data.MapEntry;
 import org.junit.Before;
 import org.junit.Rule;
@@ -25,8 +27,6 @@ import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.InputStream;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 
 @RunWith(MockitoJUnitRunner.class)

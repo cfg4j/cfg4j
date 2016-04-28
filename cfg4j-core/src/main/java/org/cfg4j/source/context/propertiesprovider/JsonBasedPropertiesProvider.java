@@ -46,10 +46,10 @@ public class JsonBasedPropertiesProvider extends FormatBasedPropertiesProvider {
     try {
 
       JSONTokener tokener = new JSONTokener(inputStream);
-      if(tokener.end()) {
+      if (tokener.end()) {
         return properties;
       }
-      if(tokener.nextClean() == '"') {
+      if (tokener.nextClean() == '"') {
         tokener.back();
         properties.put("content", tokener.nextValue().toString());
       } else {

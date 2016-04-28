@@ -16,7 +16,10 @@
 
 package org.cfg4j.source.context.propertiesprovider;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public abstract class FormatBasedPropertiesProvider implements PropertiesProvider {
 
@@ -43,8 +46,8 @@ public abstract class FormatBasedPropertiesProvider implements PropertiesProvide
         for (Object element : ((Collection) value)) {
           Map<String, Object> subMap = flatten(Collections.singletonMap(key, element));
           joiner
-            .append(separator)
-            .append(subMap.entrySet().iterator().next().getValue().toString());
+              .append(separator)
+              .append(subMap.entrySet().iterator().next().getValue().toString());
 
           separator = ",";
         }

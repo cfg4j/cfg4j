@@ -21,9 +21,9 @@ package org.cfg4j.source.context.environment;
 public interface Environment {
 
   /**
-   * Name of the environment.
+   * Name of the environment. Should not be null.
    *
-   * @return environment name
+   * @return environment name. Not null.
    */
   String getName();
 

@@ -111,8 +111,8 @@ subprojects {
             mavenDeployer {
                 beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
-                def ossrhUsername = project.hasProperty("ossrhUsername") ? project.property("ossrhUsername") : ""
-                def ossrhPassword = project.hasProperty("ossrhPassword") ? project.property("ossrhPassword") : ""
+                def ossrhUsername = project.findProperty("ossrhUsername") ?: ""
+                def ossrhPassword = project.findProperty("ossrhPassword") ?: ""
 
                 repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
                     authentication(userName: ossrhUsername, password: ossrhPassword)

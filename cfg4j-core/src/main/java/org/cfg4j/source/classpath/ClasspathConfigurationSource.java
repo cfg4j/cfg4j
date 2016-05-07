@@ -106,7 +106,7 @@ public class ClasspathConfigurationSource implements ConfigurationSource {
     Path pathPrefix = Paths.get(environment.getName());
 
     URL url = getClass().getClassLoader().getResource(pathPrefix.toString());
-    if (url == null) {
+    if (url == null && !environment.getName().isEmpty()) {
       throw new MissingEnvironmentException("Directory doesn't exist: " + environment.getName());
     }
 

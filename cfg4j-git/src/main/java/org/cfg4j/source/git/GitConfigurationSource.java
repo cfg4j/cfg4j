@@ -119,7 +119,7 @@ class GitConfigurationSource implements ConfigurationSource, Closeable {
         properties.putAll(provider.getProperties(input));
 
       } catch (IOException e) {
-        throw new IllegalStateException("Unable to load properties from application.properties file", e);
+        throw new IllegalStateException("Unable to load configuration from " + path.toString() + " file", e);
       }
     }
 

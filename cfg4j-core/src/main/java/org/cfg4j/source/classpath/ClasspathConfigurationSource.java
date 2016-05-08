@@ -21,6 +21,7 @@ import org.cfg4j.source.ConfigurationSource;
 import org.cfg4j.source.context.environment.Environment;
 import org.cfg4j.source.context.environment.MissingEnvironmentException;
 import org.cfg4j.source.context.filesprovider.ConfigFilesProvider;
+import org.cfg4j.source.context.propertiesprovider.JsonBasedPropertiesProvider;
 import org.cfg4j.source.context.propertiesprovider.PropertiesProvider;
 import org.cfg4j.source.context.propertiesprovider.PropertiesProviderSelector;
 import org.cfg4j.source.context.propertiesprovider.PropertyBasedPropertiesProvider;
@@ -70,7 +71,7 @@ public class ClasspathConfigurationSource implements ConfigurationSource {
    */
   public ClasspathConfigurationSource(ConfigFilesProvider configFilesProvider) {
     this(configFilesProvider, new PropertiesProviderSelector(
-        new PropertyBasedPropertiesProvider(), new YamlBasedPropertiesProvider()
+        new PropertyBasedPropertiesProvider(), new YamlBasedPropertiesProvider(), new JsonBasedPropertiesProvider()
     ));
   }
 
@@ -105,7 +106,7 @@ public class ClasspathConfigurationSource implements ConfigurationSource {
     Path pathPrefix = Paths.get(environment.getName());
 
     URL url = getClass().getClassLoader().getResource(pathPrefix.toString());
-    if (url == null) {
+    if (url == null && !environment.getName().isEmpty()) {
       throw new MissingEnvironmentException("Directory doesn't exist: " + environment.getName());
     }
 

@@ -24,6 +24,7 @@ import static java.util.Objects.requireNonNull;
 public class PropertiesProviderSelector {
 
   private final PropertiesProvider yamlProvider;
+  private final PropertiesProvider jsonProvider;
   private final PropertiesProvider propertiesProvider;
 
   /**
@@ -31,10 +32,12 @@ public class PropertiesProviderSelector {
    *
    * @param propertiesProvider provider used for parsing properties files
    * @param yamlProvider       provider used for parsing Yaml files
+   * @param jsonProvider       provider used for parsing JSON files
    */
-  public PropertiesProviderSelector(PropertiesProvider propertiesProvider, PropertiesProvider yamlProvider) {
+  public PropertiesProviderSelector(PropertiesProvider propertiesProvider, PropertiesProvider yamlProvider, PropertiesProvider jsonProvider) {
     this.propertiesProvider = requireNonNull(propertiesProvider);
     this.yamlProvider = requireNonNull(yamlProvider);
+    this.jsonProvider = requireNonNull(jsonProvider);
   }
 
   /**
@@ -47,6 +50,8 @@ public class PropertiesProviderSelector {
   public PropertiesProvider getProvider(String filename) {
     if (filename.endsWith(".yaml") || filename.endsWith(".yml")) {
       return yamlProvider;
+    } else if (filename.endsWith(".json")) {
+      return jsonProvider;
     } else {
       return propertiesProvider;
     }

@@ -28,6 +28,8 @@ dependencies {
 
     // Types parsing
     compile group: "com.github.drapostolos", name: "type-parser", version: "0.5.0"
+    // JSON support
+    compile group: "org.json", name: "json", version: "20160212"
 }
 
 // ----------- Task configurations -----------

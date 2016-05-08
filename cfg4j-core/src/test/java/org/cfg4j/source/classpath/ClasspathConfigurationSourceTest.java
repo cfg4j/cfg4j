@@ -73,7 +73,7 @@ public class ClasspathConfigurationSourceTest {
     Environment environment = new ImmutableEnvironment("/otherApplicationConfigs");
 
     expectedException.expect(MissingEnvironmentException.class);
-    assertThat(source.getConfiguration(environment)).containsOnly(MapEntry.entry("some.setting", "otherAppSetting"));
+    source.getConfiguration(environment);
   }
 
   @Test

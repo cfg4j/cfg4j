@@ -21,6 +21,7 @@ import org.cfg4j.source.ConfigurationSource;
 import org.cfg4j.source.context.environment.Environment;
 import org.cfg4j.source.context.environment.MissingEnvironmentException;
 import org.cfg4j.source.context.filesprovider.ConfigFilesProvider;
+import org.cfg4j.source.context.propertiesprovider.JsonBasedPropertiesProvider;
 import org.cfg4j.source.context.propertiesprovider.PropertiesProvider;
 import org.cfg4j.source.context.propertiesprovider.PropertiesProviderSelector;
 import org.cfg4j.source.context.propertiesprovider.PropertyBasedPropertiesProvider;
@@ -70,7 +71,7 @@ public class FilesConfigurationSource implements ConfigurationSource {
    */
   public FilesConfigurationSource(ConfigFilesProvider configFilesProvider) {
     this(configFilesProvider, new PropertiesProviderSelector(
-        new PropertyBasedPropertiesProvider(), new YamlBasedPropertiesProvider()
+        new PropertyBasedPropertiesProvider(), new YamlBasedPropertiesProvider(), new JsonBasedPropertiesProvider()
     ));
   }
 

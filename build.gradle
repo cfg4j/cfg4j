@@ -19,7 +19,7 @@ buildscript {
 
     ext {
         artifactGroup = "org.cfg4j"
-        artifactVersion = "4.2.1"
+        artifactVersion = "4.4.0"
     }
 
     repositories {
@@ -35,7 +35,7 @@ buildscript {
 
 // Generate Gradle wrapper
 task wrapper(type: Wrapper) {
-    gradleVersion = "2.12"
+    gradleVersion = "2.13"
 }
 
 subprojects {
@@ -58,7 +58,7 @@ subprojects {
     dependencies {
 
         // Logging
-        compile group: "org.slf4j", name: "slf4j-api", version: "1.7.20"
+        compile group: "org.slf4j", name: "slf4j-api", version: "1.7.21"
 
         // YAML
         compile group: "org.yaml", name: "snakeyaml", version: '1.17'
@@ -67,8 +67,10 @@ subprojects {
         compile group: "io.dropwizard.metrics", name: "metrics-core", version: "3.1.2"
 
         testCompile group: "junit", name: "junit", version: "4.12"
-        testCompile group: "org.assertj", name: "assertj-core", version: "2.4.0"
+        testCompile group: "org.assertj", name: "assertj-core", version: "2.4.1"
         testCompile group: "org.mockito", name: "mockito-core", version: "1.10.19"
+        testCompile group: "org.powermock", name: "powermock-api-mockito", version: "1.6.4"
+        testCompile group: "org.powermock", name: "powermock-module-junit4", version: "1.6.4"
     }
 
     // ----------- EXTRA tasks -----------
@@ -109,8 +111,8 @@ subprojects {
             mavenDeployer {
                 beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
-                def ossrhUsername = project.hasProperty("ossrhUsername") ? project.property("ossrhUsername") : ""
-                def ossrhPassword = project.hasProperty("ossrhPassword") ? project.property("ossrhPassword") : ""
+                def ossrhUsername = project.findProperty("ossrhUsername") ?: ""
+                def ossrhPassword = project.findProperty("ossrhPassword") ?: ""
 
                 repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
                     authentication(userName: ossrhUsername, password: ossrhPassword)

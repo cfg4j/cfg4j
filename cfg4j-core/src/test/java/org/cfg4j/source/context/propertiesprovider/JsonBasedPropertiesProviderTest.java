@@ -83,7 +83,7 @@ public class JsonBasedPropertiesProviderTest {
 
   @Test
   public void shouldThrowForNonJsonFile() throws Exception {
-    String path = "org/cfg4j/source/propertiesprovider/JsonBasedPropertiesProviderTest_shouldThrowForNonYamlFile.json";
+    String path = "org/cfg4j/source/propertiesprovider/JsonBasedPropertiesProviderTest_shouldThrowForNonJsonFile.json";
 
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
       expectedException.expect(IllegalStateException.class);

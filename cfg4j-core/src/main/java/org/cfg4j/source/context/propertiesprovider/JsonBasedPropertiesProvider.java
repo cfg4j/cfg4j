@@ -16,6 +16,8 @@
 
 package org.cfg4j.source.context.propertiesprovider;
 
+import static java.util.Objects.requireNonNull;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -40,6 +42,7 @@ public class JsonBasedPropertiesProvider extends FormatBasedPropertiesProvider {
    */
   @Override
   public Properties getProperties(InputStream inputStream) {
+    requireNonNull(inputStream);
 
     Properties properties = new Properties();
 

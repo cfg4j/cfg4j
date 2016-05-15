@@ -99,6 +99,5 @@ public class JsonBasedPropertiesProviderTest {
       expectedException.expect(NullPointerException.class);
       provider.getProperties(input);
     }
-
   }
 }

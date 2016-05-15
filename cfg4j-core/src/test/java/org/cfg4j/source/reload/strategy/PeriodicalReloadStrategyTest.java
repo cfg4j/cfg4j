@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Norbert Potocki (norbert.potocki@nort.pl)
+ * Copyright 2015-2016 Norbert Potocki (norbert.potocki@nort.pl)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ package org.cfg4j.source.reload.strategy;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import org.cfg4j.source.reload.Reloadable;
 import org.junit.Rule;

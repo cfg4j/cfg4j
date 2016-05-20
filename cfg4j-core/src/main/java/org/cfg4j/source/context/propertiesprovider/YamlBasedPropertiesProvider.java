@@ -16,6 +16,8 @@
 
 package org.cfg4j.source.context.propertiesprovider;
 
+import static java.util.Objects.requireNonNull;
+
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.reader.UnicodeReader;
 import org.yaml.snakeyaml.scanner.ScannerException;
@@ -43,6 +45,8 @@ public class YamlBasedPropertiesProvider extends FormatBasedPropertiesProvider {
    */
   @Override
   public Properties getProperties(InputStream inputStream) {
+    requireNonNull(inputStream);
+
     Yaml yaml = new Yaml();
 
     Properties properties = new Properties();

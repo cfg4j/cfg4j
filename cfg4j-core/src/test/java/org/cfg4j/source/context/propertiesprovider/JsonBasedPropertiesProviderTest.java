@@ -82,11 +82,21 @@ public class JsonBasedPropertiesProviderTest {
   }
 
   @Test
-  public void shouldThrowForNonYamlFile() throws Exception {
-    String path = "org/cfg4j/source/propertiesprovider/JsonBasedPropertiesProviderTest_shouldThrowForNonYamlFile.json";
+  public void shouldThrowForNonJsonFile() throws Exception {
+    String path = "org/cfg4j/source/propertiesprovider/JsonBasedPropertiesProviderTest_shouldThrowForNonJsonFile.json";
 
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
       expectedException.expect(IllegalStateException.class);
+      provider.getProperties(input);
+    }
+  }
+
+  @Test
+  public void shouldThrowOnNullInput() throws Exception {
+    String path = "org/cfg4j/source/propertiesprovider/nonexistent.json";
+
+    try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
+      expectedException.expect(NullPointerException.class);
       provider.getProperties(input);
     }
   }

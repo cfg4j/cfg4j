@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Norbert Potocki (norbert.potocki@nort.pl)
+ * Copyright 2015-2016 Norbert Potocki (norbert.potocki@nort.pl)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
  */
 
 package org.cfg4j.source.context.propertiesprovider;
+
+import static java.util.Objects.requireNonNull;
 
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.reader.UnicodeReader;
@@ -43,6 +45,8 @@ public class YamlBasedPropertiesProvider extends FormatBasedPropertiesProvider {
    */
   @Override
   public Properties getProperties(InputStream inputStream) {
+    requireNonNull(inputStream);
+
     Yaml yaml = new Yaml();
 
     Properties properties = new Properties();

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Norbert Potocki (norbert.potocki@nort.pl)
+ * Copyright 2015-2016 Norbert Potocki (norbert.potocki@nort.pl)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -110,6 +110,15 @@ public class YamlBasedPropertiesProviderTest {
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
       assertThat(provider.getProperties(input)).isEmpty();
     }
+  }
 
+  @Test
+  public void shouldThrowOnNullInput() throws Exception {
+    String path = "org/cfg4j/source/propertiesprovider/nonexistent.json";
+
+    try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
+      expectedException.expect(NullPointerException.class);
+      provider.getProperties(input);
+    }
   }
 }

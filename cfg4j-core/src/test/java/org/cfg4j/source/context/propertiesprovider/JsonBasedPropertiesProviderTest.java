@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Norbert Potocki (norbert.potocki@nort.pl)
+ * Copyright 2015-2016 Norbert Potocki (norbert.potocki@nort.pl)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -82,11 +82,21 @@ public class JsonBasedPropertiesProviderTest {
   }
 
   @Test
-  public void shouldThrowForNonYamlFile() throws Exception {
-    String path = "org/cfg4j/source/propertiesprovider/JsonBasedPropertiesProviderTest_shouldThrowForNonYamlFile.json";
+  public void shouldThrowForNonJsonFile() throws Exception {
+    String path = "org/cfg4j/source/propertiesprovider/JsonBasedPropertiesProviderTest_shouldThrowForNonJsonFile.json";
 
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
       expectedException.expect(IllegalStateException.class);
+      provider.getProperties(input);
+    }
+  }
+
+  @Test
+  public void shouldThrowOnNullInput() throws Exception {
+    String path = "org/cfg4j/source/propertiesprovider/nonexistent.json";
+
+    try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
+      expectedException.expect(NullPointerException.class);
       provider.getProperties(input);
     }
   }

@@ -27,6 +27,7 @@ import static org.mockito.Mockito.when;
 import org.assertj.core.data.MapEntry;
 import org.cfg4j.source.ConfigurationSource;
 import org.cfg4j.source.SourceCommunicationException;
+import org.cfg4j.source.context.environment.DefaultEnvironment;
 import org.cfg4j.source.context.environment.Environment;
 import org.cfg4j.source.context.environment.MissingEnvironmentException;
 import org.junit.Before;
@@ -150,6 +151,17 @@ public class FallbackConfigurationSourceTest {
     doNothing().when(underlyingSources[LAST_SOURCE_INDEX]).reload();
 
     fallbackConfigurationSource.reload();
+  }
+
+  @Test
+  public void getConfigurationShouldNotChangeBetweenReloads() throws Exception {
+    Environment env = new DefaultEnvironment();
+
+    Properties configurationBefore = fallbackConfigurationSource.getConfiguration(env);
+    makeAllSourcesThrow(new SourceCommunicationException("", null));
+    Properties configurationAfter = fallbackConfigurationSource.getConfiguration(env);
+
+    assertThat(configurationAfter).isEqualTo(configurationBefore);
   }
 
   private void makeAllSourcesThrow(Throwable exception) {

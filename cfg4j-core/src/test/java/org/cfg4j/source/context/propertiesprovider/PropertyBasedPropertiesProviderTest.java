@@ -47,7 +47,7 @@ public class PropertyBasedPropertiesProviderTest {
     String path = "org/cfg4j/source/propertiesprovider/PropertyBasedPropertiesProviderTest_shouldLoadProperties.properties";
 
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
-      assertThat(provider.getProperties(input)).containsExactly(MapEntry.entry("property", "abc"));
+      assertThat(provider.getProperties(input)).containsOnly(MapEntry.entry("property", "abc"));
     }
   }
 

@@ -23,6 +23,12 @@ import java.util.Map;
 
 abstract class FormatBasedPropertiesProvider implements PropertiesProvider {
 
+  private final String keySeparator;
+
+  public FormatBasedPropertiesProvider(String keySeparator) {
+    this.keySeparator = keySeparator;
+  }
+
   /**
    * Flatten multi-level map.
    */
@@ -37,7 +43,7 @@ abstract class FormatBasedPropertiesProvider implements PropertiesProvider {
         Map<String, Object> subMap = flatten((Map<String, Object>) value);
 
         for (String subkey : subMap.keySet()) {
-          result.put(key + "." + subkey, subMap.get(subkey));
+          result.put(key + keySeparator + subkey, subMap.get(subkey));
         }
       } else if (value instanceof Collection) {
         StringBuilder joiner = new StringBuilder();

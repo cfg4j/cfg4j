@@ -24,6 +24,8 @@ import java.util.Properties;
  */
 public interface PropertiesProvider {
 
+  String DEFAULT_SEPARATOR = ".";
+
   /**
    * Get {@link Properties} for a given {@code inputStream}.
    *

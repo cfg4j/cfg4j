@@ -33,6 +33,14 @@ import java.util.Properties;
  */
 public class JsonBasedPropertiesProvider extends FormatBasedPropertiesProvider {
 
+  public JsonBasedPropertiesProvider() {
+    super(DEFAULT_SEPARATOR);
+  }
+
+  public JsonBasedPropertiesProvider(String keySeparator) {
+    super(keySeparator);
+  }
+
   /**
    * Get {@link Properties} for a given {@code inputStream} treating it as a JSON file.
    *

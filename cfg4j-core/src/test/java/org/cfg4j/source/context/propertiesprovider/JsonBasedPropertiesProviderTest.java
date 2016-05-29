@@ -47,7 +47,7 @@ public class JsonBasedPropertiesProviderTest {
     String path = "org/cfg4j/source/propertiesprovider/JsonBasedPropertiesProviderTest_shouldReadSingleValues.json";
 
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
-      assertThat(provider.getProperties(input)).containsExactly(MapEntry.entry("setting", "masterValue"),
+      assertThat(provider.getProperties(input)).containsOnly(MapEntry.entry("setting", "masterValue"),
           MapEntry.entry("integerSetting", 42));
     }
   }
@@ -57,8 +57,19 @@ public class JsonBasedPropertiesProviderTest {
     String path = "org/cfg4j/source/propertiesprovider/JsonBasedPropertiesProviderTest_shouldReadNestedValues.json";
 
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
-      assertThat(provider.getProperties(input)).containsExactly(MapEntry.entry("some.setting", "masterValue"),
-          MapEntry.entry("some.integerSetting", 42));
+      assertThat(provider.getProperties(input)).containsOnly(MapEntry.entry("some.setting", "masterValue"),
+        MapEntry.entry("some.integerSetting", 42));
+    }
+  }
+
+  @Test
+  public void shouldReadNestedValuesWithSeparator() throws Exception {
+    String path = "org/cfg4j/source/propertiesprovider/JsonBasedPropertiesProviderTest_shouldReadNestedValues.json";
+
+    try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
+      PropertiesProvider provider = new JsonBasedPropertiesProvider("/");
+      assertThat(provider.getProperties(input)).containsOnly(MapEntry.entry("some/setting", "masterValue"),
+        MapEntry.entry("some/integerSetting", 42));
     }
   }
 
@@ -77,7 +88,7 @@ public class JsonBasedPropertiesProviderTest {
     String path = "org/cfg4j/source/propertiesprovider/JsonBasedPropertiesProviderTest_shouldReadTextBlock.json";
 
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
-      assertThat(provider.getProperties(input)).containsExactly(MapEntry.entry("content", "I'm just a text block document"));
+      assertThat(provider.getProperties(input)).containsOnly(MapEntry.entry("content", "I'm just a text block document"));
     }
   }
 

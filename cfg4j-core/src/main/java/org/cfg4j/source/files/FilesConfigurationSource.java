@@ -70,9 +70,7 @@ public class FilesConfigurationSource implements ConfigurationSource {
    * @param configFilesProvider {@link ConfigFilesProvider} supplying a list of configuration files to use
    */
   public FilesConfigurationSource(ConfigFilesProvider configFilesProvider) {
-    this(configFilesProvider, new PropertiesProviderSelector(
-        new PropertyBasedPropertiesProvider(), new YamlBasedPropertiesProvider(), new JsonBasedPropertiesProvider()
-    ));
+    this(configFilesProvider, PropertiesProviderSelector.createDefault());
   }
 
   /**

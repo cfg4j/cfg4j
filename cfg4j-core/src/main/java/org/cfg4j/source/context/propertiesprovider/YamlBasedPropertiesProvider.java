@@ -36,6 +36,14 @@ import java.util.Properties;
  */
 public class YamlBasedPropertiesProvider extends FormatBasedPropertiesProvider {
 
+  public YamlBasedPropertiesProvider() {
+    super(DEFAULT_SEPARATOR);
+  }
+
+  public YamlBasedPropertiesProvider(String keySeparator) {
+    super(keySeparator);
+  }
+
   /**
    * Get {@link Properties} for a given {@code inputStream} treating it as a YAML file.
    *

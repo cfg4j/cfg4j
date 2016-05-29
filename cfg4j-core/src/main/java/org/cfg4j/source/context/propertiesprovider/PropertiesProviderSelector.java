@@ -27,6 +27,18 @@ public class PropertiesProviderSelector {
   private final PropertiesProvider jsonProvider;
   private final PropertiesProvider propertiesProvider;
 
+  public static PropertiesProviderSelector createDefault() {
+    return new PropertiesProviderSelector(
+      new PropertyBasedPropertiesProvider(), new YamlBasedPropertiesProvider(), new JsonBasedPropertiesProvider()
+    );
+  }
+
+  public static PropertiesProviderSelector createWithSeparator(String separator) {
+    return new PropertiesProviderSelector(
+      new PropertyBasedPropertiesProvider(), new YamlBasedPropertiesProvider(separator), new JsonBasedPropertiesProvider(separator)
+    );
+  }
+
   /**
    * Construct selector.
    *

@@ -16,6 +16,7 @@
 package org.cfg4j.source;
 
 import org.cfg4j.source.context.environment.Environment;
+import org.cfg4j.source.context.environment.MissingEnvironmentException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,6 +35,16 @@ public abstract class BaseConfigurationSource implements ConfigurationSource {
     return cachedConfigurationPerEnvironment.get(environment);
   }
 
+  /**
+   * Reload configuration set for a given {@code environment} from this source in a form of {@link Properties}.
+   * After reload completes the configuration can be accesses via {@link #getConfiguration(Environment)} method.
+   * Any source extending this class is responsible for mapping an {@link Environment} to the internal data representation.
+   * Please document the resolution mechanism in the class javadoc.
+   *
+   * @param environment environment to reload
+   * @throws MissingEnvironmentException when requested environment couldn't be found
+   * @throws IllegalStateException       when unable to fetch configuration
+   */
   @Override
   public void reload(Environment environment) {
     cachedConfigurationPerEnvironment.put(environment, fetchConfiguration(environment));

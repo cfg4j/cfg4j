@@ -17,19 +17,19 @@ package org.cfg4j.source;
 
 import org.cfg4j.source.context.environment.Environment;
 import org.cfg4j.source.context.environment.MissingEnvironmentException;
-import org.cfg4j.source.reload.Reloadable;
+import org.cfg4j.source.inmemory.InMemoryConfigurationSource;
 
 import java.util.Properties;
 
 /**
  * Provides access to configuration store and exposes configuration values in bulk {@link Properties} format.
+ * See {@link InMemoryConfigurationSource} for a simple implementation of this interface.
  */
-public interface ConfigurationSource extends Reloadable {
+public interface ConfigurationSource {
 
   /**
    * Get configuration set for a given {@code environment} from this source in a form of {@link Properties}.
-   * Provided {@link Environment} will be used to determine which environment to use. The result returned by this
-   * method should not change between two consecutive calls to the {@link #reload()} method.
+   * Provided {@link Environment} will be used to determine which environment to use.
    *
    * @param environment environment to use
    * @return configuration set for {@code environment}

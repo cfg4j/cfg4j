@@ -57,12 +57,6 @@ public class EnvironmentVariablesConfigurationSourceTest {
   }
 
   @Test
-  public void reloadShouldNotChangeConfiguration() throws Exception {
-    source.reload();
-    assertThat(source.getConfiguration(new DefaultEnvironment())).containsKey("PATH");
-  }
-
-  @Test
   public void shouldReturnPathForAnyEnvironment() throws Exception {
     assertThat(source.getConfiguration(mock(Environment.class))).containsKey("PATH");
   }

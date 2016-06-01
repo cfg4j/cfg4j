@@ -107,7 +107,6 @@ class ConsulConfigurationSource implements ConfigurationSource {
       throw new SourceCommunicationException("Can't connect to host " + host + ":" + port, e);
     }
 
-    reload();
     initialized = true;
   }
 

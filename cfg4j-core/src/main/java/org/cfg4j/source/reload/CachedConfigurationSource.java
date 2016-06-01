@@ -33,6 +33,11 @@ public class CachedConfigurationSource implements ConfigurationSource {
   private final Map<String, Properties> cachedConfigurationPerEnvironment;
   private final ConfigurationSource underlyingSource;
 
+  /**
+   * Create a new cached configuration source backed by {@code underlyingSource}.
+   *
+   * @param underlyingSource source used to load data into cache.
+   */
   public CachedConfigurationSource(ConfigurationSource underlyingSource) {
     this.underlyingSource = requireNonNull(underlyingSource);
 

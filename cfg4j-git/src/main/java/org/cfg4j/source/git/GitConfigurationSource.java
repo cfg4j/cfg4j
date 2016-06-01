@@ -100,6 +100,14 @@ class GitConfigurationSource implements ConfigurationSource, Closeable {
     }
 
     try {
+      LOG.debug("Reloading configuration by pulling changes");
+      clonedRepo.pull().call();
+    } catch (GitAPIException e) {
+      initialized = false;
+      throw new IllegalStateException("Unable to pull from remote repository", e);
+    }
+
+    try {
       checkoutToBranch(branchResolver.getBranchNameFor(environment));
     } catch (GitAPIException e) {
       throw new MissingEnvironmentException(environment.getName(), e);
@@ -152,17 +160,6 @@ class GitConfigurationSource implements ConfigurationSource, Closeable {
     }
 
     initialized = true;
-  }
-
-  @Override
-  public void reload() {
-    try {
-      LOG.debug("Reloading configuration by pulling changes");
-      clonedRepo.pull().call();
-    } catch (GitAPIException e) {
-      initialized = false;
-      throw new IllegalStateException("Unable to pull from remote repository", e);
-    }
   }
 
   @Override

@@ -70,6 +70,8 @@ class ConsulConfigurationSource implements ConfigurationSource {
       throw new IllegalStateException("Configuration source has to be successfully initialized before you request configuration.");
     }
 
+    reload();
+
     Properties properties = new Properties();
     String path = environment.getName();
 
@@ -109,8 +111,7 @@ class ConsulConfigurationSource implements ConfigurationSource {
     initialized = true;
   }
 
-  @Override
-  public void reload() {
+  private void reload() {
     Map<String, String> newConsulValues = new HashMap<>();
     List<Value> valueList;
 

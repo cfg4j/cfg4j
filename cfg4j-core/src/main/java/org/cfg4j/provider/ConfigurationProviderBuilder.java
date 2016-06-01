@@ -19,6 +19,7 @@ import static java.util.Objects.requireNonNull;
 
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
+import org.cfg4j.source.CachedConfigurationSource;
 import org.cfg4j.source.ConfigurationSource;
 import org.cfg4j.source.context.environment.DefaultEnvironment;
 import org.cfg4j.source.context.environment.Environment;
@@ -134,16 +135,17 @@ public class ConfigurationProviderBuilder {
         + reloadStrategy.getClass().getCanonicalName() + " reload strategy and "
         + environment.getClass().getCanonicalName() + " environment");
 
-    ConfigurationSource configurationSource = this.configurationSource;
+    CachedConfigurationSource cachedConfigurationSource = new CachedConfigurationSource(configurationSource);
     if (metricRegistry != null) {
-      configurationSource = new MeteredConfigurationSource(metricRegistry, prefix, configurationSource);
+      configurationSource = new MeteredConfigurationSource(metricRegistry, prefix, cachedConfigurationSource);
     }
 
-    configurationSource.init();
+    cachedConfigurationSource.init();
+    cachedConfigurationSource.reload(environment);
 
-    reloadStrategy.register(configurationSource);
+    reloadStrategy.register(cachedConfigurationSource);
 
-    SimpleConfigurationProvider configurationProvider = new SimpleConfigurationProvider(configurationSource, environment);
+    SimpleConfigurationProvider configurationProvider = new SimpleConfigurationProvider(cachedConfigurationSource, environment);
     if (metricRegistry != null) {
       return new MeteredConfigurationProvider(metricRegistry, prefix, configurationProvider);
     }

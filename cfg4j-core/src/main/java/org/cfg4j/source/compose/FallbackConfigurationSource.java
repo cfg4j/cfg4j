@@ -96,30 +96,6 @@ public class FallbackConfigurationSource implements ConfigurationSource {
     }
   }
 
-  /**
-   * Request configuration reload. When this method returns configuration should be reloaded for at least
-   * one underlying source. Tries to reload all sources. Reload failures are ignored (unless all sources fail to reload).
-   *
-   * @throws IllegalStateException when unable to reload all of the underlying sources
-   */
-  @Override
-  public void reload() {
-    boolean atLeastOneSuccess = false;
-
-    for (ConfigurationSource source : sources) {
-      try {
-        source.reload();
-        atLeastOneSuccess = true;
-      } catch (IllegalStateException | SourceCommunicationException e) {
-        // NOP
-      }
-    }
-
-    if (!atLeastOneSuccess) {
-      throw new IllegalStateException("Unable to reload any of the underlying sources");
-    }
-  }
-
   @Override
   public String toString() {
     return "FallbackConfigurationSource{" +

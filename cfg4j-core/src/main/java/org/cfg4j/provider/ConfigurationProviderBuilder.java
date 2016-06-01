@@ -19,13 +19,14 @@ import static java.util.Objects.requireNonNull;
 
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
-import org.cfg4j.source.CachedConfigurationSource;
 import org.cfg4j.source.ConfigurationSource;
 import org.cfg4j.source.context.environment.DefaultEnvironment;
 import org.cfg4j.source.context.environment.Environment;
 import org.cfg4j.source.empty.EmptyConfigurationSource;
 import org.cfg4j.source.metered.MeteredConfigurationSource;
+import org.cfg4j.source.reload.CachedConfigurationSource;
 import org.cfg4j.source.reload.ReloadStrategy;
+import org.cfg4j.source.reload.Reloadable;
 import org.cfg4j.source.reload.strategy.ImmediateReloadStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -135,7 +136,7 @@ public class ConfigurationProviderBuilder {
         + reloadStrategy.getClass().getCanonicalName() + " reload strategy and "
         + environment.getClass().getCanonicalName() + " environment");
 
-    CachedConfigurationSource cachedConfigurationSource = new CachedConfigurationSource(configurationSource);
+    final CachedConfigurationSource cachedConfigurationSource = new CachedConfigurationSource(configurationSource);
     if (metricRegistry != null) {
       configurationSource = new MeteredConfigurationSource(metricRegistry, prefix, cachedConfigurationSource);
     }
@@ -143,7 +144,12 @@ public class ConfigurationProviderBuilder {
     cachedConfigurationSource.init();
     cachedConfigurationSource.reload(environment);
 
-    reloadStrategy.register(cachedConfigurationSource);
+    reloadStrategy.register(new Reloadable() {
+      @Override
+      public void reload() {
+        cachedConfigurationSource.reload(environment);
+      }
+    });
 
     SimpleConfigurationProvider configurationProvider = new SimpleConfigurationProvider(cachedConfigurationSource, environment);
     if (metricRegistry != null) {

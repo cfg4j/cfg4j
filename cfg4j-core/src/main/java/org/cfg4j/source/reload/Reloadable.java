@@ -15,8 +15,6 @@
  */
 package org.cfg4j.source.reload;
 
-import org.cfg4j.source.context.environment.Environment;
-
 /**
  * Identifies resource that can be reloaded.
  */
@@ -25,9 +23,8 @@ public interface Reloadable {
   /**
    * Request resource reload. Resource should be fully reloaded before this method returns.
    *
-   * @param environment environment to reload
    * @throws IllegalStateException when unable to reload resource
    */
-  void reload(Environment environment);
+  void reload();
 
 }

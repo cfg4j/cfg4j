@@ -159,6 +159,8 @@ public class ConfigurationProviderBuilder {
         "configurationSource=" + configurationSource +
         ", reloadStrategy=" + reloadStrategy +
         ", environment=" + environment +
+        ", metricRegistry=" + metricRegistry +
+        ", prefix='" + prefix + '\'' +
         '}';
   }
 }

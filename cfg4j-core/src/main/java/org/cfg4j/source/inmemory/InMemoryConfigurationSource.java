@@ -28,8 +28,7 @@ import java.util.Properties;
  */
 public class InMemoryConfigurationSource implements ConfigurationSource {
 
-  private Properties properties;
-  private final Properties sourceProperties;
+  private final Properties properties;
 
   /**
    * Create in-memory configuration source with given {@code properties}. A reference to the properties object is being kept allowing
@@ -38,8 +37,7 @@ public class InMemoryConfigurationSource implements ConfigurationSource {
    * @param properties properties to seed source.
    */
   public InMemoryConfigurationSource(Properties properties) {
-    this.sourceProperties = requireNonNull(properties);
-    this.properties = (Properties) properties.clone();
+    this.properties = requireNonNull(properties);
   }
 
   @Override
@@ -50,11 +48,6 @@ public class InMemoryConfigurationSource implements ConfigurationSource {
   @Override
   public void init() {
     // NOP
-  }
-
-  @Override
-  public void reload() {
-    properties = (Properties) sourceProperties.clone();
   }
 
   @Override

@@ -69,12 +69,4 @@ public class InMemoryConfigurationSourceTest {
     assertThat(configurationBefore).isEqualTo(configurationAfter);
   }
 
-  @Test
-  public void reloadShouldReactToChangesToSourceProperties() throws Exception {
-    properties.put("other.setting", "hello");
-    source.reload();
-
-    assertThat(source.getConfiguration(new DefaultEnvironment())).contains(MapEntry.entry("other.setting", "hello"));
-  }
-
 }

@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cfg4j.source;
+package org.cfg4j.source.reload;
 
 import static java.util.Objects.requireNonNull;
 
+import org.cfg4j.source.ConfigurationSource;
 import org.cfg4j.source.context.environment.Environment;
 import org.cfg4j.source.context.environment.MissingEnvironmentException;
-import org.cfg4j.source.reload.Reloadable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,7 +28,7 @@ import java.util.Properties;
 /**
  * A {@link ConfigurationSource} that caches configuration between calls to the {@link #reload(Environment)} method.
  */
-public class CachedConfigurationSource implements ConfigurationSource, Reloadable {
+public class CachedConfigurationSource implements ConfigurationSource {
 
   private final Map<Environment, Properties> cachedConfigurationPerEnvironment;
   private final ConfigurationSource underlyingSource;
@@ -59,7 +59,6 @@ public class CachedConfigurationSource implements ConfigurationSource, Reloadabl
    * @throws MissingEnvironmentException when requested environment couldn't be found
    * @throws IllegalStateException       when unable to fetch configuration
    */
-  @Override
   public void reload(Environment environment) {
     Properties configuration = underlyingSource.getConfiguration(environment);
     cachedConfigurationPerEnvironment.put(environment, configuration);

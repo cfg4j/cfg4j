@@ -15,24 +15,38 @@
  */
 package org.cfg4j.source;
 
+import static java.util.Objects.requireNonNull;
+
 import org.cfg4j.source.context.environment.Environment;
 import org.cfg4j.source.context.environment.MissingEnvironmentException;
+import org.cfg4j.source.reload.Reloadable;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-public abstract class BaseConfigurationSource implements ConfigurationSource {
+/**
+ * A {@link ConfigurationSource} that caches configuration between calls to the {@link #reload(Environment)} method.
+ */
+public class CachedConfigurationSource implements ConfigurationSource, Reloadable {
 
   private final Map<Environment, Properties> cachedConfigurationPerEnvironment;
+  private final ConfigurationSource underlyingSource;
 
-  public BaseConfigurationSource() {
+  public CachedConfigurationSource(ConfigurationSource underlyingSource) {
+    this.underlyingSource = requireNonNull(underlyingSource);
+
     cachedConfigurationPerEnvironment = new HashMap<>();
   }
 
   @Override
   public Properties getConfiguration(Environment environment) {
     return cachedConfigurationPerEnvironment.get(environment);
+  }
+
+  @Override
+  public void init() {
+    underlyingSource.init();
   }
 
   /**
@@ -47,8 +61,7 @@ public abstract class BaseConfigurationSource implements ConfigurationSource {
    */
   @Override
   public void reload(Environment environment) {
-    cachedConfigurationPerEnvironment.put(environment, fetchConfiguration(environment));
+    Properties configuration = underlyingSource.getConfiguration(environment);
+    cachedConfigurationPerEnvironment.put(environment, configuration);
   }
-
-  protected abstract Properties fetchConfiguration(Environment environment);
 }

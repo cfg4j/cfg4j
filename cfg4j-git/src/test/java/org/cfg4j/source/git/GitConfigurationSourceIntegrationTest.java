@@ -34,7 +34,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Properties;
 
 public class GitConfigurationSourceIntegrationTest {
 
@@ -188,17 +187,6 @@ public class GitConfigurationSourceIntegrationTest {
     try (GitConfigurationSource gitConfigurationSource = getSourceBuilderForRemoteRepoWithDefaults().build()) {
       expectedException.expect(IllegalStateException.class);
       gitConfigurationSource.getConfiguration(new ImmutableEnvironment(""));
-    }
-  }
-
-  @Test
-  public void getConfigurationShouldNotChangeBetweenReloads() throws Exception {
-    try (GitConfigurationSource gitConfigurationSource = getSourceForRemoteRepoWithDefaults()) {
-      Properties configurationBefore = gitConfigurationSource.getConfiguration(new DefaultEnvironment());
-      remoteRepo.changeProperty(Paths.get("application.properties"), "some.setting", "changedValue");
-      Properties configurationAfter = gitConfigurationSource.getConfiguration(new DefaultEnvironment());
-
-      assertThat(configurationBefore).isEqualTo(configurationAfter);
     }
   }
 

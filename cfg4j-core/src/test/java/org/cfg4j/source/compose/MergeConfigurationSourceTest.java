@@ -24,7 +24,6 @@ import static org.mockito.Mockito.when;
 
 import org.assertj.core.data.MapEntry;
 import org.cfg4j.source.ConfigurationSource;
-import org.cfg4j.source.context.environment.DefaultEnvironment;
 import org.cfg4j.source.context.environment.Environment;
 import org.cfg4j.source.context.environment.ImmutableEnvironment;
 import org.cfg4j.source.context.environment.MissingEnvironmentException;
@@ -100,18 +99,6 @@ public class MergeConfigurationSourceTest {
     for (ConfigurationSource underlyingSource : underlyingSources) {
       verify(underlyingSource, atLeastOnce()).init();
     }
-  }
-
-  @Test
-  public void getConfigurationShouldNotChangeBetweenReloads() throws Exception {
-    Environment env = new DefaultEnvironment();
-
-    sourcesWithProps(env, "prop1", "value1", "prop2", "value2");
-    Properties configurationBefore = mergeConfigurationSource.getConfiguration(env);
-    sourcesWithProps(env, "prop1", "value1", "prop2", "NEW_VALUE");
-    Properties configurationAfter = mergeConfigurationSource.getConfiguration(env);
-
-    assertThat(configurationAfter).isEqualTo(configurationBefore);
   }
 
   private void sourcesWithProps(Environment environment, String... props) {

@@ -28,8 +28,6 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.Properties;
-
 @RunWith(MockitoJUnitRunner.class)
 public class SystemPropertiesConfigurationSourceTest {
 
@@ -72,12 +70,4 @@ public class SystemPropertiesConfigurationSourceTest {
     assertThat(source.getConfiguration(new DefaultEnvironment())).containsKey("reloaded.property");
   }
 
-  @Test
-  public void getConfigurationShouldNotChangeBetweenReloads() throws Exception {
-    Properties configurationBefore = source.getConfiguration(new DefaultEnvironment());
-    System.setProperty("CFG4J_TEST_PROPERTY", "someValue");
-    Properties configurationAfter = source.getConfiguration(new DefaultEnvironment());
-
-    assertThat(configurationBefore).isEqualTo(configurationAfter);
-  }
 }

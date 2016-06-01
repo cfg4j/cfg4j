@@ -35,7 +35,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Properties;
 
 
 @RunWith(MockitoJUnitRunner.class)
@@ -133,12 +132,4 @@ public class FilesConfigurationSourceTest {
     source.getConfiguration(environment);
   }
 
-  @Test
-  public void getConfigurationShouldNotChangeBetweenReloads() throws Exception {
-    Properties configurationBefore = source.getConfiguration(environment);
-    fileRepo.changeProperty(Paths.get("application.properties"), "some.setting", "changedValue2");
-    Properties configurationAfter = source.getConfiguration(environment);
-
-    assertThat(configurationBefore).isEqualTo(configurationAfter);
-  }
 }

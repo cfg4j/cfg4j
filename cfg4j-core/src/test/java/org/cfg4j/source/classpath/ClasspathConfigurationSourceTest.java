@@ -140,12 +140,4 @@ public class ClasspathConfigurationSourceTest {
 
     assertThat(configurationBefore).isEqualTo(configurationAfter);
   }
-
-  @Test
-  public void reloadShouldUpdateGetConfigurationOnDefaultBranch() throws Exception {
-    classpathRepo.changeProperty("application.properties", "some.setting", "changedValue");
-    source.reload();
-
-    assertThat(source.getConfiguration(new DefaultEnvironment())).containsOnly(MapEntry.entry("some.setting", "changedValue"));
-  }
 }

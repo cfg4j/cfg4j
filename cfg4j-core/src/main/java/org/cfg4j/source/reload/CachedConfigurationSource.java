@@ -30,7 +30,7 @@ import java.util.Properties;
  */
 public class CachedConfigurationSource implements ConfigurationSource {
 
-  private final Map<Environment, Properties> cachedConfigurationPerEnvironment;
+  private final Map<String, Properties> cachedConfigurationPerEnvironment;
   private final ConfigurationSource underlyingSource;
 
   public CachedConfigurationSource(ConfigurationSource underlyingSource) {
@@ -39,9 +39,22 @@ public class CachedConfigurationSource implements ConfigurationSource {
     cachedConfigurationPerEnvironment = new HashMap<>();
   }
 
+  /**
+   * Get configuration set for a given {@code environment} from the cache. For cache to be seeded
+   * you have to call the {@link #reload(Environment)} method before calling this method. Otherwise
+   * the method will throw {@link MissingEnvironmentException}.
+   *
+   * @param environment environment to use
+   * @return configuration set for {@code environment}
+   * @throws MissingEnvironmentException when there's no config for the given environment in the cache
+   */
   @Override
   public Properties getConfiguration(Environment environment) {
-    return cachedConfigurationPerEnvironment.get(environment);
+    if (cachedConfigurationPerEnvironment.containsKey(environment.getName())) {
+      return cachedConfigurationPerEnvironment.get(environment.getName());
+    } else {
+      throw new MissingEnvironmentException(environment.getName());
+    }
   }
 
   @Override
@@ -52,8 +65,6 @@ public class CachedConfigurationSource implements ConfigurationSource {
   /**
    * Reload configuration set for a given {@code environment} from this source in a form of {@link Properties}.
    * After reload completes the configuration can be accesses via {@link #getConfiguration(Environment)} method.
-   * Any source extending this class is responsible for mapping an {@link Environment} to the internal data representation.
-   * Please document the resolution mechanism in the class javadoc.
    *
    * @param environment environment to reload
    * @throws MissingEnvironmentException when requested environment couldn't be found
@@ -61,6 +72,6 @@ public class CachedConfigurationSource implements ConfigurationSource {
    */
   public void reload(Environment environment) {
     Properties configuration = underlyingSource.getConfiguration(environment);
-    cachedConfigurationPerEnvironment.put(environment, configuration);
+    cachedConfigurationPerEnvironment.put(environment.getName(), configuration);
   }
 }

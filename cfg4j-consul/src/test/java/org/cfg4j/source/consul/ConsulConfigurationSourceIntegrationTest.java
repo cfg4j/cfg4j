@@ -31,6 +31,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
+import org.mockito.internal.exceptions.ExceptionIncludingMockitoWarnings;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.IOException;
@@ -50,6 +51,11 @@ public class ConsulConfigurationSourceIntegrationTest {
     private static final String disabledBase64 = "ZGlzYWJsZWQ=";
     private static final String enabledBase64 = "ZW5hYmxlZA==";
 
+    private static final String usWest1Config = "{\"CreateIndex\":1,\"ModifyIndex\":1,\"LockIndex\":0,\"Key\":\"us-west-1/featureA.toggle\",\"Flags\":0,\"Value\":\"" + disabledBase64 + "\"}";
+    private static final String usWest2FeatureEnable = "{\"CreateIndex\":2,\"ModifyIndex\":2,\"LockIndex\":0,\"Key\":\"us-west-2/featureB.toggle\",\"Flags\":0,\"Value\":\"" + enabledBase64 + "\"}";
+    private static final String usWest2FeatureDisabled = "{\"CreateIndex\":2,\"ModifyIndex\":2,\"LockIndex\":0,\"Key\":\"us-west-2/featureB.toggle\",\"Flags\":0,\"Value\":\"" + disabledBase64 + "\"}";
+
+
     private boolean usWest2Toggle = false;
 
     void toggleUsWest2() {
@@ -58,17 +64,30 @@ public class ConsulConfigurationSourceIntegrationTest {
 
     @Override
     public MockResponse dispatch(RecordedRequest request) throws InterruptedException {
-
+      StringBuilder sbResponseBody = new StringBuilder();
       switch (request.getPath()) {
         case "/v1/agent/self":
           return new MockResponse().setResponseCode(200).setBody(PING_RESPONSE);
         case "/v1/kv/?recurse=true":
+          sbResponseBody.append("[");
+          sbResponseBody.append(usWest1Config).append(",");
+          if(usWest2Toggle) {
+            sbResponseBody.append(usWest2FeatureEnable);
+          } else {
+            sbResponseBody.append(usWest2FeatureDisabled);
+          }
+          sbResponseBody.append("]");
+
           return new MockResponse()
               .setResponseCode(200)
               .addHeader("Content-Type", "application/json; charset=utf-8")
-              .setBody("[{\"CreateIndex\":1,\"ModifyIndex\":1,\"LockIndex\":0,\"Key\":\"us-west-1/featureA.toggle\",\"Flags\":0,\"Value\":\"ZGlzYWJsZWQ=\"},"
-                  + "{\"CreateIndex\":2,\"ModifyIndex\":2,\"LockIndex\":0,\"Key\":\"us-west-2/featureA.toggle\",\"Flags\":0,\"Value\":\""
-                  + (usWest2Toggle ? enabledBase64 : disabledBase64) + "\"}]");
+              .setBody(sbResponseBody.toString());
+
+        case "/v1/kv/us-west-1?recurse=true":
+          return new MockResponse()
+                  .setResponseCode(200)
+                  .addHeader("Content-Type", "application/json; charset=utf-8")
+                  .setBody("[" + usWest1Config + "]");
       }
       return new MockResponse().setResponseCode(404);
     }
@@ -131,13 +150,32 @@ public class ConsulConfigurationSourceIntegrationTest {
   }
 
   @Test
+  public void getConfigurationWithSourceEnvironmentSetShouldReturnOnlyKeysInEnvironment() throws Exception {
+    Environment environment = new ImmutableEnvironment("/us-west-1");
+    Environment noEnvironment = new ImmutableEnvironment("");
+
+    ConsulConfigurationSource source = new ConsulConfigurationSourceBuilder()
+            .withHost(server.getHostName())
+            .withPort(server.getPort())
+            .withEnvironment(environment)
+            .build();
+
+    source.init();
+
+    // Match with any prefix, we shouldn't have gotten us-west-2 data back
+    assertThat(source.getConfiguration(noEnvironment)).doesNotContain(MapEntry.entry("featureB.toggle", "disabled"));
+
+    assertThat(source.getConfiguration(environment)).contains(MapEntry.entry("featureA.toggle", "disabled"));
+  }
+
+  @Test
   public void getConfigurationShouldBeUpdatedByReload() throws Exception {
     dispatcher.toggleUsWest2();
 
     source.reload();
 
     Environment environment = new ImmutableEnvironment("us-west-2");
-    assertThat(source.getConfiguration(environment)).contains(MapEntry.entry("featureA.toggle", "enabled"));
+    assertThat(source.getConfiguration(environment)).contains(MapEntry.entry("featureB.toggle", "enabled"));
   }
 
   @Test

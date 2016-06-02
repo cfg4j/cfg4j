@@ -34,8 +34,16 @@ import java.util.Properties;
 
 /**
  * Note: use {@link ConsulConfigurationSourceBuilder} for building instances of this class.
+ *
+ * <p>
+ * This source interpretes the provided {@link Environment} variable as a Consul Key Prefix.
+ * If you build this Source without passing the {@link Environment} to {@link ConsulConfigurationSourceBuilder#withEnvironment(Environment)}
+ * then by default all values will be fetched from Consul to be matched.
+ * </p>
+ *
  * <p>
  * Read configuration from the Consul K-V store.
+ * </p>
  */
 class ConsulConfigurationSource implements ConfigurationSource {
 
@@ -46,6 +54,7 @@ class ConsulConfigurationSource implements ConfigurationSource {
   private final String host;
   private final int port;
   private boolean initialized;
+  private final Environment environment;
 
   /**
    * Note: use {@link ConsulConfigurationSourceBuilder} for building instances of this class.
@@ -55,9 +64,10 @@ class ConsulConfigurationSource implements ConfigurationSource {
    * @param host Consul host to connect to
    * @param port Consul port to connect to
    */
-  ConsulConfigurationSource(String host, int port) {
+  ConsulConfigurationSource(String host, int port, Environment environment) {
     this.host = requireNonNull(host);
     this.port = port;
+    this.environment = environment;
 
     initialized = false;
   }
@@ -71,19 +81,11 @@ class ConsulConfigurationSource implements ConfigurationSource {
     }
 
     Properties properties = new Properties();
-    String path = environment.getName();
-
-    if (path.startsWith("/")) {
-      path = path.substring(1);
-    }
-
-    if (path.length() > 0 && !path.endsWith("/")) {
-      path = path + "/";
-    }
+    String environmentPrefix = formatEnvironment(environment);
 
     for (Map.Entry<String, String> entry : consulValues.entrySet()) {
-      if (entry.getKey().startsWith(path)) {
-        properties.put(entry.getKey().substring(path.length()).replace("/", "."), entry.getValue());
+      if (entry.getKey().startsWith(environmentPrefix)) {
+        properties.put(entry.getKey().substring(environmentPrefix.length()).replace("/", "."), entry.getValue());
       }
     }
 
@@ -115,8 +117,9 @@ class ConsulConfigurationSource implements ConfigurationSource {
     List<Value> valueList;
 
     try {
-      LOG.debug("Reloading configuration from Consuls' K-V store");
-      valueList = kvClient.getValues("/");
+      String consulKeyPath = formatEnvironmentToConsulKeyPrefix(environment);
+      LOG.debug("Reloading configuration from Consuls' K-V store for Prefix: " + consulKeyPath);
+      valueList = kvClient.getValues(consulKeyPath);
     } catch (Exception e) {
       initialized = false;
       throw new SourceCommunicationException("Can't get values from k-v store", e);
@@ -143,5 +146,32 @@ class ConsulConfigurationSource implements ConfigurationSource {
         "consulValues=" + consulValues +
         ", kvClient=" + kvClient +
         '}';
+  }
+
+  private static String formatEnvironmentToConsulKeyPrefix(Environment environment) {
+    String path = environment.getName();
+
+    if (path.startsWith("/")) {
+      path = path.substring(1);
+    }
+
+    if(path.length() > 0 && path.endsWith("/")) {
+      path = path.substring(0, path.length() - 1);
+    }
+    return path.isEmpty() ? "/" : path;
+  }
+
+  private static String formatEnvironment(Environment environment) {
+    String path = environment.getName();
+
+    if (path.startsWith("/")) {
+      path = path.substring(1);
+    }
+
+    if (path.length() > 0 && !path.endsWith("/")) {
+      path = path + "/";
+    }
+
+    return path;
   }
 }

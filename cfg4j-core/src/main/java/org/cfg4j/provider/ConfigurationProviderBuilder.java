@@ -24,7 +24,9 @@ import org.cfg4j.source.context.environment.DefaultEnvironment;
 import org.cfg4j.source.context.environment.Environment;
 import org.cfg4j.source.empty.EmptyConfigurationSource;
 import org.cfg4j.source.metered.MeteredConfigurationSource;
+import org.cfg4j.source.reload.CachedConfigurationSource;
 import org.cfg4j.source.reload.ReloadStrategy;
+import org.cfg4j.source.reload.Reloadable;
 import org.cfg4j.source.reload.strategy.ImmediateReloadStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -134,16 +136,22 @@ public class ConfigurationProviderBuilder {
         + reloadStrategy.getClass().getCanonicalName() + " reload strategy and "
         + environment.getClass().getCanonicalName() + " environment");
 
-    ConfigurationSource configurationSource = this.configurationSource;
+    final CachedConfigurationSource cachedConfigurationSource = new CachedConfigurationSource(configurationSource);
     if (metricRegistry != null) {
-      configurationSource = new MeteredConfigurationSource(metricRegistry, prefix, configurationSource);
+      configurationSource = new MeteredConfigurationSource(metricRegistry, prefix, cachedConfigurationSource);
     }
 
-    configurationSource.init();
+    cachedConfigurationSource.init();
+    cachedConfigurationSource.reload(environment);
 
-    reloadStrategy.register(configurationSource);
+    reloadStrategy.register(new Reloadable() {
+      @Override
+      public void reload() {
+        cachedConfigurationSource.reload(environment);
+      }
+    });
 
-    SimpleConfigurationProvider configurationProvider = new SimpleConfigurationProvider(configurationSource, environment);
+    SimpleConfigurationProvider configurationProvider = new SimpleConfigurationProvider(cachedConfigurationSource, environment);
     if (metricRegistry != null) {
       return new MeteredConfigurationProvider(metricRegistry, prefix, configurationProvider);
     }
@@ -157,6 +165,8 @@ public class ConfigurationProviderBuilder {
         "configurationSource=" + configurationSource +
         ", reloadStrategy=" + reloadStrategy +
         ", environment=" + environment +
+        ", metricRegistry=" + metricRegistry +
+        ", prefix='" + prefix + '\'' +
         '}';
   }
 }

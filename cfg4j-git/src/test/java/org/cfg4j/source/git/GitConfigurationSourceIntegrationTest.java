@@ -190,53 +190,6 @@ public class GitConfigurationSourceIntegrationTest {
     }
   }
 
-  @Test
-  public void getConfigurationShouldThrowAfterFailedReload() throws Exception {
-    try (GitConfigurationSource gitConfigurationSource = getSourceForRemoteRepoWithDefaults()) {
-      remoteRepo.remove();
-
-      try {
-        gitConfigurationSource.reload();
-      } catch (Exception e) {
-        // NOP
-      }
-
-      expectedException.expect(IllegalStateException.class);
-      gitConfigurationSource.getConfiguration(new ImmutableEnvironment(""));
-    }
-  }
-
-  @Test
-  public void reloadShouldUpdateGetConfigurationOnDefaultBranch() throws Exception {
-    try (GitConfigurationSource gitConfigurationSource = getSourceForRemoteRepoWithDefaults()) {
-      remoteRepo.changeProperty(Paths.get("application.properties"), "some.setting", "changedValue");
-      gitConfigurationSource.reload();
-
-      assertThat(gitConfigurationSource.getConfiguration(new DefaultEnvironment())).contains(MapEntry.entry("some.setting", "changedValue"));
-    }
-  }
-
-  @Test
-  public void reloadShouldUpdateGetConfigurationOnNonDefaultBranch() throws Exception {
-    try (GitConfigurationSource gitConfigurationSource = getSourceForRemoteRepoWithDefaults()) {
-      remoteRepo.changeBranchTo(TEST_ENV_BRANCH);
-      remoteRepo.changeProperty(Paths.get("application.properties"), "some.setting", "changedValue");
-      gitConfigurationSource.reload();
-
-      assertThat(gitConfigurationSource.getConfiguration(new ImmutableEnvironment(TEST_ENV_BRANCH))).contains(MapEntry.entry("some.setting", "changedValue"));
-    }
-  }
-
-  @Test
-  public void reloadShouldThrowOnSyncProblems() throws Exception {
-    try (GitConfigurationSource gitConfigurationSource = getSourceForRemoteRepoWithDefaults()) {
-      remoteRepo.remove();
-
-      expectedException.expect(IllegalStateException.class);
-      gitConfigurationSource.reload();
-    }
-  }
-
   private GitConfigurationSource getSourceForRemoteRepoWithDefaults() {
     GitConfigurationSource source = getSourceBuilderForRemoteRepoWithDefaults().build();
     source.init();

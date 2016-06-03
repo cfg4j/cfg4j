@@ -18,7 +18,6 @@ package org.cfg4j.source.compose;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -100,23 +99,6 @@ public class MergeConfigurationSourceTest {
     for (ConfigurationSource underlyingSource : underlyingSources) {
       verify(underlyingSource, atLeastOnce()).init();
     }
-  }
-
-  @Test
-  public void reloadShouldReloadAllSources() throws Exception {
-    mergeConfigurationSource.reload();
-
-    for (ConfigurationSource underlyingSource : underlyingSources) {
-      verify(underlyingSource, atLeastOnce()).reload();
-    }
-  }
-
-  @Test
-  public void reloadShouldThrowWhenOneOfSourcesThrows() throws Exception {
-    doThrow(IllegalStateException.class).when(underlyingSources[3]).reload();
-
-    expectedException.expect(IllegalStateException.class);
-    mergeConfigurationSource.reload();
   }
 
   private void sourcesWithProps(Environment environment, String... props) {

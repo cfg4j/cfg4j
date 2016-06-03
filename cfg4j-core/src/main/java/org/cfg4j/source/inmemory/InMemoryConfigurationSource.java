@@ -23,23 +23,19 @@ import org.cfg4j.source.context.environment.Environment;
 import java.util.Properties;
 
 /**
- * Simple in-memory {@link ConfigurationSource}. A reference to the properties object is being kept allowing this source to sync up
- * on {@link #reload()} call.
+ * Simple in-memory {@link ConfigurationSource}.
  */
 public class InMemoryConfigurationSource implements ConfigurationSource {
 
-  private Properties properties;
-  private final Properties sourceProperties;
+  private final Properties properties;
 
   /**
-   * Create in-memory configuration source with given {@code properties}. A reference to the properties object is being kept allowing
-   * this source to sync up on {@link #reload()} call.
+   * Create in-memory configuration source with given {@code properties}.
    *
    * @param properties properties to seed source.
    */
   public InMemoryConfigurationSource(Properties properties) {
-    this.sourceProperties = requireNonNull(properties);
-    this.properties = (Properties) properties.clone();
+    this.properties = requireNonNull(properties);
   }
 
   @Override
@@ -50,11 +46,6 @@ public class InMemoryConfigurationSource implements ConfigurationSource {
   @Override
   public void init() {
     // NOP
-  }
-
-  @Override
-  public void reload() {
-    properties = (Properties) sourceProperties.clone();
   }
 
   @Override

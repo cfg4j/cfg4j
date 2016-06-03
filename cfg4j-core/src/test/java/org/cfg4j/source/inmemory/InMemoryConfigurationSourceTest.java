@@ -18,7 +18,6 @@ package org.cfg4j.source.inmemory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.assertj.core.data.MapEntry;
 import org.cfg4j.source.context.environment.DefaultEnvironment;
 import org.junit.Before;
 import org.junit.Rule;
@@ -51,21 +50,6 @@ public class InMemoryConfigurationSourceTest {
   @Test
   public void shouldReturnSourceProperties() throws Exception {
     assertThat(source.getConfiguration(new DefaultEnvironment())).isEqualTo(properties);
-  }
-
-  @Test
-  public void shouldNotReactToChangesToSourceProperties() throws Exception {
-    properties.put("other.setting", "hello");
-
-    assertThat(source.getConfiguration(new DefaultEnvironment())).doesNotContain(MapEntry.entry("other.setting", "hello"));
-  }
-
-  @Test
-  public void reloadShouldReactToChangesToSourceProperties() throws Exception {
-    properties.put("other.setting", "hello");
-    source.reload();
-
-    assertThat(source.getConfiguration(new DefaultEnvironment())).contains(MapEntry.entry("other.setting", "hello"));
   }
 
 }

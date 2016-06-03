@@ -48,12 +48,6 @@ public class SystemPropertiesConfigurationSourceTest {
   }
 
   @Test
-  public void reloadShouldNotChangeConfiguration() throws Exception {
-    source.reload();
-    assertThat(source.getConfiguration(new DefaultEnvironment())).containsKey("os.name");
-  }
-
-  @Test
   public void shouldReturnOsNameForAnyEnvironment() throws Exception {
     assertThat(source.getConfiguration(mock(Environment.class))).containsKey("os.name");
   }
@@ -75,4 +69,5 @@ public class SystemPropertiesConfigurationSourceTest {
     System.setProperty("reloaded.property", "defined");
     assertThat(source.getConfiguration(new DefaultEnvironment())).containsKey("reloaded.property");
   }
+
 }

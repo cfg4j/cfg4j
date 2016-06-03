@@ -82,15 +82,4 @@ public class MeteredConfigurationSource implements ConfigurationSource {
       context.stop();
     }
   }
-
-  @Override
-  public void reload() {
-    Timer.Context context = reloadTimer.time();
-
-    try {
-      delegate.reload();
-    } finally {
-      context.stop();
-    }
-  }
 }

@@ -48,12 +48,6 @@ public class EmptyConfigurationSourceTest {
   }
 
   @Test
-  public void reloadShouldNotChangeConfiguration() throws Exception {
-    source.reload();
-    assertThat(source.getConfiguration(new DefaultEnvironment())).isEmpty();
-  }
-
-  @Test
   public void shouldReturnEmptyConfigurationForAnyEnvironment() throws Exception {
     assertThat(source.getConfiguration(mock(Environment.class))).isEmpty();
   }

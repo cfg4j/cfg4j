@@ -73,13 +73,6 @@ public class MeteredConfigurationSourceTest {
   }
 
   @Test
-  public void reloadShouldCallDelegate() throws Exception {
-    source.reload();
-
-    verify(delegate, times(1)).reload();
-  }
-
-  @Test
   public void initShouldCallDelegate() throws Exception {
     verify(delegate, times(1)).init();
   }

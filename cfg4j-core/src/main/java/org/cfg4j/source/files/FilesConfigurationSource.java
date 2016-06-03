@@ -140,11 +140,6 @@ public class FilesConfigurationSource implements ConfigurationSource {
   }
 
   @Override
-  public void reload() {
-    // NOP
-  }
-
-  @Override
   public String toString() {
     return "FilesConfigurationSource{" +
         "configFilesProvider=" + configFilesProvider +

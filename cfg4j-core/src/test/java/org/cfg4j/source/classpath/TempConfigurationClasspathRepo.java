@@ -15,20 +15,28 @@
  */
 package org.cfg4j.source.classpath;
 
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Classpath files repository.
  */
 public class TempConfigurationClasspathRepo {
 
+  private Map<String, String> originalContents;
+
   /**
-   * Create repository allowing access to classpath files.
+   * Create repository allowing access to classpath files. After you're done working with this repository
+   * make a call to the {@link #close()} method to restore original contents of the modified files.
    */
   public TempConfigurationClasspathRepo() {
+    originalContents = new HashMap<>();
   }
 
   /**
@@ -40,13 +48,32 @@ public class TempConfigurationClasspathRepo {
    * @throws IOException when unable to modify properties file
    */
   public void changeProperty(String propFilePath, String key, String value) throws IOException {
-    writePropertyToFile(propFilePath, key, value);
+    writeToFile(propFilePath, key + "=" + value);
   }
 
-  private void writePropertyToFile(String propFilePath, String key, String value) throws IOException {
+  /**
+   * Close this repository and restore all modified files to their original form.
+   */
+  public void close() throws IOException {
+    for (String propFilePath : originalContents.keySet()) {
+      writeToFile(propFilePath, originalContents.get(propFilePath));
+    }
+  }
+
+  private void writeToFile(String propFilePath, String content) throws IOException {
     URL systemResource = ClassLoader.getSystemResource(propFilePath);
+
+    // Store original contents
+    if (!originalContents.containsKey(propFilePath)) {
+      InputStream inputStream = new FileInputStream(systemResource.getPath());
+      try (java.util.Scanner s = new java.util.Scanner(inputStream)) {
+        originalContents.put(propFilePath, s.useDelimiter("\\A").hasNext() ? s.next() : "");
+      }
+    }
+
     OutputStream out = new FileOutputStream(systemResource.getPath());
-    out.write((key + "=" + value).getBytes());
+    out.write((content).getBytes());
     out.close();
   }
+
 }

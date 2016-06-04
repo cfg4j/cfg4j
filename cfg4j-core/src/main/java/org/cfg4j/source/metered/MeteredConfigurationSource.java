@@ -31,7 +31,6 @@ import java.util.Properties;
  * <ul>
  * <li>source.getConfiguration</li>
  * <li>source.init</li>
- * <li>source.reload</li>
  * </ul>
  * Each of those metrics is of {@link Timer} type (i.e. includes execution time percentiles, execution count, etc.)
  */
@@ -41,7 +40,6 @@ public class MeteredConfigurationSource implements ConfigurationSource {
 
   private final Timer getConfigurationTimer;
   private final Timer initTimer;
-  private final Timer reloadTimer;
 
   /**
    * Create decorator for given {@code delegate} and using {@code metricRegistry} for constructing metrics. Each metric will
@@ -58,7 +56,6 @@ public class MeteredConfigurationSource implements ConfigurationSource {
 
     getConfigurationTimer = metricRegistry.timer(metricPrefix + "source.getConfiguration");
     initTimer = metricRegistry.timer(metricPrefix + "source.init");
-    reloadTimer = metricRegistry.timer(metricPrefix + "source.reload");
   }
 
   @Override

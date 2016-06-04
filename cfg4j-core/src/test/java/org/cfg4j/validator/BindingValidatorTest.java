@@ -66,7 +66,7 @@ public class BindingValidatorTest {
   }
 
   @Test
-  public void shouldPassNoSuchElementExceptionsFromInvocation() throws Exception {
+  public void shouldPropagateNoSuchElementExceptionsFromInvocation() throws Exception {
     when(configPojo.someSetting()).thenThrow(NoSuchElementException.class);
 
     expectedException.expect(NoSuchElementException.class);
@@ -74,7 +74,7 @@ public class BindingValidatorTest {
   }
 
   @Test
-  public void shouldPassIllegalArgumentExceptionsFromInvocation() throws Exception {
+  public void shouldPropagateIllegalArgumentExceptionsFromInvocation() throws Exception {
     when(configPojo.someSetting()).thenThrow(IllegalArgumentException.class);
 
     expectedException.expect(IllegalArgumentException.class);

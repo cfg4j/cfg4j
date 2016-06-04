@@ -25,6 +25,7 @@ import org.cfg4j.source.context.environment.Environment;
 import org.cfg4j.source.empty.EmptyConfigurationSource;
 import org.cfg4j.source.metered.MeteredConfigurationSource;
 import org.cfg4j.source.reload.CachedConfigurationSource;
+import org.cfg4j.source.reload.MeteredReloadable;
 import org.cfg4j.source.reload.ReloadStrategy;
 import org.cfg4j.source.reload.Reloadable;
 import org.cfg4j.source.reload.strategy.ImmediateReloadStrategy;
@@ -140,16 +141,20 @@ public class ConfigurationProviderBuilder {
     if (metricRegistry != null) {
       configurationSource = new MeteredConfigurationSource(metricRegistry, prefix, cachedConfigurationSource);
     }
-
     cachedConfigurationSource.init();
-    cachedConfigurationSource.reload(environment);
 
-    reloadStrategy.register(new Reloadable() {
+    Reloadable reloadable = new Reloadable() {
       @Override
       public void reload() {
         cachedConfigurationSource.reload(environment);
       }
-    });
+    };
+
+    if (metricRegistry != null) {
+      reloadable = new MeteredReloadable(metricRegistry, prefix, reloadable);
+    }
+    reloadable.reload();
+    reloadStrategy.register(reloadable);
 
     SimpleConfigurationProvider configurationProvider = new SimpleConfigurationProvider(cachedConfigurationSource, environment);
     if (metricRegistry != null) {

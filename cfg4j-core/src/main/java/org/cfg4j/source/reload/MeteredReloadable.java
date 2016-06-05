@@ -14,32 +14,25 @@
  * limitations under the License.
  */
 
-package org.cfg4j.source.metered;
+package org.cfg4j.source.reload;
 
 import static java.util.Objects.requireNonNull;
 
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
-import org.cfg4j.source.ConfigurationSource;
-import org.cfg4j.source.context.environment.Environment;
-
-import java.util.Properties;
 
 /**
- * Decorator for {@link ConfigurationSource} that emits execution metrics. It emits the following metrics (each of those prefixed
+ * Decorator for {@link Reloadable} that emits execution metrics. It emits the following metrics (each of those prefixed
  * with a string passed at construction time):
  * <ul>
- * <li>source.getConfiguration</li>
- * <li>source.init</li>
+ * <li>reloadable.reload</li>
  * </ul>
  * Each of those metrics is of {@link Timer} type (i.e. includes execution time percentiles, execution count, etc.)
  */
-public class MeteredConfigurationSource implements ConfigurationSource {
+public class MeteredReloadable implements Reloadable {
 
-  private final ConfigurationSource delegate;
-
-  private final Timer getConfigurationTimer;
-  private final Timer initTimer;
+  private final Reloadable delegate;
+  private final Timer reloadTimer;
 
   /**
    * Create decorator for given {@code delegate} and using {@code metricRegistry} for constructing metrics. Each metric will
@@ -49,32 +42,20 @@ public class MeteredConfigurationSource implements ConfigurationSource {
    * @param metricPrefix   prefix for metric names (trailing dot will be added to it)
    * @param delegate       configuration provider to monitor
    */
-  public MeteredConfigurationSource(MetricRegistry metricRegistry, String metricPrefix, ConfigurationSource delegate) {
+  public MeteredReloadable(MetricRegistry metricRegistry, String metricPrefix, Reloadable delegate) {
     requireNonNull(metricRegistry);
     requireNonNull(metricPrefix);
     this.delegate = requireNonNull(delegate);
 
-    getConfigurationTimer = metricRegistry.timer(metricPrefix + "source.getConfiguration");
-    initTimer = metricRegistry.timer(metricPrefix + "source.init");
+    reloadTimer = metricRegistry.timer(metricPrefix + "reloadable.reload");
   }
 
   @Override
-  public Properties getConfiguration(Environment environment) {
-    Timer.Context context = getConfigurationTimer.time();
+  public void reload() {
+    Timer.Context context = reloadTimer.time();
 
     try {
-      return delegate.getConfiguration(environment);
-    } finally {
-      context.stop();
-    }
-  }
-
-  @Override
-  public void init() {
-    Timer.Context context = initTimer.time();
-
-    try {
-      delegate.init();
+      delegate.reload();
     } finally {
       context.stop();
     }

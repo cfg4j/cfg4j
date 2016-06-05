@@ -51,7 +51,7 @@ public class SimpleConfigurationProviderWithMeteredSourceIntegrationTest {
         "testService.bind",
         "testService.source.getConfiguration",
         "testService.source.init",
-        "testService.source.reload"
+        "testService.reloadable.reload"
     );
   }
 

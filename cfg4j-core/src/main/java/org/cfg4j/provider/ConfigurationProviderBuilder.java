@@ -54,7 +54,7 @@ public class ConfigurationProviderBuilder {
 
   /**
    * Construct {@link ConfigurationProvider}s builder.
-   * <p>
+   * <p/>
    * Default setup (override using with*() methods)
    * <ul>
    * <li>ConfigurationSource: {@link EmptyConfigurationSource}</li>
@@ -152,9 +152,9 @@ public class ConfigurationProviderBuilder {
    */
   public ConfigurationProvider build() {
     LOG.info("Initializing ConfigurationProvider with "
-        + configurationSource.getClass().getCanonicalName() + " source, "
-        + reloadStrategy.getClass().getCanonicalName() + " reload strategy and "
-        + environment.getClass().getCanonicalName() + " environment");
+      + configurationSource.getClass().getCanonicalName() + " source, "
+      + reloadStrategy.getClass().getCanonicalName() + " reload strategy and "
+      + environment.getClass().getCanonicalName() + " environment");
 
     final CachedConfigurationSource cachedConfigurationSource = new CachedConfigurationSource(configurationSource);
     if (metricRegistry != null) {
@@ -169,20 +169,14 @@ public class ConfigurationProviderBuilder {
       }
     };
 
-<<<<<<< HEAD
-    reloadStrategy.register(configurationSource);
-    bindStrategies.addAll(defaultBindStrategies());
-
-    SimpleConfigurationProvider configurationProvider = new SimpleConfigurationProvider(configurationSource, environment, bindStrategies);
-=======
     if (metricRegistry != null) {
       reloadable = new MeteredReloadable(metricRegistry, prefix, reloadable);
     }
     reloadable.reload();
     reloadStrategy.register(reloadable);
 
-    SimpleConfigurationProvider configurationProvider = new SimpleConfigurationProvider(cachedConfigurationSource, environment);
->>>>>>> d5ac27cd9d37854fc60766ef68de360ae9eaf9f1
+    bindStrategies.addAll(defaultBindStrategies());
+    SimpleConfigurationProvider configurationProvider = new SimpleConfigurationProvider(configurationSource, environment, bindStrategies);
     if (metricRegistry != null) {
       return new MeteredConfigurationProvider(metricRegistry, prefix, configurationProvider);
     }
@@ -199,11 +193,11 @@ public class ConfigurationProviderBuilder {
   @Override
   public String toString() {
     return "ConfigurationProviderBuilder{" +
-        "configurationSource=" + configurationSource +
-        ", reloadStrategy=" + reloadStrategy +
-        ", environment=" + environment +
-        ", metricRegistry=" + metricRegistry +
-        ", prefix='" + prefix + '\'' +
-        '}';
+      "configurationSource=" + configurationSource +
+      ", reloadStrategy=" + reloadStrategy +
+      ", environment=" + environment +
+      ", metricRegistry=" + metricRegistry +
+      ", prefix='" + prefix + '\'' +
+      '}';
   }
 }

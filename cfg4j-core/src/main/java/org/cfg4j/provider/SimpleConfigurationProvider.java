@@ -15,8 +15,6 @@
  */
 package org.cfg4j.provider;
 
-import static java.util.Objects.requireNonNull;
-
 import com.github.drapostolos.typeparser.NoSuchRegisteredParserException;
 import com.github.drapostolos.typeparser.TypeParser;
 import com.github.drapostolos.typeparser.TypeParserException;
@@ -27,8 +25,11 @@ import org.cfg4j.validator.BindingValidator;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Properties;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Basic implementation of {@link ConfigurationProvider}. To construct this provider use {@link ConfigurationProviderBuilder}.
@@ -37,7 +38,7 @@ class SimpleConfigurationProvider implements ConfigurationProvider {
 
   private final ConfigurationSource configurationSource;
   private final Environment environment;
-
+  private final List<BindStrategy> bindStrategies;
   /**
    * {@link ConfigurationProvider} backed by provided {@link ConfigurationSource} and using {@code environment}
    * to select environment. To construct this provider use {@link ConfigurationProviderBuilder}.
@@ -45,9 +46,10 @@ class SimpleConfigurationProvider implements ConfigurationProvider {
    * @param configurationSource source for configuration
    * @param environment         {@link Environment} to use
    */
-  SimpleConfigurationProvider(ConfigurationSource configurationSource, Environment environment) {
+  SimpleConfigurationProvider(ConfigurationSource configurationSource, Environment environment, List<BindStrategy> bindStrategies) {
     this.configurationSource = requireNonNull(configurationSource);
     this.environment = requireNonNull(environment);
+    this.bindStrategies = bindStrategies;
   }
 
   @Override
@@ -122,8 +124,12 @@ class SimpleConfigurationProvider implements ConfigurationProvider {
    * @throws IllegalStateException    when provider is unable to fetch configuration value for the given {@code key}
    */
   <T> T bind(ConfigurationProvider configurationProvider, String prefix, Class<T> type) {
+    if(!type.isInterface()) {
+      return getProperty(prefix, type);
+    }
+
     @SuppressWarnings("unchecked")
-    T proxy = (T) Proxy.newProxyInstance(type.getClassLoader(), new Class<?>[]{type}, new BindInvocationHandler(configurationProvider, prefix));
+    T proxy = (T) Proxy.newProxyInstance(type.getClassLoader(), new Class<?>[]{type}, new BindInvocationHandler(configurationProvider, prefix, bindStrategies));
 
     new BindingValidator().validate(proxy, type);
 

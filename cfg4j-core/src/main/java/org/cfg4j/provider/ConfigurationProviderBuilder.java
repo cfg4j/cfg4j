@@ -15,10 +15,9 @@
  */
 package org.cfg4j.provider;
 
-import static java.util.Objects.requireNonNull;
-
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
+import org.cfg4j.provider.bind.MapTypeBindStrategy;
 import org.cfg4j.source.ConfigurationSource;
 import org.cfg4j.source.context.environment.DefaultEnvironment;
 import org.cfg4j.source.context.environment.Environment;
@@ -28,6 +27,11 @@ import org.cfg4j.source.reload.ReloadStrategy;
 import org.cfg4j.source.reload.strategy.ImmediateReloadStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A builder producing {@link ConfigurationProvider}s. If you don't specify the value for one the fields
@@ -42,6 +46,7 @@ public class ConfigurationProviderBuilder {
   private ReloadStrategy reloadStrategy;
   private Environment environment;
   private MetricRegistry metricRegistry;
+  private List<BindStrategy> bindStrategies;
   private String prefix;
 
   /**
@@ -60,6 +65,7 @@ public class ConfigurationProviderBuilder {
     reloadStrategy = new ImmediateReloadStrategy();
     environment = new DefaultEnvironment();
     prefix = "";
+    bindStrategies = new ArrayList<>();
   }
 
   /**
@@ -96,6 +102,13 @@ public class ConfigurationProviderBuilder {
   }
 
   /**
+   * Set {@link Environment} for {@link ConfigurationProvider}s built by this builder.
+   *
+   * @param environment {@link Environment} to use
+   * @return this builder with {@link Environment} set to {@code environment}
+   */
+
+  /**
    * Enable metrics emission for {@link ConfigurationProvider}s built by this builder. All metrics will be registered
    * with {@code metricRegistry} and prefixed by {@code prefix}. Provider built by this builder will emit the following metrics:
    * <p>Provider-level metrics:</p>
@@ -123,6 +136,12 @@ public class ConfigurationProviderBuilder {
     return this;
   }
 
+  public ConfigurationProviderBuilder withBindStrategy(BindStrategy bindStrategy) {
+    requireNonNull(bindStrategy);
+    bindStrategies.add(bindStrategy);
+    return this;
+  }
+
   /**
    * Build a {@link ConfigurationProvider} using this builder's configuration.
    *
@@ -142,13 +161,20 @@ public class ConfigurationProviderBuilder {
     configurationSource.init();
 
     reloadStrategy.register(configurationSource);
+    bindStrategies.addAll(defaultBindStrategies());
 
-    SimpleConfigurationProvider configurationProvider = new SimpleConfigurationProvider(configurationSource, environment);
+    SimpleConfigurationProvider configurationProvider = new SimpleConfigurationProvider(configurationSource, environment, bindStrategies);
     if (metricRegistry != null) {
       return new MeteredConfigurationProvider(metricRegistry, prefix, configurationProvider);
     }
 
     return configurationProvider;
+  }
+
+  private List<BindStrategy> defaultBindStrategies() {
+    List<BindStrategy> bindStrategies = new ArrayList<>();
+    bindStrategies.add(new MapTypeBindStrategy());
+    return bindStrategies;
   }
 
   @Override

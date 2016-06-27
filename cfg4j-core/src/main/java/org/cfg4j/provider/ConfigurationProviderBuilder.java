@@ -54,7 +54,6 @@ public class ConfigurationProviderBuilder {
 
   /**
    * Construct {@link ConfigurationProvider}s builder.
-   * <p/>
    * Default setup (override using with*() methods)
    * <ul>
    * <li>ConfigurationSource: {@link EmptyConfigurationSource}</li>

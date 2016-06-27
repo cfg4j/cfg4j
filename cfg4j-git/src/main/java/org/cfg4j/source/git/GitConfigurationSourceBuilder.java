@@ -97,20 +97,6 @@ public class GitConfigurationSourceBuilder {
   }
 
   /**
-   * DEPRECATED: Use {@link #withTmpPath(Path)} instead.
-   * <p>
-   * Set temporary dir path for {@link GitConfigurationSource}s built by this builder
-   *
-   * @param tmpPath temporary dir path to use
-   * @return this builder with temporary dir path set to {@code tmpPath}
-   */
-  @Deprecated
-  public GitConfigurationSourceBuilder withTmpPath(String tmpPath) {
-    this.tmpPath = Paths.get(tmpPath);
-    return this;
-  }
-
-  /**
    * Set temporary dir path for {@link GitConfigurationSource}s built by this builder
    *
    * @param tmpPath temporary dir path to use
@@ -118,20 +104,6 @@ public class GitConfigurationSourceBuilder {
    */
   public GitConfigurationSourceBuilder withTmpPath(Path tmpPath) {
     this.tmpPath = tmpPath;
-    return this;
-  }
-
-  /**
-   * DEPRECATED: Use {@link #withTmpRepoPrefix(String)} instead.
-   * <p>
-   * Set relative repository path in temporary dir for {@link GitConfigurationSource}s built by this builder
-   *
-   * @param localRepositoryPathInTemp relative repository path in temporary dir to use
-   * @return this builder with relative repository path in temporary dir set to {@code tmpRepoPrefix}
-   */
-  @Deprecated
-  public GitConfigurationSourceBuilder withLocalRepositoryPathInTemp(String localRepositoryPathInTemp) {
-    this.tmpRepoPrefix = localRepositoryPathInTemp;
     return this;
   }
 

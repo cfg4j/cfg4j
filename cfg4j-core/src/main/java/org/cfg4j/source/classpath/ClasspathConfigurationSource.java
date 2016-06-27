@@ -39,6 +39,11 @@ import java.util.Properties;
 
 /**
  * {@link ConfigurationSource} reading configuration from classpath files.
+ * <p></p>
+ * Environment resolution happens as follows:
+ * {@link Environment} name is prepended to all file paths from {@link ConfigFilesProvider}
+ * to form an absolute configuration file path. Trailing slashes in environment name are not supported (due
+ * to Java disallowing classpath locations starting with slash).
  */
 public class ClasspathConfigurationSource implements ConfigurationSource {
 
@@ -89,12 +94,9 @@ public class ClasspathConfigurationSource implements ConfigurationSource {
   }
 
   /**
-   * Get configuration set for a given {@code environment} from this source in a form of {@link Properties}.
-   * {@link Environment} name is prepended to all file paths from {@link ConfigFilesProvider}
-   * to form an absolute configuration file path. Trailing slashes in environment name are not supported (due
-   * to Java disallowing classpath locations starting with slash).
+   * Get configuration from classpath. See the class-level javadoc for detail on environment resolution.
    *
-   * @param environment environment to use
+   * @param environment environment to fetch configuration for
    * @return configuration set for {@code environment}
    * @throws MissingEnvironmentException when requested environment couldn't be found
    * @throws IllegalStateException       when unable to fetch configuration
@@ -135,11 +137,6 @@ public class ClasspathConfigurationSource implements ConfigurationSource {
 
   @Override
   public void init() {
-    // NOP
-  }
-
-  @Override
-  public void reload() {
     // NOP
   }
 

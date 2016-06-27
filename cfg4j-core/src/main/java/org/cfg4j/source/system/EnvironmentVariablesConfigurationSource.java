@@ -43,6 +43,9 @@ public class EnvironmentVariablesConfigurationSource implements ConfigurationSou
       throw new IllegalStateException("Configuration source has to be successfully initialized before you request configuration.");
     }
 
+    environmentVariables.clear();
+    environmentVariables.putAll(System.getenv());
+
     Properties properties = new Properties();
 
     String environmentContext = formatEnvironmentContext(environment);
@@ -59,15 +62,7 @@ public class EnvironmentVariablesConfigurationSource implements ConfigurationSou
   @Override
   public void init() {
     LOG.debug("Initializing: Environment Variable Configuration Source");
-    reload();
     initialized = true;
-  }
-
-  @Override
-  public void reload() {
-    LOG.debug("Reloading OS Environment Variables");
-    environmentVariables.clear();
-    environmentVariables.putAll(System.getenv());
   }
 
   @Override

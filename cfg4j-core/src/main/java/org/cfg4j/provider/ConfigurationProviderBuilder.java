@@ -23,7 +23,10 @@ import org.cfg4j.source.context.environment.DefaultEnvironment;
 import org.cfg4j.source.context.environment.Environment;
 import org.cfg4j.source.empty.EmptyConfigurationSource;
 import org.cfg4j.source.metered.MeteredConfigurationSource;
+import org.cfg4j.source.reload.CachedConfigurationSource;
+import org.cfg4j.source.reload.MeteredReloadable;
 import org.cfg4j.source.reload.ReloadStrategy;
+import org.cfg4j.source.reload.Reloadable;
 import org.cfg4j.source.reload.strategy.ImmediateReloadStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -153,17 +156,33 @@ public class ConfigurationProviderBuilder {
         + reloadStrategy.getClass().getCanonicalName() + " reload strategy and "
         + environment.getClass().getCanonicalName() + " environment");
 
-    ConfigurationSource configurationSource = this.configurationSource;
+    final CachedConfigurationSource cachedConfigurationSource = new CachedConfigurationSource(configurationSource);
     if (metricRegistry != null) {
-      configurationSource = new MeteredConfigurationSource(metricRegistry, prefix, configurationSource);
+      configurationSource = new MeteredConfigurationSource(metricRegistry, prefix, cachedConfigurationSource);
     }
+    cachedConfigurationSource.init();
 
-    configurationSource.init();
+    Reloadable reloadable = new Reloadable() {
+      @Override
+      public void reload() {
+        cachedConfigurationSource.reload(environment);
+      }
+    };
 
+<<<<<<< HEAD
     reloadStrategy.register(configurationSource);
     bindStrategies.addAll(defaultBindStrategies());
 
     SimpleConfigurationProvider configurationProvider = new SimpleConfigurationProvider(configurationSource, environment, bindStrategies);
+=======
+    if (metricRegistry != null) {
+      reloadable = new MeteredReloadable(metricRegistry, prefix, reloadable);
+    }
+    reloadable.reload();
+    reloadStrategy.register(reloadable);
+
+    SimpleConfigurationProvider configurationProvider = new SimpleConfigurationProvider(cachedConfigurationSource, environment);
+>>>>>>> d5ac27cd9d37854fc60766ef68de360ae9eaf9f1
     if (metricRegistry != null) {
       return new MeteredConfigurationProvider(metricRegistry, prefix, configurationProvider);
     }
@@ -183,6 +202,8 @@ public class ConfigurationProviderBuilder {
         "configurationSource=" + configurationSource +
         ", reloadStrategy=" + reloadStrategy +
         ", environment=" + environment +
+        ", metricRegistry=" + metricRegistry +
+        ", prefix='" + prefix + '\'' +
         '}';
   }
 }

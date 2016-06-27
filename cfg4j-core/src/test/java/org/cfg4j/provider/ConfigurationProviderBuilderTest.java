@@ -21,7 +21,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import org.cfg4j.source.ConfigurationSource;
 import org.cfg4j.source.context.environment.DefaultEnvironment;
 import org.cfg4j.source.reload.ReloadStrategy;
 import org.cfg4j.source.reload.Reloadable;
@@ -49,17 +48,5 @@ public class ConfigurationProviderBuilderTest {
         .build();
 
     verify(reloadStrategy, times(1)).register(any(Reloadable.class));
-  }
-
-  @Test
-  public void passesSourceToReloadStrategy() throws Exception {
-    ConfigurationSource configurationSource = mock(ConfigurationSource.class);
-    ReloadStrategy reloadStrategy = mock(ReloadStrategy.class);
-    builder
-        .withConfigurationSource(configurationSource)
-        .withReloadStrategy(reloadStrategy)
-        .build();
-
-    verify(reloadStrategy, times(1)).register(configurationSource);
   }
 }

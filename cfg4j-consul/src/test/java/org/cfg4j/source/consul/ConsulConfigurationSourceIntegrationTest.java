@@ -34,8 +34,6 @@ import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.IOException;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 
@@ -131,16 +129,6 @@ public class ConsulConfigurationSourceIntegrationTest {
   }
 
   @Test
-  public void getConfigurationShouldBeUpdatedByReload() throws Exception {
-    dispatcher.toggleUsWest2();
-
-    source.reload();
-
-    Environment environment = new ImmutableEnvironment("us-west-2");
-    assertThat(source.getConfiguration(environment)).contains(MapEntry.entry("featureA.toggle", "enabled"));
-  }
-
-  @Test
   public void getConfigurationShouldThrowBeforeInitCalled() throws Exception {
     source = new ConsulConfigurationSourceBuilder()
         .withHost(server.getHostName())
@@ -155,33 +143,13 @@ public class ConsulConfigurationSourceIntegrationTest {
   public void getConfigurationShouldThrowAfterFailedReload() throws Exception {
     server.shutdown();
     try {
-      source.reload();
+      source.getConfiguration(new ImmutableEnvironment("us-west-2"));
     } catch (Exception e) {
       // NOP
     }
 
     expectedException.expect(IllegalStateException.class);
     source.getConfiguration(new ImmutableEnvironment(""));
-  }
-
-  @Test
-  public void reloadShouldThrowOnConnectionFailure() throws Exception {
-    server.shutdown();
-    expectedException.expect(SourceCommunicationException.class);
-    source.reload();
-  }
-
-  @Test
-  public void shouldReturnOldValuesDuringReload() throws Exception {
-    new Timer().schedule(new TimerTask() {
-      @Override
-      public void run() {
-        source.reload();
-      }
-    }, 0);
-
-    Environment environment = new ImmutableEnvironment("us-west-1");
-    assertThat(source.getConfiguration(environment)).contains(MapEntry.entry("featureA.toggle", "disabled"));
   }
 
   private void runMockServer() throws IOException {

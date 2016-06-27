@@ -19,7 +19,7 @@ buildscript {
 
     ext {
         artifactGroup = "org.cfg4j"
-        artifactVersion = "4.4.0"
+        artifactVersion = "5.0.0-SNAPSHOT"
     }
 
     repositories {
@@ -69,8 +69,8 @@ subprojects {
         testCompile group: "junit", name: "junit", version: "4.12"
         testCompile group: "org.assertj", name: "assertj-core", version: "2.4.1"
         testCompile group: "org.mockito", name: "mockito-core", version: "1.10.19"
-        testCompile group: "org.powermock", name: "powermock-api-mockito", version: "1.6.4"
-        testCompile group: "org.powermock", name: "powermock-module-junit4", version: "1.6.4"
+        testCompile group: "org.powermock", name: "powermock-api-mockito", version: "1.6.5"
+        testCompile group: "org.powermock", name: "powermock-module-junit4", version: "1.6.5"
     }
 
     // ----------- EXTRA tasks -----------

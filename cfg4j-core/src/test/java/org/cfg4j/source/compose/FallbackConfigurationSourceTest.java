@@ -119,43 +119,9 @@ public class FallbackConfigurationSourceTest {
     fallbackConfigurationSource.init();
   }
 
-  @Test
-  public void reloadShouldTryToReloadAllSources() throws Exception {
-    fallbackConfigurationSource.reload();
-
-    for (ConfigurationSource underlyingSource : underlyingSources) {
-      verify(underlyingSource, atLeastOnce()).reload();
-    }
-  }
-
-  @Test
-  public void reloadShouldThrowWhenAllSourcesThrow() throws Exception {
-    makeAllSourcesThrow(new IllegalStateException());
-
-    expectedException.expect(IllegalStateException.class);
-    fallbackConfigurationSource.reload();
-  }
-
-  @Test
-  public void reloadShouldIgnoreIllegalStateExceptionsIfAtLeastOneSourceSucceeds() throws Exception {
-    makeAllSourcesThrow(new IllegalStateException());
-    doNothing().when(underlyingSources[LAST_SOURCE_INDEX]).reload();
-
-    fallbackConfigurationSource.reload();
-  }
-
-  @Test
-  public void reloadShouldIgnoreExceptionsIfAtLeastOneSourceSucceeds() throws Exception {
-    makeAllSourcesThrow(new SourceCommunicationException("", null));
-    doNothing().when(underlyingSources[LAST_SOURCE_INDEX]).reload();
-
-    fallbackConfigurationSource.reload();
-  }
-
   private void makeAllSourcesThrow(Throwable exception) {
     for (ConfigurationSource underlyingSource : underlyingSources) {
       when(underlyingSource.getConfiguration(any(Environment.class))).thenThrow(exception);
-      doThrow(exception).when(underlyingSource).reload();
       doThrow(exception).when(underlyingSource).init();
     }
   }

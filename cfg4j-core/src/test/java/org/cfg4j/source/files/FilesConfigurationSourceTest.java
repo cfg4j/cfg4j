@@ -132,11 +132,4 @@ public class FilesConfigurationSourceTest {
     source.getConfiguration(environment);
   }
 
-  @Test
-  public void reloadShouldUpdateGetConfiguration() throws Exception {
-    fileRepo.changeProperty(Paths.get("application.properties"), "some.setting", "changedValue");
-    source.reload();
-
-    assertThat(source.getConfiguration(environment)).containsOnly(MapEntry.entry("some.setting", "changedValue"));
-  }
 }

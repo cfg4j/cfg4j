@@ -1,4 +1,4 @@
-[![Twitter Follow](https://img.shields.io/twitter/follow/cfg4j.svg?style=social)](https://twitter.com/norbert_potocki)
+[![Twitter Follow](https://img.shields.io/twitter/follow/norbert_potocki.svg?style=social)](https://twitter.com/norbert_potocki)
 [![Documentation](https://img.shields.io/badge/documentation-www.cfg4j.org-blue.svg)](http://cfg4j.org)
 [![Examples](https://img.shields.io/badge/demo-here-blue.svg)](https://github.com/cfg4j/cfg4j-sample-apps)
 [![Maven Central](https://img.shields.io/maven-central/v/org.cfg4j/cfg4j-core.svg)](http://search.maven.org/#search|ga|1|org.cfg4j.cfg4j-core)

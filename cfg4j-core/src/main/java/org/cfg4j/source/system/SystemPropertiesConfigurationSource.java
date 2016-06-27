@@ -36,11 +36,6 @@ public class SystemPropertiesConfigurationSource implements ConfigurationSource 
   }
 
   @Override
-  public void reload() {
-    // NOP
-  }
-
-  @Override
   public String toString() {
     return "SystemPropertiesConfigurationSource{}";
   }

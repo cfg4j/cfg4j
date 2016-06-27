@@ -19,6 +19,7 @@ package org.cfg4j.source.metered;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -27,8 +28,10 @@ import static org.mockito.Mockito.when;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
 import org.cfg4j.source.ConfigurationSource;
+import org.cfg4j.source.SourceCommunicationException;
 import org.cfg4j.source.context.environment.DefaultEnvironment;
 import org.cfg4j.source.context.environment.Environment;
+import org.cfg4j.source.context.environment.MissingEnvironmentException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -73,14 +76,39 @@ public class MeteredConfigurationSourceTest {
   }
 
   @Test
-  public void reloadShouldCallDelegate() throws Exception {
-    source.reload();
+  public void getConfigurationShouldPropagateMissingEnvironmentExceptions() throws Exception {
+    when(delegate.getConfiguration(any(Environment.class))).thenThrow(new MissingEnvironmentException(""));
 
-    verify(delegate, times(1)).reload();
+    expectedException.expect(MissingEnvironmentException.class);
+    source.getConfiguration(new DefaultEnvironment());
+  }
+
+  @Test
+  public void getConfigurationShouldPropagateIllegalStateExceptions() throws Exception {
+    when(delegate.getConfiguration(any(Environment.class))).thenThrow(new IllegalStateException(""));
+
+    expectedException.expect(IllegalStateException.class);
+    source.getConfiguration(new DefaultEnvironment());
   }
 
   @Test
   public void initShouldCallDelegate() throws Exception {
     verify(delegate, times(1)).init();
+  }
+
+  @Test
+  public void initShouldPropagateIllegalStateExceptions() throws Exception {
+    doThrow(new IllegalStateException("")).when(delegate).init();
+
+    expectedException.expect(IllegalStateException.class);
+    delegate.init();
+  }
+
+  @Test
+  public void initShouldPropagateSourceCommunicationExceptions() throws Exception {
+    doThrow(new SourceCommunicationException("", null)).when(delegate).init();
+
+    expectedException.expect(SourceCommunicationException.class);
+    delegate.init();
   }
 }

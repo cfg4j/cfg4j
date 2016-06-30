@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.cfg4j.provider.ConfigurationProviderAbstractTest.propertiesWith;
+import static org.cfg4j.utils.PropertiesUtils.propertiesWith;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
@@ -74,7 +74,7 @@ public class MapTypeBindStrategyTest extends AbstractBindStrategyTest {
   }
 
   @Test
-  public void filterKeysBeforBindToMap() {
+  public void filterKeysBeforeBindToMap() {
     assertThat(testMethodAWithProps(propertiesWith(
       "org.cfg4j.a1.a", "1",
       "org.cfg4j.b.a", "2",

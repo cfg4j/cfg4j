@@ -15,8 +15,6 @@
  */
 package org.cfg4j.provider;
 
-import static org.mockito.Matchers.any;
-
 import org.cfg4j.provider.bind.MapTypeBindStrategy;
 import org.cfg4j.provider.bind.NestedCustomTypeBindStrategy;
 import org.cfg4j.source.ConfigurationSource;
@@ -29,7 +27,8 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.Arrays;
-import java.util.Properties;
+
+import static org.mockito.Matchers.any;
 
 @RunWith(MockitoJUnitRunner.class)
 public abstract class ConfigurationProviderAbstractTest {
@@ -48,15 +47,6 @@ public abstract class ConfigurationProviderAbstractTest {
   @Before
   public void setUp() throws Exception {
     configurationProvider = new SimpleConfigurationProvider(configurationSource, environment, Arrays.<BindStrategy>asList(new NestedCustomTypeBindStrategy("org.cfg4j"), new MapTypeBindStrategy()));
-  }
-
-  public static Properties propertiesWith(String... args) {
-    Properties properties = new Properties();
-    for (int i = 1; i < args.length; i += 2) {
-      properties.put(args[i - 1], args[i]);
-    }
-
-    return properties;
   }
 
   protected Environment anyEnvironment() {

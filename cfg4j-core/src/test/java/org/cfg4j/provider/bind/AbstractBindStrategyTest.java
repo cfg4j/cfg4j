@@ -1,9 +1,7 @@
 package org.cfg4j.provider.bind;
 
 import org.cfg4j.provider.ConfigurationProvider;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import java.lang.reflect.Method;
 

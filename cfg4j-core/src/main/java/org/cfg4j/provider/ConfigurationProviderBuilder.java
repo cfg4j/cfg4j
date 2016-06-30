@@ -28,9 +28,12 @@ import org.cfg4j.source.reload.MeteredReloadable;
 import org.cfg4j.source.reload.ReloadStrategy;
 import org.cfg4j.source.reload.Reloadable;
 import org.cfg4j.source.reload.strategy.ImmediateReloadStrategy;
+import org.cfg4j.source.resolve.PropertiesResolver;
+import org.cfg4j.source.resolve.ResolvableConfigurationSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,6 +54,7 @@ public class ConfigurationProviderBuilder {
   private MetricRegistry metricRegistry;
   private List<BindStrategy> bindStrategies;
   private String prefix;
+  private List<PropertiesResolver> propertyResolvers;
 
   /**
    * Construct {@link ConfigurationProvider}s builder.
@@ -68,6 +72,7 @@ public class ConfigurationProviderBuilder {
     environment = new DefaultEnvironment();
     prefix = "";
     bindStrategies = new ArrayList<>();
+    propertyResolvers = new ArrayList<>();
   }
 
   /**
@@ -138,9 +143,27 @@ public class ConfigurationProviderBuilder {
     return this;
   }
 
+  /**
+   * Add {@link BindStrategy} to the list of executed for {@link ConfigurationProvider}s built by this builder. Binders executed in order of addition them with help of this method
+   *
+   * @param bindStrategy {@link BindStrategy} to use
+   * @return this builder
+   */
   public ConfigurationProviderBuilder withBindStrategy(BindStrategy bindStrategy) {
     requireNonNull(bindStrategy);
     bindStrategies.add(bindStrategy);
+    return this;
+  }
+
+  /**
+   * Add {@link PropertiesResolver} to the list of executed for {@link ConfigurationProvider}s built by this builder. PropertyResolvers executed in order of addition them with help of this method
+   *
+   * @param propertyResolver {@link PropertiesResolver} to use
+   * @return this builder
+   */
+  public ConfigurationProviderBuilder withPropertyResolver(PropertiesResolver propertyResolver) {
+    requireNonNull(propertyResolver);
+    propertyResolvers.add(propertyResolver);
     return this;
   }
 
@@ -155,6 +178,9 @@ public class ConfigurationProviderBuilder {
       + reloadStrategy.getClass().getCanonicalName() + " reload strategy and "
       + environment.getClass().getCanonicalName() + " environment");
 
+    if (!propertyResolvers.isEmpty()) {
+      configurationSource = new ResolvableConfigurationSource(configurationSource, propertyResolvers);
+    }
     final CachedConfigurationSource cachedConfigurationSource = new CachedConfigurationSource(configurationSource);
     if (metricRegistry != null) {
       configurationSource = new MeteredConfigurationSource(metricRegistry, prefix, cachedConfigurationSource);

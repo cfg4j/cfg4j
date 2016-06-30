@@ -16,6 +16,7 @@
 package org.cfg4j.provider;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.cfg4j.utils.PropertiesUtils.propertiesWith;
 import static org.mockito.Mockito.when;
 
 import org.junit.Test;

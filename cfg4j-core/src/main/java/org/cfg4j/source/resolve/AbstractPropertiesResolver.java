@@ -5,15 +5,15 @@ import java.util.Map;
 
 public abstract class AbstractPropertiesResolver implements PropertiesResolver {
   @Override
-  public Map<String, String> resolve(Map<String, String> sourceProperties) {
-    Map<String, String> result = new HashMap<>();
-    for (Map.Entry<String, String> entry : sourceProperties.entrySet()) {
+  public Map<String, Object> resolve(Map<String, Object> sourceProperties) {
+    Map<String, Object> result = new HashMap<>();
+    for (Map.Entry<String, Object> entry : sourceProperties.entrySet()) {
       String key = entry.getKey();
-      String value = entry.getValue();
+      Object value = entry.getValue();
       resolveProperty(key, value, sourceProperties, result);
     }
     return result;
   }
 
-  protected abstract void resolveProperty(String key, String value, Map<String, String> input, Map<String, String> output);
+  protected abstract void resolveProperty(String key, Object value, Map<String, Object> input, Map<String, Object> output);
 }

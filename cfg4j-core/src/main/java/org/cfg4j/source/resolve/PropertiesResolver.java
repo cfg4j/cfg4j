@@ -8,5 +8,5 @@ import java.util.Map;
  */
 public interface PropertiesResolver {
 
-  Map<String, String> resolve(Map<String, String> sourceProperties);
+  Map<String, Object> resolve(Map<String, Object> sourceProperties);
 }

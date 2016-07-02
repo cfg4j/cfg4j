@@ -49,7 +49,7 @@ public class TaggedPropertiesResolver extends AbstractPropertiesResolver {
   }
 
   @Override
-  protected void resolveProperty(String key, String value, Map<String, String> input, Map<String, String> output) {
+  protected void resolveProperty(String key, Object value, Map<String, Object> input, Map<String, Object> output) {
     if (isTagged(key)) {
       if (containsTags(key)) {
         output.put(cleanupKey(key), value);

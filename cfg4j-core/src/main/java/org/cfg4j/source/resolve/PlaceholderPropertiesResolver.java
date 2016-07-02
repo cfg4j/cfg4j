@@ -19,9 +19,9 @@ public class PlaceholderPropertiesResolver extends AbstractPropertiesResolver {
   private final Pattern placeholderPattern = Pattern.compile("\\$\\{([^.]+)\\}");
 
   @Override
-  protected void resolveProperty(String key, String value, Map<String, String> input, Map<String, String> output) {
-    if (containsPlaceholder(value) || containsPlaceholder(key)) {
-      output.put(resolve(key), resolve(value));
+  protected void resolveProperty(String key, Object value, Map<String, Object> input, Map<String, Object> output) {
+    if (value instanceof String && containsPlaceholder((String) value)) {
+      output.put(key, resolve((String) value));
     } else {
       output.put(key, value);
     }

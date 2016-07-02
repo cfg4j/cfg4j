@@ -36,7 +36,7 @@ public class ResolvableConfigurationSource implements ConfigurationSource {
 
   @SuppressWarnings("unchecked")
   private Properties resolve(Properties sourceProperties) {
-     Map<String,String> result = new HashMap(sourceProperties);
+    Map<String, Object> result = new HashMap(sourceProperties);
      for(PropertiesResolver resolver: resolvers) {
        result = resolver.resolve(result);
      }

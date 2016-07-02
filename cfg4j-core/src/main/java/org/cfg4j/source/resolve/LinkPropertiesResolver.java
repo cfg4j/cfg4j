@@ -33,18 +33,18 @@ public class LinkPropertiesResolver extends AbstractPropertiesResolver {
 
 
   @Override
-  protected void resolveProperty(String key, String value, Map<String, String> input, Map<String, String> output) {
-    if (!containsPlaceholder(value)) {
+  protected void resolveProperty(String key, Object value, Map<String, Object> input, Map<String, Object> output) {
+    if (value instanceof String && containsPlaceholder((String) value)) {
+      String linkPrefix = extractLinkPrefixMatcher(key, (String) value);
+      putWithKeyFromPrefix(input, output, key, linkPrefix);
+    } else {
       output.put(key, value);
-      return;
     }
-    String linkPrefix = extractLinkPrefixMatcher(key, value);
-    putWithKeyFromPrefix(input, output, key, linkPrefix);
   }
 
-  private void putWithKeyFromPrefix(Map<String, String> input, Map<String, String> output, String keyToReplace, String linkPrefix) {
+  private void putWithKeyFromPrefix(Map<String, Object> input, Map<String, Object> output, String keyToReplace, String linkPrefix) {
     boolean found = false;
-    for(Map.Entry<String,String> entry : input.entrySet()) {
+    for (Map.Entry<String, Object> entry : input.entrySet()) {
       String key = entry.getKey();
       if(key.startsWith(linkPrefix)) {
         output.put(key.replace(linkPrefix, keyToReplace), entry.getValue());

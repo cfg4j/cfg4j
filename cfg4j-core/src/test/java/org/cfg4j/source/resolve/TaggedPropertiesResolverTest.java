@@ -34,7 +34,7 @@ public class TaggedPropertiesResolverTest extends AbstractPropertiesResolverTest
         "$baz.a", "1",
         "a.$baz.b", "2",
         "a.b.c.$baz", "3"),
-      Collections.<String, String>emptyMap());
+      Collections.<String, Object>emptyMap());
   }
 
   @Test
@@ -57,7 +57,7 @@ public class TaggedPropertiesResolverTest extends AbstractPropertiesResolverTest
         "a.$baz.$bar", "1",
         "a.$baz.b.$bar", "2",
         "$bar.a.b.c.$baz", "3",
-        "$baz.a.b.c.$foo.d", "4"),Collections.<String, String>emptyMap()
+        "$baz.a.b.c.$foo.d", "4"), Collections.<String, Object>emptyMap()
       );
   }
 

@@ -4,9 +4,7 @@ package org.cfg4j.source.resolve;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 
 public class PlaceholderPropertiesResolverTest extends AbstractPropertiesResolverTest {
 
@@ -35,7 +33,7 @@ public class PlaceholderPropertiesResolverTest extends AbstractPropertiesResolve
     testResolve(asMap(
         "a", "${xxx}"
         ),
-        Collections.<String, String>emptyMap());
+      Collections.<String, Object>emptyMap());
   }
 
   @Test

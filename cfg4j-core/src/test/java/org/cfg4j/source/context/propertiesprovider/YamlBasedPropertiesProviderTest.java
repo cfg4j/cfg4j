@@ -114,7 +114,7 @@ public class YamlBasedPropertiesProviderTest {
 
   @Test
   public void shouldThrowOnNullInput() throws Exception {
-    String path = "org/cfg4j/source/propertiesprovider/nonexistent.json";
+    String path = "org/cfg4j/source/propertiesprovider/nonexistent.yaml";
 
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
       expectedException.expect(NullPointerException.class);

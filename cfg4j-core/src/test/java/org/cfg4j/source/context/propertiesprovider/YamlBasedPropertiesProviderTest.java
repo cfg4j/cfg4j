@@ -82,6 +82,20 @@ public class YamlBasedPropertiesProviderTest {
   }
 
   @Test
+  public void shouldSupportNestedObjects() throws Exception {
+    String path = "org/cfg4j/source/propertiesprovider/YamlBasedPropertiesProviderTest_shouldSupportNestedObjects.yaml";
+
+    try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
+      assertThat(provider.getProperties(input)).containsOnly(
+          MapEntry.entry("endpoints.$0.name", "service 0"),
+          MapEntry.entry("endpoints.$0.url", "service0.com"),
+          MapEntry.entry("endpoints.$1.name", "service 1"),
+          MapEntry.entry("endpoints.$1.url", "service1.com")
+      );
+    }
+  }
+
+  @Test
   public void shouldSupportReferences() throws Exception {
     String path = "org/cfg4j/source/propertiesprovider/YamlBasedPropertiesProviderTest_shouldSupportReferences.yaml";
 

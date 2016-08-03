@@ -1,0 +1,5 @@
+endpoints:
+  - name: service 0
+    url: service0.com
+  - name: service 1
+    url: service1.com

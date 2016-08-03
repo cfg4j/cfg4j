@@ -25,8 +25,8 @@ import org.yaml.snakeyaml.scanner.ScannerException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -87,10 +87,25 @@ public class YamlBasedPropertiesProvider extends FormatBasedPropertiesProvider {
       if (value instanceof Map) {
         value = convertToMap(value);
       } else if (value instanceof Collection) {
-        ArrayList<Map<String, Object>> collection = new ArrayList<>();
+        /* Process array of objects. Index them using $0, $1, $2 notation. Ex:
+         * endpoints.$0.name = service 0
+         * endpoints.$0.url  = service0.com
+         * endpoints.$1.name = service 1
+         * endpoints.$1.url = service1.com
+         */
 
+        Map<String, Object> collection = new HashMap<>();
+
+        int childNumber = 0;
         for (Object element : ((Collection) value)) {
-          collection.add(convertToMap(element));
+          Map<String, Object> subkeysMap = convertToMap(element);
+
+          // Add indices to resulting elements
+          for (Map.Entry<String, Object> subkeyEntry : subkeysMap.entrySet()) {
+            collection.put("$" + childNumber + "." + subkeyEntry.getKey(), subkeyEntry.getValue());
+          }
+
+          childNumber++;
         }
 
         value = collection;

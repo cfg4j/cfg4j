@@ -32,6 +32,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.lang.reflect.Proxy;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -49,11 +50,36 @@ public class BindInvocationHandlerTest {
   @Captor
   public ArgumentCaptor<GenericTypeInterface> captor;
 
+  /**
+   * Sample object representing proxy that would be created by a call to {@link Proxy#newProxyInstance}.
+   * It can't be an interface or we won't be able to test {@link Object}-level methods.
+   */
+  private static class ConfigObjectProxy {
+
+    // For "mocking" java.lang.reflect.Method
+    public String stringMethod() {
+      return null;
+    }
+
+    public Map<List<Integer>, Boolean> mapMethod() {
+      return null;
+    }
+
+    // Name collision with {@link Object#equals(Object)} (but with different argument types)
+    public boolean equals(String param) {
+      return true;
+    }
+
+    public boolean equals(String param1, String param2) {
+      return true;
+    }
+  }
+
   @Test
   public void shouldUseProvidedPrefix() throws Exception {
     BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "abc");
 
-    handler.invoke(this, this.getClass().getMethod("stringMethod"), new Object[]{});
+    handler.invoke(new ConfigObjectProxy(), ConfigObjectProxy.class.getMethod("stringMethod"), new Object[]{});
 
     verify(configurationProvider, times(1)).getProperty(eq("abc.stringMethod"), any(GenericTypeInterface.class));
   }
@@ -62,7 +88,7 @@ public class BindInvocationHandlerTest {
   public void shouldUseDefaultNamespaceWhenNoPrefix() throws Exception {
     BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
 
-    handler.invoke(this, this.getClass().getMethod("stringMethod"), new Object[]{});
+    handler.invoke(new ConfigObjectProxy(), ConfigObjectProxy.class.getMethod("stringMethod"), new Object[]{});
 
     verify(configurationProvider, times(1)).getProperty(eq("stringMethod"), any(GenericTypeInterface.class));
   }
@@ -71,7 +97,7 @@ public class BindInvocationHandlerTest {
   public void shouldQueryForProvidedType() throws Exception {
     BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
 
-    handler.invoke(this, this.getClass().getMethod("mapMethod"), new Object[]{});
+    handler.invoke(new ConfigObjectProxy(), ConfigObjectProxy.class.getMethod("mapMethod"), new Object[]{});
 
     verify(configurationProvider, times(1)).getProperty(eq("mapMethod"), captor.capture());
     assertThat(captor.getValue().getType().toString()).isEqualTo("java.util.Map<java.util.List<java.lang.Integer>, java.lang.Boolean>");
@@ -83,7 +109,7 @@ public class BindInvocationHandlerTest {
     BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
 
     expectedException.expect(NoSuchElementException.class);
-    handler.invoke(this, this.getClass().getMethod("stringMethod"), new Object[]{});
+    handler.invoke(new ConfigObjectProxy(), ConfigObjectProxy.class.getMethod("stringMethod"), new Object[]{});
   }
 
   @Test
@@ -92,7 +118,7 @@ public class BindInvocationHandlerTest {
     BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
 
     expectedException.expect(IllegalArgumentException.class);
-    handler.invoke(this, this.getClass().getMethod("stringMethod"), new Object[]{});
+    handler.invoke(new ConfigObjectProxy(), ConfigObjectProxy.class.getMethod("stringMethod"), new Object[]{});
   }
 
   @Test
@@ -101,7 +127,7 @@ public class BindInvocationHandlerTest {
     BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
 
     expectedException.expect(IllegalStateException.class);
-    handler.invoke(this, this.getClass().getMethod("stringMethod"), new Object[]{});
+    handler.invoke(new ConfigObjectProxy(), ConfigObjectProxy.class.getMethod("stringMethod"), new Object[]{});
   }
 
   @Test
@@ -109,7 +135,7 @@ public class BindInvocationHandlerTest {
     when(configurationProvider.getProperty(eq("equals"), any(GenericTypeInterface.class))).thenReturn(true);
     BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
 
-    assertThat((boolean) handler.invoke(this, this.getClass().getMethod("equals", String.class), new Object[]{})).isTrue();
+    assertThat((boolean) handler.invoke(new ConfigObjectProxy(), ConfigObjectProxy.class.getMethod("equals", String.class), new Object[]{})).isTrue();
   }
 
   @Test
@@ -117,7 +143,7 @@ public class BindInvocationHandlerTest {
     when(configurationProvider.getProperty(eq("equals"), any(GenericTypeInterface.class))).thenReturn(true);
     BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
 
-    assertThat((boolean) handler.invoke(this, this.getClass().getMethod("equals", String.class, String.class), new Object[]{})).isTrue();
+    assertThat((boolean) handler.invoke(new ConfigObjectProxy(), ConfigObjectProxy.class.getMethod("equals", String.class, String.class), new Object[]{})).isTrue();
   }
 
   @Test
@@ -125,25 +151,7 @@ public class BindInvocationHandlerTest {
     when(configurationProvider.getProperty(eq("hashCode"), any(GenericTypeInterface.class))).thenThrow(new NoSuchElementException());
     BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
 
-    int hashCode = (int) handler.invoke(this, this.getClass().getMethod("hashCode"), new Object[]{});
+    int hashCode = (int) handler.invoke(new ConfigObjectProxy(), ConfigObjectProxy.class.getMethod("hashCode"), new Object[]{});
     assertThat(hashCode).isEqualTo(handler.hashCode());
-  }
-
-  // For "mocking" java.lang.reflect.Method
-  public String stringMethod() {
-    return null;
-  }
-
-  public Map<List<Integer>, Boolean> mapMethod() {
-    return null;
-  }
-
-  // Name collision with {@link Object#equals(Object)} (but with different parameters)
-  public boolean equals(String param) {
-    return true;
-  }
-
-  public boolean equals(String param1, String param2) {
-    return true;
   }
 }

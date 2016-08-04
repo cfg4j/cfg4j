@@ -49,7 +49,7 @@ public interface ConfigurationProvider {
    *   boolean myBooleanProperty = configurationProvider.getProperty("my.property", boolean.class);
    * </pre>
    *
-   * @param <T>  property type. Supported baic types: {@link BigDecimal}, {@link BigInteger}, {@link Boolean}, {@link Byte},
+   * @param <T>  property type. Supported basic types: {@link BigDecimal}, {@link BigInteger}, {@link Boolean}, {@link Byte},
    *             {@link Character}, {@link Class}, {@link Double}, {@link Enum}, {@link File}, {@link Float}, {@link Integer},
    *             {@link Long}, {@link Number}, {@link Short}, {@link String}, {@link URL}, {@link URI} and arrays.
    *             For {@link Collection} support see method {@link #getProperty(String, GenericTypeInterface)})

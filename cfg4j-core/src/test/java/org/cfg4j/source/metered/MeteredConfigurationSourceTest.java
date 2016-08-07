@@ -68,7 +68,7 @@ public class MeteredConfigurationSourceTest {
   }
 
   @Test
-  public void getConfigurationShouldCallDelegate() throws Exception {
+  public void getConfigurationCallsDelegate() throws Exception {
     Properties properties = new Properties();
     when(delegate.getConfiguration(any(Environment.class))).thenReturn(properties);
 
@@ -76,7 +76,7 @@ public class MeteredConfigurationSourceTest {
   }
 
   @Test
-  public void getConfigurationShouldPropagateMissingEnvironmentExceptions() throws Exception {
+  public void getConfigurationPropagatesMissingEnvironmentExceptions() throws Exception {
     when(delegate.getConfiguration(any(Environment.class))).thenThrow(new MissingEnvironmentException(""));
 
     expectedException.expect(MissingEnvironmentException.class);
@@ -84,7 +84,7 @@ public class MeteredConfigurationSourceTest {
   }
 
   @Test
-  public void getConfigurationShouldPropagateIllegalStateExceptions() throws Exception {
+  public void getConfigurationPropagatesIllegalStateExceptions() throws Exception {
     when(delegate.getConfiguration(any(Environment.class))).thenThrow(new IllegalStateException(""));
 
     expectedException.expect(IllegalStateException.class);
@@ -92,12 +92,12 @@ public class MeteredConfigurationSourceTest {
   }
 
   @Test
-  public void initShouldCallDelegate() throws Exception {
+  public void initCallsDelegate() throws Exception {
     verify(delegate, times(1)).init();
   }
 
   @Test
-  public void initShouldPropagateIllegalStateExceptions() throws Exception {
+  public void initPropagatesIllegalStateExceptions() throws Exception {
     doThrow(new IllegalStateException("")).when(delegate).init();
 
     expectedException.expect(IllegalStateException.class);
@@ -105,7 +105,7 @@ public class MeteredConfigurationSourceTest {
   }
 
   @Test
-  public void initShouldPropagateSourceCommunicationExceptions() throws Exception {
+  public void initPropagatesSourceCommunicationExceptions() throws Exception {
     doThrow(new SourceCommunicationException("", null)).when(delegate).init();
 
     expectedException.expect(SourceCommunicationException.class);

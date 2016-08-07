@@ -39,8 +39,8 @@ public class SimpleConfigurationProviderWithClasspathIntegrationTest {
   public ExpectedException expectedException = ExpectedException.none();
 
   @Test
-  public void shouldReadYamlBooleans() throws Exception {
-    String path = "org/cfg4j/provider/SimpleConfigurationProviderIntegrationTest_shouldReadYamlBooleans.yaml";
+  public void readsYamlBooleans() throws Exception {
+    String path = "org/cfg4j/provider/SimpleConfigurationProviderIntegrationTest_readsYamlBooleans.yaml";
 
     ConfigurationProvider provider = getConfigurationProvider(path);
 
@@ -48,8 +48,8 @@ public class SimpleConfigurationProviderWithClasspathIntegrationTest {
   }
 
   @Test
-  public void shouldReadYamlIntegers() throws Exception {
-    String path = "org/cfg4j/provider/SimpleConfigurationProviderIntegrationTest_shouldReadYamlIntegers.yaml";
+  public void readsYamlIntegers() throws Exception {
+    String path = "org/cfg4j/provider/SimpleConfigurationProviderIntegrationTest_readsYamlIntegers.yaml";
 
     ConfigurationProvider provider = getConfigurationProvider(path);
 

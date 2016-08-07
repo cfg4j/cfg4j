@@ -97,13 +97,13 @@ public class ConsulConfigurationSourceIntegrationTest {
   }
 
   @Test
-  public void shouldConnectToSpecifiedAgent() throws Exception {
+  public void connectsToSpecifiedAgent() throws Exception {
     RecordedRequest request = server.takeRequest(0, TimeUnit.MILLISECONDS);
     assertThat(request).isNotNull();
   }
 
   @Test
-  public void initShouldThrowOnConnectionFailure() throws Exception {
+  public void initThrowsOnConnectionFailure() throws Exception {
     server.shutdown();
     source = new ConsulConfigurationSourceBuilder()
         .withHost(server.getHostName())
@@ -115,21 +115,21 @@ public class ConsulConfigurationSourceIntegrationTest {
   }
 
   @Test
-  public void getConfigurationShouldReturnAllKeysFromGivenEnvironment() throws Exception {
+  public void getConfigurationReturnsAllKeysFromGivenEnvironment() throws Exception {
     Environment environment = new ImmutableEnvironment("us-west-1");
 
     assertThat(source.getConfiguration(environment)).contains(MapEntry.entry("featureA.toggle", "disabled"));
   }
 
   @Test
-  public void getConfigurationShouldIgnoreLeadingSlashInGivenEnvironment() throws Exception {
+  public void getConfigurationIgnoresLeadingSlashInGivenEnvironment() throws Exception {
     Environment environment = new ImmutableEnvironment("/us-west-1");
 
     assertThat(source.getConfiguration(environment)).contains(MapEntry.entry("featureA.toggle", "disabled"));
   }
 
   @Test
-  public void getConfigurationShouldThrowBeforeInitCalled() throws Exception {
+  public void getConfigurationThrowsBeforeInitCalled() throws Exception {
     source = new ConsulConfigurationSourceBuilder()
         .withHost(server.getHostName())
         .withPort(server.getPort())
@@ -140,7 +140,7 @@ public class ConsulConfigurationSourceIntegrationTest {
   }
 
   @Test
-  public void getConfigurationShouldThrowAfterFailedReload() throws Exception {
+  public void getConfigurationThrowsAfterFailedReload() throws Exception {
     server.shutdown();
     try {
       source.getConfiguration(new ImmutableEnvironment("us-west-2"));

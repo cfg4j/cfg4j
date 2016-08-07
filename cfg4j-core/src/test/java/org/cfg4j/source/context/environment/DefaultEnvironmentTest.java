@@ -26,7 +26,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 public class DefaultEnvironmentTest {
 
   @Test
-  public void shouldUseEmptyStringAsEnvName() throws Exception {
+  public void usesEmptyStringAsEnvName() throws Exception {
     assertThat(new DefaultEnvironment().getName()).isEmpty();
   }
 }

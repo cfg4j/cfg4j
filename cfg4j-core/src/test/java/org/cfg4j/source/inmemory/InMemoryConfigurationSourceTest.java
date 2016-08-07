@@ -48,7 +48,7 @@ public class InMemoryConfigurationSourceTest {
   }
 
   @Test
-  public void shouldReturnSourceProperties() throws Exception {
+  public void returnsSourceProperties() throws Exception {
     assertThat(source.getConfiguration(new DefaultEnvironment())).isEqualTo(properties);
   }
 

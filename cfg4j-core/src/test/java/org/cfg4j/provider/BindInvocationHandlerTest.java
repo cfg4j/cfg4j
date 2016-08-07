@@ -50,7 +50,7 @@ public class BindInvocationHandlerTest {
   public ArgumentCaptor<GenericTypeInterface> captor;
 
   @Test
-  public void shouldUseProvidedPrefix() throws Exception {
+  public void usesProvidedPrefix() throws Exception {
     BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "abc");
 
     handler.invoke(this, this.getClass().getMethod("stringMethod"), new Object[]{});
@@ -59,7 +59,7 @@ public class BindInvocationHandlerTest {
   }
 
   @Test
-  public void shouldUseDefaultNamespaceWhenNoPrefix() throws Exception {
+  public void usesDefaultNamespaceWhenNoPrefix() throws Exception {
     BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
 
     handler.invoke(this, this.getClass().getMethod("stringMethod"), new Object[]{});
@@ -68,7 +68,7 @@ public class BindInvocationHandlerTest {
   }
 
   @Test
-  public void shouldQueryForProvidedType() throws Exception {
+  public void queriesForProvidedType() throws Exception {
     BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
 
     handler.invoke(this, this.getClass().getMethod("mapMethod"), new Object[]{});
@@ -78,7 +78,7 @@ public class BindInvocationHandlerTest {
   }
 
   @Test
-  public void shouldPropagateNoSuchElementException() throws Exception {
+  public void propagatesNoSuchElementException() throws Exception {
     when(configurationProvider.getProperty(anyString(), any(GenericTypeInterface.class))).thenThrow(new NoSuchElementException());
     BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
 
@@ -87,7 +87,7 @@ public class BindInvocationHandlerTest {
   }
 
   @Test
-  public void shouldPropagateIllegalArgumentException() throws Exception {
+  public void propagatesIllegalArgumentException() throws Exception {
     when(configurationProvider.getProperty(anyString(), any(GenericTypeInterface.class))).thenThrow(new IllegalArgumentException());
     BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
 
@@ -96,7 +96,7 @@ public class BindInvocationHandlerTest {
   }
 
   @Test
-  public void shouldPropagateIllegalStateException() throws Exception {
+  public void propagatesIllegalStateException() throws Exception {
     when(configurationProvider.getProperty(anyString(), any(GenericTypeInterface.class))).thenThrow(new IllegalStateException());
     BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
 
@@ -105,7 +105,7 @@ public class BindInvocationHandlerTest {
   }
 
   @Test
-  public void shouldPassCallToNonObjectLevelMethodWithCollidingName() throws Exception {
+  public void passesCallToNonObjectLevelMethodWithCollidingName() throws Exception {
     when(configurationProvider.getProperty(eq("equals"), any(GenericTypeInterface.class))).thenReturn(true);
     BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
 
@@ -113,7 +113,7 @@ public class BindInvocationHandlerTest {
   }
 
   @Test
-  public void shouldPassCallToNonObjectLevelMethodWithCollidingNameAndDifferentNumberOfParams() throws Exception {
+  public void PassesCallToNonObjectLevelMethodWithCollidingNameAndDifferentNumberOfParams() throws Exception {
     when(configurationProvider.getProperty(eq("equals"), any(GenericTypeInterface.class))).thenReturn(true);
     BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
 
@@ -121,7 +121,7 @@ public class BindInvocationHandlerTest {
   }
 
   @Test
-  public void shouldInvokeObjectLevelMethod() throws Exception {
+  public void invokesObjectLevelMethod() throws Exception {
     when(configurationProvider.getProperty(eq("hashCode"), any(GenericTypeInterface.class))).thenThrow(new NoSuchElementException());
     BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
 

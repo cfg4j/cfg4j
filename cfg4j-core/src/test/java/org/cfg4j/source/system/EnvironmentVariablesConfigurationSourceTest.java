@@ -52,17 +52,17 @@ public class EnvironmentVariablesConfigurationSourceTest {
   }
 
   @Test
-  public void shouldReturnPath() throws Exception {
+  public void returnsPath() throws Exception {
     assertThat(source.getConfiguration(new DefaultEnvironment())).containsKey("PATH");
   }
 
   @Test
-  public void shouldReturnPathForAnyEnvironment() throws Exception {
+  public void returnsPathForAnyEnvironment() throws Exception {
     assertThat(source.getConfiguration(mock(Environment.class))).containsKey("PATH");
   }
 
   @Test
-  public void shouldReturnAllVariablesInNamespace() throws Exception {
+  public void returnsAllVariablesInNamespace() throws Exception {
     // Given
     EnvironmentVariablesConfigurationSource mockSource = new EnvironmentVariablesConfigurationSource();
     PowerMockito.mockStatic(System.class);

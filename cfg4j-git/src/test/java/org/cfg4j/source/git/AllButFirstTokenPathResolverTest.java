@@ -45,28 +45,28 @@ public class AllButFirstTokenPathResolverTest {
   }
 
   @Test
-  public void shouldResolveEmptyStringToEmptyPath() throws Exception {
+  public void resolvesEmptyStringToEmptyPath() throws Exception {
     when(environment.getName()).thenReturn("us-west-1/");
 
     assertThat(pathResolver.getPathFor(environment).toString()).isEqualTo("");
   }
 
   @Test
-  public void shouldDiscardFirstToken() throws Exception {
+  public void discardsFirstToken() throws Exception {
     when(environment.getName()).thenReturn("us-west-1/local/path");
 
     assertThat(pathResolver.getPathFor(environment).toString()).isEqualTo("local/path");
   }
 
   @Test
-  public void shouldIgnoreMissingFirstToken() throws Exception {
+  public void ignoresMissingFirstToken() throws Exception {
     when(environment.getName()).thenReturn("/local/path");
 
     assertThat(pathResolver.getPathFor(environment).toString()).isEqualTo("local/path");
   }
 
   @Test
-  public void shouldTreatMissingPathAsEmptyPath() throws Exception {
+  public void treatsMissingPathAsEmptyPath() throws Exception {
     when(environment.getName()).thenReturn("us-west-1/");
 
     assertThat(pathResolver.getPathFor(environment).toString()).isEqualTo("");

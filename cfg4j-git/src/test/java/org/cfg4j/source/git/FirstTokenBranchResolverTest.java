@@ -45,28 +45,28 @@ public class FirstTokenBranchResolverTest {
   }
 
   @Test
-  public void shouldResolveEmptyStringToMaster() throws Exception {
+  public void resolvesEmptyStringToMaster() throws Exception {
     when(environment.getName()).thenReturn("");
 
     assertThat(branchResolver.getBranchNameFor(environment)).isEqualTo("master");
   }
 
   @Test
-  public void shouldResolveWhitespacesToMaster() throws Exception {
+  public void resolvesWhitespacesToMaster() throws Exception {
     when(environment.getName()).thenReturn("   ");
 
     assertThat(branchResolver.getBranchNameFor(environment)).isEqualTo("master");
   }
 
   @Test
-  public void shouldSupportSingleToken() throws Exception {
+  public void supportsSingleToken() throws Exception {
     when(environment.getName()).thenReturn("us-west-1");
 
     assertThat(branchResolver.getBranchNameFor(environment)).isEqualTo("us-west-1");
   }
 
   @Test
-  public void shouldUseFirstTokenAsBranchName() throws Exception {
+  public void usesFirstTokenAsBranchName() throws Exception {
     when(environment.getName()).thenReturn("us-west-1/local/path");
 
     assertThat(branchResolver.getBranchNameFor(environment)).isEqualTo("us-west-1");

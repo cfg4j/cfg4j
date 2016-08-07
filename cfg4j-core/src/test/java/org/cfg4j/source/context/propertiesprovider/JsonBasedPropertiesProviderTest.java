@@ -43,8 +43,8 @@ public class JsonBasedPropertiesProviderTest {
   }
 
   @Test
-  public void shouldReadSingleValues() throws Exception {
-    String path = "org/cfg4j/source/propertiesprovider/JsonBasedPropertiesProviderTest_shouldReadSingleValues.json";
+  public void readsSingleValues() throws Exception {
+    String path = "org/cfg4j/source/propertiesprovider/JsonBasedPropertiesProviderTest_readsSingleValues.json";
 
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
       assertThat(provider.getProperties(input)).containsExactly(MapEntry.entry("setting", "masterValue"),
@@ -53,8 +53,8 @@ public class JsonBasedPropertiesProviderTest {
   }
 
   @Test
-  public void shouldReadNestedValues() throws Exception {
-    String path = "org/cfg4j/source/propertiesprovider/JsonBasedPropertiesProviderTest_shouldReadNestedValues.json";
+  public void readsNestedValues() throws Exception {
+    String path = "org/cfg4j/source/propertiesprovider/JsonBasedPropertiesProviderTest_readsNestedValues.json";
 
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
       assertThat(provider.getProperties(input)).containsExactly(MapEntry.entry("some.setting", "masterValue"),
@@ -63,8 +63,8 @@ public class JsonBasedPropertiesProviderTest {
   }
 
   @Test
-  public void shouldReadLists() throws Exception {
-    String path = "org/cfg4j/source/propertiesprovider/JsonBasedPropertiesProviderTest_shouldReadLists.json";
+  public void readsLists() throws Exception {
+    String path = "org/cfg4j/source/propertiesprovider/JsonBasedPropertiesProviderTest_readsLists.json";
 
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
       assertThat(provider.getProperties(input)).containsOnly(MapEntry.entry("whitelist", "a,b,33"),
@@ -73,8 +73,8 @@ public class JsonBasedPropertiesProviderTest {
   }
 
   @Test
-  public void shouldReadTextBlock() throws Exception {
-    String path = "org/cfg4j/source/propertiesprovider/JsonBasedPropertiesProviderTest_shouldReadTextBlock.json";
+  public void readsTextBlock() throws Exception {
+    String path = "org/cfg4j/source/propertiesprovider/JsonBasedPropertiesProviderTest_readsTextBlock.json";
 
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
       assertThat(provider.getProperties(input)).containsExactly(MapEntry.entry("content", "I'm just a text block document"));
@@ -82,8 +82,8 @@ public class JsonBasedPropertiesProviderTest {
   }
 
   @Test
-  public void shouldThrowForNonJsonFile() throws Exception {
-    String path = "org/cfg4j/source/propertiesprovider/JsonBasedPropertiesProviderTest_shouldThrowForNonJsonFile.json";
+  public void throwsForNonJsonFile() throws Exception {
+    String path = "org/cfg4j/source/propertiesprovider/JsonBasedPropertiesProviderTest_throwsForNonJsonFile.json";
 
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
       expectedException.expect(IllegalStateException.class);
@@ -92,7 +92,7 @@ public class JsonBasedPropertiesProviderTest {
   }
 
   @Test
-  public void shouldThrowOnNullInput() throws Exception {
+  public void throwsOnNullInput() throws Exception {
     String path = "org/cfg4j/source/propertiesprovider/nonexistent.json";
 
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {

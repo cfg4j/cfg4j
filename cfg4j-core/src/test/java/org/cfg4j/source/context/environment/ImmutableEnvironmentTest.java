@@ -26,7 +26,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 public class ImmutableEnvironmentTest {
 
   @Test
-  public void shouldReturnConstantEnvName() throws Exception {
+  public void returnsConstantEnvName() throws Exception {
     String environmentName = "sampleEnvironment";
     ImmutableEnvironment strategy = new ImmutableEnvironment(environmentName);
     assertThat(strategy.getName()).isEqualTo(environmentName);

@@ -65,7 +65,7 @@ public class MeteredConfigurationProviderTest {
   }
 
   @Test
-  public void allConfigurationAsPropertiesShouldCallDelegate() throws Exception {
+  public void allConfigurationAsPropertiesCallsDelegate() throws Exception {
     Properties properties = new Properties();
     when(delegate.allConfigurationAsProperties()).thenReturn(properties);
 
@@ -73,14 +73,14 @@ public class MeteredConfigurationProviderTest {
   }
 
   @Test
-  public void getPropertyShouldCallDelegate() throws Exception {
+  public void getPropertyCallsDelegate() throws Exception {
     when(delegate.getProperty("test.property", boolean.class)).thenReturn(true);
 
     assertThat(provider.getProperty("test.property", boolean.class)).isTrue();
   }
 
   @Test
-  public void getProperty2ShouldCallDelegate() throws Exception {
+  public void getProperty2CallsDelegate() throws Exception {
     GenericType<List<String>> genericType = new GenericType<List<String>>() {
     };
     when(delegate.getProperty(eq("test.property"), eq(genericType))).thenReturn(new LinkedList<>());
@@ -90,7 +90,7 @@ public class MeteredConfigurationProviderTest {
   }
 
   @Test
-  public void bindShouldCallDelegate() throws Exception {
+  public void bindCallsDelegate() throws Exception {
     ConfigPojo configPojo = new ConfigPojo() {
     };
     when(delegate.bind(any(ConfigurationProvider.class), eq(""), eq(ConfigPojo.class))).thenReturn(configPojo);

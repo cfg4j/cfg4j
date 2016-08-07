@@ -42,14 +42,14 @@ public class MeteredReloadableTest {
   }
 
   @Test
-  public void reloadShouldCallDelegate() throws Exception {
+  public void reloadCallsDelegate() throws Exception {
     reloadable.reload();
 
     verify(delegate, times(1)).reload();
   }
 
   @Test
-  public void reloadShouldPropagateIllegalStateExceptions() throws Exception {
+  public void reloadPropagatesIllegalStateExceptions() throws Exception {
     doThrow(new IllegalStateException("")).when(delegate).reload();
 
     expectedException.expect(IllegalStateException.class);

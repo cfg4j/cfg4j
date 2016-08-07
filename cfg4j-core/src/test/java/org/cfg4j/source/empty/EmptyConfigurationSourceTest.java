@@ -43,12 +43,12 @@ public class EmptyConfigurationSourceTest {
   }
 
   @Test
-  public void shouldReturnEmptyConfiguration() throws Exception {
+  public void returnsEmptyConfiguration() throws Exception {
     assertThat(source.getConfiguration(new DefaultEnvironment())).isEmpty();
   }
 
   @Test
-  public void shouldReturnEmptyConfigurationForAnyEnvironment() throws Exception {
+  public void returnsEmptyConfigurationForAnyEnvironment() throws Exception {
     assertThat(source.getConfiguration(mock(Environment.class))).isEmpty();
   }
 }

@@ -39,7 +39,7 @@ public class SimpleConfigurationProviderWithMeteredSourceIntegrationTest {
   private MetricRegistry metricRegistry = new MetricRegistry();
 
   @Test
-  public void shouldEmitMetrics() throws Exception {
+  public void emitsMetrics() throws Exception {
     ConfigurationProvider provider = getConfigurationProvider();
 
     provider.getProperty("some.setting", Boolean.class);

@@ -43,8 +43,8 @@ public class PropertyBasedPropertiesProviderTest {
   }
 
   @Test
-  public void shouldLoadProperties() throws Exception {
-    String path = "org/cfg4j/source/propertiesprovider/PropertyBasedPropertiesProviderTest_shouldLoadProperties.properties";
+  public void loadsProperties() throws Exception {
+    String path = "org/cfg4j/source/propertiesprovider/PropertyBasedPropertiesProviderTest_loadsProperties.properties";
 
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
       assertThat(provider.getProperties(input)).containsExactly(MapEntry.entry("property", "abc"));
@@ -66,8 +66,8 @@ public class PropertyBasedPropertiesProviderTest {
   }
 
   @Test
-  public void shouldThrowOnMalformedFile() throws Exception {
-    String path = "org/cfg4j/source/propertiesprovider/PropertyBasedPropertiesProviderTest_shouldThrowOnMalformedFile.properties";
+  public void throwsOnMalformedFile() throws Exception {
+    String path = "org/cfg4j/source/propertiesprovider/PropertyBasedPropertiesProviderTest_throwsOnMalformedFile.properties";
 
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
       expectedException.expect(IllegalStateException.class);

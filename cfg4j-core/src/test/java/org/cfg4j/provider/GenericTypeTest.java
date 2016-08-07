@@ -30,7 +30,7 @@ public class GenericTypeTest {
   public ExpectedException expectedException = ExpectedException.none();
 
   @Test
-  public void shouldThrowIfNotDirectlySubclassed() throws Exception {
+  public void throwsIfNotDirectlySubclassed() throws Exception {
     abstract class GenericTypeDirect extends GenericType<List<Integer>> {
     }
 
@@ -40,14 +40,14 @@ public class GenericTypeTest {
   }
 
   @Test
-  public void shouldThrowIfNotParametrizedType() throws Exception {
+  public void throwsIfNotParametrizedType() throws Exception {
     expectedException.expect(IllegalArgumentException.class);
     new GenericType() {
     };
   }
 
   @Test
-  public void shouldRetainType() throws Exception {
+  public void retainsType() throws Exception {
     GenericType<List<Integer>> genericType = new GenericType<List<Integer>>() {
     };
 

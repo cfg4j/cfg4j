@@ -70,7 +70,7 @@ public class SimpleConfigurationProviderIntegrationTest {
   }
 
   @Test
-  public void shouldReadConfigsFromConsulConfigurationSource() throws Exception {
+  public void readsConfigsFromConsulConfigurationSource() throws Exception {
     ConfigurationSource source = new ConsulConfigurationSourceBuilder()
         .withHost(server.getHostName())
         .withPort(server.getPort())

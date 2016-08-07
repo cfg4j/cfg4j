@@ -113,7 +113,7 @@ public class BindInvocationHandlerTest {
   }
 
   @Test
-  public void PassesCallToNonObjectLevelMethodWithCollidingNameAndDifferentNumberOfParams() throws Exception {
+  public void passesCallToNonObjectLevelMethodWithCollidingNameAndDifferentNumberOfParams() throws Exception {
     when(configurationProvider.getProperty(eq("equals"), any(GenericTypeInterface.class))).thenReturn(true);
     BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
 

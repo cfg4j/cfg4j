@@ -122,8 +122,10 @@ class SimpleConfigurationProvider implements ConfigurationProvider {
    * @throws IllegalStateException    when provider is unable to fetch configuration value for the given {@code key}
    */
   <T> T bind(ConfigurationProvider configurationProvider, String prefix, Class<T> type) {
-    @SuppressWarnings("unchecked")
-    T proxy = (T) Proxy.newProxyInstance(type.getClassLoader(), new Class<?>[]{type}, new BindInvocationHandler(configurationProvider, prefix));
+    Object proxyObject = Proxy.newProxyInstance(type.getClassLoader(), new Class<?>[]{type},
+        new BindInvocationHandler(configurationProvider, prefix));
+
+    T proxy = type.cast(proxyObject);
 
     new BindingValidator().validate(proxy, type);
 

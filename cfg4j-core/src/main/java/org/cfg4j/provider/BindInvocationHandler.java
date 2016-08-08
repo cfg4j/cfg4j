@@ -29,7 +29,7 @@ import java.util.NoSuchElementException;
  */
 class BindInvocationHandler implements InvocationHandler {
 
-  private final ConfigurationProvider simpleConfigurationProvider;
+  private final ConfigurationProvider configurationProvider;
   private final String prefix;
 
   /**
@@ -40,7 +40,7 @@ class BindInvocationHandler implements InvocationHandler {
    * @param prefix                prefix for calls to {@link ConfigurationProvider#getProperty(String, Class)}
    */
   BindInvocationHandler(ConfigurationProvider configurationProvider, String prefix) {
-    this.simpleConfigurationProvider = requireNonNull(configurationProvider);
+    this.configurationProvider = requireNonNull(configurationProvider);
     this.prefix = requireNonNull(prefix);
   }
 
@@ -58,7 +58,7 @@ class BindInvocationHandler implements InvocationHandler {
     }
 
     final Type returnType = method.getGenericReturnType();
-    return simpleConfigurationProvider.getProperty(prefix + (prefix.isEmpty() ? "" : ".") + method.getName(), new GenericTypeInterface() {
+    return configurationProvider.getProperty(prefix + (prefix.isEmpty() ? "" : ".") + method.getName(), new GenericTypeInterface() {
       @Override
       public Type getType() {
         return returnType;

@@ -47,6 +47,42 @@ public class PlaceholderPropertiesResolverTest extends AbstractPropertiesResolve
         "a.b", "2"));
   }
 
+  @Test
+  public void resolveFromPropertiesInSource() throws Exception {
+    testResolve(asMap(
+      "a", "1",
+      "a.b", "${a}"),
+
+      asMap(
+        "a", "1",
+        "a.b", "1"));
+  }
+
+  @Test
+  public void reccursiveResolve() throws Exception {
+    testResolve(asMap(
+      "a", "1",
+      "a.b", "${a}",
+      "a.b.c", "${a.b}"),
+
+      asMap(
+        "a", "1",
+        "a.b", "1",
+        "a.b.c", "1"));
+  }
+
+  @Test
+  public void multiplePlaceholdersInOneValue() throws Exception {
+    testResolve(asMap(
+      "a", "1",
+      "b", "2",
+      "c", "${a}+${b}"),
+
+      asMap(
+        "a", "1",
+        "b", "2",
+        "c", "1+2"));
+  }
 
 
 

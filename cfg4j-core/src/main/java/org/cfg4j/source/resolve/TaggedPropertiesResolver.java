@@ -42,7 +42,7 @@ public class TaggedPropertiesResolver extends AbstractPropertiesResolver {
   }
 
   /**
-   * @param tags
+   * @param tags - set of tags that will be used for filtering
    */
   public TaggedPropertiesResolver(Set<String> tags) {
     this('$', tags);
@@ -91,7 +91,7 @@ public class TaggedPropertiesResolver extends AbstractPropertiesResolver {
     return result.toString();
   }
 
-  public boolean isTagged(String key) {
+  private boolean isTagged(String key) {
     return key.indexOf(tagSymbol) != -1;
   }
 }

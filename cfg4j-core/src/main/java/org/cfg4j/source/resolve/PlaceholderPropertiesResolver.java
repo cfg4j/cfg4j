@@ -75,17 +75,17 @@ public class PlaceholderPropertiesResolver extends AbstractPropertiesResolver {
   }
 
   private String findPropertyByKey(String key, Map<String, Object> input, Map<String, Object> output) {
-    String value = System.getProperty(key);
+    Object value = System.getProperty(key);
     if (value == null) {
-      value = output.get(key).toString();
+      value = output.get(key);
       if (value == null) {
-        value = input.get(key).toString();
+        value = input.get(key);
       }
     }
     if (value == null) {
       throw new IllegalStateException("Cannot resolve placeholder " + key);
     }
-    return value;
+    return value.toString();
   }
 
   private boolean containsPlaceholder(String value) {

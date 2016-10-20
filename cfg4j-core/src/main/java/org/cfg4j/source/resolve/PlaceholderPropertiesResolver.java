@@ -48,7 +48,7 @@ import java.util.regex.Pattern;
 
  */
 public class PlaceholderPropertiesResolver extends AbstractPropertiesResolver {
-  private final Pattern placeholderPattern = Pattern.compile("\\$\\{([\\w$\\.]+)\\}");
+  private final Pattern placeholderPattern = Pattern.compile("\\$\\{([\\d\\w$\\.]+)\\}");
 
   @Override
   protected void resolveProperty(String key, Object value, Map<String, Object> input, Map<String, Object> output) {

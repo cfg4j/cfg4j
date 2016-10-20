@@ -59,6 +59,18 @@ public class PlaceholderPropertiesResolverTest extends AbstractPropertiesResolve
   }
 
   @Test
+  public void resolveWithDigitsFromPropertiesInSource() throws Exception {
+    testResolve(asMap(
+      "a1.A2", "1",
+      "a.b", "${a1.A2}"),
+
+      asMap(
+        "a.b", "1",
+        "a1.A2", "1"));
+  }
+
+
+  @Test
   public void reccursiveResolve() throws Exception {
     testResolve(asMap(
       "a", "1",

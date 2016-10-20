@@ -18,8 +18,8 @@
 buildscript {
 
     ext {
-        artifactGroup = "org.cfg4j"
-        artifactVersion = "5.0.0-SNAPSHOT"
+        artifactGroup = "com.mm.cfg4j"
+        artifactVersion = "5.0.5"
     }
 
     repositories {
@@ -35,7 +35,7 @@ buildscript {
 
 // Generate Gradle wrapper
 task wrapper(type: Wrapper) {
-    gradleVersion = "2.13"
+    gradleVersion = "2.14"
 }
 
 subprojects {
@@ -109,70 +109,13 @@ subprojects {
     uploadArchives {
         repositories {
             mavenDeployer {
-                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-
-                def ossrhUsername = project.findProperty("ossrhUsername") ?: ""
-                def ossrhPassword = project.findProperty("ossrhPassword") ?: ""
-
-                repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-                    authentication(userName: ossrhUsername, password: ossrhPassword)
+                repository(url: nexusReleaseRepo) {
+                    authentication(userName: nexusUsername, password: nexusPassword);
                 }
-
-                snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-                    authentication(userName: ossrhUsername, password: ossrhPassword)
-                }
-
-                pom.project {
-                    name 'cfg4j'
-                    packaging 'jar'
-                    description 'Configuration library for Java distributed apps.'
-                    url 'http://cfg4j.org'
-
-                    scm {
-                        url 'git@github.com:cfg4j/cfg4j.git'
-                        connection 'scm:git:git@github.com:cfg4j/cfg4j.git'
-                        developerConnection 'scm:git:git@github.com:cfg4j/cfg4j.git'
-                    }
-
-
-                    licenses {
-                        license {
-                            name 'The Apache License, Version 2.0'
-                            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                            distribution 'repo'
-                        }
-                    }
-
-                    developers {
-                        developer {
-                            id 'norbertpotocki'
-                            name 'Norbert Potocki'
-                            email 'norbert.potocki@nort.pl'
-                        }
-                    }
+                snapshotRepository(url: nexusSnapshotRepo) {
+                    authentication(userName: nexusUsername, password: nexusPassword);
                 }
             }
-        }
-    }
-
-
-    signing {
-        required { gradle.taskGraph.hasTask(":cfg4j-core:uploadArchives") }
-        sign configurations.archives
-    }
-
-    gradle.taskGraph.whenReady { taskGraph ->
-        if (taskGraph.hasTask(":cfg4j-core:uploadArchives")) {
-            Console console = System.console()
-            console.printf "\n\nWe have to sign and upload artifacts to Maven Central Repository" +
-                    "\n\nPlease enter your credentials.\n\n"
-
-            def signingPassword = console.readPassword("PGP Private Key Password: ")
-
-            allprojects { ext."signing.password" = signingPassword }
-
-
-            console.printf "\nThanks.\n\n"
         }
     }
 

@@ -17,6 +17,12 @@ package org.cfg4j.source.classpath;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Properties;
+
 import org.assertj.core.data.MapEntry;
 import org.cfg4j.source.context.environment.DefaultEnvironment;
 import org.cfg4j.source.context.environment.Environment;
@@ -30,11 +36,6 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Collections;
 
 
 @RunWith(MockitoJUnitRunner.class)
@@ -131,4 +132,22 @@ public class ClasspathConfigurationSourceTest {
     source.getConfiguration(new DefaultEnvironment());
   }
 
+  @Test
+  public void getConfigurationInoreMissingFiles(){
+    configFilesProvider = new ConfigFilesProvider() {
+      @Override
+      public Iterable<Path> getConfigFiles() {
+        return Collections.singletonList(
+            Paths.get("malformed.properties")
+        );
+      }
+    };
+
+    source = new ClasspathConfigurationSource(configFilesProvider);
+    source.setIgnoreNonExistingFiles(true);
+
+    expectedException.expect(IllegalStateException.class);
+    Properties properties = source.getConfiguration(new DefaultEnvironment());
+    assertThat(properties).isEmpty();
+  }
 }

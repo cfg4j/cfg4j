@@ -4,3 +4,7 @@ build/
 *.iml
 *.log.*
 gradle.properties
+.settings/
+.project
+.classpath
+bin/

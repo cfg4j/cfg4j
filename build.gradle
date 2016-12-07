@@ -18,8 +18,8 @@
 buildscript {
 
     ext {
-        artifactGroup = "com.mm.cfg4j"
-        artifactVersion = "5.0.5"
+        artifactGroup = "org.cfg4j"
+        artifactVersion = "5.0.0-SNAPSHOT"
     }
 
     repositories {
@@ -35,7 +35,7 @@ buildscript {
 
 // Generate Gradle wrapper
 task wrapper(type: Wrapper) {
-    gradleVersion = "2.14"
+    gradleVersion = "2.13"
 }
 
 subprojects {
@@ -109,12 +109,29 @@ subprojects {
     uploadArchives {
         repositories {
             mavenDeployer {
-                repository(url: nexusReleaseRepo) {
-                    authentication(userName: nexusUsername, password: nexusPassword);
+                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+                def ossrhUsername = project.findProperty("ossrhUsername") ?: ""
+                def ossrhPassword = project.findProperty("ossrhPassword") ?: ""
+
+                repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                    authentication(userName: ossrhUsername, password: ossrhPassword)
                 }
-                snapshotRepository(url: nexusSnapshotRepo) {
-                    authentication(userName: nexusUsername, password: nexusPassword);
+
+                snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                    authentication(userName: ossrhUsername, password: ossrhPassword)
                 }
+
+                pom.project {
+                    name 'cfg4j'
+                    packaging 'jar'
+                    description 'Configuration library for Java distributed apps.'
+                    url 'http://cfg4j.org'
+
+                    scm {
+                        url 'git@github.com:cfg4j/cfg4j.git'
+                        connection 'scm:git:git@github.com:cfg4j/cfg4j.git'
+                        developerConnection 'scm:git:git@github.com:cfg4j/cfg4j.git'
             }
         }
     }

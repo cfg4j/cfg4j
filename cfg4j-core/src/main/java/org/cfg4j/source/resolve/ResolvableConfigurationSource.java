@@ -30,7 +30,6 @@ public class ResolvableConfigurationSource implements ConfigurationSource {
    */
   @Override
   public Properties getConfiguration(Environment environment) {
-    underlyingSource.getConfiguration(environment);
     return resolve(underlyingSource.getConfiguration(environment));
   }
 

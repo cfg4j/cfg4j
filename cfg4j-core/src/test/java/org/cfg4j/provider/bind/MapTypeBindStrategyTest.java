@@ -32,6 +32,16 @@ public class MapTypeBindStrategyTest extends AbstractBindStrategyTest {
 
   private MapTypeBindStrategy mapBindStrategy;
 
+  public enum KeyEnum {
+    A, B, C
+  }
+
+  public interface MapEnumConfig {
+    Map<KeyEnum, Integer> a();
+  }
+
+
+
   @Before
   public void init() {
     mapBindStrategy = new MapTypeBindStrategy();
@@ -68,6 +78,31 @@ public class MapTypeBindStrategyTest extends AbstractBindStrategyTest {
   }
 
   @Test
+  public void bindToMapOfEnumKeys() {
+    when(configurationProvider.bind("org.cfg4j.a.a", Integer.class)).thenReturn(1);
+    when(configurationProvider.bind("org.cfg4j.a.b", Integer.class)).thenReturn(2);
+    when(configurationProvider.bind("org.cfg4j.a.c", Integer.class)).thenReturn(3);
+
+    HashMap<KeyEnum, Integer> resultMap = enumTestMethodAWithProps(propertiesWith(
+      "org.cfg4j.a.a", "1",
+      "org.cfg4j.a.b", "2",
+      "org.cfg4j.a.c", "3"));
+
+    assertThat(resultMap).containsEntry(KeyEnum.A, 1)
+      .containsEntry(KeyEnum.B, 2)
+      .containsEntry(KeyEnum.C, 3);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void invalidBindToMapOfEnumKeys() {
+    when(configurationProvider.bind("org.cfg4j.a.d", Integer.class)).thenReturn(1);
+
+    enumTestMethodAWithProps(propertiesWith(
+      "org.cfg4j.a.d", "1"));
+  }
+
+
+  @Test
   public void bindEmptyMap() {
     Properties properties = propertiesWith();
     assertThat(testMethodAWithProps(properties)).isEmpty();
@@ -88,6 +123,14 @@ public class MapTypeBindStrategyTest extends AbstractBindStrategyTest {
     Method methodA = getMethod("a", MapConfig.class);
     assertTrue(mapBindStrategy.canApply(methodA));
     return (HashMap<String, T>) mapBindStrategy.apply(methodA, prefix, configurationProvider);
+  }
+
+  @SuppressWarnings("unchecked")
+  private <T> HashMap<KeyEnum, T> enumTestMethodAWithProps(Properties properties) {
+    when(configurationProvider.allConfigurationAsProperties()).thenReturn(properties);
+    Method methodA = getMethod("a", MapEnumConfig.class);
+    assertTrue(mapBindStrategy.canApply(methodA));
+    return (HashMap<KeyEnum, T>) mapBindStrategy.apply(methodA, prefix, configurationProvider);
   }
 
 }

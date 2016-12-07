@@ -17,17 +17,36 @@ public class MapTypeBindStrategy extends PrefixBasedBindStrategy {
   public Object apply(Method method, String prefix, ConfigurationProvider configurationProvider) {
     Type[] typeArguments = ((ParameterizedType) method.getGenericReturnType()).getActualTypeArguments();
     Class<?> keyClass = (Class<?>) typeArguments[0];
-    if (!String.class.equals(keyClass)) {
-      throw new IllegalStateException("Invalid bind interface " + method.getDeclaringClass() +". Map properties should have key of String type.");
-    }
+    checkType(prefix, keyClass, method.getDeclaringClass());
     Class<?> valueClass = (Class<?>) typeArguments[1];
     String mapPrefix = buildPrefix(prefix, method.getName());
     Set<String> keyPathes = findMapKeyPathes(configurationProvider.allConfigurationAsProperties(), mapPrefix);
-    HashMap<String, Object> proxyMap = new HashMap<>();
+    HashMap<Object, Object> proxyMap = new HashMap<>();
     for (String keyPath : keyPathes) {
-      proxyMap.put(key(keyPath), configurationProvider.bind(keyPath, valueClass));
+      String key = getKey(keyPath);
+      proxyMap.put(castKey(key, keyClass), configurationProvider.bind(keyPath, valueClass));
     }
     return proxyMap;
+  }
+
+  private void checkType(String prefix, Class<?> keyClass, Class<?> declaringClass) {
+    if (!String.class.equals(keyClass) && !keyClass.isEnum()) {
+      throw new IllegalStateException(String.format("For prefix %s. Invalid bind interface %s. Map properties should have key of String type or Enum.", prefix, declaringClass));
+    }
+  }
+
+  private Object castKey(String key, Class keyClass) {
+    if (String.class.equals(keyClass)) {
+      return key;
+    } else if (keyClass.isEnum()) {
+      return Enum.valueOf(keyClass, key.toUpperCase());
+    } else {
+      throw new IllegalStateException("Cannot cast key " + key + " to " + keyClass);
+    }
+  }
+
+  private String getKey(String keyPath) {
+    return key(keyPath);
   }
 
   private String key(String keyPath) {

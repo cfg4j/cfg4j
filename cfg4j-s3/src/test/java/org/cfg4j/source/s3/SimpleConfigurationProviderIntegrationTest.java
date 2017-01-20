@@ -32,7 +32,7 @@ public class SimpleConfigurationProviderIntegrationTest {
   public void setUp() throws Exception {
     String BUCKET_NAME = "configurations-bucket";
     S3Object mockS3Object = null;
-    String fileContent = "app.version=1.0.0";
+    final String fileContent = "app.version=1.0.0";
 
     when(s3Wrapper.getFile(FILE_NAME))
       .thenAnswer(new Answer<S3Object>() {
@@ -43,7 +43,6 @@ public class SimpleConfigurationProviderIntegrationTest {
           return mockS3Object;
         }
       });
-      //.thenReturn(mockS3Object);
     when(s3Wrapper.isFileExist(FILE_NAME)).thenReturn(true);
     when(s3Wrapper.getBucketName()).thenReturn(BUCKET_NAME);
     when(s3Wrapper.isBucketExist(BUCKET_NAME)).thenReturn(true);
@@ -60,6 +59,5 @@ public class SimpleConfigurationProviderIntegrationTest {
       .build();
 
     assertThat(provider.getProperty("app.version", String.class)).isEqualTo("1.0.0");
-    //assertThat(properties.getProperty("app.version")).isEqualTo("1.0.0");
   }
 }

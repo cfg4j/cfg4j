@@ -23,10 +23,8 @@ public class S3ConfigurationSourceIntegrationTest {
   @Mock
   private AmazonS3Wrapper s3Wrapper;
 
-  private final String BUCKET_NAME = "configurations-bucket";
   private final String FILE_NAME = "application.properties";
   private Environment environment = new ImmutableEnvironment(FILE_NAME);
-  private String fileContent = "app.version=1.0.0";
 
   private ConfigurationSource s3Source;
 
@@ -34,10 +32,12 @@ public class S3ConfigurationSourceIntegrationTest {
   public void setUp() throws Exception {
     S3Object s3Object = new S3Object();
     s3Object.setKey(FILE_NAME);
+    String fileContent = "app.version=1.0.0";
     s3Object.setObjectContent(new ByteArrayInputStream(fileContent.getBytes()));
 
     when(s3Wrapper.getFile(FILE_NAME)).thenReturn(s3Object);
     when(s3Wrapper.isFileExist(FILE_NAME)).thenReturn(true);
+    String BUCKET_NAME = "configurations-bucket";
     when(s3Wrapper.getBucketName()).thenReturn(BUCKET_NAME);
     when(s3Wrapper.isBucketExist(BUCKET_NAME)).thenReturn(true);
 

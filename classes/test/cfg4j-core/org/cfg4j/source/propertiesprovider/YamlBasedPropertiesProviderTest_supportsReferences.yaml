@@ -1,0 +1,5 @@
+wheelA: &wheel
+  radius: 25cm
+  color: black
+
+wheelB: *wheel

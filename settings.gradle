@@ -13,4 +13,4 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-include 'cfg4j-core', 'cfg4j-git', 'cfg4j-consul'
+include 'cfg4j-core', 'cfg4j-git', 'cfg4j-consul', 'cfg4j-s3'

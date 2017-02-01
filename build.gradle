@@ -29,7 +29,7 @@ buildscript {
     }
 
     dependencies {
-        classpath group: "com.github.ben-manes", name: "gradle-versions-plugin", version: "0.12.0"
+        classpath group: "com.github.ben-manes", name: "gradle-versions-plugin", version: "0.13.0"
     }
 }
 

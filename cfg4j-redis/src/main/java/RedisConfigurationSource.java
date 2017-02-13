@@ -66,6 +66,7 @@ public class RedisConfigurationSource implements ConfigurationSource {
     LOG.info("ESTABLISHING_CONNECTION_TO_REDIS|" + host + "|" + port);
     try {
       jedis = new Jedis(host, port, connectionTimeout, socketTimeout);
+      LOG.info("CONNECTION_TO_REDIS_ESTABLISHED|" + host + "|" + port);
     } catch (Exception e) {
       throw new SourceCommunicationException("CANNOT_CONNECT_TO_REDIS|" + host + "|" + port, e);
     }

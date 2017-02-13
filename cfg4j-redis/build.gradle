@@ -9,6 +9,7 @@ buildscript {
 
 dependencies {
     compile project(":cfg4j-core")
+    compile group: 'redis.clients', name: 'jedis', version: '2.9.0'
 }
 
 // ----------- Task configurations -----------

@@ -16,18 +16,17 @@ import java.util.Set;
 public class RedisConfigurationSource implements ConfigurationSource {
 
   private static final Logger LOG = LoggerFactory.getLogger(RedisConfigurationSource.class);
+  private static final String DEFAULT_REDIS_KEY = "CONFIGURATION_PROPERTIES";
 
   private final String host;
   private final int port;
-  private final int database;
   private final int connectionTimeout;
   private final int socketTimeout;
   private Jedis jedis = null;
 
-  public RedisConfigurationSource(String host, int port, int database, int connectionTimeout, int socketTimeout) {
+  public RedisConfigurationSource(String host, int port, int connectionTimeout, int socketTimeout) {
     this.host = host;
     this.port = port;
-    this.database = database;
     this.connectionTimeout = connectionTimeout;
     this.socketTimeout = socketTimeout;
   }
@@ -54,6 +53,10 @@ public class RedisConfigurationSource implements ConfigurationSource {
     }
 
     String redisKey = environment.getName();
+    if (!Util.isStringSet(redisKey)) {
+      redisKey = DEFAULT_REDIS_KEY;
+    }
+
     Properties properties = getPropertiesFromRedis(redisKey);
     return properties;
   }

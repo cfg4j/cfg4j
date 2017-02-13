@@ -8,4 +8,8 @@ public class Util {
     return object == null;
   }
 
+  public static boolean isStringSet(String string) {
+
+    return string != null && string.trim().length() > 0;
+  }
 }

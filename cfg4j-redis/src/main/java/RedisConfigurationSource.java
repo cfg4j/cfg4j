@@ -17,11 +17,11 @@ public class RedisConfigurationSource implements ConfigurationSource {
 
   private static final Logger LOG = LoggerFactory.getLogger(RedisConfigurationSource.class);
 
-  private String host;
-  private int port;
-  private int database;
-  private int connectionTimeout;
-  private int socketTimeout;
+  private final String host;
+  private final int port;
+  private final int database;
+  private final int connectionTimeout;
+  private final int socketTimeout;
   private Jedis jedis = null;
 
   public RedisConfigurationSource(String host, int port, int database, int connectionTimeout, int socketTimeout) {

@@ -24,6 +24,14 @@ public class RedisConfigurationSource implements ConfigurationSource {
   private int socketTimeout;
   private Jedis jedis = null;
 
+  public RedisConfigurationSource(String host, int port, int database, int connectionTimeout, int socketTimeout) {
+    this.host = host;
+    this.port = port;
+    this.database = database;
+    this.connectionTimeout = connectionTimeout;
+    this.socketTimeout = socketTimeout;
+  }
+
   private Properties getPropertiesFromRedis(String redisKey) {
     LOG.trace("GETTING_PROPERTIES_FROM_REDIS");
     Map<String, String> propertiesFromRedis = jedis.hgetAll(redisKey);

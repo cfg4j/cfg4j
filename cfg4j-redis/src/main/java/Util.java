@@ -5,7 +5,7 @@
 public class Util {
 
   public static boolean isSet(Object object) {
-    return object == null;
+    return object != null;
   }
 
   public static boolean isStringSet(String string) {

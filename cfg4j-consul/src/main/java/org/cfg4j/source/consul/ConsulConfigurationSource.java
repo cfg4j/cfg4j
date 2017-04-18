@@ -66,10 +66,6 @@ class ConsulConfigurationSource implements ConfigurationSource {
 
     if (!initialized) {
       init();
-      if (!initialized) {
-        throw new IllegalStateException(
-          "Configuration source has to be successfully initialized before you request configuration.");
-      }
     }
 
     reload();

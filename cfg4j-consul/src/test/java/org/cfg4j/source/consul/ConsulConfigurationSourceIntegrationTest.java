@@ -97,13 +97,11 @@ public class ConsulConfigurationSourceIntegrationTest {
   }
 
   @Test
-  public void getConfigurationShouldThrowBeforeInitCalled() throws Exception {
+  public void getLasyInitIfCallGetBeforeInitCalled() throws Exception {
     source = new ConsulConfigurationSourceBuilder()
         .withHost(server.getHostName())
         .withPort(server.getPort())
         .build();
-
-    expectedException.expect(IllegalStateException.class);
     source.getConfiguration(new ImmutableEnvironment(""));
   }
 
@@ -116,12 +114,12 @@ public class ConsulConfigurationSourceIntegrationTest {
       // NOP
     }
 
-    expectedException.expect(IllegalStateException.class);
+    expectedException.expect(SourceCommunicationException.class);
     source.getConfiguration(new ImmutableEnvironment(""));
   }
 
   @Test
-  public void getConfigurationShouldRecoverfterFailedReload() throws Exception {
+  public void getConfigurationShouldRecoveredAfterFailedReload() throws Exception {
     server.shutdown();
     try {
       source.getConfiguration(new ImmutableEnvironment("us-west-2"));

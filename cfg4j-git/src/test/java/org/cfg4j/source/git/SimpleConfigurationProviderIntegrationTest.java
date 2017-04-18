@@ -48,7 +48,7 @@ public class SimpleConfigurationProviderIntegrationTest {
   }
 
   @Test
-  public void shouldReadConfigsFromGitConfigurationSource() throws Exception {
+  public void readsConfigsFromGitConfigurationSource() throws Exception {
     ConfigurationSource source = new GitConfigurationSourceBuilder()
         .withRepositoryURI(remoteRepo.dirPath.toString())
         .build();

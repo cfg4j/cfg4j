@@ -68,25 +68,25 @@ public class FilesConfigurationSourceTest {
   }
 
   @Test
-  public void getConfigurationShouldReadFromDefaultFile() throws Exception {
+  public void getConfigurationReadsFromDefaultFile() throws Exception {
     assertThat(source.getConfiguration(environment)).containsOnly(MapEntry.entry("some.setting", "masterValue"));
   }
 
   @Test
-  public void getConfigurationShouldReadFromHomeForDefaultEnvironment() throws Exception {
+  public void getConfigurationReadsFromHomeForDefaultEnvironment() throws Exception {
     System.setProperty("user.home", fileRepo.dirPath.resolve("otherApplicationConfigs").toString());
     assertThat(source.getConfiguration(new DefaultEnvironment())).containsOnly(MapEntry.entry("some.setting", "otherAppSetting"));
   }
 
   @Test
-  public void getConfigurationShouldReadFromGivenPath() throws Exception {
+  public void getConfigurationReadsFromGivenPath() throws Exception {
     Environment environment = new ImmutableEnvironment(fileRepo.dirPath.resolve("otherApplicationConfigs").toString());
 
     assertThat(source.getConfiguration(environment)).containsOnly(MapEntry.entry("some.setting", "otherAppSetting"));
   }
 
   @Test
-  public void getConfigurationShouldReadFromGivenFiles() throws Exception {
+  public void getConfigurationReadsFromGivenFiles() throws Exception {
     configFilesProvider = new ConfigFilesProvider() {
       @Override
       public Iterable<Path> getConfigFiles() {
@@ -102,13 +102,13 @@ public class FilesConfigurationSourceTest {
   }
 
   @Test
-  public void getConfigurationShouldThrowOnMissingEnvironment() throws Exception {
+  public void getConfigurationThrowsOnMissingEnvironment() throws Exception {
     expectedException.expect(MissingEnvironmentException.class);
     source.getConfiguration(new ImmutableEnvironment("awlerijawoetinawwerlkjn"));
   }
 
   @Test
-  public void getConfigurationShouldThrowOnMissingConfigFile() throws Exception {
+  public void getConfigurationThrowsOnMissingConfigFile() throws Exception {
     fileRepo.deleteFile(Paths.get("application.properties"));
 
     expectedException.expect(IllegalStateException.class);
@@ -116,7 +116,7 @@ public class FilesConfigurationSourceTest {
   }
 
   @Test
-  public void getConfigurationShouldThrowOnMalformedConfigFile() throws Exception {
+  public void getConfigurationThrowsOnMalformedConfigFile() throws Exception {
     configFilesProvider = new ConfigFilesProvider() {
       @Override
       public Iterable<Path> getConfigFiles() {

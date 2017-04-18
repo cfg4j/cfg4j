@@ -36,7 +36,7 @@ public class CachedConfigurationSourceTest {
   }
 
   @Test
-  public void initShouldPropagateMissingEnvExceptions() throws Exception {
+  public void initPropagatesMissingEnvExceptions() throws Exception {
     doThrow(new MissingEnvironmentException("")).when(delegateSource).init();
 
     expectedException.expect(MissingEnvironmentException.class);
@@ -44,7 +44,7 @@ public class CachedConfigurationSourceTest {
   }
 
   @Test
-  public void initShouldPropagateIllegalStateExceptions() throws Exception {
+  public void initPropagatesIllegalStateExceptions() throws Exception {
     doThrow(new IllegalStateException("")).when(delegateSource).init();
 
     expectedException.expect(IllegalStateException.class);
@@ -52,13 +52,13 @@ public class CachedConfigurationSourceTest {
   }
 
   @Test
-  public void getConfigurationShouldThrowOnMissingEnvironment() throws Exception {
+  public void getConfigurationThrowsOnMissingEnvironment() throws Exception {
     expectedException.expect(MissingEnvironmentException.class);
     cachedConfigurationSource.getConfiguration(new DefaultEnvironment());
   }
 
   @Test
-  public void getConfigurationShouldReturnReloadResult() throws Exception {
+  public void getConfigurationReturnsReloadResult() throws Exception {
     Properties properties = new Properties();
     when(delegateSource.getConfiguration(any(Environment.class))).thenReturn(properties);
     cachedConfigurationSource.reload(new DefaultEnvironment());
@@ -67,7 +67,7 @@ public class CachedConfigurationSourceTest {
   }
 
   @Test
-  public void getConfigurationShouldNotChangeValueBetweenReloads() throws Exception {
+  public void getConfigurationDoesNotChangeValueBetweenReloads() throws Exception {
     Properties properties = new Properties();
     when(delegateSource.getConfiguration(any(Environment.class))).thenReturn(properties);
 
@@ -81,7 +81,7 @@ public class CachedConfigurationSourceTest {
   }
 
   @Test
-  public void reloadShouldPropagateMissingEnvExceptions() throws Exception {
+  public void reloadPropagatesMissingEnvExceptions() throws Exception {
     when(delegateSource.getConfiguration(any(Environment.class))).thenThrow(new MissingEnvironmentException(""));
 
     expectedException.expect(MissingEnvironmentException.class);
@@ -89,7 +89,7 @@ public class CachedConfigurationSourceTest {
   }
 
   @Test
-  public void reloadShouldPropagateIllegalStateExceptions() throws Exception {
+  public void reloadPropagatesIllegalStateExceptions() throws Exception {
     when(delegateSource.getConfiguration(any(Environment.class))).thenThrow(new IllegalStateException(""));
 
     expectedException.expect(IllegalStateException.class);

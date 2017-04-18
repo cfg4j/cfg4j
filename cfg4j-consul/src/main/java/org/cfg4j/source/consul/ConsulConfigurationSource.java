@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
  * <p>
  * Read configuration from the Consul K-V store.
  */
-class ConsulConfigurationSource implements ConfigurationSource {
+public class ConsulConfigurationSource implements ConfigurationSource {
 
   private static final Logger LOG = LoggerFactory.getLogger(ConsulConfigurationSource.class);
   private final String host;

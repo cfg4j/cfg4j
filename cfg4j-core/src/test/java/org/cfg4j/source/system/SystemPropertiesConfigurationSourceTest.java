@@ -43,28 +43,28 @@ public class SystemPropertiesConfigurationSourceTest {
   }
 
   @Test
-  public void shouldReturnOSName() throws Exception {
+  public void returnsOSName() throws Exception {
     assertThat(source.getConfiguration(new DefaultEnvironment())).containsKey("os.name");
   }
 
   @Test
-  public void shouldReturnOsNameForAnyEnvironment() throws Exception {
+  public void returnsOsNameForAnyEnvironment() throws Exception {
     assertThat(source.getConfiguration(mock(Environment.class))).containsKey("os.name");
   }
 
   @Test
-  public void shouldNotReturnUndefinedKeys() throws Exception {
+  public void doesNotReturnUndefinedKeys() throws Exception {
     assertThat(source.getConfiguration(new DefaultEnvironment())).doesNotContainKey("missing.property");
   }
 
   @Test
-  public void shouldReturnManuallyDefinedKeys() throws Exception {
+  public void returnsManuallyDefinedKeys() throws Exception {
     System.setProperty("manually.added.property", "defined");
     assertThat(source.getConfiguration(new DefaultEnvironment())).containsKey("manually.added.property");
   }
 
   @Test
-  public void shouldReturnManuallyDefinedKeysAfterReload() throws Exception {
+  public void returnsManuallyDefinedKeysAfterReload() throws Exception {
     assertThat(source.getConfiguration(new DefaultEnvironment())).doesNotContainKey("reloaded.property");
     System.setProperty("reloaded.property", "defined");
     assertThat(source.getConfiguration(new DefaultEnvironment())).containsKey("reloaded.property");

@@ -4,10 +4,10 @@
 [![Maven Central](https://img.shields.io/maven-central/v/org.cfg4j/cfg4j-core.svg)](http://search.maven.org/#search|ga|1|org.cfg4j.cfg4j-core)
 [![JavaDoc](https://img.shields.io/badge/javadoc-html-blue.svg)](http://www.javadoc.io/doc/org.cfg4j/cfg4j-core)
 [![GitHub license](https://img.shields.io/github/license/cfg4j/cfg4j.svg)](https://github.com/cfg4j/cfg4j/blob/master/LICENSE)
-[![Travis](https://img.shields.io/travis/cfg4j/cfg4j.svg)](https://travis-ci.org/cfg4j/cfg4j)
+[![Travis](https://img.shields.io/travis/cfg4j/cfg4j/master.svg)](https://travis-ci.org/cfg4j/cfg4j)
 
 # Overview
-<img height="140px" align="right" src="https://github.com/cfg4j/cfg4j.github.io/blob/master/img/cfg4j.png">
+<img height="140px" align="right" src="https://github.com/cfg4j/cfg4j.github.io/blob/master/images/cfg4j.png">
 **cfg4j** ("Configuration for Java") is a **configuration library for Java distributed apps** (and not only).
 
 #### Features:
@@ -84,11 +84,11 @@ The fastest way to start working with cfg4j is to use a Git repository as a conf
 public class Cfg4jPoweredApplication {
 
   // Change this interface to whatever you want
-  public interface SampleConfig {  
-    Integer birthYear();  
-    List<String> friends();  
-    URL homepage();  
-    Map<String, Character> grades();  
+  public interface SampleConfig {
+    Integer birthYear();
+    List<String> friends();
+    URL homepage();
+    Map<String, Character> grades();
   }
 
   public static void main(String... args) {

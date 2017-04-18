@@ -63,7 +63,7 @@ public class FallbackConfigurationSourceTest {
   }
 
   @Test
-  public void getConfigurationShouldThrowWhenAllSourcesThrowOnMissingEnvironment() throws Exception {
+  public void getConfigurationThrowsWhenAllSourcesThrowOnMissingEnvironment() throws Exception {
     makeAllSourcesThrow(new MissingEnvironmentException(""));
 
     expectedException.expect(MissingEnvironmentException.class);
@@ -71,7 +71,7 @@ public class FallbackConfigurationSourceTest {
   }
 
   @Test
-  public void getConfigurationShouldThrowWhenAllSourcesThrow() throws Exception {
+  public void getConfigurationThrowsWhenAllSourcesThrow() throws Exception {
     makeAllSourcesThrow(new IllegalStateException());
 
     expectedException.expect(IllegalStateException.class);
@@ -79,7 +79,7 @@ public class FallbackConfigurationSourceTest {
   }
 
   @Test
-  public void getConfigurationShouldSelectFirstAvailableConfiguration() throws Exception {
+  public void getConfigurationSelectsFirstAvailableConfiguration() throws Exception {
     makeAllSourcesThrow(new IllegalStateException());
     underlyingSources[LAST_SOURCE_INDEX] = mock(ConfigurationSource.class);
     when(underlyingSources[LAST_SOURCE_INDEX].getConfiguration(any(Environment.class))).thenReturn(getProps("prop1", "value1")[0]);
@@ -89,14 +89,14 @@ public class FallbackConfigurationSourceTest {
   }
 
   @Test
-  public void initShouldTryToInitializeAllSources() throws Exception {
+  public void initInitializesAllSources() throws Exception {
     for (ConfigurationSource underlyingSource : underlyingSources) {
       verify(underlyingSource, atLeastOnce()).init();
     }
   }
 
   @Test
-  public void initShouldThrowWhenAllSourcesThrow() throws Exception {
+  public void initThrowsWhenAllSourcesThrow() throws Exception {
     makeAllSourcesThrow(new IllegalStateException());
 
     expectedException.expect(IllegalStateException.class);
@@ -104,7 +104,7 @@ public class FallbackConfigurationSourceTest {
   }
 
   @Test
-  public void initShouldIgnoreIllegalStateExceptionsIfAtLeastOneSourceSucceeds() throws Exception {
+  public void initIgnoresIllegalStateExceptionsIfAtLeastOneSourceSucceeds() throws Exception {
     makeAllSourcesThrow(new IllegalStateException());
     doNothing().when(underlyingSources[LAST_SOURCE_INDEX]).init();
 
@@ -112,7 +112,7 @@ public class FallbackConfigurationSourceTest {
   }
 
   @Test
-  public void initShouldIgnoreSourceCommunicationExceptionsIfAtLeastOneSourceSucceeds() throws Exception {
+  public void initIgnoresSourceCommunicationExceptionsIfAtLeastOneSourceSucceeds() throws Exception {
     makeAllSourcesThrow(new SourceCommunicationException("", null));
     doNothing().when(underlyingSources[LAST_SOURCE_INDEX]).init();
 

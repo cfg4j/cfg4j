@@ -67,22 +67,22 @@ public class PropertiesProviderSelectorTest {
   }
 
   @Test
-  public void shouldReturnYamlProviderForYaml() throws Exception {
+  public void returnsYamlProviderForYaml() throws Exception {
     assertThat(selector.getProvider("test.yaml")).isEqualTo(yamlProvider);
   }
 
   @Test
-  public void shouldReturnYamlProviderForYml() throws Exception {
+  public void returnsYamlProviderForYml() throws Exception {
     assertThat(selector.getProvider("test.yml")).isEqualTo(yamlProvider);
   }
 
   @Test
-  public void shouldReturnJsonProviderForJson() throws Exception {
+  public void returnsJsonProviderForJson() throws Exception {
     assertThat(selector.getProvider("test.json")).isEqualTo(jsonProvider);
   }
 
   @Test
-  public void shouldReturnPropertiesProviderForNonYaml() throws Exception {
+  public void returnsPropertiesProviderForNonYaml() throws Exception {
     assertThat(selector.getProvider("test.properties")).isEqualTo(propertiesProvider);
   }
 }

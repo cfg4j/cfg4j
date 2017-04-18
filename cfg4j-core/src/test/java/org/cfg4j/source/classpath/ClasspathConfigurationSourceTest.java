@@ -61,14 +61,14 @@ public class ClasspathConfigurationSourceTest {
   }
 
   @Test
-  public void getConfigurationShouldReadFromGivenPath() throws Exception {
+  public void getConfigurationReadsFromGivenPath() throws Exception {
     Environment environment = new ImmutableEnvironment("otherApplicationConfigs");
 
     assertThat(source.getConfiguration(environment)).containsOnly(MapEntry.entry("some.setting", "otherAppSetting"));
   }
 
   @Test
-  public void getConfigurationShouldDisallowLeadingSlashInClasspathLocation() throws Exception {
+  public void getConfigurationDisallowsLeadingSlashInClasspathLocation() throws Exception {
     Environment environment = new ImmutableEnvironment("/otherApplicationConfigs");
 
     expectedException.expect(MissingEnvironmentException.class);
@@ -76,7 +76,7 @@ public class ClasspathConfigurationSourceTest {
   }
 
   @Test
-  public void getConfigurationShouldReadFromGivenFiles() throws Exception {
+  public void getConfigurationReadsFromGivenFiles() throws Exception {
     configFilesProvider = new ConfigFilesProvider() {
       @Override
       public Iterable<Path> getConfigFiles() {
@@ -92,13 +92,13 @@ public class ClasspathConfigurationSourceTest {
   }
 
   @Test
-  public void getConfigurationShouldThrowOnMissingEnvironment() throws Exception {
+  public void getConfigurationThrowsOnMissingEnvironment() throws Exception {
     expectedException.expect(MissingEnvironmentException.class);
     source.getConfiguration(new ImmutableEnvironment("awlerijawoetinawwerlkjn"));
   }
 
   @Test
-  public void getConfigurationShouldThrowOnMissingConfigFile() throws Exception {
+  public void getConfigurationThrowsOnMissingConfigFile() throws Exception {
     configFilesProvider = new ConfigFilesProvider() {
       @Override
       public Iterable<Path> getConfigFiles() {
@@ -115,7 +115,7 @@ public class ClasspathConfigurationSourceTest {
   }
 
   @Test
-  public void getConfigurationShouldThrowOnMalformedConfigFile() throws Exception {
+  public void getConfigurationThrowsOnMalformedConfigFile() throws Exception {
     configFilesProvider = new ConfigFilesProvider() {
       @Override
       public Iterable<Path> getConfigFiles() {

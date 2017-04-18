@@ -127,7 +127,7 @@ public class ConsulConfigurationSourceIntegrationTest {
       // NOP
     }
     runMockServer(server.getPort());
-    getConfigurationShouldReturnAllKeysFromGivenEnvironment();
+    getConfigurationReturnsAllKeysFromGivenEnvironment();
   }
 
   private void runMockServer() throws IOException {

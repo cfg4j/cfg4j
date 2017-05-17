@@ -45,6 +45,7 @@ public class SimpleConfigurationProviderIntegrationTest {
         case "/v1/agent/self":
           return new MockResponse().setResponseCode(200).setBody(PING_RESPONSE);
         case "/v1/kv/?recurse=true&dc=dc1":
+        case "/v1/kv/?dc=dc1&recurse=true":	
           return new MockResponse()
               .setResponseCode(200)
               .addHeader("Content-Type", "application/json; charset=utf-8")

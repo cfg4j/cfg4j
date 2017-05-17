@@ -21,6 +21,9 @@ import com.google.common.net.HostAndPort;
 import com.orbitz.consul.Consul;
 import com.orbitz.consul.KeyValueClient;
 import com.orbitz.consul.model.kv.Value;
+import com.orbitz.consul.option.ImmutableQueryOptions;
+import com.orbitz.consul.option.QueryOptions;
+
 import org.cfg4j.source.ConfigurationSource;
 import org.cfg4j.source.SourceCommunicationException;
 import org.cfg4j.source.context.environment.Environment;
@@ -46,6 +49,8 @@ public class ConsulConfigurationSource implements ConfigurationSource {
   private final String host;
   private final int port;
   private boolean initialized;
+  private String datacenter;
+  private QueryOptions queryOptions;
 
   /**
    * Note: use {@link ConsulConfigurationSourceBuilder} for building instances of this class.
@@ -54,12 +59,23 @@ public class ConsulConfigurationSource implements ConfigurationSource {
    *
    * @param host Consul host to connect to
    * @param port Consul port to connect to
+   * @param datacenter Consul datacenter to connect to
    */
-  ConsulConfigurationSource(String host, int port) {
-    this.host = requireNonNull(host);
-    this.port = port;
-
-    initialized = false;
+  
+  ConsulConfigurationSource(String host, int port, String datacenter) {
+	    this.host = requireNonNull(host);
+	    this.port = port;
+	    this.datacenter = datacenter;
+	    initializeQueryOptions();
+	    initialized = false;
+  }
+  
+  private void initializeQueryOptions(){
+	  if(this.datacenter == null || this.datacenter.isEmpty()){
+		  this.queryOptions = QueryOptions.BLANK;
+	  }else{
+		  this.queryOptions = ImmutableQueryOptions.builder().datacenter(this.datacenter).build();
+	  }
   }
 
   @Override
@@ -116,7 +132,7 @@ public class ConsulConfigurationSource implements ConfigurationSource {
 
     try {
       LOG.debug("Reloading configuration from Consuls' K-V store");
-      valueList = kvClient.getValues("/");
+      valueList = kvClient.getValues("/", this.queryOptions);
     } catch (Exception e) {
       initialized = false;
       throw new SourceCommunicationException("Can't get values from k-v store", e);

@@ -22,6 +22,7 @@ public class ConsulConfigurationSourceBuilder {
 
   private String host;
   private int port;
+  private String datacenter;
 
   /**
    * Construct {@link ConsulConfigurationSource}s builder
@@ -35,6 +36,7 @@ public class ConsulConfigurationSourceBuilder {
   public ConsulConfigurationSourceBuilder() {
     host = "localhost";
     port = 8500;
+    datacenter = null;
   }
 
   /**
@@ -58,6 +60,17 @@ public class ConsulConfigurationSourceBuilder {
     this.port = port;
     return this;
   }
+  
+  /**
+   * Set Consul port for {@link ConsulConfigurationSource}s built by this builder.
+   *
+   * @param datacenter datacenter to use
+   * @return this builder with Consul datacenter set to provided parameter
+   */
+  public ConsulConfigurationSourceBuilder withDatacenter(String datacenter) {
+    this.datacenter = datacenter;
+    return this;
+  }
 
   /**
    * Build a {@link ConsulConfigurationSource} using this builder's configuration
@@ -65,7 +78,7 @@ public class ConsulConfigurationSourceBuilder {
    * @return new {@link ConsulConfigurationSource}
    */
   public ConsulConfigurationSource build() {
-    return new ConsulConfigurationSource(host, port);
+    return new ConsulConfigurationSource(host, port, datacenter);
   }
 
   @Override
@@ -73,6 +86,7 @@ public class ConsulConfigurationSourceBuilder {
     return "ConsulConfigurationSource{" +
         "host=" + host +
         ", port=" + port +
+         ", datacenter=" + datacenter +
         '}';
   }
 }

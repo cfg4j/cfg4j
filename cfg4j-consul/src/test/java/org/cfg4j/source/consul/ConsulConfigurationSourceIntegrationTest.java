@@ -60,7 +60,7 @@ public class ConsulConfigurationSourceIntegrationTest {
       switch (request.getPath()) {
         case "/v1/agent/self":
           return new MockResponse().setResponseCode(200).setBody(PING_RESPONSE);
-        case "/v1/kv/?recurse=true":
+        case "/v1/kv/?recurse=true&dc=dc1":
           return new MockResponse()
               .setResponseCode(200)
               .addHeader("Content-Type", "application/json; charset=utf-8")
@@ -86,6 +86,7 @@ public class ConsulConfigurationSourceIntegrationTest {
     source = new ConsulConfigurationSourceBuilder()
         .withHost(server.getHostName())
         .withPort(server.getPort())
+        .withDatacenter("dc1")
         .build();
 
     source.init();
@@ -108,6 +109,7 @@ public class ConsulConfigurationSourceIntegrationTest {
     source = new ConsulConfigurationSourceBuilder()
         .withHost(server.getHostName())
         .withPort(server.getPort())
+        .withDatacenter("dc1")
         .build();
 
     expectedException.expect(SourceCommunicationException.class);
@@ -133,6 +135,7 @@ public class ConsulConfigurationSourceIntegrationTest {
     source = new ConsulConfigurationSourceBuilder()
         .withHost(server.getHostName())
         .withPort(server.getPort())
+        .withDatacenter("dc1")
         .build();
 
     expectedException.expect(IllegalStateException.class);

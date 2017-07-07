@@ -118,7 +118,6 @@ class ConsulConfigurationSource implements ConfigurationSource {
       LOG.debug("Reloading configuration from Consuls' K-V store");
       valueList = kvClient.getValues("/");
     } catch (Exception e) {
-      initialized = false;
       throw new SourceCommunicationException("Can't get values from k-v store", e);
     }
 

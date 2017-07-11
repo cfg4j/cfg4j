@@ -21,6 +21,10 @@ import org.cfg4j.source.context.propertiesprovider.JsonBasedPropertiesProvider;
 import org.cfg4j.source.context.propertiesprovider.PropertiesProviderSelector;
 import org.cfg4j.source.context.propertiesprovider.PropertyBasedPropertiesProvider;
 import org.cfg4j.source.context.propertiesprovider.YamlBasedPropertiesProvider;
+import org.eclipse.jgit.errors.UnsupportedCredentialItem;
+import org.eclipse.jgit.transport.CredentialItem;
+import org.eclipse.jgit.transport.CredentialsProvider;
+import org.eclipse.jgit.transport.URIish;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -37,6 +41,7 @@ public class GitConfigurationSourceBuilder {
   private String tmpRepoPrefix;
   private ConfigFilesProvider configFilesProvider;
   private PropertiesProviderSelector propertiesProviderSelector;
+  private CredentialsProvider credentialsProvider;
 
   /**
    * Construct {@link GitConfigurationSource}s builder
@@ -129,6 +134,11 @@ public class GitConfigurationSourceBuilder {
     return this;
   }
 
+  public GitConfigurationSourceBuilder withCredentialsProvider(CredentialsProvider credentialsProvider) {
+    this.credentialsProvider = credentialsProvider;
+    return this;
+  }
+
   /**
    * Build a {@link GitConfigurationSource} using this builder's configuration
    *
@@ -136,7 +146,7 @@ public class GitConfigurationSourceBuilder {
    */
   public GitConfigurationSource build() {
     return new GitConfigurationSource(repositoryURI, tmpPath, tmpRepoPrefix, branchResolver, pathResolver,
-        configFilesProvider, propertiesProviderSelector);
+        configFilesProvider, propertiesProviderSelector, credentialsProvider);
   }
 
   @Override
@@ -148,6 +158,7 @@ public class GitConfigurationSourceBuilder {
         ", tmpPath='" + tmpPath + '\'' +
         ", tmpRepoPrefix='" + tmpRepoPrefix + '\'' +
         ", configFilesProvider=" + configFilesProvider +
+        ", credentialsProvider=" + credentialsProvider +
         '}';
   }
 }

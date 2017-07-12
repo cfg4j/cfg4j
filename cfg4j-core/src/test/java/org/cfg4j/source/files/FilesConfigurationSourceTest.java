@@ -35,6 +35,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Properties;
 
 
 @RunWith(MockitoJUnitRunner.class)
@@ -130,6 +131,25 @@ public class FilesConfigurationSourceTest {
 
     expectedException.expect(IllegalStateException.class);
     source.getConfiguration(environment);
+  }
+  
+  @Test
+  public void getConfigurationInoreMissingFiles(){
+    configFilesProvider = new ConfigFilesProvider() {
+      @Override
+      public Iterable<Path> getConfigFiles() {
+        return Collections.singletonList(
+            Paths.get("malformed.properties")
+        );
+      }
+    };
+
+    source = new FilesConfigurationSource(configFilesProvider);
+    source.setIgnoreNonExistingFiles(true);
+
+    expectedException.expect(IllegalStateException.class);
+    Properties properties = source.getConfiguration(environment);
+    assertThat(properties).isEmpty();
   }
 
 }

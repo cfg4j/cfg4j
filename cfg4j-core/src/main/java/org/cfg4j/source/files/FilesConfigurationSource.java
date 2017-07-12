@@ -27,6 +27,7 @@ import org.cfg4j.source.context.propertiesprovider.PropertiesProviderSelector;
 import org.cfg4j.source.context.propertiesprovider.PropertyBasedPropertiesProvider;
 import org.cfg4j.source.context.propertiesprovider.YamlBasedPropertiesProvider;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,6 +45,7 @@ public class FilesConfigurationSource implements ConfigurationSource {
 
   private final ConfigFilesProvider configFilesProvider;
   private final PropertiesProviderSelector propertiesProviderSelector;
+  private boolean ignoreNonExistingFiles;
 
   /**
    * Construct {@link ConfigurationSource} backed by files. Uses "application.properties" file
@@ -121,7 +123,11 @@ public class FilesConfigurationSource implements ConfigurationSource {
     }
 
     for (Path path : paths) {
-      try (InputStream input = new FileInputStream(path.toFile())) {
+      File file = path.toFile();
+      if (!file.exists() && ignoreNonExistingFiles){
+        continue;
+      }
+      try (InputStream input = new FileInputStream(file)) {
 
         PropertiesProvider provider = propertiesProviderSelector.getProvider(path.getFileName().toString());
         properties.putAll(provider.getProperties(input));
@@ -132,6 +138,23 @@ public class FilesConfigurationSource implements ConfigurationSource {
     }
 
     return properties;
+  }
+  
+  /**
+   * Sets whether missing files provided by the {@link ConfigFilesProvider} get ignored.
+   * Set to false by default.
+   * 
+   * @param ignoreNonExistingFiles pass true to ignore
+   */
+  public void setIgnoreNonExistingFiles(boolean ignoreNonExistingFiles) {
+    this.ignoreNonExistingFiles = ignoreNonExistingFiles;
+  }
+  
+  /**
+   * @return true if non-existing files are ignored. By default false is returned.
+   */
+  public boolean getIgnoreNonExistingFiles(){
+    return ignoreNonExistingFiles;
   }
 
   @Override

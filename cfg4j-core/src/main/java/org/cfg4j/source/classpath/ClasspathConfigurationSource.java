@@ -49,6 +49,8 @@ public class ClasspathConfigurationSource implements ConfigurationSource {
 
   private final ConfigFilesProvider configFilesProvider;
   private final PropertiesProviderSelector propertiesProviderSelector;
+  
+  private boolean ignoreNonExistingFiles = false;
 
   /**
    * Construct {@link ConfigurationSource} backed by classpath files. Uses "application.properties" file
@@ -65,7 +67,7 @@ public class ClasspathConfigurationSource implements ConfigurationSource {
       }
     });
   }
-
+  
   /**
    * Construct {@link ConfigurationSource} backed by classpath files. File paths should by provided by
    * {@link ConfigFilesProvider} and will be treated as relative paths to the environment provided in
@@ -120,6 +122,9 @@ public class ClasspathConfigurationSource implements ConfigurationSource {
     for (Path path : paths) {
       try (InputStream input = getClass().getClassLoader().getResourceAsStream(path.toString())) {
 
+        if (input == null && ignoreNonExistingFiles) {
+          continue;
+        }    	  
         if (input == null) {
           throw new IllegalStateException("Unable to load properties from classpath: " + path);
         }
@@ -135,6 +140,23 @@ public class ClasspathConfigurationSource implements ConfigurationSource {
     return properties;
   }
 
+  /**
+   * Sets whether missing files provided by the {@link ConfigFilesProvider} get ignored.
+   * Set to false by default.
+   * 
+   * @param ignoreNonExistingFiles pass true to ignore
+   */
+  public void setIgnoreNonExistingFiles(boolean ignoreNonExistingFiles) {
+    this.ignoreNonExistingFiles = ignoreNonExistingFiles;
+  }
+  
+  /**
+   * @return true if non-existing files are ignored. By default false is returned.
+   */
+  public boolean getIgnoreNonExistingFiles(){
+    return ignoreNonExistingFiles;
+  }
+  
   @Override
   public void init() {
     // NOP

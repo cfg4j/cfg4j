@@ -1,0 +1,21 @@
+buildscript {
+
+    ext {
+        artifactName = "cfg4j-redis"
+    }
+}
+
+// ----------- External module dependencies -----------
+
+dependencies {
+    compile project(":cfg4j-core")
+    compile group: 'redis.clients', name: 'jedis', version: '2.9.0'
+}
+
+// ----------- Task configurations -----------
+jar {
+    baseName = "${artifactName}"
+    version = "${artifactVersion}"
+}
+
+archivesBaseName = "${artifactName}"

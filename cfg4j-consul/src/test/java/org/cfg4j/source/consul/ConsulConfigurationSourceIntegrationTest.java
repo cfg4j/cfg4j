@@ -152,7 +152,7 @@ public class ConsulConfigurationSourceIntegrationTest {
   }
 
   @Test
-  public void getConfigurationShouldThrowAfterFailedReload() throws Exception {
+  public void getConfigurationShouldNotThrowAfterFailedReload() throws Exception {
     server.shutdown();
     try {
       source.reload();
@@ -160,7 +160,6 @@ public class ConsulConfigurationSourceIntegrationTest {
       // NOP
     }
 
-    expectedException.expect(SourceCommunicationException.class);
     source.getConfiguration(new ImmutableEnvironment(""));
   }
 

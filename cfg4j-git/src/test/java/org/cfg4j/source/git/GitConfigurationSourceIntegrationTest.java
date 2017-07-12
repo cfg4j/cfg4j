@@ -24,6 +24,7 @@ import org.cfg4j.source.context.environment.Environment;
 import org.cfg4j.source.context.environment.ImmutableEnvironment;
 import org.cfg4j.source.context.environment.MissingEnvironmentException;
 import org.cfg4j.source.context.filesprovider.ConfigFilesProvider;
+import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -190,6 +191,14 @@ public class GitConfigurationSourceIntegrationTest {
     }
   }
 
+  @Test
+  public void getConfigurationWithCredentials() throws Exception {
+    try (GitConfigurationSource gitConfigurationSource = getSourceForRemoteRepoWithBlankCredentials()) {
+      Environment environment = new DefaultEnvironment();
+      assertThat(gitConfigurationSource.getConfiguration(environment)).contains(MapEntry.entry("some.setting", "masterValue"));
+    }
+  }
+
   private GitConfigurationSource getSourceForRemoteRepoWithDefaults() {
     GitConfigurationSource source = getSourceBuilderForRemoteRepoWithDefaults().build();
     source.init();
@@ -230,5 +239,16 @@ public class GitConfigurationSourceIntegrationTest {
   private GitConfigurationSourceBuilder getSourceBuilderForRemoteRepoWithDefaults() {
     return new GitConfigurationSourceBuilder()
         .withRepositoryURI(remoteRepo.dirPath.toString());
+  }
+
+  private GitConfigurationSource getSourceForRemoteRepoWithBlankCredentials() {
+    GitConfigurationSource source =  new GitConfigurationSourceBuilder()
+        .withRepositoryURI(remoteRepo.dirPath.toString())
+        .withCredentialsProvider(new UsernamePasswordCredentialsProvider("", ""))
+        .build();
+
+    source.init();
+
+    return source;
   }
 }

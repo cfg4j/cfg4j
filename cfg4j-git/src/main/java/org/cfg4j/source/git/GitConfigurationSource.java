@@ -26,10 +26,13 @@ import org.cfg4j.source.context.propertiesprovider.PropertiesProvider;
 import org.cfg4j.source.context.propertiesprovider.PropertiesProviderSelector;
 import org.cfg4j.utils.FileUtils;
 import org.eclipse.jgit.api.CheckoutCommand;
+import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.CreateBranchCommand;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.PullCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Ref;
+import org.eclipse.jgit.transport.CredentialsProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,6 +65,7 @@ class GitConfigurationSource implements ConfigurationSource, Closeable {
   private Git clonedRepo;
   private Path clonedRepoPath;
   private boolean initialized;
+  private CredentialsProvider credentialsProvider;
 
   /**
    * Note: use {@link GitConfigurationSourceBuilder} for building instances of this class.
@@ -81,7 +85,8 @@ class GitConfigurationSource implements ConfigurationSource, Closeable {
    */
   GitConfigurationSource(String repositoryURI, Path tmpPath, String tmpRepoPrefix, BranchResolver branchResolver,
                          PathResolver pathResolver, ConfigFilesProvider configFilesProvider,
-                         PropertiesProviderSelector propertiesProviderSelector) {
+                         PropertiesProviderSelector propertiesProviderSelector,
+                         CredentialsProvider credentialsProvider) {
     this.branchResolver = requireNonNull(branchResolver);
     this.pathResolver = requireNonNull(pathResolver);
     this.configFilesProvider = requireNonNull(configFilesProvider);
@@ -89,6 +94,7 @@ class GitConfigurationSource implements ConfigurationSource, Closeable {
     this.repositoryURI = requireNonNull(repositoryURI);
     this.tmpPath = requireNonNull(tmpPath);
     this.tmpRepoPrefix = requireNonNull(tmpRepoPrefix);
+    this.credentialsProvider = credentialsProvider;
 
     initialized = false;
   }
@@ -145,10 +151,16 @@ class GitConfigurationSource implements ConfigurationSource, Closeable {
     }
 
     try {
-      clonedRepo = Git.cloneRepository()
-          .setURI(repositoryURI)
-          .setDirectory(clonedRepoPath.toFile())
-          .call();
+      CloneCommand cloneCmd = Git.cloneRepository()
+        .setURI(repositoryURI)
+        .setDirectory(clonedRepoPath.toFile());
+
+      if (credentialsProvider != null) {
+        cloneCmd.setCredentialsProvider(credentialsProvider);
+      }
+
+      clonedRepo = cloneCmd.call();
+
     } catch (GitAPIException e) {
       throw new SourceCommunicationException("Unable to clone repository: " + repositoryURI, e);
     }
@@ -156,10 +168,17 @@ class GitConfigurationSource implements ConfigurationSource, Closeable {
     initialized = true;
   }
 
-  private void reload() {
+  public void reload() {
     try {
       LOG.debug("Reloading configuration by pulling changes");
-      clonedRepo.pull().call();
+
+      PullCommand pullCommand = clonedRepo.pull();
+      if (credentialsProvider != null) {
+        pullCommand.setCredentialsProvider(credentialsProvider);
+      }
+
+      pullCommand.call();
+
     } catch (GitAPIException e) {
       initialized = false;
       throw new IllegalStateException("Unable to pull from remote repository", e);
@@ -208,6 +227,7 @@ class GitConfigurationSource implements ConfigurationSource, Closeable {
         ", branchResolver=" + branchResolver +
         ", pathResolver=" + pathResolver +
         ", configFilesProvider=" + configFilesProvider +
+        ", credentialsProvider=" + credentialsProvider +
         '}';
   }
 }

@@ -59,6 +59,14 @@ public class BindInvocationHandlerTest {
   }
 
   @Test
+  public void respectsPropertyAnnotation() throws Exception {
+    when(configurationProvider.getProperty(eq("testMethod"), any(GenericTypeInterface.class))).thenReturn("yes");
+    BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
+    String result = (String) handler.invoke(this, this.getClass().getMethod("annotatedMethod"), new Object[]{});
+    assertThat(result).isEqualTo("yes");
+  }
+
+  @Test
   public void usesDefaultNamespaceWhenNoPrefix() throws Exception {
     BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
 
@@ -131,6 +139,11 @@ public class BindInvocationHandlerTest {
 
   // For "mocking" java.lang.reflect.Method
   public String stringMethod() {
+    return null;
+  }
+
+  @Property(name = "testMethod")
+  public String annotatedMethod() {
     return null;
   }
 

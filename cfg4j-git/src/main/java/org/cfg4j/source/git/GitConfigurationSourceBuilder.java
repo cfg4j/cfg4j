@@ -15,12 +15,15 @@
  */
 package org.cfg4j.source.git;
 
+import com.jcraft.jsch.Session;
 import org.cfg4j.source.context.filesprovider.ConfigFilesProvider;
 import org.cfg4j.source.context.filesprovider.DefaultConfigFilesProvider;
 import org.cfg4j.source.context.propertiesprovider.JsonBasedPropertiesProvider;
 import org.cfg4j.source.context.propertiesprovider.PropertiesProviderSelector;
 import org.cfg4j.source.context.propertiesprovider.PropertyBasedPropertiesProvider;
 import org.cfg4j.source.context.propertiesprovider.YamlBasedPropertiesProvider;
+import org.eclipse.jgit.api.TransportConfigCallback;
+import org.eclipse.jgit.transport.*;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -37,6 +40,8 @@ public class GitConfigurationSourceBuilder {
   private String tmpRepoPrefix;
   private ConfigFilesProvider configFilesProvider;
   private PropertiesProviderSelector propertiesProviderSelector;
+  private CredentialsProvider credentialsProvider;
+  private TransportConfigCallback transportConfigCallback;
 
   /**
    * Construct {@link GitConfigurationSource}s builder
@@ -59,7 +64,7 @@ public class GitConfigurationSourceBuilder {
     tmpRepoPrefix = "cfg4j-git-config-repository";
     configFilesProvider = new DefaultConfigFilesProvider();
     propertiesProviderSelector = new PropertiesProviderSelector(
-        new PropertyBasedPropertiesProvider(), new YamlBasedPropertiesProvider(), new JsonBasedPropertiesProvider()
+      new PropertyBasedPropertiesProvider(), new YamlBasedPropertiesProvider(), new JsonBasedPropertiesProvider()
     );
   }
 
@@ -129,6 +134,29 @@ public class GitConfigurationSourceBuilder {
     return this;
   }
 
+  public GitConfigurationSourceBuilder withCredentialsProvider(CredentialsProvider credentialsProvider) {
+    this.credentialsProvider = credentialsProvider;
+    return this;
+  }
+
+  /**
+   * @return when using SSH transport, call this to use ~/.ssh/id_rsa for authentication.
+   */
+  public GitConfigurationSourceBuilder withDefaultSSHKeys() {
+    this.transportConfigCallback = new TransportConfigCallback() {
+      @Override
+      public void configure(Transport transport) {
+        ((SshTransport) transport).setSshSessionFactory(new JschConfigSessionFactory() {
+            @Override
+            protected void configure(OpenSshConfig.Host host, Session session) {
+              // do nothing
+            }
+          });
+      }
+    };
+    return this;
+  }
+
   /**
    * Build a {@link GitConfigurationSource} using this builder's configuration
    *
@@ -136,18 +164,19 @@ public class GitConfigurationSourceBuilder {
    */
   public GitConfigurationSource build() {
     return new GitConfigurationSource(repositoryURI, tmpPath, tmpRepoPrefix, branchResolver, pathResolver,
-        configFilesProvider, propertiesProviderSelector);
+      configFilesProvider, propertiesProviderSelector, credentialsProvider, transportConfigCallback);
   }
 
   @Override
   public String toString() {
     return "GitConfigurationSourceBuilder{" +
-        "branchResolver=" + branchResolver +
-        ", pathResolver=" + pathResolver +
-        ", repositoryURI='" + repositoryURI + '\'' +
-        ", tmpPath='" + tmpPath + '\'' +
-        ", tmpRepoPrefix='" + tmpRepoPrefix + '\'' +
-        ", configFilesProvider=" + configFilesProvider +
-        '}';
+      "branchResolver=" + branchResolver +
+      ", pathResolver=" + pathResolver +
+      ", repositoryURI='" + repositoryURI + '\'' +
+      ", tmpPath='" + tmpPath + '\'' +
+      ", tmpRepoPrefix='" + tmpRepoPrefix + '\'' +
+      ", configFilesProvider=" + configFilesProvider +
+      ", credentialsProvider=" + credentialsProvider +
+      '}';
   }
 }

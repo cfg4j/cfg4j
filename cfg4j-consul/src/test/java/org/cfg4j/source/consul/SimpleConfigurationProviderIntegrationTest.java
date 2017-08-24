@@ -45,7 +45,7 @@ public class SimpleConfigurationProviderIntegrationTest {
       switch (request.getPath()) {
         case "/v1/agent/self":
           return new MockResponse().setResponseCode(200).setBody(PING_RESPONSE);
-        case "/v1/kv/?recurse=true":
+        case "/v1/kv/us-west-1?recurse=true":
           return new MockResponse()
               .setResponseCode(200)
               .addHeader("Content-Type", "application/json; charset=utf-8")

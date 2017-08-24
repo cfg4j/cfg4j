@@ -42,7 +42,6 @@ public class ConsulConfigurationSource implements ConfigurationSource {
   private static final Logger LOG = LoggerFactory.getLogger(ConsulConfigurationSource.class);
 
   private KeyValueClient kvClient;
-  private Map<String, String> consulValues;
   private final String host;
   private final int port;
   private boolean initialized;
@@ -64,30 +63,22 @@ public class ConsulConfigurationSource implements ConfigurationSource {
 
   @Override
   public Properties getConfiguration(Environment environment) {
-    LOG.trace("Requesting configuration for environment: " + environment.getName());
+    LOG.trace("Requesting configuration for environment: {}", environment.getName());
 
     if (!initialized) {
       throw new IllegalStateException("Configuration source has to be successfully initialized before you request configuration.");
     }
 
-    reload();
+		Map<String, String> consulValues = load(environment);
 
-    Properties properties = new Properties();
-    String path = environment.getName();
+		Properties properties = new Properties();
+		String environmentPrefix = formatEnvironment(environment);
 
-    if (path.startsWith("/")) {
-      path = path.substring(1);
-    }
-
-    if (path.length() > 0 && !path.endsWith("/")) {
-      path = path + "/";
-    }
-
-    for (Map.Entry<String, String> entry : consulValues.entrySet()) {
-      if (entry.getKey().startsWith(path)) {
-        properties.put(entry.getKey().substring(path.length()).replace("/", "."), entry.getValue());
-      }
-    }
+		for (Map.Entry<String, String> entry : consulValues.entrySet()) {
+			if (entry.getKey().startsWith(environmentPrefix)) {
+				properties.put(entry.getKey().substring(environmentPrefix.length()).replace("/", "."), entry.getValue());
+			}
+		}
 
     return properties;
   }
@@ -98,9 +89,9 @@ public class ConsulConfigurationSource implements ConfigurationSource {
   @Override
   public void init() {
     try {
-      LOG.info("Connecting to Consul client at " + host + ":" + port);
+      LOG.info("Connecting to Consul client at {}:{}", host, port);
 
-      Consul consul = Consul.builder().withHostAndPort(HostAndPort.fromParts(host, port)).build();
+			Consul consul =  Consul.builder().withHostAndPort(HostAndPort.fromParts(host,port)).build();
 
       kvClient = consul.keyValueClient();
     } catch (Exception e) {
@@ -110,13 +101,14 @@ public class ConsulConfigurationSource implements ConfigurationSource {
     initialized = true;
   }
 
-  private void reload() {
+  private Map<String, String> load(Environment environment) {
     Map<String, String> newConsulValues = new HashMap<>();
     List<Value> valueList;
 
     try {
-      LOG.debug("Reloading configuration from Consuls' K-V store");
-      valueList = kvClient.getValues("/");
+			String consulKeyPath = formatEnvironmentToConsulKeyPrefix(environment);
+			LOG.debug("Reloading configuration from Consuls' K-V store for Prefix: {}", consulKeyPath);
+			valueList = kvClient.getValues(consulKeyPath);
     } catch (Exception e) {
       throw new SourceCommunicationException("Can't get values from k-v store", e);
     }
@@ -128,19 +120,46 @@ public class ConsulConfigurationSource implements ConfigurationSource {
         val = value.getValueAsString().get();
       }
 
-      LOG.trace("Consul provided configuration key: " + value.getKey() + " with value: " + val);
+      LOG.trace("Consul provided configuration key: {} with value: {}", value.getKey(), val);
 
       newConsulValues.put(value.getKey(), val);
     }
 
-    consulValues = newConsulValues;
+    return newConsulValues;
   }
 
   @Override
   public String toString() {
     return "ConsulConfigurationSource{" +
-        "consulValues=" + consulValues +
         ", kvClient=" + kvClient +
         '}';
   }
+
+	private static String formatEnvironmentToConsulKeyPrefix(Environment environment) {
+		String path = environment.getName();
+
+		if (path.startsWith("/")) {
+			path = path.substring(1);
+		}
+
+		if(path.length() > 0 && path.endsWith("/")) {
+			path = path.substring(0, path.length() - 1);
+		}
+
+		return path.isEmpty() ? "/" : path;
+	}
+
+	private static String formatEnvironment(Environment environment) {
+		String path = environment.getName();
+
+		if (path.startsWith("/")) {
+			path = path.substring(1);
+		}
+
+		if (path.length() > 0 && !path.endsWith("/")) {
+			path = path + "/";
+		}
+
+		return path;
+	}
 }

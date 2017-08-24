@@ -23,6 +23,7 @@ import com.squareup.okhttp.mockwebserver.MockWebServer;
 import com.squareup.okhttp.mockwebserver.RecordedRequest;
 import org.assertj.core.data.MapEntry;
 import org.cfg4j.source.SourceCommunicationException;
+import org.cfg4j.source.context.environment.DefaultEnvironment;
 import org.cfg4j.source.context.environment.Environment;
 import org.cfg4j.source.context.environment.ImmutableEnvironment;
 import org.junit.After;
@@ -48,28 +49,45 @@ public class ConsulConfigurationSourceIntegrationTest {
     private static final String disabledBase64 = "ZGlzYWJsZWQ=";
     private static final String enabledBase64 = "ZW5hYmxlZA==";
 
+		private static final String usWest1Config = "{\"CreateIndex\":1,\"ModifyIndex\":1,\"LockIndex\":0,\"Key\":\"us-west-1/featureA.toggle\",\"Flags\":0,\"Value\":\"" + disabledBase64 + "\"}";
+		private static final String usWest2FeatureEnable = "{\"CreateIndex\":2,\"ModifyIndex\":2,\"LockIndex\":0,\"Key\":\"us-west-2/featureB.toggle\",\"Flags\":0,\"Value\":\"" + enabledBase64 + "\"}";
+		private static final String usWest2FeatureDisabled = "{\"CreateIndex\":2,\"ModifyIndex\":2,\"LockIndex\":0,\"Key\":\"us-west-2/featureB.toggle\",\"Flags\":0,\"Value\":\"" + disabledBase64 + "\"}";
+
     private boolean usWest2Toggle = false;
 
     void toggleUsWest2() {
       usWest2Toggle = !usWest2Toggle;
     }
 
-    @Override
-    public MockResponse dispatch(RecordedRequest request) throws InterruptedException {
+		@Override
+		public MockResponse dispatch(RecordedRequest request) throws InterruptedException {
+			StringBuilder sbResponseBody = new StringBuilder();
+			switch (request.getPath()) {
+				case "/v1/agent/self":
+					return new MockResponse().setResponseCode(200).setBody(PING_RESPONSE);
+				case "/v1/kv/?recurse=true":
+					sbResponseBody.append("[");
+					sbResponseBody.append(usWest1Config).append(",");
+					if(usWest2Toggle) {
+						sbResponseBody.append(usWest2FeatureEnable);
+					} else {
+						sbResponseBody.append(usWest2FeatureDisabled);
+					}
+					sbResponseBody.append("]");
 
-      switch (request.getPath()) {
-        case "/v1/agent/self":
-          return new MockResponse().setResponseCode(200).setBody(PING_RESPONSE);
-        case "/v1/kv/?recurse=true":
-          return new MockResponse()
-              .setResponseCode(200)
-              .addHeader("Content-Type", "application/json; charset=utf-8")
-              .setBody("[{\"CreateIndex\":1,\"ModifyIndex\":1,\"LockIndex\":0,\"Key\":\"us-west-1/featureA.toggle\",\"Flags\":0,\"Value\":\"ZGlzYWJsZWQ=\"},"
-                  + "{\"CreateIndex\":2,\"ModifyIndex\":2,\"LockIndex\":0,\"Key\":\"us-west-2/featureA.toggle\",\"Flags\":0,\"Value\":\""
-                  + (usWest2Toggle ? enabledBase64 : disabledBase64) + "\"}]");
-      }
-      return new MockResponse().setResponseCode(404);
-    }
+					return new MockResponse()
+						.setResponseCode(200)
+						.addHeader("Content-Type", "application/json; charset=utf-8")
+						.setBody(sbResponseBody.toString());
+
+				case "/v1/kv/us-west-1?recurse=true":
+					return new MockResponse()
+						.setResponseCode(200)
+						.addHeader("Content-Type", "application/json; charset=utf-8")
+						.setBody("[" + usWest1Config + "]");
+			}
+			return new MockResponse().setResponseCode(404);
+		}
   }
 
   @Rule
@@ -127,6 +145,14 @@ public class ConsulConfigurationSourceIntegrationTest {
 
     assertThat(source.getConfiguration(environment)).contains(MapEntry.entry("featureA.toggle", "disabled"));
   }
+
+  @Test
+	public void getConfigurationWithDefaultEnvironmentReturnsAllKeys() {
+  	Environment environment = new DefaultEnvironment();
+
+		assertThat(source.getConfiguration(environment)).contains(MapEntry.entry("us-west-1.featureA.toggle", "disabled"));
+		assertThat(source.getConfiguration(environment)).contains(MapEntry.entry("us-west-2.featureB.toggle", "disabled"));
+	}
 
   @Test
   public void getConfigurationThrowsBeforeInitCalled() throws Exception {

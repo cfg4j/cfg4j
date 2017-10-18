@@ -130,7 +130,7 @@ public class GitConfigurationSourceBuilder {
   }
 
   /**
-   * Set {@link ConfigFilesProvider} for {@link GitConfigurationSource}s built by this builder
+   * Set {@link PropertiesProviderSelector} for {@link GitConfigurationSource}s built by this builder
    *
    * @param propertiesProviderSelector {@link PropertiesProviderSelector} to use
    * @return this builder with {@link PropertiesProviderSelector} set to {@code propertiesProviderSelector}

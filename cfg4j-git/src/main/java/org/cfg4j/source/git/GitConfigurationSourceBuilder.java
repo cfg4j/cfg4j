@@ -17,10 +17,7 @@ package org.cfg4j.source.git;
 
 import org.cfg4j.source.context.filesprovider.ConfigFilesProvider;
 import org.cfg4j.source.context.filesprovider.DefaultConfigFilesProvider;
-import org.cfg4j.source.context.propertiesprovider.JsonBasedPropertiesProvider;
-import org.cfg4j.source.context.propertiesprovider.PropertiesProviderSelector;
-import org.cfg4j.source.context.propertiesprovider.PropertyBasedPropertiesProvider;
-import org.cfg4j.source.context.propertiesprovider.YamlBasedPropertiesProvider;
+import org.cfg4j.source.context.propertiesprovider.*;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -48,7 +45,7 @@ public class GitConfigurationSourceBuilder {
    * <li>ConfigFilesProvider: {@link DefaultConfigFilesProvider}</li>
    * <li>tmpPath: System.getProperty("java.io.tmpdir")</li>
    * <li>tmpRepoPrefix: "cfg4j-config-git-config-repository"</li>
-   * <li>propertiesProviderSelector: {@link PropertiesProviderSelector} with {@link PropertyBasedPropertiesProvider}
+   * <li>propertiesProviderSelector: {@link DefaultPropertiesProviderSelector} with {@link PropertyBasedPropertiesProvider}
    * and {@link YamlBasedPropertiesProvider} providers</li>
    * </ul>
    */
@@ -58,10 +55,13 @@ public class GitConfigurationSourceBuilder {
     tmpPath = Paths.get(System.getProperty("java.io.tmpdir"));
     tmpRepoPrefix = "cfg4j-git-config-repository";
     configFilesProvider = new DefaultConfigFilesProvider();
-    propertiesProviderSelector = new PropertiesProviderSelector(
-        new PropertyBasedPropertiesProvider(), new YamlBasedPropertiesProvider(), new JsonBasedPropertiesProvider()
+    propertiesProviderSelector = new DefaultPropertiesProviderSelector(
+      new PropertyBasedPropertiesProvider(),
+      new YamlBasedPropertiesProvider(),
+      new JsonBasedPropertiesProvider()
     );
   }
+
 
   /**
    * Set {@link BranchResolver} for {@link GitConfigurationSource}s built by this builder
@@ -130,24 +130,35 @@ public class GitConfigurationSourceBuilder {
   }
 
   /**
+   * Set {@link ConfigFilesProvider} for {@link GitConfigurationSource}s built by this builder
+   *
+   * @param propertiesProviderSelector {@link PropertiesProviderSelector} to use
+   * @return this builder with {@link PropertiesProviderSelector} set to {@code propertiesProviderSelector}
+   */
+  public GitConfigurationSourceBuilder withPropertiesProviderSelector(PropertiesProviderSelector propertiesProviderSelector) {
+    this.propertiesProviderSelector = propertiesProviderSelector;
+    return this;
+  }
+
+  /**
    * Build a {@link GitConfigurationSource} using this builder's configuration
    *
    * @return new {@link GitConfigurationSource}
    */
   public GitConfigurationSource build() {
     return new GitConfigurationSource(repositoryURI, tmpPath, tmpRepoPrefix, branchResolver, pathResolver,
-        configFilesProvider, propertiesProviderSelector);
+      configFilesProvider, propertiesProviderSelector);
   }
 
   @Override
   public String toString() {
     return "GitConfigurationSourceBuilder{" +
-        "branchResolver=" + branchResolver +
-        ", pathResolver=" + pathResolver +
-        ", repositoryURI='" + repositoryURI + '\'' +
-        ", tmpPath='" + tmpPath + '\'' +
-        ", tmpRepoPrefix='" + tmpRepoPrefix + '\'' +
-        ", configFilesProvider=" + configFilesProvider +
-        '}';
+      "branchResolver=" + branchResolver +
+      ", pathResolver=" + pathResolver +
+      ", repositoryURI='" + repositoryURI + '\'' +
+      ", tmpPath='" + tmpPath + '\'' +
+      ", tmpRepoPrefix='" + tmpRepoPrefix + '\'' +
+      ", configFilesProvider=" + configFilesProvider +
+      '}';
   }
 }

@@ -63,7 +63,7 @@ public class PropertiesProviderSelectorTest {
     propertiesProperties = new Properties();
     when(yamlProvider.getProperties(any(InputStream.class))).thenReturn(propertiesProperties);
 
-    selector = new PropertiesProviderSelector(propertiesProvider, yamlProvider, jsonProvider);
+    selector = new DefaultPropertiesProviderSelector(propertiesProvider, yamlProvider, jsonProvider);
   }
 
   @Test

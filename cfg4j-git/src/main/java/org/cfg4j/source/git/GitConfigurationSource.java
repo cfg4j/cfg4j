@@ -22,6 +22,7 @@ import org.cfg4j.source.SourceCommunicationException;
 import org.cfg4j.source.context.environment.Environment;
 import org.cfg4j.source.context.environment.MissingEnvironmentException;
 import org.cfg4j.source.context.filesprovider.ConfigFilesProvider;
+import org.cfg4j.source.context.propertiesprovider.DefaultPropertiesProviderSelector;
 import org.cfg4j.source.context.propertiesprovider.PropertiesProvider;
 import org.cfg4j.source.context.propertiesprovider.PropertiesProviderSelector;
 import org.cfg4j.utils.FileUtils;

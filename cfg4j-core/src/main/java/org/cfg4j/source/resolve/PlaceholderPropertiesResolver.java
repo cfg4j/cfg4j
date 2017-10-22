@@ -75,7 +75,7 @@ public class PlaceholderPropertiesResolver extends AbstractPropertiesResolver {
   }
 
   private String findPropertyByKey(String key, Map<String, Object> input, Map<String, Object> output) {
-    Object value = System.getProperty(key);
+    Object value = System.getProperties().get(key);
     if (value == null) {
       value = output.get(key);
       if (value == null) {

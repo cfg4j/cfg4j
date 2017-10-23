@@ -50,8 +50,8 @@ public class HoconBasedPropertiesProviderTest {
 
       Properties properties = provider.getProperties(input);
 
-      String actual = properties.get("zepto.queue.size").toString();
-      String expected = "666";
+      String actual = properties.get("hoconf.queue.size").toString();
+      String expected = "1000";
 
       Assert.assertTrue(Objects.equals(actual, expected));
     }

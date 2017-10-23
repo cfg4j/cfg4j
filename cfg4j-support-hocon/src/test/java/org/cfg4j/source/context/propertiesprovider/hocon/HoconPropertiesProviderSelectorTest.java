@@ -61,8 +61,11 @@ public class HoconPropertiesProviderSelectorTest {
     hoconProperties = new Properties();
     when(hoconProvider.getProperties(any(InputStream.class))).thenReturn(hoconProperties);
 
-    selector = new HoconPropertiesProviderSelector(propertiesProvider,
-      yamlProvider, jsonProvider, hoconProvider);
+    selector = new HoconPropertiesProviderSelector(
+      propertiesProvider,
+      yamlProvider,
+      jsonProvider,
+      hoconProvider);
   }
 
   @Test

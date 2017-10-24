@@ -21,11 +21,8 @@ import org.cfg4j.source.ConfigurationSource;
 import org.cfg4j.source.context.environment.Environment;
 import org.cfg4j.source.context.environment.MissingEnvironmentException;
 import org.cfg4j.source.context.filesprovider.ConfigFilesProvider;
-import org.cfg4j.source.context.propertiesprovider.JsonBasedPropertiesProvider;
-import org.cfg4j.source.context.propertiesprovider.PropertiesProvider;
-import org.cfg4j.source.context.propertiesprovider.PropertiesProviderSelector;
-import org.cfg4j.source.context.propertiesprovider.PropertyBasedPropertiesProvider;
-import org.cfg4j.source.context.propertiesprovider.YamlBasedPropertiesProvider;
+import org.cfg4j.source.context.propertiesprovider.*;
+import org.cfg4j.source.context.propertiesprovider.DefaultPropertiesProviderSelector;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -70,12 +67,12 @@ public class ClasspathConfigurationSource implements ConfigurationSource {
    * Construct {@link ConfigurationSource} backed by classpath files. File paths should by provided by
    * {@link ConfigFilesProvider} and will be treated as relative paths to the environment provided in
    * {@link #getConfiguration(Environment)} calls (see corresponding javadoc for detail). Configuration
-   * file type is detected using file extension (see {@link PropertiesProviderSelector}).
+   * file type is detected using file extension (see {@link DefaultPropertiesProviderSelector}).
    *
    * @param configFilesProvider {@link ConfigFilesProvider} supplying a list of configuration files to use
    */
   public ClasspathConfigurationSource(ConfigFilesProvider configFilesProvider) {
-    this(configFilesProvider, new PropertiesProviderSelector(
+    this(configFilesProvider, new DefaultPropertiesProviderSelector(
         new PropertyBasedPropertiesProvider(), new YamlBasedPropertiesProvider(), new JsonBasedPropertiesProvider()
     ));
   }

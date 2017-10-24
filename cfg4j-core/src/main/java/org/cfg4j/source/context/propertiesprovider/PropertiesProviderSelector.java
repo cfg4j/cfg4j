@@ -1,3 +1,5 @@
+package org.cfg4j.source.context.propertiesprovider;
+
 /*
  * Copyright 2015-2016 Norbert Potocki (norbert.potocki@nort.pl)
  *
@@ -14,46 +16,6 @@
  * limitations under the License.
  */
 
-package org.cfg4j.source.context.propertiesprovider;
-
-import static java.util.Objects.requireNonNull;
-
-/**
- * Selects {@link PropertiesProvider} to use based on a file extension.
- */
-public class PropertiesProviderSelector {
-
-  private final PropertiesProvider yamlProvider;
-  private final PropertiesProvider jsonProvider;
-  private final PropertiesProvider propertiesProvider;
-
-  /**
-   * Construct selector.
-   *
-   * @param propertiesProvider provider used for parsing properties files
-   * @param yamlProvider       provider used for parsing Yaml files
-   * @param jsonProvider       provider used for parsing JSON files
-   */
-  public PropertiesProviderSelector(PropertiesProvider propertiesProvider, PropertiesProvider yamlProvider, PropertiesProvider jsonProvider) {
-    this.propertiesProvider = requireNonNull(propertiesProvider);
-    this.yamlProvider = requireNonNull(yamlProvider);
-    this.jsonProvider = requireNonNull(jsonProvider);
-  }
-
-  /**
-   * Selects {@link PropertiesProvider} to use based on a file extension. For *.yaml files
-   * returns {@code yamlProvider}. For any other extension returns {@code propertiesProvider}.
-   *
-   * @param filename configuration file name
-   * @return provider for the give file type
-   */
-  public PropertiesProvider getProvider(String filename) {
-    if (filename.endsWith(".yaml") || filename.endsWith(".yml")) {
-      return yamlProvider;
-    } else if (filename.endsWith(".json")) {
-      return jsonProvider;
-    } else {
-      return propertiesProvider;
-    }
-  }
+public interface PropertiesProviderSelector {
+  PropertiesProvider getProvider(String filename);
 }

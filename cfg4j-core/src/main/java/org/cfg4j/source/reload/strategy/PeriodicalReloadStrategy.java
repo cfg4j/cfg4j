@@ -30,7 +30,7 @@ import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 /**
- * {@link ReloadStrategy} that reloads resources periodically. Supports multiple resources. It spawns a tread.
+ * {@link ReloadStrategy} that reloads resources periodically. Supports multiple resources. It spawns a thread.
  */
 public class PeriodicalReloadStrategy implements ReloadStrategy {
 

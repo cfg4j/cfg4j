@@ -53,17 +53,27 @@ class BindInvocationHandler implements InvocationHandler {
    */
   @Override
   public Object invoke(Object proxy, Method method, Object[] args) throws InvocationTargetException, IllegalAccessException {
+
     if (isObjectMethod(method)) {
       return method.invoke(this, args);
     }
 
+    final String coordinate;
+    if (method.isAnnotationPresent(Property.class)) {
+      final Property annotation = method.getAnnotation(Property.class);
+      coordinate = ( annotation.applyPrefix() && !prefix.isEmpty() ? prefix + "."  : "" ) + annotation.value();
+    } else {
+      coordinate = prefix + (prefix.isEmpty() ? "" : ".") + method.getName();
+    }
+
     final Type returnType = method.getGenericReturnType();
-    return simpleConfigurationProvider.getProperty(prefix + (prefix.isEmpty() ? "" : ".") + method.getName(), new GenericTypeInterface() {
+    return simpleConfigurationProvider.getProperty(coordinate, new GenericTypeInterface() {
       @Override
       public Type getType() {
         return returnType;
       }
     });
+
   }
 
   /**

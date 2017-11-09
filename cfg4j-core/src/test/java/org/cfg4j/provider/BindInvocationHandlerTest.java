@@ -59,6 +59,24 @@ public class BindInvocationHandlerTest {
   }
 
   @Test
+  public void respectsPropertyAnnotationOverride() throws Exception {
+    BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
+
+    handler.invoke(this, this.getClass().getMethod("annotatedMethod"), new Object[]{});
+
+    verify(configurationProvider, times(1)).getProperty(eq("other.property"), any(GenericTypeInterface.class));
+  }
+
+  @Test
+  public void respectsPrefixedPropertyAnnotationOverride() throws Exception {
+    BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "abc");
+
+    handler.invoke(this, this.getClass().getMethod("prefixedAnnotatedMethod"), new Object[]{});
+
+    verify(configurationProvider, times(1)).getProperty(eq("abc.other.property"), any(GenericTypeInterface.class));
+  }
+
+  @Test
   public void usesDefaultNamespaceWhenNoPrefix() throws Exception {
     BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
 
@@ -146,4 +164,15 @@ public class BindInvocationHandlerTest {
   public boolean equals(String param1, String param2) {
     return true;
   }
+
+  @Property("other.property")
+  public String annotatedMethod() {
+    return null;
+  }
+
+  @Property(value = "other.property", applyPrefix = true)
+  public String prefixedAnnotatedMethod() {
+    return null;
+  }
+
 }

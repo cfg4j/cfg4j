@@ -43,6 +43,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import org.eclipse.jgit.api.RebaseCommand.Operation;
+import org.eclipse.jgit.transport.CredentialsProvider;
+
 /**
  * Note: use {@link GitConfigurationSourceBuilder} for building instances of this class.
  * <p>
@@ -55,6 +58,7 @@ class GitConfigurationSource implements ConfigurationSource, Closeable {
   private final BranchResolver branchResolver;
   private final PathResolver pathResolver;
   private final ConfigFilesProvider configFilesProvider;
+  private final CredentialsProvider credentialsProvider;  //@wjw_add
   private final PropertiesProviderSelector propertiesProviderSelector;
   private final String repositoryURI;
   private final Path tmpPath;
@@ -76,15 +80,17 @@ class GitConfigurationSource implements ConfigurationSource, Closeable {
    * @param branchResolver             {@link BranchResolver} used for extracting git branch from an {@link Environment}
    * @param pathResolver               {@link PathResolver} used for extracting git path from an {@link Environment}
    * @param configFilesProvider        {@link ConfigFilesProvider} used for determining which files in repository should be read
+   * @param configFilesProvider        add git authentication support!
    * @param propertiesProviderSelector selector used for choosing {@link PropertiesProvider} based on a configuration file extension
    *                                   as config files
    */
   GitConfigurationSource(String repositoryURI, Path tmpPath, String tmpRepoPrefix, BranchResolver branchResolver,
-                         PathResolver pathResolver, ConfigFilesProvider configFilesProvider,
+                         PathResolver pathResolver, ConfigFilesProvider configFilesProvider, CredentialsProvider credentialsProvider, 
                          PropertiesProviderSelector propertiesProviderSelector) {
     this.branchResolver = requireNonNull(branchResolver);
     this.pathResolver = requireNonNull(pathResolver);
     this.configFilesProvider = requireNonNull(configFilesProvider);
+    this.credentialsProvider = credentialsProvider;  //@wjw_add
     this.propertiesProviderSelector = requireNonNull(propertiesProviderSelector);
     this.repositoryURI = requireNonNull(repositoryURI);
     this.tmpPath = requireNonNull(tmpPath);
@@ -104,7 +110,11 @@ class GitConfigurationSource implements ConfigurationSource, Closeable {
     try {
       checkoutToBranch(branchResolver.getBranchNameFor(environment));
     } catch (GitAPIException e) {
-      throw new MissingEnvironmentException(environment.getName(), e);
+      try { //@wjw_add Force Update when sone one force pull to remote git repository
+        clonedRepo.rebase().setOperation(Operation.SKIP).call();
+      } catch (GitAPIException e1) {
+        throw new MissingEnvironmentException(environment.getName(), e);
+      }
     }
 
     Properties properties = new Properties();
@@ -147,6 +157,7 @@ class GitConfigurationSource implements ConfigurationSource, Closeable {
     try {
       clonedRepo = Git.cloneRepository()
           .setURI(repositoryURI)
+          .setCredentialsProvider(credentialsProvider)
           .setDirectory(clonedRepoPath.toFile())
           .call();
     } catch (GitAPIException e) {
@@ -156,13 +167,17 @@ class GitConfigurationSource implements ConfigurationSource, Closeable {
     initialized = true;
   }
 
-  private void reload() {
+  public void reload() {
     try {
       LOG.debug("Reloading configuration by pulling changes");
-      clonedRepo.pull().call();
+      clonedRepo.pull().setCredentialsProvider(credentialsProvider).call();
     } catch (GitAPIException e) {
-      initialized = false;
-      throw new IllegalStateException("Unable to pull from remote repository", e);
+      try {  //@wjw_add Force Update when sone one force pull to remote git repository
+        clonedRepo.rebase().setOperation(Operation.SKIP).call();
+      } catch (GitAPIException e1) {
+        initialized = false;
+        throw new IllegalStateException("Unable to pull from remote repository", e);
+      }
     }
   }
 

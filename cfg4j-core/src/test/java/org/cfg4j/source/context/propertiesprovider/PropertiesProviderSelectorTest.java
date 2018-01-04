@@ -89,7 +89,12 @@ public class PropertiesProviderSelectorTest {
   }
 
   @Test
-  public void returnsPropertiesProviderForNonYaml() throws Exception {
+  public void returnsPropertiesProviderForProperties() throws Exception {
     assertThat(selector.getProvider("test.properties")).isEqualTo(propertiesProvider);
+  }
+
+  @Test
+  public void returnsPropertiesProviderForHocon() throws Exception {
+    assertThat(selector.getProvider("test.conf")).isEqualTo(hoconProvider);
   }
 }

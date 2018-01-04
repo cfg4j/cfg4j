@@ -50,6 +50,10 @@ public class PropertiesProviderSelectorTest {
   private PropertiesProvider propertiesProvider;
   private Properties propertiesProperties;
 
+  @Mock
+  private PropertiesProvider hoconProvider;
+  private Properties hoconProperties;
+
   private PropertiesProviderSelector selector;
 
   @Before
@@ -63,7 +67,10 @@ public class PropertiesProviderSelectorTest {
     propertiesProperties = new Properties();
     when(yamlProvider.getProperties(any(InputStream.class))).thenReturn(propertiesProperties);
 
-    selector = new PropertiesProviderSelector(propertiesProvider, yamlProvider, jsonProvider);
+    hoconProperties = new Properties();
+    when(hoconProvider.getProperties(any(InputStream.class))).thenReturn(hoconProperties);
+
+    selector = new PropertiesProviderSelector(propertiesProvider, yamlProvider, jsonProvider, hoconProvider);
   }
 
   @Test

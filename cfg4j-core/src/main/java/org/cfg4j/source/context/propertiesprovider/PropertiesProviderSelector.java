@@ -26,6 +26,7 @@ public class PropertiesProviderSelector {
   private final PropertiesProvider yamlProvider;
   private final PropertiesProvider jsonProvider;
   private final PropertiesProvider propertiesProvider;
+  private final PropertiesProvider hoconProvider;
 
   /**
    * Construct selector.
@@ -33,11 +34,16 @@ public class PropertiesProviderSelector {
    * @param propertiesProvider provider used for parsing properties files
    * @param yamlProvider       provider used for parsing Yaml files
    * @param jsonProvider       provider used for parsing JSON files
+   * @param hoconProvider      provider used for parsing HOCON files
    */
-  public PropertiesProviderSelector(PropertiesProvider propertiesProvider, PropertiesProvider yamlProvider, PropertiesProvider jsonProvider) {
+  public PropertiesProviderSelector(PropertiesProvider propertiesProvider,
+                                    PropertiesProvider yamlProvider,
+                                    PropertiesProvider jsonProvider,
+                                    PropertiesProvider hoconProvider) {
     this.propertiesProvider = requireNonNull(propertiesProvider);
     this.yamlProvider = requireNonNull(yamlProvider);
     this.jsonProvider = requireNonNull(jsonProvider);
+    this.hoconProvider = requireNonNull(hoconProvider);
   }
 
   /**
@@ -52,6 +58,8 @@ public class PropertiesProviderSelector {
       return yamlProvider;
     } else if (filename.endsWith(".json")) {
       return jsonProvider;
+    } else if (filename.endsWith(".conf")) {
+      return hoconProvider;
     } else {
       return propertiesProvider;
     }

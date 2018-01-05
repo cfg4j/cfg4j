@@ -12,6 +12,13 @@ import com.typesafe.config.ConfigFactory;
 import com.typesafe.config.ConfigValue;
 
 public class HoconBasedPropertiesProvider extends FormatBasedPropertiesProvider {
+
+  /**
+   * Get {@link Properties} for a given {@code inputStream} treating it as a HOCON file.
+   *
+   * @param inputStream input stream representing HOCON file
+   * @return properties representing values from {@code inputStream}
+   */
   @Override
   public Properties getProperties(InputStream inputStream) {
     Config config = ConfigFactory.parseReader(new InputStreamReader(inputStream));

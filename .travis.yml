@@ -4,7 +4,7 @@ jdk:
   - openjdk7
 
 before_install:
-  # Workaround missing crypto in openjdk7
+  # Workaround for missing crypto in openjdk7
   - |
     if [ "$TRAVIS_JDK_VERSION" == "openjdk7" ]; then
       sudo wget "https://bouncycastle.org/download/bcprov-ext-jdk15on-158.jar" -O "${JAVA_HOME}/jre/lib/ext/bcprov-ext-jdk15on-158.jar"

@@ -65,7 +65,7 @@ public class ConfigurationProviderBuilder {
     reloadStrategy = new ImmediateReloadStrategy();
     environment = new DefaultEnvironment();
     prefix = "";
-    typeParser = TypeParser.builder().build();
+    typeParser = TypeParser.newBuilder().build();
   }
 
   /**

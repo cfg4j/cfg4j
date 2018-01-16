@@ -37,7 +37,23 @@ class SimpleConfigurationProvider implements ConfigurationProvider {
 
   private final ConfigurationSource configurationSource;
   private final Environment environment;
+  private final TypeParser typeParser;
 
+  /**
+   * {@link ConfigurationProvider} backed by provided {@link ConfigurationSource}, using {@code environment}
+   * to select environment, and {@code typeParser} to parse property values. To construct this provider use
+   * {@link ConfigurationProviderBuilder}.
+   *
+   * @param configurationSource source for configuration
+   * @param environment         {@link Environment} to use
+   * @param typeParser          parser for string values
+   */
+  SimpleConfigurationProvider(ConfigurationSource configurationSource, Environment environment, TypeParser typeParser) {
+    this.configurationSource = requireNonNull(configurationSource);
+    this.environment = requireNonNull(environment);
+    this.typeParser = requireNonNull(typeParser);
+  }
+  
   /**
    * {@link ConfigurationProvider} backed by provided {@link ConfigurationSource} and using {@code environment}
    * to select environment. To construct this provider use {@link ConfigurationProviderBuilder}.
@@ -46,8 +62,7 @@ class SimpleConfigurationProvider implements ConfigurationProvider {
    * @param environment         {@link Environment} to use
    */
   SimpleConfigurationProvider(ConfigurationSource configurationSource, Environment environment) {
-    this.configurationSource = requireNonNull(configurationSource);
-    this.environment = requireNonNull(environment);
+    this(configurationSource, environment, TypeParser.newBuilder().build());
   }
 
   @Override
@@ -64,8 +79,7 @@ class SimpleConfigurationProvider implements ConfigurationProvider {
     String propertyStr = getProperty(key);
 
     try {
-      TypeParser parser = TypeParser.newBuilder().build();
-      return parser.parse(propertyStr, type);
+      return typeParser.parse(propertyStr, type);
     } catch (TypeParserException | NoSuchRegisteredParserException e) {
       throw new IllegalArgumentException("Unable to cast value \'" + propertyStr + "\' to " + type, e);
     }
@@ -76,9 +90,8 @@ class SimpleConfigurationProvider implements ConfigurationProvider {
     String propertyStr = getProperty(key);
 
     try {
-      TypeParser parser = TypeParser.newBuilder().build();
       @SuppressWarnings("unchecked")
-      T property = (T) parser.parseType(propertyStr, genericType.getType());
+      T property = (T) typeParser.parseType(propertyStr, genericType.getType());
       return property;
     } catch (TypeParserException | NoSuchRegisteredParserException e) {
       throw new IllegalArgumentException("Unable to cast value \'" + propertyStr + "\' to " + genericType, e);
@@ -135,6 +148,7 @@ class SimpleConfigurationProvider implements ConfigurationProvider {
     return "SimpleConfigurationProvider{" +
         "configurationSource=" + configurationSource +
         ", environment=" + environment +
+        ", typeParser=" + typeParser +
         '}';
   }
 }

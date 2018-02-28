@@ -21,6 +21,8 @@ import org.cfg4j.source.ConfigurationSource;
 import org.cfg4j.source.context.environment.Environment;
 import org.cfg4j.source.context.environment.MissingEnvironmentException;
 import org.cfg4j.source.context.filesprovider.ConfigFilesProvider;
+import org.cfg4j.source.context.filesprovider.DefaultConfigFilesProvider;
+import org.cfg4j.source.context.filesprovider.SimpleConfigFilesProvider;
 import org.cfg4j.source.context.propertiesprovider.JsonBasedPropertiesProvider;
 import org.cfg4j.source.context.propertiesprovider.PropertiesProvider;
 import org.cfg4j.source.context.propertiesprovider.PropertiesProviderSelector;
@@ -51,14 +53,27 @@ public class FilesConfigurationSource implements ConfigurationSource {
    * calls (see corresponding javadoc for detail).
    */
   public FilesConfigurationSource() {
-    this(new ConfigFilesProvider() {
-      @Override
-      public Iterable<Path> getConfigFiles() {
-        return Collections.singletonList(
-            Paths.get("application.properties")
-        );
-      }
-    });
+    this(new DefaultConfigFilesProvider());
+  }
+
+  /**
+   * Construct {@link ConfigurationSource} backed by files. Uses the provided path strings to locate the needed files
+   * within the {@link Environment} provided to {@link #getConfiguration(Environment)} calls (see corresponding javadoc
+   * for detail).
+   * @param paths The paths to read from.
+   */
+  public FilesConfigurationSource(String... paths) {
+    this(new SimpleConfigFilesProvider(paths));
+  }
+
+  /**
+   * Construct {@link ConfigurationSource} backed by files. Uses the provided paths to locate the needed files within
+   * the {@link Environment} provided to {@link #getConfiguration(Environment)} calls (see corresponding javadoc for
+   * detail).
+   * @param paths The paths to read from.
+   */
+  public FilesConfigurationSource(Path... paths) {
+    this(new SimpleConfigFilesProvider(paths));
   }
 
   /**

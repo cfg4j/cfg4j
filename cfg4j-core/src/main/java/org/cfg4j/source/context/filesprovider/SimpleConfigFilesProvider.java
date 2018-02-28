@@ -3,6 +3,7 @@ package org.cfg4j.source.context.filesprovider;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -17,6 +18,10 @@ public class SimpleConfigFilesProvider implements ConfigFilesProvider {
     for (String file : files) {
       paths.add(Paths.get(file));
     }
+  }
+
+  public SimpleConfigFilesProvider(Path... paths) {
+    this.paths = Arrays.asList(paths);
   }
 
   @Override

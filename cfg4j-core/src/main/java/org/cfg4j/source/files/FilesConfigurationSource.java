@@ -67,6 +67,16 @@ public class FilesConfigurationSource implements ConfigurationSource {
   }
 
   /**
+   * Construct {@link ConfigurationSource} backed by files. Uses the provided paths to locate the needed files within
+   * the {@link Environment} provided to {@link #getConfiguration(Environment)} calls (see corresponding javadoc for
+   * detail).
+   * @param paths The paths to read from.
+   */
+  public FilesConfigurationSource(Path... paths) {
+    this(new SimpleConfigFilesProvider(paths));
+  }
+
+  /**
    * Construct {@link ConfigurationSource} backed by files. File paths should by provided by
    * {@link ConfigFilesProvider} and will be treated as relative paths to the environment provided in
    * {@link #getConfiguration(Environment)} calls (see corresponding javadoc for detail). Configuration

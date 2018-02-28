@@ -12,7 +12,7 @@ public class SimpleConfigFilesProvider implements ConfigFilesProvider {
 
   private final List<Path> paths;
 
-  SimpleConfigFilesProvider(String... files) {
+  public SimpleConfigFilesProvider(String... files) {
     paths = new ArrayList<>(files.length);
     for (String file : files) {
       paths.add(Paths.get(file));

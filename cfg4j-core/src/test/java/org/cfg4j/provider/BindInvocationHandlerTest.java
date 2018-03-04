@@ -86,6 +86,15 @@ public class BindInvocationHandlerTest {
   }
 
   @Test
+  public void stripsGetterMethodPrefix() throws Exception {
+    BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
+
+    handler.invoke(this, this.getClass().getMethod("getStringMethod"), new Object[]{});
+
+    verify(configurationProvider, times(1)).getProperty(eq("stringMethod"), any(GenericTypeInterface.class));
+  }
+
+  @Test
   public void queriesForProvidedType() throws Exception {
     BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
 
@@ -172,6 +181,11 @@ public class BindInvocationHandlerTest {
 
   @Property(value = "other.property", applyPrefix = true)
   public String prefixedAnnotatedMethod() {
+    return null;
+  }
+
+  /** @see #stripsGetterMethodPrefix */
+  public String getStringMethod() {
     return null;
   }
 

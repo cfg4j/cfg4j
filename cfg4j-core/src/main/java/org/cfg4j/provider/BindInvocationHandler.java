@@ -59,11 +59,18 @@ class BindInvocationHandler implements InvocationHandler {
     }
 
     final String coordinate;
+    final String safePrefix = prefix + (prefix.isEmpty() ? "" : ".");
+    final String methodName = method.getName();
+
     if (method.isAnnotationPresent(Property.class)) {
       final Property annotation = method.getAnnotation(Property.class);
-      coordinate = ( annotation.applyPrefix() && !prefix.isEmpty() ? prefix + "."  : "" ) + annotation.value();
+      coordinate = ( annotation.applyPrefix() ? safePrefix  : "" ) + annotation.value();
+
+    } else if (methodName.matches("^get[A-Z].+$")) {
+      coordinate = safePrefix + methodName.substring(3,4).toLowerCase() + methodName.substring(4);
+
     } else {
-      coordinate = prefix + (prefix.isEmpty() ? "" : ".") + method.getName();
+      coordinate = safePrefix + methodName;
     }
 
     final Type returnType = method.getGenericReturnType();

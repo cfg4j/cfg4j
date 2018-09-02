@@ -29,7 +29,7 @@ buildscript {
     }
 
     dependencies {
-        classpath group: "com.github.ben-manes", name: "gradle-versions-plugin", version: "0.12.0"
+        classpath group: "com.github.ben-manes", name: "gradle-versions-plugin", version: "0.20.0"
     }
 }
 
@@ -53,19 +53,20 @@ subprojects {
     dependencies {
 
         // Logging
-        compile group: "org.slf4j", name: "slf4j-api", version: "1.7.21"
+        compile group: "org.slf4j", name: "slf4j-api", version: "1.7.25"
 
         // YAML
-        compile group: "org.yaml", name: "snakeyaml", version: '1.17'
+        compile group: "org.yaml", name: "snakeyaml", version: "1.23"
 
         // Metrics
-        compile group: "io.dropwizard.metrics", name: "metrics-core", version: "3.1.2"
+        compile group: "io.dropwizard.metrics", name: "metrics-core", version: "4.0.2"
 
-        testCompile group: "junit", name: "junit", version: "4.12"
-        testCompile group: "org.assertj", name: "assertj-core", version: "2.5.0"
-        testCompile group: "org.mockito", name: "mockito-core", version: "1.10.19"
-        testCompile group: "org.powermock", name: "powermock-api-mockito", version: "1.6.5"
-        testCompile group: "org.powermock", name: "powermock-module-junit4", version: "1.6.5"
+        testCompile group: "org.junit.jupiter", name: "junit-jupiter-api", version: "5.2.0"
+        testCompile group: "org.junit.jupiter", name: "junit-jupiter-engine", version: "5.2.0"
+        testCompile group: "org.assertj", name: "assertj-core", version: "3.11.1"
+        testCompile group: "org.mockito", name: "mockito-core", version: "2.21.0"
+        testCompile group: "org.powermock", name: "powermock-api-mockito", version: "1.7.4"
+        testCompile group: "org.powermock", name: "powermock-module-junit4", version: "1.7.4"
     }
 
     // ----------- EXTRA tasks -----------
@@ -77,6 +78,10 @@ subprojects {
     task sourcesJar(type: Jar) {
         classifier = 'sources'
         from sourceSets.main.allSource
+    }
+
+    test {
+        useJUnitPlatform()
     }
 
 // ----------- Task configurations -----------

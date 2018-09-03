@@ -21,16 +21,15 @@ import com.google.common.net.HostAndPort;
 import com.orbitz.consul.Consul;
 import com.orbitz.consul.KeyValueClient;
 import com.orbitz.consul.model.kv.Value;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 import org.cfg4j.source.ConfigurationSource;
 import org.cfg4j.source.SourceCommunicationException;
 import org.cfg4j.source.context.environment.Environment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
 
 /**
  * Note: use {@link ConsulConfigurationSourceBuilder} for building instances of this class.
@@ -40,11 +39,10 @@ import java.util.Properties;
 public class ConsulConfigurationSource implements ConfigurationSource {
 
   private static final Logger LOG = LoggerFactory.getLogger(ConsulConfigurationSource.class);
-
-  private KeyValueClient kvClient;
-  private Map<String, String> consulValues;
   private final String host;
   private final int port;
+  private KeyValueClient kvClient;
+  private Map<String, String> consulValues;
   private boolean initialized;
 
   /**
@@ -67,7 +65,7 @@ public class ConsulConfigurationSource implements ConfigurationSource {
     LOG.trace("Requesting configuration for environment: " + environment.getName());
 
     if (!initialized) {
-      throw new IllegalStateException("Configuration source has to be successfully initialized before you request configuration.");
+      init();
     }
 
     reload();

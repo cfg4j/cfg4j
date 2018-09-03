@@ -15,8 +15,8 @@
  */
 package org.cfg4j.provider;
 
-import static org.mockito.Matchers.any;
-
+import org.cfg4j.provider.bind.MapTypeBindStrategy;
+import org.cfg4j.provider.bind.NestedCustomTypeBindStrategy;
 import org.cfg4j.source.ConfigurationSource;
 import org.cfg4j.source.context.environment.Environment;
 import org.junit.Before;
@@ -26,15 +26,17 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.Properties;
+import java.util.Arrays;
+
+import static org.mockito.Matchers.any;
 
 @RunWith(MockitoJUnitRunner.class)
-public abstract class SimpleConfigurationProviderAbstractTest {
+public abstract class ConfigurationProviderAbstractTest {
 
   @Rule
   public ExpectedException expectedException = ExpectedException.none();
 
-  protected SimpleConfigurationProvider simpleConfigurationProvider;
+  protected ConfigurationProvider configurationProvider;
 
   @Mock
   protected ConfigurationSource configurationSource;
@@ -44,16 +46,7 @@ public abstract class SimpleConfigurationProviderAbstractTest {
 
   @Before
   public void setUp() throws Exception {
-    simpleConfigurationProvider = new SimpleConfigurationProvider(configurationSource, environment);
-  }
-
-  protected Properties propertiesWith(String... args) {
-    Properties properties = new Properties();
-    for (int i = 1; i < args.length; i += 2) {
-      properties.put(args[i - 1], args[i]);
-    }
-
-    return properties;
+    configurationProvider = new SimpleConfigurationProvider(configurationSource, environment, Arrays.<BindStrategy>asList(new NestedCustomTypeBindStrategy("org.cfg4j"), new MapTypeBindStrategy()));
   }
 
   protected Environment anyEnvironment() {

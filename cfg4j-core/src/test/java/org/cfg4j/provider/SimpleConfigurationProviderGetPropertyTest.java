@@ -16,6 +16,7 @@
 package org.cfg4j.provider;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.cfg4j.utils.PropertiesUtils.propertiesWith;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -30,14 +31,14 @@ import java.util.NoSuchElementException;
 import java.util.Properties;
 
 @RunWith(MockitoJUnitRunner.class)
-public class SimpleConfigurationProviderGetPropertyTest extends SimpleConfigurationProviderAbstractTest {
+public class SimpleConfigurationProviderGetPropertyTest extends ConfigurationProviderAbstractTest {
 
   @Test
   public void allConfigurationAsPropertiesThrowsWhenUnableToFetchConfiguration() throws Exception {
     when(configurationSource.getConfiguration(anyEnvironment())).thenThrow(new IllegalStateException());
 
     expectedException.expect(IllegalStateException.class);
-    simpleConfigurationProvider.allConfigurationAsProperties();
+    configurationProvider.allConfigurationAsProperties();
   }
 
   @Test
@@ -45,14 +46,14 @@ public class SimpleConfigurationProviderGetPropertyTest extends SimpleConfigurat
     when(configurationSource.getConfiguration(anyEnvironment())).thenThrow(new MissingEnvironmentException(""));
 
     expectedException.expect(IllegalStateException.class);
-    simpleConfigurationProvider.allConfigurationAsProperties();
+    configurationProvider.allConfigurationAsProperties();
   }
 
   @Test
   public void allConfigurationAsPropertiesUsesProvidedEnvironment() throws Exception {
     when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(new Properties());
 
-    simpleConfigurationProvider.allConfigurationAsProperties();
+    configurationProvider.allConfigurationAsProperties();
 
     verify(configurationSource).getConfiguration(environment);
   }
@@ -62,7 +63,7 @@ public class SimpleConfigurationProviderGetPropertyTest extends SimpleConfigurat
     when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(new Properties());
 
     expectedException.expect(NoSuchElementException.class);
-    simpleConfigurationProvider.getProperty("some.property", String.class);
+    configurationProvider.getProperty("some.property", String.class);
   }
 
   @Test
@@ -70,7 +71,7 @@ public class SimpleConfigurationProviderGetPropertyTest extends SimpleConfigurat
     when(configurationSource.getConfiguration(anyEnvironment())).thenThrow(new IllegalStateException());
 
     expectedException.expect(IllegalStateException.class);
-    simpleConfigurationProvider.getProperty("some.property", String.class);
+    configurationProvider.getProperty("some.property", String.class);
   }
 
   @Test
@@ -78,14 +79,14 @@ public class SimpleConfigurationProviderGetPropertyTest extends SimpleConfigurat
     when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(propertiesWith("some.property", "true"));
 
     expectedException.expect(IllegalArgumentException.class);
-    simpleConfigurationProvider.getProperty("some.property", Integer.class);
+    configurationProvider.getProperty("some.property", Integer.class);
   }
 
   @Test
   public void getProperty2ReturnsPropertyFromSource() throws Exception {
     when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(propertiesWith("some.property", "true"));
 
-    Boolean property = simpleConfigurationProvider.getProperty("some.property", Boolean.class);
+    Boolean property = configurationProvider.getProperty("some.property", Boolean.class);
     assertThat(property).isTrue();
   }
 
@@ -94,7 +95,7 @@ public class SimpleConfigurationProviderGetPropertyTest extends SimpleConfigurat
     when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(propertiesWith("some.property", "true"));
     when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(propertiesWith("some.property", "false"));
 
-    Boolean property = simpleConfigurationProvider.getProperty("some.property", Boolean.class);
+    Boolean property = configurationProvider.getProperty("some.property", Boolean.class);
     assertThat(property).isFalse();
   }
 
@@ -102,7 +103,7 @@ public class SimpleConfigurationProviderGetPropertyTest extends SimpleConfigurat
   public void getProperty2ReturnsArrayPropertyFromSource() throws Exception {
     when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(propertiesWith("some.property", "42.5, 99.9999"));
 
-    double[] property = simpleConfigurationProvider.getProperty("some.property", double[].class);
+    double[] property = configurationProvider.getProperty("some.property", double[].class);
     assertThat(property).containsExactly(42.5, 99.9999);
   }
 
@@ -111,7 +112,7 @@ public class SimpleConfigurationProviderGetPropertyTest extends SimpleConfigurat
     when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(new Properties());
 
     expectedException.expect(NoSuchElementException.class);
-    simpleConfigurationProvider.getProperty("some.property", new GenericType<List<String>>() {
+    configurationProvider.getProperty("some.property", new GenericType<List<String>>() {
     });
   }
 
@@ -120,7 +121,7 @@ public class SimpleConfigurationProviderGetPropertyTest extends SimpleConfigurat
     when(configurationSource.getConfiguration(anyEnvironment())).thenThrow(new IllegalStateException());
 
     expectedException.expect(IllegalStateException.class);
-    simpleConfigurationProvider.getProperty("some.property", new GenericType<List<String>>() {
+    configurationProvider.getProperty("some.property", new GenericType<List<String>>() {
     });
   }
 
@@ -129,7 +130,7 @@ public class SimpleConfigurationProviderGetPropertyTest extends SimpleConfigurat
     when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(propertiesWith("some.property", "true"));
 
     expectedException.expect(IllegalArgumentException.class);
-    simpleConfigurationProvider.getProperty("some.property", new GenericType<List<Integer>>() {
+    configurationProvider.getProperty("some.property", new GenericType<List<Integer>>() {
     });
   }
 
@@ -137,7 +138,7 @@ public class SimpleConfigurationProviderGetPropertyTest extends SimpleConfigurat
   public void getProperty3ReturnsPropertyFromSource() throws Exception {
     when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(propertiesWith("some.property", "1,2"));
 
-    List<Integer> properties = simpleConfigurationProvider.getProperty("some.property", new GenericType<List<Integer>>() {
+    List<Integer> properties = configurationProvider.getProperty("some.property", new GenericType<List<Integer>>() {
     });
     assertThat(properties).containsExactly(1, 2);
   }
@@ -147,7 +148,7 @@ public class SimpleConfigurationProviderGetPropertyTest extends SimpleConfigurat
     when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(propertiesWith("some.property", "1,2"));
     when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(propertiesWith("some.property", "3,4,5"));
 
-    List<Integer> properties = simpleConfigurationProvider.getProperty("some.property", new GenericType<List<Integer>>() {
+    List<Integer> properties = configurationProvider.getProperty("some.property", new GenericType<List<Integer>>() {
     });
     assertThat(properties).containsExactly(3,4,5);
   }
@@ -157,7 +158,7 @@ public class SimpleConfigurationProviderGetPropertyTest extends SimpleConfigurat
     when(configurationSource.getConfiguration(environment)).thenReturn(propertiesWith("some.property", "1"));
     when(configurationSource.getConfiguration(new ImmutableEnvironment("test_env"))).thenReturn(propertiesWith("some.property", "2"));
 
-    Integer property = simpleConfigurationProvider.getProperty("some.property", Integer.class);
+    Integer property = configurationProvider.getProperty("some.property", Integer.class);
 
     assertThat(property).isEqualTo(1);
   }

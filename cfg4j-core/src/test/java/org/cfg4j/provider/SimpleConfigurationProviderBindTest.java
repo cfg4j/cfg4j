@@ -16,6 +16,7 @@
 package org.cfg4j.provider;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.cfg4j.utils.PropertiesUtils.propertiesWith;
 import static org.mockito.Mockito.when;
 
 import org.junit.Test;
@@ -23,11 +24,12 @@ import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Properties;
 
 @RunWith(MockitoJUnitRunner.class)
-public class SimpleConfigurationProviderBindTest extends SimpleConfigurationProviderAbstractTest {
+public class SimpleConfigurationProviderBindTest extends ConfigurationProviderAbstractTest {
 
   public interface ConfigPojo {
     Integer someSetting();
@@ -42,7 +44,7 @@ public class SimpleConfigurationProviderBindTest extends SimpleConfigurationProv
     when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(new Properties());
 
     expectedException.expect(NoSuchElementException.class);
-    simpleConfigurationProvider.bind("", ConfigPojo.class);
+    configurationProvider.bind("", ConfigPojo.class);
   }
 
   @Test
@@ -50,7 +52,7 @@ public class SimpleConfigurationProviderBindTest extends SimpleConfigurationProv
     when(configurationSource.getConfiguration(anyEnvironment())).thenThrow(IllegalStateException.class);
 
     expectedException.expect(IllegalStateException.class);
-    simpleConfigurationProvider.bind("", ConfigPojo.class);
+    configurationProvider.bind("", ConfigPojo.class);
   }
 
   @Test
@@ -58,14 +60,14 @@ public class SimpleConfigurationProviderBindTest extends SimpleConfigurationProv
     when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(propertiesWith("someSetting", "shouldBeNumber"));
 
     expectedException.expect(IllegalArgumentException.class);
-    simpleConfigurationProvider.bind("", ConfigPojo.class);
+    configurationProvider.bind("", ConfigPojo.class);
   }
 
   @Test
   public void bindsAllInterfaceMethods() throws Exception {
     when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(propertiesWith("someSetting", "42", "otherSetting", "true,false"));
 
-    MultiPropertyConfigPojo config = simpleConfigurationProvider.bind("", MultiPropertyConfigPojo.class);
+    MultiPropertyConfigPojo config = configurationProvider.bind("", MultiPropertyConfigPojo.class);
     assertThat(config.someSetting()).isEqualTo(42);
     assertThat(config.otherSetting()).containsExactly(true, false);
   }
@@ -74,7 +76,7 @@ public class SimpleConfigurationProviderBindTest extends SimpleConfigurationProv
   public void bindsInitialValues() throws Exception {
     when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(propertiesWith("someSetting", "42"));
 
-    ConfigPojo config = simpleConfigurationProvider.bind("", ConfigPojo.class);
+    ConfigPojo config = configurationProvider.bind("", ConfigPojo.class);
     assertThat(config.someSetting()).isEqualTo(42);
   }
 
@@ -82,17 +84,55 @@ public class SimpleConfigurationProviderBindTest extends SimpleConfigurationProv
   public void bindsInitialValuesInSubPath() throws Exception {
     when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(propertiesWith("myContext.someSetting", "42"));
 
-    ConfigPojo config = simpleConfigurationProvider.bind("myContext", ConfigPojo.class);
+    ConfigPojo config = configurationProvider.bind("myContext", ConfigPojo.class);
     assertThat(config.someSetting()).isEqualTo(42);
   }
 
   @Test
   public void reactsToSourceChanges() throws Exception {
     when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(propertiesWith("someSetting", "42"));
-    ConfigPojo config = simpleConfigurationProvider.bind("", ConfigPojo.class);
+    ConfigPojo config = configurationProvider.bind("", ConfigPojo.class);
 
     when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(propertiesWith("someSetting", "0"));
 
     assertThat(config.someSetting()).isEqualTo(0);
+  }
+
+  public interface NestedConfigPojo {
+    Integer someSetting();
+    ConfigPojo nestedPojo();
+  }
+
+  public interface UltraNestedConfigPojo {
+    Integer someSetting();
+    NestedConfigPojo nestedPojo();
+  }
+
+  @Test
+  public void shouldBindInitialValuesInSubPathToNestedObjects() throws Exception {
+    when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(propertiesWith("myContext.nestedPojo.nestedPojo.someSetting", "1",
+      "myContext.nestedPojo.someSetting", "2",
+      "myContext.someSetting", "3"));
+    UltraNestedConfigPojo config = configurationProvider.bind("myContext", UltraNestedConfigPojo.class);
+    assertThat(config.someSetting()).isEqualTo(3);
+    assertThat(config.nestedPojo().someSetting()).isEqualTo(2);
+    assertThat(config.nestedPojo().nestedPojo().someSetting()).isEqualTo(1);
+  }
+
+
+  public interface MapPojo {
+    Map<String, Integer> map();
+  }
+
+  @Test
+  public void shouldBindInitalValuesInSubPathToMap() throws Exception {
+    when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(propertiesWith(
+      "myContext.map.a", "1",
+      "myContext.map.b", "2",
+      "myContext.map.c", "3"));
+    MapPojo config = configurationProvider.bind("myContext", MapPojo.class);
+    assertThat(config.map().get("a")).isEqualTo(1);
+    assertThat(config.map().get("b")).isEqualTo(2);
+    assertThat(config.map().get("c")).isEqualTo(3);
   }
 }

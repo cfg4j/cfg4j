@@ -39,7 +39,6 @@ import java.util.Properties;
 
 /**
  * {@link ConfigurationSource} reading configuration from classpath files.
- * <p></p>
  * Environment resolution happens as follows:
  * {@link Environment} name is prepended to all file paths from {@link ConfigFilesProvider}
  * to form an absolute configuration file path. Trailing slashes in environment name are not supported (due

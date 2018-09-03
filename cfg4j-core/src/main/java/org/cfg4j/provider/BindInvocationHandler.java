@@ -21,16 +21,29 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.util.NoSuchElementException;
+import java.util.ArrayList;
+import java.util.List;
 
-/**
- * Invocation handler for proxies created by {@link ConfigurationProvider#bind(String, Class)}. Uses provided
- * {@link ConfigurationProvider} for getting properties.
- */
-class BindInvocationHandler implements InvocationHandler {
+public class BindInvocationHandler implements InvocationHandler {
 
-  private final ConfigurationProvider simpleConfigurationProvider;
-  private final String prefix;
+  protected final ConfigurationProvider configurationProvider;
+  protected final String prefix;
+  protected final List<BindStrategy> bindStrategies;
+
+  /**
+   * Create invocation handler which fetches property from given {@code configurationProvider} using call to
+   * {@link ConfigurationProvider#getProperty(String, Class)} method.
+   *
+   * @param configurationProvider configuration provider to use for fetching properties
+   * @param prefix                prefix for calls to {@link ConfigurationProvider#getProperty(String, Class)}
+   * @param bindStrategies        list of strategies that will by tried to apply during proy invocation}
+   */
+  BindInvocationHandler(ConfigurationProvider configurationProvider, String prefix, List<BindStrategy> bindStrategies) {
+    this.configurationProvider = requireNonNull(configurationProvider);
+    this.prefix = requireNonNull(prefix);
+    this.bindStrategies = requireNonNull(bindStrategies);
+  }
+
 
   /**
    * Create invocation handler which fetches property from given {@code configurationProvider} using call to
@@ -40,16 +53,15 @@ class BindInvocationHandler implements InvocationHandler {
    * @param prefix                prefix for calls to {@link ConfigurationProvider#getProperty(String, Class)}
    */
   BindInvocationHandler(ConfigurationProvider configurationProvider, String prefix) {
-    this.simpleConfigurationProvider = requireNonNull(configurationProvider);
-    this.prefix = requireNonNull(prefix);
+    this(configurationProvider, prefix, new ArrayList<BindStrategy>());
   }
 
   /**
-   * @throws NoSuchElementException    when the provided {@code key} doesn't have a corresponding config value
-   * @throws IllegalArgumentException  when property can't be converted to {@code type}
-   * @throws IllegalStateException     when provider is unable to fetch configuration value for the given {@code key}
+   * Sequentially calls chain of bind strategies till acceptable is found
+   *
    * @throws InvocationTargetException when invoked an Object-level (e.g. {@link Object#hashCode()}) method and it throws an exception.
    * @throws IllegalAccessException    when invoked an Object-level (e.g. {@link Object#hashCode()}) method and it is inaccessible.
+   * @throws IllegalStateException     when any applicable bind strategy is not found
    */
   @Override
   public Object invoke(Object proxy, Method method, Object[] args) throws InvocationTargetException, IllegalAccessException {
@@ -57,8 +69,13 @@ class BindInvocationHandler implements InvocationHandler {
       return method.invoke(this, args);
     }
 
+    for (BindStrategy bindStrategy : bindStrategies) {
+      if (bindStrategy.canApply(method)) {
+        return bindStrategy.apply(method, prefix, configurationProvider);
+      }
+    }
     final Type returnType = method.getGenericReturnType();
-    return simpleConfigurationProvider.getProperty(prefix + (prefix.isEmpty() ? "" : ".") + method.getName(), new GenericTypeInterface() {
+    return configurationProvider.getProperty(prefix + (prefix.isEmpty() ? "" : ".") + method.getName(), new GenericTypeInterface() {
       @Override
       public Type getType() {
         return returnType;

@@ -58,12 +58,26 @@ class BindInvocationHandler implements InvocationHandler {
     }
 
     final Type returnType = method.getGenericReturnType();
-    return simpleConfigurationProvider.getProperty(prefix + (prefix.isEmpty() ? "" : ".") + method.getName(), new GenericTypeInterface() {
+    final String propertyName = getPropertyName(method);
+    return simpleConfigurationProvider.getProperty(prefix + (prefix.isEmpty() ? "" : ".") + propertyName, new GenericTypeInterface() {
       @Override
       public Type getType() {
         return returnType;
       }
     });
+  }
+
+  /**
+   * Get the property name for the given method, using the {@link Property} annotation if available and the method name
+   * if not
+   */
+  private String getPropertyName(Method method) {
+    Property property = method.getAnnotation(Property.class);
+    if (property == null) {
+      return method.getName();
+    }
+
+    return property.name();
   }
 
   /**

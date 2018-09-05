@@ -28,7 +28,7 @@ dependencies {
 
     compile project(":cfg4j-core")
 
-    compile group: "org.eclipse.jgit", name: "org.eclipse.jgit", version: "4.4.1.201607150455-r"
+    compile group: "org.eclipse.jgit", name: "org.eclipse.jgit", version: "5.0.2.201807311906-r"
 
     testCompile project(":cfg4j-core").sourceSets.test.output
 }

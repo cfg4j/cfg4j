@@ -17,55 +17,49 @@
 package org.cfg4j.source.system;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
 import org.cfg4j.source.context.environment.DefaultEnvironment;
 import org.cfg4j.source.context.environment.Environment;
 import org.cfg4j.source.context.environment.ImmutableEnvironment;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIf;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({EnvironmentVariablesConfigurationSource.class})
-public class EnvironmentVariablesConfigurationSourceTest {
 
-  @Rule
-  public ExpectedException expectedException = ExpectedException.none();
+class EnvironmentVariablesConfigurationSourceTest {
+
+
 
   private EnvironmentVariablesConfigurationSource source;
 
-  @Before
-  public void setUp() throws Exception {
+  @BeforeEach
+  void setUp() throws Exception {
     source = new EnvironmentVariablesConfigurationSource();
     source.init();
   }
 
   @Test
-  public void returnsPath() throws Exception {
+  void returnsPath() throws Exception {
     assertThat(source.getConfiguration(new DefaultEnvironment())).containsKey("PATH");
   }
 
   @Test
-  public void returnsPathForAnyEnvironment() throws Exception {
+  void returnsPathForAnyEnvironment() throws Exception {
     assertThat(source.getConfiguration(mock(Environment.class))).containsKey("PATH");
   }
 
   @Test
-  public void returnsAllVariablesInNamespace() throws Exception {
+  @EnabledIf("systemProperty.get('os.arch') == null")
+  void returnsAllVariablesInNamespace() throws Exception {
     // Given
     EnvironmentVariablesConfigurationSource mockSource = new EnvironmentVariablesConfigurationSource();
-    PowerMockito.mockStatic(System.class);
 
     final String namespace = "APPLICATION_NAME";
     Environment nameSpaced = new ImmutableEnvironment(namespace);
@@ -77,8 +71,15 @@ public class EnvironmentVariablesConfigurationSourceTest {
       put(namespace + "_USER", "TEST");
     }};
 
+    System mock = mock(System.class);
+    given(mock.getenv()).willReturn(mockEnv);
+
+    System.setProperty(namespace + "_PROFILE", "PROD");
+    System.setProperty(namespace + "_USER", "TEST");
+    assumeTrue("CI".equals(System.getenv("ENV")));
+
+
     // When
-    Mockito.when(System.getenv()).thenReturn(mockEnv);
     mockSource.init();
 
     // Then

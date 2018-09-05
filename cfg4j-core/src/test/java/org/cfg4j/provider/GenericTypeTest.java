@@ -48,7 +48,7 @@ public class GenericTypeTest {
 
   @Test
   public void retainsType() throws Exception {
-    GenericType<List<Integer>> genericType = new GenericType<List<Integer>>() {
+    GenericType<List<Integer>> genericType = new GenericType<>() {
     };
 
     assertThat(genericType.getType().toString()).isEqualTo("java.util.List<java.lang.Integer>");

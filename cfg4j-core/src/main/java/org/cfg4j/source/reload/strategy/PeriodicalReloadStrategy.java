@@ -54,7 +54,7 @@ public class PeriodicalReloadStrategy implements ReloadStrategy {
   public PeriodicalReloadStrategy(long duration, TimeUnit timeUnit) {
     this.duration = duration;
     this.timeUnit = requireNonNull(timeUnit);
-    tasks = Collections.synchronizedMap(new HashMap<Reloadable, TimerTask>());
+    tasks = Collections.synchronizedMap(new HashMap<>());
     timer = new Timer();
   }
 

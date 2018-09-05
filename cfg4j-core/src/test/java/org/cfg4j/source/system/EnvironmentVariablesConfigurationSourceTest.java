@@ -71,7 +71,7 @@ public class EnvironmentVariablesConfigurationSourceTest {
     Environment nameSpaced = new ImmutableEnvironment(namespace);
     Environment nameSpaceTrailingUnderscore = new ImmutableEnvironment(namespace + "_");
 
-    Map<String, String> mockEnv = new HashMap<String, String>() {{
+    Map<String, String> mockEnv = new HashMap<>() {{
       put("PATH", "/usr/bin");
       put(namespace + "_PROFILE", "PROD");
       put(namespace + "_USER", "TEST");

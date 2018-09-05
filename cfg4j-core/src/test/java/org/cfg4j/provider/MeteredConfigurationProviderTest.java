@@ -81,7 +81,7 @@ public class MeteredConfigurationProviderTest {
 
   @Test
   public void getProperty2CallsDelegate() throws Exception {
-    GenericType<List<String>> genericType = new GenericType<List<String>>() {
+    GenericType<List<String>> genericType = new GenericType<>() {
     };
     when(delegate.getProperty(eq("test.property"), eq(genericType))).thenReturn(new LinkedList<>());
 

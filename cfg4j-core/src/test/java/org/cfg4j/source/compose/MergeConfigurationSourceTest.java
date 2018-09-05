@@ -16,7 +16,7 @@
 package org.cfg4j.source.compose;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -32,8 +32,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.ArgumentMatchers;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Properties;
 
@@ -61,7 +61,7 @@ public class MergeConfigurationSourceTest {
 
   @Test
   public void getConfigurationThrowsWhenOneOfSourcesThrowsOnMissingEnvironment() throws Exception {
-    when(underlyingSources[1].getConfiguration(Matchers.<Environment>any())).thenThrow(new MissingEnvironmentException(""));
+    when(underlyingSources[1].getConfiguration(ArgumentMatchers.<Environment>any())).thenThrow(new MissingEnvironmentException(""));
 
     expectedException.expect(MissingEnvironmentException.class);
     mergeConfigurationSource.getConfiguration(new ImmutableEnvironment("test"));
@@ -69,7 +69,7 @@ public class MergeConfigurationSourceTest {
 
   @Test
   public void getConfigurationThrowsWhenOneOfSourcesThrows() throws Exception {
-    when(underlyingSources[3].getConfiguration(Matchers.<Environment>any())).thenThrow(new IllegalStateException());
+    when(underlyingSources[3].getConfiguration(ArgumentMatchers.<Environment>any())).thenThrow(new IllegalStateException());
 
     expectedException.expect(IllegalStateException.class);
     mergeConfigurationSource.getConfiguration(new ImmutableEnvironment("test"));

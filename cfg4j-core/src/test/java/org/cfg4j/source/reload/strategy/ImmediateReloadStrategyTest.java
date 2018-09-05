@@ -23,7 +23,7 @@ import org.cfg4j.source.reload.Reloadable;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ImmediateReloadStrategyTest {

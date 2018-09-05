@@ -22,22 +22,15 @@ import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
 import com.squareup.okhttp.mockwebserver.RecordedRequest;
 import org.assertj.core.data.MapEntry;
-import org.cfg4j.source.SourceCommunicationException;
 import org.cfg4j.source.context.environment.Environment;
 import org.cfg4j.source.context.environment.ImmutableEnvironment;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 
-@RunWith(MockitoJUnitRunner.class)
+
 public class ConsulConfigurationSourceIntegrationTest {
 
   private static final String PING_RESPONSE = "\n" +
@@ -72,14 +65,13 @@ public class ConsulConfigurationSourceIntegrationTest {
     }
   }
 
-  @Rule
-  public ExpectedException expectedException = ExpectedException.none();
+
   private MockWebServer server;
   private ConsulConfigurationSource source;
   private ModifiableDispatcher dispatcher;
 
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     dispatcher = new ModifiableDispatcher();
     runMockServer();
@@ -91,7 +83,7 @@ public class ConsulConfigurationSourceIntegrationTest {
     source.init();
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     server.shutdown();
   }
@@ -110,7 +102,7 @@ public class ConsulConfigurationSourceIntegrationTest {
         .withPort(server.getPort())
         .build();
 
-    expectedException.expect(SourceCommunicationException.class);
+    // FIXME: expectedException.expect(SourceCommunicationException.class);
     source.init();
   }
 
@@ -135,7 +127,7 @@ public class ConsulConfigurationSourceIntegrationTest {
         .withPort(server.getPort())
         .build();
 
-    expectedException.expect(IllegalStateException.class);
+    // FIXME: expectedException.expect(IllegalStateException.class);
     source.getConfiguration(new ImmutableEnvironment(""));
   }
 
@@ -148,7 +140,7 @@ public class ConsulConfigurationSourceIntegrationTest {
       // NOP
     }
 
-    expectedException.expect(SourceCommunicationException.class);
+    // FIXME: expectedException.expect(SourceCommunicationException.class);
     source.getConfiguration(new ImmutableEnvironment(""));
   }
 

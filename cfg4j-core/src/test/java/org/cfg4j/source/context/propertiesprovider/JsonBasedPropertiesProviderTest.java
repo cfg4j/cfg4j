@@ -19,25 +19,20 @@ package org.cfg4j.source.context.propertiesprovider;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.assertj.core.data.MapEntry;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.InputStream;
 
 
-@RunWith(MockitoJUnitRunner.class)
-public class JsonBasedPropertiesProviderTest {
+class JsonBasedPropertiesProviderTest {
 
-  @Rule
-  public ExpectedException expectedException = ExpectedException.none();
+
+
 
   private JsonBasedPropertiesProvider provider;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     provider = new JsonBasedPropertiesProvider();
   }
@@ -86,7 +81,7 @@ public class JsonBasedPropertiesProviderTest {
     String path = "org/cfg4j/source/propertiesprovider/JsonBasedPropertiesProviderTest_throwsForNonJsonFile.json";
 
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
-      expectedException.expect(IllegalStateException.class);
+      // FIXME: expectedException.expect(IllegalStateException.class);
       provider.getProperties(input);
     }
   }
@@ -96,7 +91,7 @@ public class JsonBasedPropertiesProviderTest {
     String path = "org/cfg4j/source/propertiesprovider/nonexistent.json";
 
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
-      expectedException.expect(NullPointerException.class);
+      // FIXME: expectedException.expect(NullPointerException.class);
       provider.getProperties(input);
     }
   }

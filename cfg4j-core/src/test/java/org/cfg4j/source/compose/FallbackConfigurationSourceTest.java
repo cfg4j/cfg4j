@@ -29,29 +29,22 @@ import org.cfg4j.source.ConfigurationSource;
 import org.cfg4j.source.SourceCommunicationException;
 import org.cfg4j.source.context.environment.Environment;
 import org.cfg4j.source.context.environment.MissingEnvironmentException;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Properties;
 
 
-@RunWith(MockitoJUnitRunner.class)
-public class FallbackConfigurationSourceTest {
+class FallbackConfigurationSourceTest {
 
   private static final int NUMBER_OF_SOURCES = 5;
   private static final int LAST_SOURCE_INDEX = NUMBER_OF_SOURCES - 1;
 
-  @Rule
-  public ExpectedException expectedException = ExpectedException.none();
 
   private ConfigurationSource[] underlyingSources;
   private FallbackConfigurationSource fallbackConfigurationSource;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     underlyingSources = new ConfigurationSource[5];
     for (int i = 0; i < underlyingSources.length; i++) {
@@ -66,7 +59,7 @@ public class FallbackConfigurationSourceTest {
   public void getConfigurationThrowsWhenAllSourcesThrowOnMissingEnvironment() throws Exception {
     makeAllSourcesThrow(new MissingEnvironmentException(""));
 
-    expectedException.expect(MissingEnvironmentException.class);
+    // FIXME: expectedException.expect(MissingEnvironmentException.class);
     fallbackConfigurationSource.getConfiguration(mock(Environment.class));
   }
 
@@ -74,7 +67,7 @@ public class FallbackConfigurationSourceTest {
   public void getConfigurationThrowsWhenAllSourcesThrow() throws Exception {
     makeAllSourcesThrow(new IllegalStateException());
 
-    expectedException.expect(IllegalStateException.class);
+    // FIXME: expectedException.expect(IllegalStateException.class);
     fallbackConfigurationSource.getConfiguration(mock(Environment.class));
   }
 
@@ -99,7 +92,7 @@ public class FallbackConfigurationSourceTest {
   public void initThrowsWhenAllSourcesThrow() throws Exception {
     makeAllSourcesThrow(new IllegalStateException());
 
-    expectedException.expect(IllegalStateException.class);
+    // FIXME: expectedException.expect(IllegalStateException.class);
     fallbackConfigurationSource.init();
   }
 

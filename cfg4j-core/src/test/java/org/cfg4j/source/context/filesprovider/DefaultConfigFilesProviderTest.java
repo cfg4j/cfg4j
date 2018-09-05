@@ -17,15 +17,12 @@ package org.cfg4j.source.context.filesprovider;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.Test;
 
 import java.nio.file.Paths;
 
 
-@RunWith(MockitoJUnitRunner.class)
-public class DefaultConfigFilesProviderTest {
+class DefaultConfigFilesProviderTest {
 
   @Test
   public void providesDefaultConfigFile() throws Exception {

@@ -19,54 +19,48 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import org.cfg4j.source.context.environment.Environment;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 
 
-@RunWith(MockitoJUnitRunner.class)
-public class AllButFirstTokenPathResolverTest {
+class AllButFirstTokenPathResolverTest {
 
-  @Rule
-  public ExpectedException expectedException = ExpectedException.none();
+
+
 
   @Mock
   private Environment environment;
 
   private AllButFirstTokenPathResolver pathResolver;
 
-  @Before
-  public void setUp() throws Exception {
+  @BeforeEach
+  void setUp() throws Exception {
     pathResolver = new AllButFirstTokenPathResolver();
   }
 
   @Test
-  public void resolvesEmptyStringToEmptyPath() throws Exception {
+  void resolvesEmptyStringToEmptyPath() throws Exception {
     when(environment.getName()).thenReturn("us-west-1/");
 
     assertThat(pathResolver.getPathFor(environment).toString()).isEqualTo("");
   }
 
   @Test
-  public void discardsFirstToken() throws Exception {
+  void discardsFirstToken() throws Exception {
     when(environment.getName()).thenReturn("us-west-1/local/path");
 
     assertThat(pathResolver.getPathFor(environment).toString()).isEqualTo("local/path");
   }
 
   @Test
-  public void ignoresMissingFirstToken() throws Exception {
+  void ignoresMissingFirstToken() throws Exception {
     when(environment.getName()).thenReturn("/local/path");
 
     assertThat(pathResolver.getPathFor(environment).toString()).isEqualTo("local/path");
   }
 
   @Test
-  public void treatsMissingPathAsEmptyPath() throws Exception {
+  void treatsMissingPathAsEmptyPath() throws Exception {
     when(environment.getName()).thenReturn("us-west-1/");
 
     assertThat(pathResolver.getPathFor(environment).toString()).isEqualTo("");

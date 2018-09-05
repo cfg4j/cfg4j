@@ -23,25 +23,23 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
 
-@RunWith(MockitoJUnitRunner.class)
-public class BindInvocationHandlerTest {
+@ExtendWith(MockitoExtension.class)
+class BindInvocationHandlerTest {
 
-  @Rule
-  public ExpectedException expectedException = ExpectedException.none();
+
+
 
   @Mock
   private ConfigurationProvider configurationProvider;
@@ -82,7 +80,7 @@ public class BindInvocationHandlerTest {
     when(configurationProvider.getProperty(anyString(), any(GenericTypeInterface.class))).thenThrow(new NoSuchElementException());
     BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
 
-    expectedException.expect(NoSuchElementException.class);
+    // FIXME: expectedException.expect(NoSuchElementException.class);
     handler.invoke(this, this.getClass().getMethod("stringMethod"), new Object[]{});
   }
 
@@ -91,7 +89,7 @@ public class BindInvocationHandlerTest {
     when(configurationProvider.getProperty(anyString(), any(GenericTypeInterface.class))).thenThrow(new IllegalArgumentException());
     BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
 
-    expectedException.expect(IllegalArgumentException.class);
+    // FIXME: expectedException.expect(IllegalArgumentException.class);
     handler.invoke(this, this.getClass().getMethod("stringMethod"), new Object[]{});
   }
 
@@ -100,7 +98,7 @@ public class BindInvocationHandlerTest {
     when(configurationProvider.getProperty(anyString(), any(GenericTypeInterface.class))).thenThrow(new IllegalStateException());
     BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
 
-    expectedException.expect(IllegalStateException.class);
+    // FIXME: expectedException.expect(IllegalStateException.class);
     handler.invoke(this, this.getClass().getMethod("stringMethod"), new Object[]{});
   }
 
@@ -130,20 +128,20 @@ public class BindInvocationHandlerTest {
   }
 
   // For "mocking" java.lang.reflect.Method
-  public String stringMethod() {
+  private String stringMethod() {
     return null;
   }
 
-  public Map<List<Integer>, Boolean> mapMethod() {
+  private Map<List<Integer>, Boolean> mapMethod() {
     return null;
   }
 
   // Name collision with {@link Object#equals(Object)} (but with different parameters)
-  public boolean equals(String param) {
+  private boolean equals(String param) {
     return true;
   }
 
-  public boolean equals(String param1, String param2) {
+  private boolean equals(String param1, String param2) {
     return true;
   }
 }

@@ -20,13 +20,13 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import org.cfg4j.source.reload.Reloadable;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
-public class ImmediateReloadStrategyTest {
+@ExtendWith(MockitoExtension.class)
+class ImmediateReloadStrategyTest {
 
   @Mock
   private Reloadable resource;

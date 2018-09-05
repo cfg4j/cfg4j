@@ -9,20 +9,16 @@ import static org.mockito.Mockito.when;
 
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 
-@RunWith(MockitoJUnitRunner.class)
-public class MeteredReloadableTest {
+@ExtendWith(MockitoExtension.class)
+class MeteredReloadableTest {
 
-  @Rule
-  public ExpectedException expectedException = ExpectedException.none();
 
   @Mock
   private Reloadable delegate;
@@ -32,7 +28,7 @@ public class MeteredReloadableTest {
 
   private MeteredReloadable reloadable;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     Timer timer = mock(Timer.class);
     when(timer.time()).thenReturn(mock(Timer.Context.class));
@@ -52,7 +48,7 @@ public class MeteredReloadableTest {
   public void reloadPropagatesIllegalStateExceptions() throws Exception {
     doThrow(new IllegalStateException("")).when(delegate).reload();
 
-    expectedException.expect(IllegalStateException.class);
+    // FIXME: expectedException.expect(IllegalStateException.class);
     reloadable.reload();
   }
 }

@@ -20,23 +20,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.InputStream;
 import java.util.Properties;
 
 
-@RunWith(MockitoJUnitRunner.class)
-public class PropertiesProviderSelectorTest {
+@ExtendWith(MockitoExtension.class)
+class PropertiesProviderSelectorTest {
 
-  @Rule
-  public ExpectedException expectedException = ExpectedException.none();
+
+
 
   @Mock
   private PropertiesProvider yamlProvider;
@@ -52,7 +50,7 @@ public class PropertiesProviderSelectorTest {
 
   private PropertiesProviderSelector selector;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     yamlProperties = new Properties();
     when(yamlProvider.getProperties(any(InputStream.class))).thenReturn(yamlProperties);

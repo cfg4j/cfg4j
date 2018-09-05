@@ -19,26 +19,21 @@ package org.cfg4j.source.inmemory;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.cfg4j.source.context.environment.DefaultEnvironment;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Properties;
 
 
-@RunWith(MockitoJUnitRunner.class)
-public class InMemoryConfigurationSourceTest {
+class InMemoryConfigurationSourceTest {
 
-  @Rule
-  public ExpectedException expectedException = ExpectedException.none();
+
+
 
   private InMemoryConfigurationSource source;
   private Properties properties;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     properties = new Properties();
     properties.put("sample.setting", "value");

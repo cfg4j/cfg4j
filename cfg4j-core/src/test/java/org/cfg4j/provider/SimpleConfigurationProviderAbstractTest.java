@@ -19,22 +19,15 @@ import static org.mockito.ArgumentMatchers.any;
 
 import org.cfg4j.source.ConfigurationSource;
 import org.cfg4j.source.context.environment.Environment;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Properties;
 
-@RunWith(MockitoJUnitRunner.class)
-public abstract class SimpleConfigurationProviderAbstractTest {
 
-  @Rule
-  public ExpectedException expectedException = ExpectedException.none();
+abstract class SimpleConfigurationProviderAbstractTest {
 
-  protected SimpleConfigurationProvider simpleConfigurationProvider;
+  SimpleConfigurationProvider simpleConfigurationProvider;
 
   @Mock
   protected ConfigurationSource configurationSource;
@@ -42,12 +35,12 @@ public abstract class SimpleConfigurationProviderAbstractTest {
   @Mock
   protected Environment environment;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     simpleConfigurationProvider = new SimpleConfigurationProvider(configurationSource, environment);
   }
 
-  protected Properties propertiesWith(String... args) {
+  Properties propertiesWith(String... args) {
     Properties properties = new Properties();
     for (int i = 1; i < args.length; i += 2) {
       properties.put(args[i - 1], args[i]);
@@ -56,7 +49,7 @@ public abstract class SimpleConfigurationProviderAbstractTest {
     return properties;
   }
 
-  protected Environment anyEnvironment() {
+  Environment anyEnvironment() {
     return any(Environment.class);
   }
 }

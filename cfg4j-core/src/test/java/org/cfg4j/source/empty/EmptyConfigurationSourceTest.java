@@ -21,22 +21,18 @@ import static org.mockito.Mockito.mock;
 
 import org.cfg4j.source.context.environment.DefaultEnvironment;
 import org.cfg4j.source.context.environment.Environment;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-@RunWith(MockitoJUnitRunner.class)
-public class EmptyConfigurationSourceTest {
 
-  @Rule
-  public ExpectedException expectedException = ExpectedException.none();
+class EmptyConfigurationSourceTest {
+
+
+
 
   private EmptyConfigurationSource source;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     source = new EmptyConfigurationSource();
     source.init();

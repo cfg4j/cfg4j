@@ -24,17 +24,15 @@ import static org.mockito.Mockito.verify;
 import org.cfg4j.source.context.environment.DefaultEnvironment;
 import org.cfg4j.source.reload.ReloadStrategy;
 import org.cfg4j.source.reload.Reloadable;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-@RunWith(MockitoJUnitRunner.class)
-public class ConfigurationProviderBuilderTest {
+
+class ConfigurationProviderBuilderTest {
 
   private ConfigurationProviderBuilder builder;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     builder = new ConfigurationProviderBuilder();
   }

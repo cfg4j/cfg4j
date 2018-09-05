@@ -21,15 +21,10 @@ import org.assertj.core.data.MapEntry;
 import org.cfg4j.source.context.environment.DefaultEnvironment;
 import org.cfg4j.source.context.environment.Environment;
 import org.cfg4j.source.context.environment.ImmutableEnvironment;
-import org.cfg4j.source.context.environment.MissingEnvironmentException;
 import org.cfg4j.source.context.filesprovider.ConfigFilesProvider;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -37,18 +32,14 @@ import java.util.Arrays;
 import java.util.Collections;
 
 
-@RunWith(MockitoJUnitRunner.class)
-public class FilesConfigurationSourceTest {
-
-  @Rule
-  public ExpectedException expectedException = ExpectedException.none();
+class FilesConfigurationSourceTest {
 
   private TempConfigurationFileRepo fileRepo;
   private ConfigFilesProvider configFilesProvider;
   private FilesConfigurationSource source;
   private Environment environment;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     fileRepo = new TempConfigurationFileRepo("org.cfg4j-test-repo");
     fileRepo.changeProperty(Paths.get("application.properties"), "some.setting", "masterValue");
@@ -62,7 +53,7 @@ public class FilesConfigurationSourceTest {
     source.init();
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     fileRepo.remove();
   }
@@ -103,7 +94,7 @@ public class FilesConfigurationSourceTest {
 
   @Test
   public void getConfigurationThrowsOnMissingEnvironment() throws Exception {
-    expectedException.expect(MissingEnvironmentException.class);
+    // FIXME: expectedException.expect(MissingEnvironmentException.class);
     source.getConfiguration(new ImmutableEnvironment("awlerijawoetinawwerlkjn"));
   }
 
@@ -111,7 +102,7 @@ public class FilesConfigurationSourceTest {
   public void getConfigurationThrowsOnMissingConfigFile() throws Exception {
     fileRepo.deleteFile(Paths.get("application.properties"));
 
-    expectedException.expect(IllegalStateException.class);
+    // FIXME: // FIXME: expectedException.expect(IllegalStateException.class);
     source.getConfiguration(environment);
   }
 
@@ -128,7 +119,7 @@ public class FilesConfigurationSourceTest {
 
     source = new FilesConfigurationSource(configFilesProvider);
 
-    expectedException.expect(IllegalStateException.class);
+    // FIXME: expectedException.expect(IllegalStateException.class);
     source.getConfiguration(environment);
   }
 

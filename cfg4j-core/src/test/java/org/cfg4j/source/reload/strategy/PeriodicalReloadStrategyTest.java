@@ -21,21 +21,15 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import org.cfg4j.source.reload.Reloadable;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.concurrent.TimeUnit;
 
-
-@RunWith(MockitoJUnitRunner.class)
-public class PeriodicalReloadStrategyTest {
-
-  @Rule
-  public ExpectedException expectedException = ExpectedException.none();
+@ExtendWith(MockitoExtension.class)
+class PeriodicalReloadStrategyTest {
 
   @Mock
   private Reloadable reloadable;

@@ -1,6 +1,8 @@
 package org.cfg4j.source.reload;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.entry;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
@@ -9,56 +11,49 @@ import org.cfg4j.source.ConfigurationSource;
 import org.cfg4j.source.context.environment.DefaultEnvironment;
 import org.cfg4j.source.context.environment.Environment;
 import org.cfg4j.source.context.environment.MissingEnvironmentException;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Properties;
 
 
-@RunWith(MockitoJUnitRunner.class)
-public class CachedConfigurationSourceTest {
-
-  @Rule
-  public ExpectedException expectedException = ExpectedException.none();
+@ExtendWith(MockitoExtension.class)
+class CachedConfigurationSourceTest {
 
   @Mock
   private ConfigurationSource delegateSource;
   private CachedConfigurationSource cachedConfigurationSource;
 
-  @Before
-  public void setUp() throws Exception {
+  @BeforeEach
+  void setUp() throws Exception {
     cachedConfigurationSource = new CachedConfigurationSource(delegateSource);
   }
 
   @Test
-  public void initPropagatesMissingEnvExceptions() throws Exception {
+  void initPropagatesMissingEnvExceptions() throws Exception {
     doThrow(new MissingEnvironmentException("")).when(delegateSource).init();
 
-    expectedException.expect(MissingEnvironmentException.class);
-    cachedConfigurationSource.init();
+    assertThatThrownBy(() -> cachedConfigurationSource.init()).isExactlyInstanceOf(MissingEnvironmentException.class);
   }
 
   @Test
-  public void initPropagatesIllegalStateExceptions() throws Exception {
+  void initPropagatesIllegalStateExceptions() throws Exception {
     doThrow(new IllegalStateException("")).when(delegateSource).init();
 
-    expectedException.expect(IllegalStateException.class);
-    cachedConfigurationSource.init();
+    assertThatThrownBy(() -> cachedConfigurationSource.init()).isExactlyInstanceOf(IllegalStateException.class);
+
   }
 
   @Test
-  public void getConfigurationThrowsOnMissingEnvironment() throws Exception {
-    expectedException.expect(MissingEnvironmentException.class);
-    cachedConfigurationSource.getConfiguration(new DefaultEnvironment());
+  void getConfigurationThrowsOnMissingEnvironment() throws Exception {
+    assertThatThrownBy(() -> cachedConfigurationSource.getConfiguration(new DefaultEnvironment())).isExactlyInstanceOf(MissingEnvironmentException.class);
   }
 
   @Test
-  public void getConfigurationReturnsReloadResult() throws Exception {
+  void getConfigurationReturnsReloadResult() throws Exception {
     Properties properties = new Properties();
     when(delegateSource.getConfiguration(any(Environment.class))).thenReturn(properties);
     cachedConfigurationSource.reload(new DefaultEnvironment());
@@ -67,32 +62,29 @@ public class CachedConfigurationSourceTest {
   }
 
   @Test
-  public void getConfigurationDoesNotChangeValueBetweenReloads() throws Exception {
+  void getConfigurationDoesNotChangeValueBetweenReloads() throws Exception {
     Properties properties = new Properties();
+    properties.put("testConfig", "testValue");
     when(delegateSource.getConfiguration(any(Environment.class))).thenReturn(properties);
 
     cachedConfigurationSource.reload(new DefaultEnvironment());
 
-    Properties newProperties = new Properties();
-    newProperties.put("testConfig", "testValue");
-    when(delegateSource.getConfiguration(any(Environment.class))).thenReturn(newProperties);
+    properties.put("testConfig", "testValueChanged");
 
-    assertThat(cachedConfigurationSource.getConfiguration(new DefaultEnvironment())).isEqualTo(properties);
+    assertThat(cachedConfigurationSource.getConfiguration(new DefaultEnvironment())).contains(entry("testConfig", "testValue"));
   }
 
   @Test
-  public void reloadPropagatesMissingEnvExceptions() throws Exception {
+  void reloadPropagatesMissingEnvExceptions() throws Exception {
     when(delegateSource.getConfiguration(any(Environment.class))).thenThrow(new MissingEnvironmentException(""));
 
-    expectedException.expect(MissingEnvironmentException.class);
-    cachedConfigurationSource.reload(new DefaultEnvironment());
+    assertThatThrownBy(() -> cachedConfigurationSource.reload(new DefaultEnvironment())).isExactlyInstanceOf(MissingEnvironmentException.class);
   }
 
   @Test
-  public void reloadPropagatesIllegalStateExceptions() throws Exception {
+  void reloadPropagatesIllegalStateExceptions() throws Exception {
     when(delegateSource.getConfiguration(any(Environment.class))).thenThrow(new IllegalStateException(""));
 
-    expectedException.expect(IllegalStateException.class);
-    cachedConfigurationSource.reload(new DefaultEnvironment());
+    assertThatThrownBy(() -> cachedConfigurationSource.reload(new DefaultEnvironment())).isExactlyInstanceOf(IllegalStateException.class);
   }
 }

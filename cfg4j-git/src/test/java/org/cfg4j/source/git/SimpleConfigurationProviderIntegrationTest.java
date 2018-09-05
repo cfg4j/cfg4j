@@ -21,28 +21,24 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.cfg4j.provider.ConfigurationProvider;
 import org.cfg4j.provider.ConfigurationProviderBuilder;
 import org.cfg4j.source.ConfigurationSource;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Test;
 
 import java.nio.file.Paths;
 
-public class SimpleConfigurationProviderIntegrationTest {
+class SimpleConfigurationProviderIntegrationTest {
 
-  @Rule
-  public ExpectedException expectedException = ExpectedException.none();
+
+
 
   private TempConfigurationGitRepo remoteRepo;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     remoteRepo = new TempConfigurationGitRepo("org.cfg4j-test-repo.git");
     remoteRepo.changeProperty(Paths.get("application.properties"), "some.setting", "masterValue");
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     remoteRepo.remove();
   }

@@ -19,25 +19,20 @@ package org.cfg4j.source.context.propertiesprovider;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.assertj.core.data.MapEntry;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.InputStream;
 
 
-@RunWith(MockitoJUnitRunner.class)
-public class PropertyBasedPropertiesProviderTest {
+class PropertyBasedPropertiesProviderTest {
 
-  @Rule
-  public ExpectedException expectedException = ExpectedException.none();
+
+
 
   private PropertyBasedPropertiesProvider provider;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     provider = new PropertyBasedPropertiesProvider();
   }
@@ -56,7 +51,7 @@ public class PropertyBasedPropertiesProviderTest {
     String path = "org/cfg4j/source/propertiesprovider/PropertyBasedPropertiesProviderTest_throwsOnMalformedFile.properties";
 
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
-      expectedException.expect(IllegalStateException.class);
+      // FIXME: expectedException.expect(IllegalStateException.class);
       provider.getProperties(input);
     }
   }

@@ -21,20 +21,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.codahale.metrics.MetricRegistry;
 import org.cfg4j.source.ConfigurationSource;
 import org.cfg4j.source.inmemory.InMemoryConfigurationSource;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.Test;
 
 import java.util.Properties;
 
 
-@RunWith(MockitoJUnitRunner.class)
-public class SimpleConfigurationProviderWithMeteredSourceIntegrationTest {
+class SimpleConfigurationProviderWithMeteredSourceIntegrationTest {
 
-  @Rule
-  public ExpectedException expectedException = ExpectedException.none();
+
+
 
   private MetricRegistry metricRegistry = new MetricRegistry();
 

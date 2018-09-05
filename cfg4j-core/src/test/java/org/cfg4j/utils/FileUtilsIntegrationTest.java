@@ -18,26 +18,21 @@ package org.cfg4j.utils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 
 
-@RunWith(MockitoJUnitRunner.class)
-public class FileUtilsIntegrationTest {
+class FileUtilsIntegrationTest {
 
-  @Rule
-  public ExpectedException expectedException = ExpectedException.none();
+
+
 
   private FileUtils fileUtils;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     fileUtils = new FileUtils();
   }

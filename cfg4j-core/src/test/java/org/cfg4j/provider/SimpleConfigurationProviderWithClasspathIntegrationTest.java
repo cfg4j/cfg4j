@@ -21,22 +21,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.cfg4j.source.ConfigurationSource;
 import org.cfg4j.source.classpath.ClasspathConfigurationSource;
 import org.cfg4j.source.context.filesprovider.ConfigFilesProvider;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
 
 
-@RunWith(MockitoJUnitRunner.class)
-public class SimpleConfigurationProviderWithClasspathIntegrationTest {
+class SimpleConfigurationProviderWithClasspathIntegrationTest {
 
-  @Rule
-  public ExpectedException expectedException = ExpectedException.none();
+
+
 
   @Test
   public void readsYamlBooleans() throws Exception {

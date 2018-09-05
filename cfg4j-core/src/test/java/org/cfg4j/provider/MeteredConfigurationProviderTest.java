@@ -25,27 +25,21 @@ import static org.mockito.Mockito.when;
 
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 
+@ExtendWith(MockitoExtension.class)
+class MeteredConfigurationProviderTest {
 
-@RunWith(MockitoJUnitRunner.class)
-public class MeteredConfigurationProviderTest {
-
-  public interface ConfigPojo {
+  private interface ConfigPojo {
   }
-
-  @Rule
-  public ExpectedException expectedException = ExpectedException.none();
 
   @Mock
   private SimpleConfigurationProvider delegate;
@@ -55,7 +49,7 @@ public class MeteredConfigurationProviderTest {
 
   private MeteredConfigurationProvider provider;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     Timer timer = mock(Timer.class);
     when(timer.time()).thenReturn(mock(Timer.Context.class));

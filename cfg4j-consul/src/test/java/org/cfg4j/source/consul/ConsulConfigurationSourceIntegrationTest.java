@@ -16,20 +16,22 @@
 package org.cfg4j.source.consul;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.squareup.okhttp.mockwebserver.Dispatcher;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
 import com.squareup.okhttp.mockwebserver.RecordedRequest;
 import org.assertj.core.data.MapEntry;
+import org.cfg4j.source.SourceCommunicationException;
 import org.cfg4j.source.context.environment.Environment;
 import org.cfg4j.source.context.environment.ImmutableEnvironment;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
-
-
 
 class ConsulConfigurationSourceIntegrationTest {
 
@@ -102,8 +104,8 @@ class ConsulConfigurationSourceIntegrationTest {
         .withPort(server.getPort())
         .build();
 
-    // FIXME: expectedException.expect(SourceCommunicationException.class);
-    source.init();
+    assertThatThrownBy(() -> source.init())
+        .isExactlyInstanceOf(SourceCommunicationException.class);
   }
 
   @Test
@@ -127,8 +129,8 @@ class ConsulConfigurationSourceIntegrationTest {
         .withPort(server.getPort())
         .build();
 
-    // FIXME: expectedException.expect(IllegalStateException.class);
-    source.getConfiguration(new ImmutableEnvironment(""));
+    assertThatThrownBy(() -> source.getConfiguration(new ImmutableEnvironment("")))
+        .isExactlyInstanceOf(IllegalStateException.class);
   }
 
   @Test
@@ -140,8 +142,8 @@ class ConsulConfigurationSourceIntegrationTest {
       // NOP
     }
 
-    // FIXME: expectedException.expect(SourceCommunicationException.class);
-    source.getConfiguration(new ImmutableEnvironment(""));
+    assertThatThrownBy(() -> source.getConfiguration(new ImmutableEnvironment("")))
+        .isExactlyInstanceOf(SourceCommunicationException.class);
   }
 
   private void runMockServer() throws IOException {

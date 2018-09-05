@@ -16,12 +16,17 @@
 package org.cfg4j.source.git;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.assertj.core.data.MapEntry;
+import org.cfg4j.source.SourceCommunicationException;
 import org.cfg4j.source.context.environment.DefaultEnvironment;
 import org.cfg4j.source.context.environment.Environment;
 import org.cfg4j.source.context.environment.ImmutableEnvironment;
+import org.cfg4j.source.context.environment.MissingEnvironmentException;
 import org.cfg4j.source.context.filesprovider.ConfigFilesProvider;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;
@@ -33,7 +38,6 @@ class GitConfigurationSourceIntegrationTest {
 
   private static final String DEFAULT_BRANCH = "master";
   private static final String TEST_ENV_BRANCH = "testEnvBranch";
-
 
   private TempConfigurationGitRepo remoteRepo;
 
@@ -58,22 +62,20 @@ class GitConfigurationSourceIntegrationTest {
 
   @Test
   void initThrowsWhenUnableToCreateLocalCloneOnNoTempDir() {
-    // FIXME: expectedException.expect(IllegalStateException.class);
-
-    getSourceBuilderForRemoteRepoWithDefaults()
-        .withTmpPath(Paths.get("/someNonexistentDir/lkfjalfcz"))
-        .withTmpRepoPrefix("existing-path")
-        .build()
-        .init();
+    assertThatThrownBy(() ->
+        getSourceBuilderForRemoteRepoWithDefaults()
+            .withTmpPath(Paths.get("/someNonexistentDir/lkfjalfcz"))
+            .withTmpRepoPrefix("existing-path")
+            .build()
+            .init()).isExactlyInstanceOf(IllegalStateException.class);
   }
 
   @Test
   void initThrowsOnInvalidRemote() {
-    // FIXME: expectedException.expect(SourceCommunicationException.class);
-    new GitConfigurationSourceBuilder()
+    assertThatThrownBy(() -> new GitConfigurationSourceBuilder()
         .withRepositoryURI("")
         .build()
-        .init();
+        .init()).isExactlyInstanceOf(SourceCommunicationException.class);
   }
 
   @Test
@@ -130,12 +132,7 @@ class GitConfigurationSourceIntegrationTest {
 
   @Test
   void getConfigurationReadsFromGivenFiles() throws Exception {
-    ConfigFilesProvider configFilesProvider = new ConfigFilesProvider() {
-      @Override
-      public Iterable<Path> getConfigFiles() {
-        return Arrays.asList(Paths.get("application.properties"), Paths.get("otherConfig.properties"));
-      }
-    };
+    ConfigFilesProvider configFilesProvider = () -> Arrays.asList(Paths.get("application.properties"), Paths.get("otherConfig.properties"));
     Environment environment = new DefaultEnvironment();
 
     try (GitConfigurationSource gitConfigurationSource = getSourceForRemoteRepoWithFilesProvider(configFilesProvider)) {
@@ -146,8 +143,9 @@ class GitConfigurationSourceIntegrationTest {
   @Test
   void getConfigurationThrowsOnMissingBranch() throws Exception {
     try (GitConfigurationSource gitConfigurationSource = getSourceForRemoteRepoWithDefaults()) {
-      // FIXME: expectedException.expect(MissingEnvironmentException.class);
-      gitConfigurationSource.getConfiguration(new ImmutableEnvironment("nonExistentBranch"));
+
+      assertThatThrownBy(() -> gitConfigurationSource.getConfiguration(new ImmutableEnvironment("nonExistentBranch")))
+          .isExactlyInstanceOf(MissingEnvironmentException.class);
     }
   }
 
@@ -156,29 +154,24 @@ class GitConfigurationSourceIntegrationTest {
     remoteRepo.deleteFile(Paths.get("application.properties"));
 
     try (GitConfigurationSource gitConfigurationSource = getSourceForRemoteRepoWithDefaults()) {
-      // FIXME: expectedException.expect(IllegalStateException.class);
-      gitConfigurationSource.getConfiguration(new DefaultEnvironment());
+      assertThatThrownBy(() -> gitConfigurationSource.getConfiguration(new DefaultEnvironment()))
+          .isExactlyInstanceOf(IllegalStateException.class);
     }
   }
 
   @Test
   void getConfigurationThrowsOnMalformedConfigFile() {
-    ConfigFilesProvider configFilesProvider = new ConfigFilesProvider() {
-      @Override
-      public Iterable<Path> getConfigFiles() {
-        return Collections.singletonList(Paths.get("malformed.properties"));
-      }
-    };
+    ConfigFilesProvider configFilesProvider = () -> Collections.singletonList(Paths.get("malformed.properties"));
 
-    // FIXME: expectedException.expect(IllegalStateException.class);
-    getSourceForRemoteRepoWithFilesProvider(configFilesProvider).getConfiguration(new DefaultEnvironment());
+    assertThatThrownBy(() -> getSourceForRemoteRepoWithFilesProvider(configFilesProvider).getConfiguration(new DefaultEnvironment()))
+        .isExactlyInstanceOf(IllegalStateException.class);
   }
 
   @Test
   void getConfigurationThrowsBeforeInitCalled() throws Exception {
     try (GitConfigurationSource gitConfigurationSource = getSourceBuilderForRemoteRepoWithDefaults().build()) {
-      // FIXME: expectedException.expect(IllegalStateException.class);
-      gitConfigurationSource.getConfiguration(new ImmutableEnvironment(""));
+      assertThatThrownBy(() -> gitConfigurationSource.getConfiguration(new ImmutableEnvironment("")))
+          .isExactlyInstanceOf(IllegalStateException.class);
     }
   }
 

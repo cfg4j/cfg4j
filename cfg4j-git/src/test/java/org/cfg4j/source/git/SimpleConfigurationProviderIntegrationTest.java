@@ -21,14 +21,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.cfg4j.provider.ConfigurationProvider;
 import org.cfg4j.provider.ConfigurationProviderBuilder;
 import org.cfg4j.source.ConfigurationSource;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Paths;
 
 class SimpleConfigurationProviderIntegrationTest {
-
-
-
 
   private TempConfigurationGitRepo remoteRepo;
 

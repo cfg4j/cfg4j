@@ -30,7 +30,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
@@ -72,15 +71,10 @@ class ClasspathConfigurationSourceTest {
 
   @Test
   void getConfigurationReadsFromGivenFiles() {
-    configFilesProvider = new ConfigFilesProvider() {
-      @Override
-      public Iterable<Path> getConfigFiles() {
-        return Arrays.asList(
-            Paths.get("application.properties"),
-            Paths.get("otherConfig.properties")
-        );
-      }
-    };
+    configFilesProvider = () -> Arrays.asList(
+        Paths.get("application.properties"),
+        Paths.get("otherConfig.properties")
+    );
 
     source = new ClasspathConfigurationSource(configFilesProvider);
     assertThat(source.getConfiguration(new DefaultEnvironment())).containsOnlyKeys("some.setting", "otherConfig.setting");
@@ -93,14 +87,9 @@ class ClasspathConfigurationSourceTest {
 
   @Test
   void getConfigurationThrowsOnMissingConfigFile() {
-    configFilesProvider = new ConfigFilesProvider() {
-      @Override
-      public Iterable<Path> getConfigFiles() {
-        return Collections.singletonList(
-            Paths.get("nonexistent.properties")
-        );
-      }
-    };
+    configFilesProvider = () -> Collections.singletonList(
+        Paths.get("nonexistent.properties")
+    );
 
     source = new ClasspathConfigurationSource(configFilesProvider);
 
@@ -109,14 +98,9 @@ class ClasspathConfigurationSourceTest {
 
   @Test
   void getConfigurationThrowsOnMalformedConfigFile() {
-    configFilesProvider = new ConfigFilesProvider() {
-      @Override
-      public Iterable<Path> getConfigFiles() {
-        return Collections.singletonList(
-            Paths.get("malformed.properties")
-        );
-      }
-    };
+    configFilesProvider = () -> Collections.singletonList(
+        Paths.get("malformed.properties")
+    );
 
     source = new ClasspathConfigurationSource(configFilesProvider);
 

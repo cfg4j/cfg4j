@@ -38,7 +38,7 @@ public class SimpleConfigurationProviderIntegrationTest {
   private class ModifiableDispatcher extends Dispatcher {
 
     @Override
-    public MockResponse dispatch(RecordedRequest request) throws InterruptedException {
+    public MockResponse dispatch(RecordedRequest request) {
 
       switch (request.getPath()) {
         case "/v1/agent/self":
@@ -68,7 +68,7 @@ public class SimpleConfigurationProviderIntegrationTest {
   }
 
   @Test
-  public void readsConfigsFromConsulConfigurationSource() throws Exception {
+  public void readsConfigsFromConsulConfigurationSource() {
     ConfigurationSource source = new ConsulConfigurationSourceBuilder()
         .withHost(server.getHostName())
         .withPort(server.getPort())

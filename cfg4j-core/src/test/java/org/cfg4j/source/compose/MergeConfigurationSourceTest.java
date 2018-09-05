@@ -43,7 +43,7 @@ class MergeConfigurationSourceTest {
   private MergeConfigurationSource mergeConfigurationSource;
 
   @BeforeEach
-  public void setUp() throws Exception {
+  public void setUp() {
     underlyingSources = new ConfigurationSource[5];
     for (int i = 0; i < underlyingSources.length; i++) {
       underlyingSources[i] = mock(ConfigurationSource.class);
@@ -55,7 +55,7 @@ class MergeConfigurationSourceTest {
   }
 
   @Test
-  public void getConfigurationThrowsWhenOneOfSourcesThrowsOnMissingEnvironment() throws Exception {
+  public void getConfigurationThrowsWhenOneOfSourcesThrowsOnMissingEnvironment() {
     when(underlyingSources[1].getConfiguration(ArgumentMatchers.any())).thenThrow(new MissingEnvironmentException(""));
 
     // FIXME: expectedException.expect(MissingEnvironmentException.class);
@@ -63,7 +63,7 @@ class MergeConfigurationSourceTest {
   }
 
   @Test
-  public void getConfigurationThrowsWhenOneOfSourcesThrows() throws Exception {
+  public void getConfigurationThrowsWhenOneOfSourcesThrows() {
     when(underlyingSources[3].getConfiguration(ArgumentMatchers.any())).thenThrow(new IllegalStateException());
 
     // FIXME: expectedException.expect(IllegalStateException.class);
@@ -71,7 +71,7 @@ class MergeConfigurationSourceTest {
   }
 
   @Test
-  public void getConfigurationMergesConfigurations() throws Exception {
+  public void getConfigurationMergesConfigurations() {
     Environment environment = new ImmutableEnvironment("test");
 
     sourcesWithProps(environment, "prop1", "value1", "prop2", "value2");
@@ -81,7 +81,7 @@ class MergeConfigurationSourceTest {
   }
 
   @Test
-  public void getConfigurationMergesConfigurationsWithCollidingKeys() throws Exception {
+  public void getConfigurationMergesConfigurationsWithCollidingKeys() {
     Environment environment = new ImmutableEnvironment("test");
 
     sourcesWithProps(environment, "prop", "value1", "prop", "value2");
@@ -90,7 +90,7 @@ class MergeConfigurationSourceTest {
   }
 
   @Test
-  public void initInitializesAllSources() throws Exception {
+  public void initInitializesAllSources() {
     for (ConfigurationSource underlyingSource : underlyingSources) {
       verify(underlyingSource, atLeastOnce()).init();
     }

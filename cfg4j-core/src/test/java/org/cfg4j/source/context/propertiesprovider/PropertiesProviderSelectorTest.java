@@ -51,7 +51,7 @@ class PropertiesProviderSelectorTest {
   private PropertiesProviderSelector selector;
 
   @BeforeEach
-  public void setUp() throws Exception {
+  public void setUp() {
     yamlProperties = new Properties();
     when(yamlProvider.getProperties(any(InputStream.class))).thenReturn(yamlProperties);
 
@@ -65,22 +65,22 @@ class PropertiesProviderSelectorTest {
   }
 
   @Test
-  public void returnsYamlProviderForYaml() throws Exception {
+  public void returnsYamlProviderForYaml() {
     assertThat(selector.getProvider("test.yaml")).isEqualTo(yamlProvider);
   }
 
   @Test
-  public void returnsYamlProviderForYml() throws Exception {
+  public void returnsYamlProviderForYml() {
     assertThat(selector.getProvider("test.yml")).isEqualTo(yamlProvider);
   }
 
   @Test
-  public void returnsJsonProviderForJson() throws Exception {
+  public void returnsJsonProviderForJson() {
     assertThat(selector.getProvider("test.json")).isEqualTo(jsonProvider);
   }
 
   @Test
-  public void returnsPropertiesProviderForNonYaml() throws Exception {
+  public void returnsPropertiesProviderForNonYaml() {
     assertThat(selector.getProvider("test.properties")).isEqualTo(propertiesProvider);
   }
 }

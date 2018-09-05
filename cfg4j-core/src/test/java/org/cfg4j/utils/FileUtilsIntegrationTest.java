@@ -33,7 +33,7 @@ class FileUtilsIntegrationTest {
   private FileUtils fileUtils;
 
   @BeforeEach
-  public void setUp() throws Exception {
+  public void setUp() {
     fileUtils = new FileUtils();
   }
 

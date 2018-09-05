@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 class ImmutableEnvironmentTest {
 
   @Test
-  public void returnsConstantEnvName() throws Exception {
+  public void returnsConstantEnvName() {
     String environmentName = "sampleEnvironment";
     ImmutableEnvironment strategy = new ImmutableEnvironment(environmentName);
     assertThat(strategy.getName()).isEqualTo(environmentName);

@@ -28,7 +28,7 @@ class GenericTypeTest {
 
 
   @Test
-  public void throwsIfNotDirectlySubclassed() throws Exception {
+  public void throwsIfNotDirectlySubclassed() {
     abstract class GenericTypeDirect extends GenericType<List<Integer>> {
     }
 
@@ -38,14 +38,14 @@ class GenericTypeTest {
   }
 
   @Test
-  public void throwsIfNotParametrizedType() throws Exception {
+  public void throwsIfNotParametrizedType() {
     // FIXME: expectedException.expect(IllegalArgumentException.class);
     new GenericType() {
     };
   }
 
   @Test
-  public void retainsType() throws Exception {
+  public void retainsType() {
     GenericType<List<Integer>> genericType = new GenericType<>() {
     };
 

@@ -52,12 +52,12 @@ class GitConfigurationSourceIntegrationTest {
   }
 
   @AfterEach
-  public void tearDown() throws Exception {
+  public void tearDown() {
     remoteRepo.remove();
   }
 
   @Test
-  public void initThrowsWhenUnableToCreateLocalCloneOnNoTempDir() throws Exception {
+  public void initThrowsWhenUnableToCreateLocalCloneOnNoTempDir() {
     // FIXME: expectedException.expect(IllegalStateException.class);
 
     getSourceBuilderForRemoteRepoWithDefaults()
@@ -68,7 +68,7 @@ class GitConfigurationSourceIntegrationTest {
   }
 
   @Test
-  public void initThrowsOnInvalidRemote() throws Exception {
+  public void initThrowsOnInvalidRemote() {
     // FIXME: expectedException.expect(SourceCommunicationException.class);
     new GitConfigurationSourceBuilder()
         .withRepositoryURI("")
@@ -162,7 +162,7 @@ class GitConfigurationSourceIntegrationTest {
   }
 
   @Test
-  public void getConfigurationThrowsOnMalformedConfigFile() throws Exception {
+  public void getConfigurationThrowsOnMalformedConfigFile() {
     ConfigFilesProvider configFilesProvider = new ConfigFilesProvider() {
       @Override
       public Iterable<Path> getConfigFiles() {

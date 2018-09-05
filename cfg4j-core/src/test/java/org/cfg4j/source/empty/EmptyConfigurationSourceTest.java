@@ -33,18 +33,18 @@ class EmptyConfigurationSourceTest {
   private EmptyConfigurationSource source;
 
   @BeforeEach
-  public void setUp() throws Exception {
+  public void setUp() {
     source = new EmptyConfigurationSource();
     source.init();
   }
 
   @Test
-  public void returnsEmptyConfiguration() throws Exception {
+  public void returnsEmptyConfiguration() {
     assertThat(source.getConfiguration(new DefaultEnvironment())).isEmpty();
   }
 
   @Test
-  public void returnsEmptyConfigurationForAnyEnvironment() throws Exception {
+  public void returnsEmptyConfigurationForAnyEnvironment() {
     assertThat(source.getConfiguration(mock(Environment.class))).isEmpty();
   }
 }

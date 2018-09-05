@@ -48,7 +48,7 @@ public class ConsulConfigurationSourceIntegrationTest {
     }
 
     @Override
-    public MockResponse dispatch(RecordedRequest request) throws InterruptedException {
+    public MockResponse dispatch(RecordedRequest request) {
 
       switch (request.getPath()) {
         case "/v1/agent/self":
@@ -107,21 +107,21 @@ public class ConsulConfigurationSourceIntegrationTest {
   }
 
   @Test
-  public void getConfigurationReturnsAllKeysFromGivenEnvironment() throws Exception {
+  public void getConfigurationReturnsAllKeysFromGivenEnvironment() {
     Environment environment = new ImmutableEnvironment("us-west-1");
 
     assertThat(source.getConfiguration(environment)).contains(MapEntry.entry("featureA.toggle", "disabled"));
   }
 
   @Test
-  public void getConfigurationIgnoresLeadingSlashInGivenEnvironment() throws Exception {
+  public void getConfigurationIgnoresLeadingSlashInGivenEnvironment() {
     Environment environment = new ImmutableEnvironment("/us-west-1");
 
     assertThat(source.getConfiguration(environment)).contains(MapEntry.entry("featureA.toggle", "disabled"));
   }
 
   @Test
-  public void getConfigurationThrowsBeforeInitCalled() throws Exception {
+  public void getConfigurationThrowsBeforeInitCalled() {
     source = new ConsulConfigurationSourceBuilder()
         .withHost(server.getHostName())
         .withPort(server.getPort())

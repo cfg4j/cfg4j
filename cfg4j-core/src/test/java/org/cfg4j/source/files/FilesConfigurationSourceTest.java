@@ -59,25 +59,25 @@ class FilesConfigurationSourceTest {
   }
 
   @Test
-  public void getConfigurationReadsFromDefaultFile() throws Exception {
+  public void getConfigurationReadsFromDefaultFile() {
     assertThat(source.getConfiguration(environment)).containsOnly(MapEntry.entry("some.setting", "masterValue"));
   }
 
   @Test
-  public void getConfigurationReadsFromHomeForDefaultEnvironment() throws Exception {
+  public void getConfigurationReadsFromHomeForDefaultEnvironment() {
     System.setProperty("user.home", fileRepo.dirPath.resolve("otherApplicationConfigs").toString());
     assertThat(source.getConfiguration(new DefaultEnvironment())).containsOnly(MapEntry.entry("some.setting", "otherAppSetting"));
   }
 
   @Test
-  public void getConfigurationReadsFromGivenPath() throws Exception {
+  public void getConfigurationReadsFromGivenPath() {
     Environment environment = new ImmutableEnvironment(fileRepo.dirPath.resolve("otherApplicationConfigs").toString());
 
     assertThat(source.getConfiguration(environment)).containsOnly(MapEntry.entry("some.setting", "otherAppSetting"));
   }
 
   @Test
-  public void getConfigurationReadsFromGivenFiles() throws Exception {
+  public void getConfigurationReadsFromGivenFiles() {
     configFilesProvider = new ConfigFilesProvider() {
       @Override
       public Iterable<Path> getConfigFiles() {
@@ -93,7 +93,7 @@ class FilesConfigurationSourceTest {
   }
 
   @Test
-  public void getConfigurationThrowsOnMissingEnvironment() throws Exception {
+  public void getConfigurationThrowsOnMissingEnvironment() {
     // FIXME: expectedException.expect(MissingEnvironmentException.class);
     source.getConfiguration(new ImmutableEnvironment("awlerijawoetinawwerlkjn"));
   }
@@ -107,7 +107,7 @@ class FilesConfigurationSourceTest {
   }
 
   @Test
-  public void getConfigurationThrowsOnMalformedConfigFile() throws Exception {
+  public void getConfigurationThrowsOnMalformedConfigFile() {
     configFilesProvider = new ConfigFilesProvider() {
       @Override
       public Iterable<Path> getConfigFiles() {

@@ -29,7 +29,7 @@ class MeteredReloadableTest {
   private MeteredReloadable reloadable;
 
   @BeforeEach
-  public void setUp() throws Exception {
+  public void setUp() {
     Timer timer = mock(Timer.class);
     when(timer.time()).thenReturn(mock(Timer.Context.class));
     when(metricRegistry.timer(anyString())).thenReturn(timer);
@@ -38,14 +38,14 @@ class MeteredReloadableTest {
   }
 
   @Test
-  public void reloadCallsDelegate() throws Exception {
+  public void reloadCallsDelegate() {
     reloadable.reload();
 
     verify(delegate, times(1)).reload();
   }
 
   @Test
-  public void reloadPropagatesIllegalStateExceptions() throws Exception {
+  public void reloadPropagatesIllegalStateExceptions() {
     doThrow(new IllegalStateException("")).when(delegate).reload();
 
     // FIXME: expectedException.expect(IllegalStateException.class);

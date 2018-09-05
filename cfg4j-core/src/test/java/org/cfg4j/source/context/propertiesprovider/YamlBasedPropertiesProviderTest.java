@@ -33,7 +33,7 @@ class YamlBasedPropertiesProviderTest {
   private YamlBasedPropertiesProvider provider;
 
   @BeforeEach
-  public void setUp() throws Exception {
+  public void setUp() {
     provider = new YamlBasedPropertiesProvider();
   }
 

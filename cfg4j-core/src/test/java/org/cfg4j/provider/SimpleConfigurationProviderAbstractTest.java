@@ -36,7 +36,7 @@ abstract class SimpleConfigurationProviderAbstractTest {
   protected Environment environment;
 
   @BeforeEach
-  public void setUp() throws Exception {
+  public void setUp() {
     simpleConfigurationProvider = new SimpleConfigurationProvider(configurationSource, environment);
   }
 

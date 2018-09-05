@@ -34,7 +34,7 @@ class SimpleConfigurationProviderWithClasspathIntegrationTest {
 
 
   @Test
-  public void readsYamlBooleans() throws Exception {
+  public void readsYamlBooleans() {
     String path = "org/cfg4j/provider/SimpleConfigurationProviderIntegrationTest_readsYamlBooleans.yaml";
 
     ConfigurationProvider provider = getConfigurationProvider(path);
@@ -43,7 +43,7 @@ class SimpleConfigurationProviderWithClasspathIntegrationTest {
   }
 
   @Test
-  public void readsYamlIntegers() throws Exception {
+  public void readsYamlIntegers() {
     String path = "org/cfg4j/provider/SimpleConfigurationProviderIntegrationTest_readsYamlIntegers.yaml";
 
     ConfigurationProvider provider = getConfigurationProvider(path);

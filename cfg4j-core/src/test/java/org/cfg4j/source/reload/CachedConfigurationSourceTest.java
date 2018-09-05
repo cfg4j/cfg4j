@@ -28,19 +28,19 @@ class CachedConfigurationSourceTest {
   private CachedConfigurationSource cachedConfigurationSource;
 
   @BeforeEach
-  void setUp() throws Exception {
+  void setUp() {
     cachedConfigurationSource = new CachedConfigurationSource(delegateSource);
   }
 
   @Test
-  void initPropagatesMissingEnvExceptions() throws Exception {
+  void initPropagatesMissingEnvExceptions() {
     doThrow(new MissingEnvironmentException("")).when(delegateSource).init();
 
     assertThatThrownBy(() -> cachedConfigurationSource.init()).isExactlyInstanceOf(MissingEnvironmentException.class);
   }
 
   @Test
-  void initPropagatesIllegalStateExceptions() throws Exception {
+  void initPropagatesIllegalStateExceptions() {
     doThrow(new IllegalStateException("")).when(delegateSource).init();
 
     assertThatThrownBy(() -> cachedConfigurationSource.init()).isExactlyInstanceOf(IllegalStateException.class);
@@ -48,12 +48,12 @@ class CachedConfigurationSourceTest {
   }
 
   @Test
-  void getConfigurationThrowsOnMissingEnvironment() throws Exception {
+  void getConfigurationThrowsOnMissingEnvironment() {
     assertThatThrownBy(() -> cachedConfigurationSource.getConfiguration(new DefaultEnvironment())).isExactlyInstanceOf(MissingEnvironmentException.class);
   }
 
   @Test
-  void getConfigurationReturnsReloadResult() throws Exception {
+  void getConfigurationReturnsReloadResult() {
     Properties properties = new Properties();
     when(delegateSource.getConfiguration(any(Environment.class))).thenReturn(properties);
     cachedConfigurationSource.reload(new DefaultEnvironment());
@@ -62,7 +62,7 @@ class CachedConfigurationSourceTest {
   }
 
   @Test
-  void getConfigurationDoesNotChangeValueBetweenReloads() throws Exception {
+  void getConfigurationDoesNotChangeValueBetweenReloads() {
     Properties properties = new Properties();
     properties.put("testConfig", "testValue");
     when(delegateSource.getConfiguration(any(Environment.class))).thenReturn(properties);
@@ -75,14 +75,14 @@ class CachedConfigurationSourceTest {
   }
 
   @Test
-  void reloadPropagatesMissingEnvExceptions() throws Exception {
+  void reloadPropagatesMissingEnvExceptions() {
     when(delegateSource.getConfiguration(any(Environment.class))).thenThrow(new MissingEnvironmentException(""));
 
     assertThatThrownBy(() -> cachedConfigurationSource.reload(new DefaultEnvironment())).isExactlyInstanceOf(MissingEnvironmentException.class);
   }
 
   @Test
-  void reloadPropagatesIllegalStateExceptions() throws Exception {
+  void reloadPropagatesIllegalStateExceptions() {
     when(delegateSource.getConfiguration(any(Environment.class))).thenThrow(new IllegalStateException(""));
 
     assertThatThrownBy(() -> cachedConfigurationSource.reload(new DefaultEnvironment())).isExactlyInstanceOf(IllegalStateException.class);

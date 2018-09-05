@@ -40,24 +40,24 @@ class EnvironmentVariablesConfigurationSourceTest {
   private EnvironmentVariablesConfigurationSource source;
 
   @BeforeEach
-  void setUp() throws Exception {
+  void setUp() {
     source = new EnvironmentVariablesConfigurationSource();
     source.init();
   }
 
   @Test
-  void returnsPath() throws Exception {
+  void returnsPath() {
     assertThat(source.getConfiguration(new DefaultEnvironment())).containsKey("PATH");
   }
 
   @Test
-  void returnsPathForAnyEnvironment() throws Exception {
+  void returnsPathForAnyEnvironment() {
     assertThat(source.getConfiguration(mock(Environment.class))).containsKey("PATH");
   }
 
   @Test
   @EnabledIf("systemProperty.get('os.arch') == null")
-  void returnsAllVariablesInNamespace() throws Exception {
+  void returnsAllVariablesInNamespace() {
     // Given
     EnvironmentVariablesConfigurationSource mockSource = new EnvironmentVariablesConfigurationSource();
 

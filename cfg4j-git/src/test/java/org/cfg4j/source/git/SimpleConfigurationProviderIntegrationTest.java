@@ -39,12 +39,12 @@ class SimpleConfigurationProviderIntegrationTest {
   }
 
   @AfterEach
-  public void tearDown() throws Exception {
+  public void tearDown() {
     remoteRepo.remove();
   }
 
   @Test
-  public void readsConfigsFromGitConfigurationSource() throws Exception {
+  public void readsConfigsFromGitConfigurationSource() {
     ConfigurationSource source = new GitConfigurationSourceBuilder()
         .withRepositoryURI(remoteRepo.dirPath.toString())
         .build();

@@ -50,7 +50,7 @@ class MeteredConfigurationProviderTest {
   private MeteredConfigurationProvider provider;
 
   @BeforeEach
-  public void setUp() throws Exception {
+  public void setUp() {
     Timer timer = mock(Timer.class);
     when(timer.time()).thenReturn(mock(Timer.Context.class));
     when(metricRegistry.timer(anyString())).thenReturn(timer);
@@ -59,7 +59,7 @@ class MeteredConfigurationProviderTest {
   }
 
   @Test
-  public void allConfigurationAsPropertiesCallsDelegate() throws Exception {
+  public void allConfigurationAsPropertiesCallsDelegate() {
     Properties properties = new Properties();
     when(delegate.allConfigurationAsProperties()).thenReturn(properties);
 
@@ -67,14 +67,14 @@ class MeteredConfigurationProviderTest {
   }
 
   @Test
-  public void getPropertyCallsDelegate() throws Exception {
+  public void getPropertyCallsDelegate() {
     when(delegate.getProperty("test.property", boolean.class)).thenReturn(true);
 
     assertThat(provider.getProperty("test.property", boolean.class)).isTrue();
   }
 
   @Test
-  public void getProperty2CallsDelegate() throws Exception {
+  public void getProperty2CallsDelegate() {
     GenericType<List<String>> genericType = new GenericType<>() {
     };
     when(delegate.getProperty(eq("test.property"), eq(genericType))).thenReturn(new LinkedList<>());
@@ -84,7 +84,7 @@ class MeteredConfigurationProviderTest {
   }
 
   @Test
-  public void bindCallsDelegate() throws Exception {
+  public void bindCallsDelegate() {
     ConfigPojo configPojo = new ConfigPojo() {
     };
     when(delegate.bind(any(ConfigurationProvider.class), eq(""), eq(ConfigPojo.class))).thenReturn(configPojo);

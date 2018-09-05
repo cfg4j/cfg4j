@@ -38,7 +38,7 @@ class PeriodicalReloadStrategyTest {
   private Reloadable reloadable2;
 
   @Test
-  public void reloadsImmediatelyAfterRegistered() throws Exception {
+  public void reloadsImmediatelyAfterRegistered() {
     PeriodicalReloadStrategy strategy = new PeriodicalReloadStrategy(60, TimeUnit.SECONDS);
 
     strategy.register(reloadable);
@@ -48,7 +48,7 @@ class PeriodicalReloadStrategyTest {
   }
 
   @Test
-  public void suppressesException() throws Exception {
+  public void suppressesException() {
     doThrow(new IllegalStateException()).when(reloadable).reload();
     PeriodicalReloadStrategy strategy = new PeriodicalReloadStrategy(60, TimeUnit.SECONDS);
 

@@ -48,14 +48,14 @@ class BindingValidatorTest {
 
 
   @BeforeEach
-  public void setUp() throws Exception {
+  public void setUp() {
     bindingValidator = new BindingValidator();
 
     when(configPojo.someSetting()).thenReturn(0);
   }
 
   @Test
-  public void invokesAllMethods() throws Exception {
+  public void invokesAllMethods() {
     when(configPojo.otherSetting()).thenReturn(Collections.<Boolean>emptyList());
 
     bindingValidator.validate(configPojo, ConfigPojo.class);
@@ -65,21 +65,21 @@ class BindingValidatorTest {
   }
 
   @Test
-  public void propagatesNoSuchElementExceptionsFromInvocation() throws Exception {
+  public void propagatesNoSuchElementExceptionsFromInvocation() {
     when(configPojo.someSetting()).thenThrow(NoSuchElementException.class);
 
     assertThatThrownBy(() -> bindingValidator.validate(configPojo, ConfigPojo.class)).isExactlyInstanceOf(NoSuchElementException.class);
   }
 
   @Test
-  public void propagatesIllegalArgumentExceptionsFromInvocation() throws Exception {
+  public void propagatesIllegalArgumentExceptionsFromInvocation() {
     when(configPojo.someSetting()).thenThrow(IllegalArgumentException.class);
 
     assertThatThrownBy(() -> bindingValidator.validate(configPojo, ConfigPojo.class)).isExactlyInstanceOf(IllegalArgumentException.class);
   }
 
   @Test
-  public void throwsOnOtherExceptions() throws Exception {
+  public void throwsOnOtherExceptions() {
     when(configPojo.someSetting()).thenThrow(IllegalStateException.class);
 
     assertThatThrownBy(() -> bindingValidator.validate(configPojo, ConfigPojo.class)).isExactlyInstanceOf(IllegalStateException.class);

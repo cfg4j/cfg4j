@@ -30,7 +30,7 @@ import java.util.Properties;
 class SimpleConfigurationProviderGetPropertyTest extends SimpleConfigurationProviderAbstractTest {
 
   @Test
-  public void allConfigurationAsPropertiesThrowsWhenUnableToFetchConfiguration() throws Exception {
+  public void allConfigurationAsPropertiesThrowsWhenUnableToFetchConfiguration() {
     when(configurationSource.getConfiguration(anyEnvironment())).thenThrow(new IllegalStateException());
 
     // FIXME: expectedException.expect(IllegalStateException.class);
@@ -38,7 +38,7 @@ class SimpleConfigurationProviderGetPropertyTest extends SimpleConfigurationProv
   }
 
   @Test
-  public void allConfigurationAsPropertiesThrowsWhenMissingEnvironment() throws Exception {
+  public void allConfigurationAsPropertiesThrowsWhenMissingEnvironment() {
     when(configurationSource.getConfiguration(anyEnvironment())).thenThrow(new MissingEnvironmentException(""));
 
     // FIXME: expectedException.expect(IllegalStateException.class);
@@ -46,7 +46,7 @@ class SimpleConfigurationProviderGetPropertyTest extends SimpleConfigurationProv
   }
 
   @Test
-  public void allConfigurationAsPropertiesUsesProvidedEnvironment() throws Exception {
+  public void allConfigurationAsPropertiesUsesProvidedEnvironment() {
     when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(new Properties());
 
     simpleConfigurationProvider.allConfigurationAsProperties();
@@ -55,7 +55,7 @@ class SimpleConfigurationProviderGetPropertyTest extends SimpleConfigurationProv
   }
 
   @Test
-  public void getProperty2ThrowsWhenFetchingNonexistentKey() throws Exception {
+  public void getProperty2ThrowsWhenFetchingNonexistentKey() {
     when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(new Properties());
 
     // FIXME: expectedException.expect(NoSuchElementException.class);
@@ -63,7 +63,7 @@ class SimpleConfigurationProviderGetPropertyTest extends SimpleConfigurationProv
   }
 
   @Test
-  public void getProperty2ThrowsWhenUnableToFetchKey() throws Exception {
+  public void getProperty2ThrowsWhenUnableToFetchKey() {
     when(configurationSource.getConfiguration(anyEnvironment())).thenThrow(new IllegalStateException());
 
     // FIXME: expectedException.expect(IllegalStateException.class);
@@ -71,7 +71,7 @@ class SimpleConfigurationProviderGetPropertyTest extends SimpleConfigurationProv
   }
 
   @Test
-  public void getProperty2ThrowsOnIncompatibleConversion() throws Exception {
+  public void getProperty2ThrowsOnIncompatibleConversion() {
     when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(propertiesWith("some.property", "true"));
 
     // FIXME: expectedException.expect(IllegalArgumentException.class);
@@ -79,7 +79,7 @@ class SimpleConfigurationProviderGetPropertyTest extends SimpleConfigurationProv
   }
 
   @Test
-  public void getProperty2ReturnsPropertyFromSource() throws Exception {
+  public void getProperty2ReturnsPropertyFromSource() {
     when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(propertiesWith("some.property", "true"));
 
     Boolean property = simpleConfigurationProvider.getProperty("some.property", Boolean.class);
@@ -87,7 +87,7 @@ class SimpleConfigurationProviderGetPropertyTest extends SimpleConfigurationProv
   }
 
   @Test
-  public void getProperty2ReactsToSourceChanges() throws Exception {
+  public void getProperty2ReactsToSourceChanges() {
     when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(propertiesWith("some.property", "true"));
     when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(propertiesWith("some.property", "false"));
 
@@ -96,7 +96,7 @@ class SimpleConfigurationProviderGetPropertyTest extends SimpleConfigurationProv
   }
 
   @Test
-  public void getProperty2ReturnsArrayPropertyFromSource() throws Exception {
+  public void getProperty2ReturnsArrayPropertyFromSource() {
     when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(propertiesWith("some.property", "42.5, 99.9999"));
 
     double[] property = simpleConfigurationProvider.getProperty("some.property", double[].class);
@@ -104,7 +104,7 @@ class SimpleConfigurationProviderGetPropertyTest extends SimpleConfigurationProv
   }
 
   @Test
-  public void getProperty3ThrowsWhenFetchingNonexistentKey() throws Exception {
+  public void getProperty3ThrowsWhenFetchingNonexistentKey() {
     when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(new Properties());
 
     // FIXME: expectedException.expect(NoSuchElementException.class);
@@ -113,7 +113,7 @@ class SimpleConfigurationProviderGetPropertyTest extends SimpleConfigurationProv
   }
 
   @Test
-  public void getProperty3ThrowsWhenUnableToFetchKey() throws Exception {
+  public void getProperty3ThrowsWhenUnableToFetchKey() {
     when(configurationSource.getConfiguration(anyEnvironment())).thenThrow(new IllegalStateException());
 
     // FIXME: expectedException.expect(IllegalStateException.class);
@@ -122,7 +122,7 @@ class SimpleConfigurationProviderGetPropertyTest extends SimpleConfigurationProv
   }
 
   @Test
-  public void getProperty3ThrowsOnIncompatibleConversion() throws Exception {
+  public void getProperty3ThrowsOnIncompatibleConversion() {
     when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(propertiesWith("some.property", "true"));
 
     // FIXME: expectedException.expect(IllegalArgumentException.class);
@@ -131,7 +131,7 @@ class SimpleConfigurationProviderGetPropertyTest extends SimpleConfigurationProv
   }
 
   @Test
-  public void getProperty3ReturnsPropertyFromSource() throws Exception {
+  public void getProperty3ReturnsPropertyFromSource() {
     when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(propertiesWith("some.property", "1,2"));
 
     List<Integer> properties = simpleConfigurationProvider.getProperty("some.property", new GenericType<List<Integer>>() {
@@ -140,7 +140,7 @@ class SimpleConfigurationProviderGetPropertyTest extends SimpleConfigurationProv
   }
 
   @Test
-  public void getProperty3ReactsToSourceChanges() throws Exception {
+  public void getProperty3ReactsToSourceChanges() {
     when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(propertiesWith("some.property", "1,2"));
     when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(propertiesWith("some.property", "3,4,5"));
 
@@ -150,7 +150,7 @@ class SimpleConfigurationProviderGetPropertyTest extends SimpleConfigurationProv
   }
 
   @Test
-  public void getPropertyReturnsPropertyForProperEnvironment() throws Exception {
+  public void getPropertyReturnsPropertyForProperEnvironment() {
     when(configurationSource.getConfiguration(environment)).thenReturn(propertiesWith("some.property", "1"));
     when(configurationSource.getConfiguration(new ImmutableEnvironment("test_env"))).thenReturn(propertiesWith("some.property", "2"));
 

@@ -33,7 +33,7 @@ class JsonBasedPropertiesProviderTest {
   private JsonBasedPropertiesProvider provider;
 
   @BeforeEach
-  public void setUp() throws Exception {
+  public void setUp() {
     provider = new JsonBasedPropertiesProvider();
   }
 

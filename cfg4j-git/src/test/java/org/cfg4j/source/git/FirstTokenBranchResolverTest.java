@@ -34,33 +34,33 @@ class FirstTokenBranchResolverTest {
   private FirstTokenBranchResolver branchResolver;
 
   @BeforeEach
-  public void setUp() throws Exception {
+  public void setUp() {
     branchResolver = new FirstTokenBranchResolver();
   }
 
   @Test
-  public void resolvesEmptyStringToMaster() throws Exception {
+  public void resolvesEmptyStringToMaster() {
     when(environment.getName()).thenReturn("");
 
     assertThat(branchResolver.getBranchNameFor(environment)).isEqualTo("master");
   }
 
   @Test
-  public void resolvesWhitespacesToMaster() throws Exception {
+  public void resolvesWhitespacesToMaster() {
     when(environment.getName()).thenReturn("   ");
 
     assertThat(branchResolver.getBranchNameFor(environment)).isEqualTo("master");
   }
 
   @Test
-  public void supportsSingleToken() throws Exception {
+  public void supportsSingleToken() {
     when(environment.getName()).thenReturn("us-west-1");
 
     assertThat(branchResolver.getBranchNameFor(environment)).isEqualTo("us-west-1");
   }
 
   @Test
-  public void usesFirstTokenAsBranchName() throws Exception {
+  public void usesFirstTokenAsBranchName() {
     when(environment.getName()).thenReturn("us-west-1/local/path");
 
     assertThat(branchResolver.getBranchNameFor(environment)).isEqualTo("us-west-1");

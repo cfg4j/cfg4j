@@ -32,7 +32,7 @@ class ImmediateReloadStrategyTest {
   private Reloadable resource;
 
   @Test
-  public void reloadsResourceOnce() throws Exception {
+  public void reloadsResourceOnce() {
     ImmediateReloadStrategy reloadStrategy = new ImmediateReloadStrategy();
     reloadStrategy.register(resource);
 
@@ -40,7 +40,7 @@ class ImmediateReloadStrategyTest {
   }
 
   @Test
-  public void doesntReloadWhenDeregistrated() throws Exception {
+  public void doesntReloadWhenDeregistrated() {
     ImmediateReloadStrategy reloadStrategy = new ImmediateReloadStrategy();
     reloadStrategy.register(resource);
     reloadStrategy.deregister(resource);

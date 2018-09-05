@@ -42,7 +42,8 @@ class GenericTypeTest {
 
   @Test
   void retainsType() {
-    GenericType<List<Integer>> genericType = new GenericType<>() {
+    @SuppressWarnings("Convert2Diamond")
+    GenericType<List<Integer>> genericType = new GenericType<List<Integer>>() {
     };
 
     assertThat(genericType.getType().toString()).isEqualTo("java.util.List<java.lang.Integer>");

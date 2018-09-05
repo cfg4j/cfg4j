@@ -75,7 +75,8 @@ class MeteredConfigurationProviderTest {
 
   @Test
   void getProperty2CallsDelegate() {
-    GenericType<List<String>> genericType = new GenericType<>() {
+    @SuppressWarnings("Convert2Diamond")
+    GenericType<List<String>> genericType = new GenericType<List<String>>() {
     };
     when(delegate.getProperty(eq("test.property"), eq(genericType))).thenReturn(new LinkedList<>());
 

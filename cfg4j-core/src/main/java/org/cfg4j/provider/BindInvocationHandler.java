@@ -58,12 +58,7 @@ class BindInvocationHandler implements InvocationHandler {
     }
 
     final Type returnType = method.getGenericReturnType();
-    return simpleConfigurationProvider.getProperty(prefix + (prefix.isEmpty() ? "" : ".") + method.getName(), new GenericTypeInterface() {
-      @Override
-      public Type getType() {
-        return returnType;
-      }
-    });
+    return simpleConfigurationProvider.getProperty(prefix + (prefix.isEmpty() ? "" : ".") + method.getName(), () -> returnType);
   }
 
   /**

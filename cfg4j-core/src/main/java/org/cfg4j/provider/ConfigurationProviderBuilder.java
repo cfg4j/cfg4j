@@ -143,12 +143,7 @@ public class ConfigurationProviderBuilder {
     }
     cachedConfigurationSource.init();
 
-    Reloadable reloadable = new Reloadable() {
-      @Override
-      public void reload() {
-        cachedConfigurationSource.reload(environment);
-      }
-    };
+    Reloadable reloadable = () -> cachedConfigurationSource.reload(environment);
 
     if (metricRegistry != null) {
       reloadable = new MeteredReloadable(metricRegistry, prefix, reloadable);

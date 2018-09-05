@@ -56,14 +56,9 @@ public class ClasspathConfigurationSource implements ConfigurationSource {
    * calls (see corresponding javadoc for detail).
    */
   public ClasspathConfigurationSource() {
-    this(new ConfigFilesProvider() {
-      @Override
-      public Iterable<Path> getConfigFiles() {
-        return Collections.singletonList(
-            Paths.get("application.properties")
-        );
-      }
-    });
+    this(() -> Collections.singletonList(
+        Paths.get("application.properties")
+    ));
   }
 
   /**

@@ -20,10 +20,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.cfg4j.source.ConfigurationSource;
 import org.cfg4j.source.classpath.ClasspathConfigurationSource;
-import org.cfg4j.source.context.filesprovider.ConfigFilesProvider;
 import org.junit.jupiter.api.Test;
 
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
 
@@ -52,12 +50,7 @@ class SimpleConfigurationProviderWithClasspathIntegrationTest {
   }
 
   private ConfigurationProvider getConfigurationProvider(final String path) {
-    ConfigurationSource source = new ClasspathConfigurationSource(new ConfigFilesProvider() {
-      @Override
-      public Iterable<Path> getConfigFiles() {
-        return Collections.singleton(Paths.get(path));
-      }
-    });
+    ConfigurationSource source = new ClasspathConfigurationSource(() -> Collections.singleton(Paths.get(path)));
 
     return new ConfigurationProviderBuilder()
         .withConfigurationSource(source)

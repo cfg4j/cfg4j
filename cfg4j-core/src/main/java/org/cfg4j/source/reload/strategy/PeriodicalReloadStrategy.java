@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Norbert Potocki (norbert.potocki@nort.pl)
+ * Copyright 2015-2018 Norbert Potocki (norbert.potocki@nort.pl)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,7 +54,7 @@ public class PeriodicalReloadStrategy implements ReloadStrategy {
   public PeriodicalReloadStrategy(long duration, TimeUnit timeUnit) {
     this.duration = duration;
     this.timeUnit = requireNonNull(timeUnit);
-    tasks = Collections.synchronizedMap(new HashMap<Reloadable, TimerTask>());
+    tasks = Collections.synchronizedMap(new HashMap<>());
     timer = new Timer();
   }
 

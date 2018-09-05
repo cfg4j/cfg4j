@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Norbert Potocki (norbert.potocki@nort.pl)
+ * Copyright 2015-2018 Norbert Potocki (norbert.potocki@nort.pl)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,50 +21,46 @@ import static org.mockito.Mockito.mock;
 
 import org.cfg4j.source.context.environment.DefaultEnvironment;
 import org.cfg4j.source.context.environment.Environment;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-@RunWith(MockitoJUnitRunner.class)
-public class SystemPropertiesConfigurationSourceTest {
 
-  @Rule
-  public ExpectedException expectedException = ExpectedException.none();
+class SystemPropertiesConfigurationSourceTest {
+
+
+
 
   private SystemPropertiesConfigurationSource source;
 
-  @Before
-  public void setUp() throws Exception {
+  @BeforeEach
+  void setUp() {
     source = new SystemPropertiesConfigurationSource();
     source.init();
   }
 
   @Test
-  public void returnsOSName() throws Exception {
+  void returnsOSName() {
     assertThat(source.getConfiguration(new DefaultEnvironment())).containsKey("os.name");
   }
 
   @Test
-  public void returnsOsNameForAnyEnvironment() throws Exception {
+  void returnsOsNameForAnyEnvironment() {
     assertThat(source.getConfiguration(mock(Environment.class))).containsKey("os.name");
   }
 
   @Test
-  public void doesNotReturnUndefinedKeys() throws Exception {
+  void doesNotReturnUndefinedKeys() {
     assertThat(source.getConfiguration(new DefaultEnvironment())).doesNotContainKey("missing.property");
   }
 
   @Test
-  public void returnsManuallyDefinedKeys() throws Exception {
+  void returnsManuallyDefinedKeys() {
     System.setProperty("manually.added.property", "defined");
     assertThat(source.getConfiguration(new DefaultEnvironment())).containsKey("manually.added.property");
   }
 
   @Test
-  public void returnsManuallyDefinedKeysAfterReload() throws Exception {
+  void returnsManuallyDefinedKeysAfterReload() {
     assertThat(source.getConfiguration(new DefaultEnvironment())).doesNotContainKey("reloaded.property");
     System.setProperty("reloaded.property", "defined");
     assertThat(source.getConfiguration(new DefaultEnvironment())).containsKey("reloaded.property");

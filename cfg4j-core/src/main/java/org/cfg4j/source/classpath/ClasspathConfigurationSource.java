@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Norbert Potocki (norbert.potocki@nort.pl)
+ * Copyright 2015-2018 Norbert Potocki (norbert.potocki@nort.pl)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ import java.util.Properties;
 
 /**
  * {@link ConfigurationSource} reading configuration from classpath files.
- * <p></p>
+ * <p>
  * Environment resolution happens as follows:
  * {@link Environment} name is prepended to all file paths from {@link ConfigFilesProvider}
  * to form an absolute configuration file path. Trailing slashes in environment name are not supported (due
@@ -56,14 +56,9 @@ public class ClasspathConfigurationSource implements ConfigurationSource {
    * calls (see corresponding javadoc for detail).
    */
   public ClasspathConfigurationSource() {
-    this(new ConfigFilesProvider() {
-      @Override
-      public Iterable<Path> getConfigFiles() {
-        return Collections.singletonList(
-            Paths.get("application.properties")
-        );
-      }
-    });
+    this(() -> Collections.singletonList(
+        Paths.get("application.properties")
+    ));
   }
 
   /**

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Norbert Potocki (norbert.potocki@nort.pl)
+ * Copyright 2015-2018 Norbert Potocki (norbert.potocki@nort.pl)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,34 +21,30 @@ import static org.mockito.Mockito.mock;
 
 import org.cfg4j.source.context.environment.DefaultEnvironment;
 import org.cfg4j.source.context.environment.Environment;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-@RunWith(MockitoJUnitRunner.class)
-public class EmptyConfigurationSourceTest {
 
-  @Rule
-  public ExpectedException expectedException = ExpectedException.none();
+class EmptyConfigurationSourceTest {
+
+
+
 
   private EmptyConfigurationSource source;
 
-  @Before
-  public void setUp() throws Exception {
+  @BeforeEach
+  void setUp() {
     source = new EmptyConfigurationSource();
     source.init();
   }
 
   @Test
-  public void returnsEmptyConfiguration() throws Exception {
+  void returnsEmptyConfiguration() {
     assertThat(source.getConfiguration(new DefaultEnvironment())).isEmpty();
   }
 
   @Test
-  public void returnsEmptyConfigurationForAnyEnvironment() throws Exception {
+  void returnsEmptyConfigurationForAnyEnvironment() {
     assertThat(source.getConfiguration(mock(Environment.class))).isEmpty();
   }
 }

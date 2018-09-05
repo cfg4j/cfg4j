@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Norbert Potocki (norbert.potocki@nort.pl)
+ * Copyright 2015-2018 Norbert Potocki (norbert.potocki@nort.pl)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,53 +17,46 @@
 package org.cfg4j.source.context.propertiesprovider;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.assertj.core.data.MapEntry;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.InputStream;
 
 
-@RunWith(MockitoJUnitRunner.class)
-public class YamlBasedPropertiesProviderTest {
-
-  @Rule
-  public ExpectedException expectedException = ExpectedException.none();
+class YamlBasedPropertiesProviderTest {
 
   private YamlBasedPropertiesProvider provider;
 
-  @Before
-  public void setUp() throws Exception {
+  @BeforeEach
+  void setUp() {
     provider = new YamlBasedPropertiesProvider();
   }
 
   @Test
-  public void readsSingleValues() throws Exception {
+  void readsSingleValues() throws Exception {
     String path = "org/cfg4j/source/propertiesprovider/YamlBasedPropertiesProviderTest_readsSingleValues.yaml";
 
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
-      assertThat(provider.getProperties(input)).containsExactly(MapEntry.entry("setting", "masterValue"),
+      assertThat(provider.getProperties(input)).containsOnly(MapEntry.entry("setting", "masterValue"),
           MapEntry.entry("integerSetting", 42));
     }
   }
 
   @Test
-  public void readsNestedValues() throws Exception {
+  void readsNestedValues() throws Exception {
     String path = "org/cfg4j/source/propertiesprovider/YamlBasedPropertiesProviderTest_readsNestedValues.yaml";
 
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
-      assertThat(provider.getProperties(input)).containsExactly(MapEntry.entry("some.setting", "masterValue"),
+      assertThat(provider.getProperties(input)).containsOnly(MapEntry.entry("some.setting", "masterValue"),
           MapEntry.entry("some.integerSetting", 42));
     }
   }
 
   @Test
-  public void readsLists() throws Exception {
+  void readsLists() throws Exception {
     String path = "org/cfg4j/source/propertiesprovider/YamlBasedPropertiesProviderTest_readsLists.yaml";
 
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
@@ -73,7 +66,7 @@ public class YamlBasedPropertiesProviderTest {
   }
 
   @Test
-  public void readsTextBlock() throws Exception {
+  void readsTextBlock() throws Exception {
     String path = "org/cfg4j/source/propertiesprovider/YamlBasedPropertiesProviderTest_readsTextBlock.yaml";
 
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
@@ -82,7 +75,7 @@ public class YamlBasedPropertiesProviderTest {
   }
 
   @Test
-  public void supportsReferences() throws Exception {
+  void supportsReferences() throws Exception {
     String path = "org/cfg4j/source/propertiesprovider/YamlBasedPropertiesProviderTest_supportsReferences.yaml";
 
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
@@ -94,17 +87,16 @@ public class YamlBasedPropertiesProviderTest {
   }
 
   @Test
-  public void throwsForNonYamlFile() throws Exception {
+  void throwsForNonYamlFile() throws Exception {
     String path = "org/cfg4j/source/propertiesprovider/YamlBasedPropertiesProviderTest_throwsForNonYamlFile.yaml";
 
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
-      expectedException.expect(IllegalStateException.class);
-      provider.getProperties(input);
+      assertThatThrownBy(() -> provider.getProperties(input)).isExactlyInstanceOf(IllegalStateException.class);
     }
   }
 
   @Test
-  public void supportsEmptyDocument() throws Exception {
+  void supportsEmptyDocument() throws Exception {
     String path = "org/cfg4j/source/propertiesprovider/YamlBasedPropertiesProviderTest_supportsEmptyDocument.yaml";
 
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
@@ -113,12 +105,11 @@ public class YamlBasedPropertiesProviderTest {
   }
 
   @Test
-  public void throwsOnNullInput() throws Exception {
+  void throwsOnNullInput() throws Exception {
     String path = "org/cfg4j/source/propertiesprovider/nonexistent.json";
 
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
-      expectedException.expect(NullPointerException.class);
-      provider.getProperties(input);
+      assertThatThrownBy(() -> provider.getProperties(input)).isExactlyInstanceOf(NullPointerException.class);
     }
   }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Norbert Potocki (norbert.potocki@nort.pl)
+ * Copyright 2015-2018 Norbert Potocki (norbert.potocki@nort.pl)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,9 @@
 package org.cfg4j.source.metered;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -32,22 +33,17 @@ import org.cfg4j.source.SourceCommunicationException;
 import org.cfg4j.source.context.environment.DefaultEnvironment;
 import org.cfg4j.source.context.environment.Environment;
 import org.cfg4j.source.context.environment.MissingEnvironmentException;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Properties;
 
 
-@RunWith(MockitoJUnitRunner.class)
-public class MeteredConfigurationSourceTest {
-
-  @Rule
-  public ExpectedException expectedException = ExpectedException.none();
+@ExtendWith(MockitoExtension.class)
+class MeteredConfigurationSourceTest {
 
   @Mock
   private ConfigurationSource delegate;
@@ -57,8 +53,8 @@ public class MeteredConfigurationSourceTest {
 
   private MeteredConfigurationSource source;
 
-  @Before
-  public void setUp() throws Exception {
+  @BeforeEach
+  void setUp() {
     Timer timer = mock(Timer.class);
     when(timer.time()).thenReturn(mock(Timer.Context.class));
     when(metricRegistry.timer(anyString())).thenReturn(timer);
@@ -68,7 +64,7 @@ public class MeteredConfigurationSourceTest {
   }
 
   @Test
-  public void getConfigurationCallsDelegate() throws Exception {
+  void getConfigurationCallsDelegate() {
     Properties properties = new Properties();
     when(delegate.getConfiguration(any(Environment.class))).thenReturn(properties);
 
@@ -76,39 +72,35 @@ public class MeteredConfigurationSourceTest {
   }
 
   @Test
-  public void getConfigurationPropagatesMissingEnvironmentExceptions() throws Exception {
+  void getConfigurationPropagatesMissingEnvironmentExceptions() {
     when(delegate.getConfiguration(any(Environment.class))).thenThrow(new MissingEnvironmentException(""));
 
-    expectedException.expect(MissingEnvironmentException.class);
-    source.getConfiguration(new DefaultEnvironment());
+    assertThatThrownBy(() -> source.getConfiguration(new DefaultEnvironment())).isExactlyInstanceOf(MissingEnvironmentException.class);
   }
 
   @Test
-  public void getConfigurationPropagatesIllegalStateExceptions() throws Exception {
+  void getConfigurationPropagatesIllegalStateExceptions() {
     when(delegate.getConfiguration(any(Environment.class))).thenThrow(new IllegalStateException(""));
 
-    expectedException.expect(IllegalStateException.class);
-    source.getConfiguration(new DefaultEnvironment());
+    assertThatThrownBy(() -> source.getConfiguration(new DefaultEnvironment())).isExactlyInstanceOf(IllegalStateException.class);
   }
 
   @Test
-  public void initCallsDelegate() throws Exception {
+  void initCallsDelegate() {
     verify(delegate, times(1)).init();
   }
 
   @Test
-  public void initPropagatesIllegalStateExceptions() throws Exception {
+  void initPropagatesIllegalStateExceptions() {
     doThrow(new IllegalStateException("")).when(delegate).init();
 
-    expectedException.expect(IllegalStateException.class);
-    delegate.init();
+    assertThatThrownBy(() -> delegate.init()).isExactlyInstanceOf(IllegalStateException.class);
   }
 
   @Test
-  public void initPropagatesSourceCommunicationExceptions() throws Exception {
+  void initPropagatesSourceCommunicationExceptions() {
     doThrow(new SourceCommunicationException("", null)).when(delegate).init();
 
-    expectedException.expect(SourceCommunicationException.class);
-    delegate.init();
+    assertThatThrownBy(() -> delegate.init()).isExactlyInstanceOf(SourceCommunicationException.class);
   }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Norbert Potocki (norbert.potocki@nort.pl)
+ * Copyright 2015-2018 Norbert Potocki (norbert.potocki@nort.pl)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ dependencies {
 
     compile project(":cfg4j-core")
 
-    compile group: "org.eclipse.jgit", name: "org.eclipse.jgit", version: "4.4.1.201607150455-r"
+    compile group: "org.eclipse.jgit", name: "org.eclipse.jgit", version: "5.0.2.201807311906-r"
 
     testCompile project(":cfg4j-core").sourceSets.test.output
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Norbert Potocki (norbert.potocki@nort.pl)
+ * Copyright 2015-2018 Norbert Potocki (norbert.potocki@nort.pl)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,19 +20,19 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import org.cfg4j.source.reload.Reloadable;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
-public class ImmediateReloadStrategyTest {
+@ExtendWith(MockitoExtension.class)
+class ImmediateReloadStrategyTest {
 
   @Mock
   private Reloadable resource;
 
   @Test
-  public void reloadsResourceOnce() throws Exception {
+  void reloadsResourceOnce() {
     ImmediateReloadStrategy reloadStrategy = new ImmediateReloadStrategy();
     reloadStrategy.register(resource);
 
@@ -40,7 +40,7 @@ public class ImmediateReloadStrategyTest {
   }
 
   @Test
-  public void doesntReloadWhenDeregistrated() throws Exception {
+  void doesntReloadWhenDeregistrated() {
     ImmediateReloadStrategy reloadStrategy = new ImmediateReloadStrategy();
     reloadStrategy.register(resource);
     reloadStrategy.deregister(resource);

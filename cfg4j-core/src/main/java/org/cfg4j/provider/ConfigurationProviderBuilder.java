@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Norbert Potocki (norbert.potocki@nort.pl)
+ * Copyright 2015-2018 Norbert Potocki (norbert.potocki@nort.pl)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -143,12 +143,7 @@ public class ConfigurationProviderBuilder {
     }
     cachedConfigurationSource.init();
 
-    Reloadable reloadable = new Reloadable() {
-      @Override
-      public void reload() {
-        cachedConfigurationSource.reload(environment);
-      }
-    };
+    Reloadable reloadable = () -> cachedConfigurationSource.reload(environment);
 
     if (metricRegistry != null) {
       reloadable = new MeteredReloadable(metricRegistry, prefix, reloadable);

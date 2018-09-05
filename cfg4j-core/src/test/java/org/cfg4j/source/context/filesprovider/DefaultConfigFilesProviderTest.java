@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Norbert Potocki (norbert.potocki@nort.pl)
+ * Copyright 2015-2018 Norbert Potocki (norbert.potocki@nort.pl)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,18 +17,15 @@ package org.cfg4j.source.context.filesprovider;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.junit.jupiter.api.Test;
 
 import java.nio.file.Paths;
 
 
-@RunWith(MockitoJUnitRunner.class)
-public class DefaultConfigFilesProviderTest {
+class DefaultConfigFilesProviderTest {
 
   @Test
-  public void providesDefaultConfigFile() throws Exception {
+  void providesDefaultConfigFile() {
     DefaultConfigFilesProvider provider = new DefaultConfigFilesProvider();
     assertThat(provider.getConfigFiles()).containsExactly(Paths.get("application.properties"));
   }

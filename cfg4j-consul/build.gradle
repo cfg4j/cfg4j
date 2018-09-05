@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Norbert Potocki (norbert.potocki@nort.pl)
+ * Copyright 2015-2018 Norbert Potocki (norbert.potocki@nort.pl)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,9 +28,9 @@ dependencies {
 
     compile project(":cfg4j-core")
 
-    compile group: "com.orbitz.consul", name: "consul-client", version: "0.12.6"
-    compile group: "org.apache.cxf", name: "cxf-rt-rs-client", version: "3.1.7"
-    compile group: "org.apache.cxf", name: "cxf-rt-transports-http-hc", version: "3.1.7"
+    compile group: "com.orbitz.consul", name: "consul-client", version: "1.2.4"
+    compile group: "org.apache.cxf", name: "cxf-rt-rs-client", version: "3.2.6"
+    compile group: "org.apache.cxf", name: "cxf-rt-transports-http-hc", version: "3.2.6"
 
     testCompile group: "com.squareup.okhttp", name: "mockwebserver", version: "2.7.5"
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Norbert Potocki (norbert.potocki@nort.pl)
+ * Copyright 2015-2018 Norbert Potocki (norbert.potocki@nort.pl)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,27 +19,22 @@ package org.cfg4j.source.inmemory;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.cfg4j.source.context.environment.DefaultEnvironment;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Properties;
 
 
-@RunWith(MockitoJUnitRunner.class)
-public class InMemoryConfigurationSourceTest {
+class InMemoryConfigurationSourceTest {
 
-  @Rule
-  public ExpectedException expectedException = ExpectedException.none();
+
+
 
   private InMemoryConfigurationSource source;
   private Properties properties;
 
-  @Before
-  public void setUp() throws Exception {
+  @BeforeEach
+  void setUp() {
     properties = new Properties();
     properties.put("sample.setting", "value");
 
@@ -48,7 +43,7 @@ public class InMemoryConfigurationSourceTest {
   }
 
   @Test
-  public void returnsSourceProperties() throws Exception {
+  void returnsSourceProperties() {
     assertThat(source.getConfiguration(new DefaultEnvironment())).isEqualTo(properties);
   }
 

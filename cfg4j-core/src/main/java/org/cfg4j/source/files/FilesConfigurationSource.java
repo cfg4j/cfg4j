@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Norbert Potocki (norbert.potocki@nort.pl)
+ * Copyright 2015-2018 Norbert Potocki (norbert.potocki@nort.pl)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,14 +51,9 @@ public class FilesConfigurationSource implements ConfigurationSource {
    * calls (see corresponding javadoc for detail).
    */
   public FilesConfigurationSource() {
-    this(new ConfigFilesProvider() {
-      @Override
-      public Iterable<Path> getConfigFiles() {
-        return Collections.singletonList(
-            Paths.get("application.properties")
-        );
-      }
-    });
+    this(() -> Collections.singletonList(
+        Paths.get("application.properties")
+    ));
   }
 
   /**

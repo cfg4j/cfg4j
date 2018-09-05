@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Norbert Potocki (norbert.potocki@nort.pl)
+ * Copyright 2015-2018 Norbert Potocki (norbert.potocki@nort.pl)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,34 +21,29 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.cfg4j.provider.ConfigurationProvider;
 import org.cfg4j.provider.ConfigurationProviderBuilder;
 import org.cfg4j.source.ConfigurationSource;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.nio.file.Paths;
 
-public class SimpleConfigurationProviderIntegrationTest {
-
-  @Rule
-  public ExpectedException expectedException = ExpectedException.none();
+class SimpleConfigurationProviderIntegrationTest {
 
   private TempConfigurationGitRepo remoteRepo;
 
-  @Before
-  public void setUp() throws Exception {
+  @BeforeEach
+  void setUp() throws Exception {
     remoteRepo = new TempConfigurationGitRepo("org.cfg4j-test-repo.git");
     remoteRepo.changeProperty(Paths.get("application.properties"), "some.setting", "masterValue");
   }
 
-  @After
-  public void tearDown() throws Exception {
+  @AfterEach
+  void tearDown() {
     remoteRepo.remove();
   }
 
   @Test
-  public void readsConfigsFromGitConfigurationSource() throws Exception {
+  void readsConfigsFromGitConfigurationSource() {
     ConfigurationSource source = new GitConfigurationSourceBuilder()
         .withRepositoryURI(remoteRepo.dirPath.toString())
         .build();

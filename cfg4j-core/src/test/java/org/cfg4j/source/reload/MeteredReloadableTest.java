@@ -1,6 +1,7 @@
 package org.cfg4j.source.reload;
 
-import static org.mockito.Matchers.anyString;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -9,20 +10,16 @@ import static org.mockito.Mockito.when;
 
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 
-@RunWith(MockitoJUnitRunner.class)
-public class MeteredReloadableTest {
+@ExtendWith(MockitoExtension.class)
+class MeteredReloadableTest {
 
-  @Rule
-  public ExpectedException expectedException = ExpectedException.none();
 
   @Mock
   private Reloadable delegate;
@@ -32,8 +29,8 @@ public class MeteredReloadableTest {
 
   private MeteredReloadable reloadable;
 
-  @Before
-  public void setUp() throws Exception {
+  @BeforeEach
+  void setUp() {
     Timer timer = mock(Timer.class);
     when(timer.time()).thenReturn(mock(Timer.Context.class));
     when(metricRegistry.timer(anyString())).thenReturn(timer);
@@ -42,17 +39,16 @@ public class MeteredReloadableTest {
   }
 
   @Test
-  public void reloadCallsDelegate() throws Exception {
+  void reloadCallsDelegate() {
     reloadable.reload();
 
     verify(delegate, times(1)).reload();
   }
 
   @Test
-  public void reloadPropagatesIllegalStateExceptions() throws Exception {
+  void reloadPropagatesIllegalStateExceptions() {
     doThrow(new IllegalStateException("")).when(delegate).reload();
 
-    expectedException.expect(IllegalStateException.class);
-    reloadable.reload();
+    assertThatThrownBy(() -> reloadable.reload()).isExactlyInstanceOf(IllegalStateException.class);
   }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Norbert Potocki (norbert.potocki@nort.pl)
+ * Copyright 2015-2018 Norbert Potocki (norbert.potocki@nort.pl)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,37 +17,32 @@
 package org.cfg4j.provider;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class GenericTypeTest {
-
-  @Rule
-  public ExpectedException expectedException = ExpectedException.none();
+class GenericTypeTest {
 
   @Test
-  public void throwsIfNotDirectlySubclassed() throws Exception {
+  void throwsIfNotDirectlySubclassed() {
     abstract class GenericTypeDirect extends GenericType<List<Integer>> {
     }
 
-    expectedException.expect(IllegalArgumentException.class);
-    new GenericTypeDirect() {
-    };
+    assertThatThrownBy(() -> new GenericTypeDirect() {
+    }).isExactlyInstanceOf(IllegalArgumentException.class);
   }
 
   @Test
-  public void throwsIfNotParametrizedType() throws Exception {
-    expectedException.expect(IllegalArgumentException.class);
-    new GenericType() {
-    };
+  void throwsIfNotParametrizedType() {
+    assertThatThrownBy(() -> new GenericType() {
+    }).isExactlyInstanceOf(IllegalArgumentException.class);
   }
 
   @Test
-  public void retainsType() throws Exception {
+  void retainsType() {
+    @SuppressWarnings("Convert2Diamond")
     GenericType<List<Integer>> genericType = new GenericType<List<Integer>>() {
     };
 

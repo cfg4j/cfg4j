@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Norbert Potocki (norbert.potocki@nort.pl)
+ * Copyright 2015-2018 Norbert Potocki (norbert.potocki@nort.pl)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,8 @@
 package org.cfg4j.source.compose;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -29,30 +30,23 @@ import org.cfg4j.source.ConfigurationSource;
 import org.cfg4j.source.SourceCommunicationException;
 import org.cfg4j.source.context.environment.Environment;
 import org.cfg4j.source.context.environment.MissingEnvironmentException;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Properties;
 
 
-@RunWith(MockitoJUnitRunner.class)
-public class FallbackConfigurationSourceTest {
+class FallbackConfigurationSourceTest {
 
   private static final int NUMBER_OF_SOURCES = 5;
   private static final int LAST_SOURCE_INDEX = NUMBER_OF_SOURCES - 1;
 
-  @Rule
-  public ExpectedException expectedException = ExpectedException.none();
 
   private ConfigurationSource[] underlyingSources;
   private FallbackConfigurationSource fallbackConfigurationSource;
 
-  @Before
-  public void setUp() throws Exception {
+  @BeforeEach
+  void setUp() {
     underlyingSources = new ConfigurationSource[5];
     for (int i = 0; i < underlyingSources.length; i++) {
       underlyingSources[i] = mock(ConfigurationSource.class);
@@ -63,23 +57,21 @@ public class FallbackConfigurationSourceTest {
   }
 
   @Test
-  public void getConfigurationThrowsWhenAllSourcesThrowOnMissingEnvironment() throws Exception {
+  void getConfigurationThrowsWhenAllSourcesThrowOnMissingEnvironment() {
     makeAllSourcesThrow(new MissingEnvironmentException(""));
 
-    expectedException.expect(MissingEnvironmentException.class);
-    fallbackConfigurationSource.getConfiguration(mock(Environment.class));
+    assertThatThrownBy(() -> fallbackConfigurationSource.getConfiguration(mock(Environment.class))).isExactlyInstanceOf(MissingEnvironmentException.class);
   }
 
   @Test
-  public void getConfigurationThrowsWhenAllSourcesThrow() throws Exception {
+  void getConfigurationThrowsWhenAllSourcesThrow() {
     makeAllSourcesThrow(new IllegalStateException());
 
-    expectedException.expect(IllegalStateException.class);
-    fallbackConfigurationSource.getConfiguration(mock(Environment.class));
+    assertThatThrownBy(() -> fallbackConfigurationSource.getConfiguration(mock(Environment.class))).isExactlyInstanceOf(IllegalStateException.class);
   }
 
   @Test
-  public void getConfigurationSelectsFirstAvailableConfiguration() throws Exception {
+  void getConfigurationSelectsFirstAvailableConfiguration() {
     makeAllSourcesThrow(new IllegalStateException());
     underlyingSources[LAST_SOURCE_INDEX] = mock(ConfigurationSource.class);
     when(underlyingSources[LAST_SOURCE_INDEX].getConfiguration(any(Environment.class))).thenReturn(getProps("prop1", "value1")[0]);
@@ -89,22 +81,21 @@ public class FallbackConfigurationSourceTest {
   }
 
   @Test
-  public void initInitializesAllSources() throws Exception {
+  void initInitializesAllSources() {
     for (ConfigurationSource underlyingSource : underlyingSources) {
       verify(underlyingSource, atLeastOnce()).init();
     }
   }
 
   @Test
-  public void initThrowsWhenAllSourcesThrow() throws Exception {
+  void initThrowsWhenAllSourcesThrow() {
     makeAllSourcesThrow(new IllegalStateException());
 
-    expectedException.expect(IllegalStateException.class);
-    fallbackConfigurationSource.init();
+    assertThatThrownBy(() -> fallbackConfigurationSource.init()).isExactlyInstanceOf(IllegalStateException.class);
   }
 
   @Test
-  public void initIgnoresIllegalStateExceptionsIfAtLeastOneSourceSucceeds() throws Exception {
+  void initIgnoresIllegalStateExceptionsIfAtLeastOneSourceSucceeds() {
     makeAllSourcesThrow(new IllegalStateException());
     doNothing().when(underlyingSources[LAST_SOURCE_INDEX]).init();
 
@@ -112,7 +103,7 @@ public class FallbackConfigurationSourceTest {
   }
 
   @Test
-  public void initIgnoresSourceCommunicationExceptionsIfAtLeastOneSourceSucceeds() throws Exception {
+  void initIgnoresSourceCommunicationExceptionsIfAtLeastOneSourceSucceeds() {
     makeAllSourcesThrow(new SourceCommunicationException("", null));
     doNothing().when(underlyingSources[LAST_SOURCE_INDEX]).init();
 

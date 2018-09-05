@@ -27,7 +27,7 @@
   * Extensible (see the list of **plugins** below)
   * Heavily tested (**99% code coverage**)
   * Well [documented](http://cfg4j.org)
-  * Java 7+ required
+  * Java 8+ required
 
 # Usage
 Read [an article about configuration management using cfg4j](http://potocki.io/post/141230472743/configuration-management-for-distributed-systems).

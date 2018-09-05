@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Norbert Potocki (norbert.potocki@nort.pl)
+ * Copyright 2015-2018 Norbert Potocki (norbert.potocki@nort.pl)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,26 +20,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.cfg4j.source.ConfigurationSource;
 import org.cfg4j.source.classpath.ClasspathConfigurationSource;
-import org.cfg4j.source.context.filesprovider.ConfigFilesProvider;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.junit.jupiter.api.Test;
 
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
 
 
-@RunWith(MockitoJUnitRunner.class)
-public class SimpleConfigurationProviderWithClasspathIntegrationTest {
+class SimpleConfigurationProviderWithClasspathIntegrationTest {
 
-  @Rule
-  public ExpectedException expectedException = ExpectedException.none();
+
+
 
   @Test
-  public void readsYamlBooleans() throws Exception {
+  void readsYamlBooleans() {
     String path = "org/cfg4j/provider/SimpleConfigurationProviderIntegrationTest_readsYamlBooleans.yaml";
 
     ConfigurationProvider provider = getConfigurationProvider(path);
@@ -48,7 +41,7 @@ public class SimpleConfigurationProviderWithClasspathIntegrationTest {
   }
 
   @Test
-  public void readsYamlIntegers() throws Exception {
+  void readsYamlIntegers() {
     String path = "org/cfg4j/provider/SimpleConfigurationProviderIntegrationTest_readsYamlIntegers.yaml";
 
     ConfigurationProvider provider = getConfigurationProvider(path);
@@ -57,12 +50,7 @@ public class SimpleConfigurationProviderWithClasspathIntegrationTest {
   }
 
   private ConfigurationProvider getConfigurationProvider(final String path) {
-    ConfigurationSource source = new ClasspathConfigurationSource(new ConfigFilesProvider() {
-      @Override
-      public Iterable<Path> getConfigFiles() {
-        return Collections.singleton(Paths.get(path));
-      }
-    });
+    ConfigurationSource source = new ClasspathConfigurationSource(() -> Collections.singleton(Paths.get(path)));
 
     return new ConfigurationProviderBuilder()
         .withConfigurationSource(source)

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Norbert Potocki (norbert.potocki@nort.pl)
+ * Copyright 2015-2018 Norbert Potocki (norbert.potocki@nort.pl)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package org.cfg4j.source.files;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.assertj.core.data.MapEntry;
 import org.cfg4j.source.context.environment.DefaultEnvironment;
@@ -23,33 +24,24 @@ import org.cfg4j.source.context.environment.Environment;
 import org.cfg4j.source.context.environment.ImmutableEnvironment;
 import org.cfg4j.source.context.environment.MissingEnvironmentException;
 import org.cfg4j.source.context.filesprovider.ConfigFilesProvider;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 
 
-@RunWith(MockitoJUnitRunner.class)
-public class FilesConfigurationSourceTest {
-
-  @Rule
-  public ExpectedException expectedException = ExpectedException.none();
+class FilesConfigurationSourceTest {
 
   private TempConfigurationFileRepo fileRepo;
   private ConfigFilesProvider configFilesProvider;
   private FilesConfigurationSource source;
   private Environment environment;
 
-  @Before
-  public void setUp() throws Exception {
+  @BeforeEach
+  void setUp() throws Exception {
     fileRepo = new TempConfigurationFileRepo("org.cfg4j-test-repo");
     fileRepo.changeProperty(Paths.get("application.properties"), "some.setting", "masterValue");
     fileRepo.changeProperty(Paths.get("otherConfig.properties"), "otherConfig.setting", "masterValue");
@@ -62,74 +54,61 @@ public class FilesConfigurationSourceTest {
     source.init();
   }
 
-  @After
-  public void tearDown() throws Exception {
+  @AfterEach
+  void tearDown() throws Exception {
     fileRepo.remove();
   }
 
   @Test
-  public void getConfigurationReadsFromDefaultFile() throws Exception {
+  void getConfigurationReadsFromDefaultFile() {
     assertThat(source.getConfiguration(environment)).containsOnly(MapEntry.entry("some.setting", "masterValue"));
   }
 
   @Test
-  public void getConfigurationReadsFromHomeForDefaultEnvironment() throws Exception {
+  void getConfigurationReadsFromHomeForDefaultEnvironment() {
     System.setProperty("user.home", fileRepo.dirPath.resolve("otherApplicationConfigs").toString());
     assertThat(source.getConfiguration(new DefaultEnvironment())).containsOnly(MapEntry.entry("some.setting", "otherAppSetting"));
   }
 
   @Test
-  public void getConfigurationReadsFromGivenPath() throws Exception {
+  void getConfigurationReadsFromGivenPath() {
     Environment environment = new ImmutableEnvironment(fileRepo.dirPath.resolve("otherApplicationConfigs").toString());
 
     assertThat(source.getConfiguration(environment)).containsOnly(MapEntry.entry("some.setting", "otherAppSetting"));
   }
 
   @Test
-  public void getConfigurationReadsFromGivenFiles() throws Exception {
-    configFilesProvider = new ConfigFilesProvider() {
-      @Override
-      public Iterable<Path> getConfigFiles() {
-        return Arrays.asList(
-            Paths.get("application.properties"),
-            Paths.get("otherConfig.properties")
-        );
-      }
-    };
+  void getConfigurationReadsFromGivenFiles() {
+    configFilesProvider = () -> Arrays.asList(
+        Paths.get("application.properties"),
+        Paths.get("otherConfig.properties")
+    );
 
     source = new FilesConfigurationSource(configFilesProvider);
     assertThat(source.getConfiguration(environment)).containsOnlyKeys("some.setting", "otherConfig.setting");
   }
 
   @Test
-  public void getConfigurationThrowsOnMissingEnvironment() throws Exception {
-    expectedException.expect(MissingEnvironmentException.class);
-    source.getConfiguration(new ImmutableEnvironment("awlerijawoetinawwerlkjn"));
+  void getConfigurationThrowsOnMissingEnvironment() {
+    assertThatThrownBy(() -> source.getConfiguration(new ImmutableEnvironment("awlerijawoetinawwerlkjn"))).isExactlyInstanceOf(MissingEnvironmentException.class);
   }
 
   @Test
-  public void getConfigurationThrowsOnMissingConfigFile() throws Exception {
+  void getConfigurationThrowsOnMissingConfigFile() throws Exception {
     fileRepo.deleteFile(Paths.get("application.properties"));
 
-    expectedException.expect(IllegalStateException.class);
-    source.getConfiguration(environment);
+    assertThatThrownBy(() -> source.getConfiguration(environment)).isExactlyInstanceOf(IllegalStateException.class);
   }
 
   @Test
-  public void getConfigurationThrowsOnMalformedConfigFile() throws Exception {
-    configFilesProvider = new ConfigFilesProvider() {
-      @Override
-      public Iterable<Path> getConfigFiles() {
-        return Collections.singletonList(
-            Paths.get("malformed.properties")
-        );
-      }
-    };
+  void getConfigurationThrowsOnMalformedConfigFile() {
+    configFilesProvider = () -> Collections.singletonList(
+        Paths.get("malformed.properties")
+    );
 
     source = new FilesConfigurationSource(configFilesProvider);
 
-    expectedException.expect(IllegalStateException.class);
-    source.getConfiguration(environment);
+    assertThatThrownBy(() -> source.getConfiguration(environment)).isExactlyInstanceOf(IllegalStateException.class);
   }
 
 }

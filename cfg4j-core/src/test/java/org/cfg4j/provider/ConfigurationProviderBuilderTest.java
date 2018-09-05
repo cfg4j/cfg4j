@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Norbert Potocki (norbert.potocki@nort.pl)
+ * Copyright 2015-2018 Norbert Potocki (norbert.potocki@nort.pl)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package org.cfg4j.provider;
 
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -24,23 +24,21 @@ import static org.mockito.Mockito.verify;
 import org.cfg4j.source.context.environment.DefaultEnvironment;
 import org.cfg4j.source.reload.ReloadStrategy;
 import org.cfg4j.source.reload.Reloadable;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-@RunWith(MockitoJUnitRunner.class)
-public class ConfigurationProviderBuilderTest {
+
+class ConfigurationProviderBuilderTest {
 
   private ConfigurationProviderBuilder builder;
 
-  @Before
-  public void setUp() throws Exception {
+  @BeforeEach
+  void setUp() {
     builder = new ConfigurationProviderBuilder();
   }
 
   @Test
-  public void initializesStrategyOnBuild() throws Exception {
+  void initializesStrategyOnBuild() {
     ReloadStrategy reloadStrategy = mock(ReloadStrategy.class);
     builder
         .withReloadStrategy(reloadStrategy)

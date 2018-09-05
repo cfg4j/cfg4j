@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Norbert Potocki (norbert.potocki@nort.pl)
+ * Copyright 2015-2018 Norbert Potocki (norbert.potocki@nort.pl)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,8 @@
 package org.cfg4j.source.compose;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -27,28 +28,23 @@ import org.cfg4j.source.ConfigurationSource;
 import org.cfg4j.source.context.environment.Environment;
 import org.cfg4j.source.context.environment.ImmutableEnvironment;
 import org.cfg4j.source.context.environment.MissingEnvironmentException;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-import org.mockito.Matchers;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
 
 import java.util.Properties;
 
 
-@RunWith(MockitoJUnitRunner.class)
-public class MergeConfigurationSourceTest {
+class MergeConfigurationSourceTest {
 
-  @Rule
-  public ExpectedException expectedException = ExpectedException.none();
+
+
 
   private ConfigurationSource[] underlyingSources;
   private MergeConfigurationSource mergeConfigurationSource;
 
-  @Before
-  public void setUp() throws Exception {
+  @BeforeEach
+  void setUp() {
     underlyingSources = new ConfigurationSource[5];
     for (int i = 0; i < underlyingSources.length; i++) {
       underlyingSources[i] = mock(ConfigurationSource.class);
@@ -60,23 +56,21 @@ public class MergeConfigurationSourceTest {
   }
 
   @Test
-  public void getConfigurationThrowsWhenOneOfSourcesThrowsOnMissingEnvironment() throws Exception {
-    when(underlyingSources[1].getConfiguration(Matchers.<Environment>any())).thenThrow(new MissingEnvironmentException(""));
+  void getConfigurationThrowsWhenOneOfSourcesThrowsOnMissingEnvironment() {
+    when(underlyingSources[1].getConfiguration(ArgumentMatchers.any())).thenThrow(new MissingEnvironmentException(""));
 
-    expectedException.expect(MissingEnvironmentException.class);
-    mergeConfigurationSource.getConfiguration(new ImmutableEnvironment("test"));
+    assertThatThrownBy(() -> mergeConfigurationSource.getConfiguration(new ImmutableEnvironment("test"))).isExactlyInstanceOf(MissingEnvironmentException.class);
   }
 
   @Test
-  public void getConfigurationThrowsWhenOneOfSourcesThrows() throws Exception {
-    when(underlyingSources[3].getConfiguration(Matchers.<Environment>any())).thenThrow(new IllegalStateException());
+  void getConfigurationThrowsWhenOneOfSourcesThrows() {
+    when(underlyingSources[3].getConfiguration(ArgumentMatchers.any())).thenThrow(new IllegalStateException());
 
-    expectedException.expect(IllegalStateException.class);
-    mergeConfigurationSource.getConfiguration(new ImmutableEnvironment("test"));
+    assertThatThrownBy(() -> mergeConfigurationSource.getConfiguration(new ImmutableEnvironment("test"))).isExactlyInstanceOf(IllegalStateException.class);
   }
 
   @Test
-  public void getConfigurationMergesConfigurations() throws Exception {
+  void getConfigurationMergesConfigurations() {
     Environment environment = new ImmutableEnvironment("test");
 
     sourcesWithProps(environment, "prop1", "value1", "prop2", "value2");
@@ -86,7 +80,7 @@ public class MergeConfigurationSourceTest {
   }
 
   @Test
-  public void getConfigurationMergesConfigurationsWithCollidingKeys() throws Exception {
+  void getConfigurationMergesConfigurationsWithCollidingKeys() {
     Environment environment = new ImmutableEnvironment("test");
 
     sourcesWithProps(environment, "prop", "value1", "prop", "value2");
@@ -95,7 +89,7 @@ public class MergeConfigurationSourceTest {
   }
 
   @Test
-  public void initInitializesAllSources() throws Exception {
+  void initInitializesAllSources() {
     for (ConfigurationSource underlyingSource : underlyingSources) {
       verify(underlyingSource, atLeastOnce()).init();
     }

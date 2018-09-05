@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Norbert Potocki (norbert.potocki@nort.pl)
+ * Copyright 2015-2018 Norbert Potocki (norbert.potocki@nort.pl)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,35 +17,29 @@
 package org.cfg4j.provider;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 
+@ExtendWith(MockitoExtension.class)
+class MeteredConfigurationProviderTest {
 
-@RunWith(MockitoJUnitRunner.class)
-public class MeteredConfigurationProviderTest {
-
-  public interface ConfigPojo {
+  private interface ConfigPojo {
   }
-
-  @Rule
-  public ExpectedException expectedException = ExpectedException.none();
 
   @Mock
   private SimpleConfigurationProvider delegate;
@@ -55,8 +49,8 @@ public class MeteredConfigurationProviderTest {
 
   private MeteredConfigurationProvider provider;
 
-  @Before
-  public void setUp() throws Exception {
+  @BeforeEach
+  void setUp() {
     Timer timer = mock(Timer.class);
     when(timer.time()).thenReturn(mock(Timer.Context.class));
     when(metricRegistry.timer(anyString())).thenReturn(timer);
@@ -65,7 +59,7 @@ public class MeteredConfigurationProviderTest {
   }
 
   @Test
-  public void allConfigurationAsPropertiesCallsDelegate() throws Exception {
+  void allConfigurationAsPropertiesCallsDelegate() {
     Properties properties = new Properties();
     when(delegate.allConfigurationAsProperties()).thenReturn(properties);
 
@@ -73,14 +67,15 @@ public class MeteredConfigurationProviderTest {
   }
 
   @Test
-  public void getPropertyCallsDelegate() throws Exception {
+  void getPropertyCallsDelegate() {
     when(delegate.getProperty("test.property", boolean.class)).thenReturn(true);
 
     assertThat(provider.getProperty("test.property", boolean.class)).isTrue();
   }
 
   @Test
-  public void getProperty2CallsDelegate() throws Exception {
+  void getProperty2CallsDelegate() {
+    @SuppressWarnings("Convert2Diamond")
     GenericType<List<String>> genericType = new GenericType<List<String>>() {
     };
     when(delegate.getProperty(eq("test.property"), eq(genericType))).thenReturn(new LinkedList<>());
@@ -90,7 +85,7 @@ public class MeteredConfigurationProviderTest {
   }
 
   @Test
-  public void bindCallsDelegate() throws Exception {
+  void bindCallsDelegate() {
     ConfigPojo configPojo = new ConfigPojo() {
     };
     when(delegate.bind(any(ConfigurationProvider.class), eq(""), eq(ConfigPojo.class))).thenReturn(configPojo);

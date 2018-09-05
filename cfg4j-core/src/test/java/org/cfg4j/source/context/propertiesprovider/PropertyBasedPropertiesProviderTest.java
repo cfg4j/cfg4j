@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Norbert Potocki (norbert.potocki@nort.pl)
+ * Copyright 2015-2018 Norbert Potocki (norbert.potocki@nort.pl)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,33 +17,26 @@
 package org.cfg4j.source.context.propertiesprovider;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.assertj.core.data.MapEntry;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.InputStream;
 
 
-@RunWith(MockitoJUnitRunner.class)
-public class PropertyBasedPropertiesProviderTest {
-
-  @Rule
-  public ExpectedException expectedException = ExpectedException.none();
+class PropertyBasedPropertiesProviderTest {
 
   private PropertyBasedPropertiesProvider provider;
 
-  @Before
-  public void setUp() throws Exception {
+  @BeforeEach
+  void setUp() {
     provider = new PropertyBasedPropertiesProvider();
   }
 
   @Test
-  public void loadsProperties() throws Exception {
+  void loadsProperties() throws Exception {
     String path = "org/cfg4j/source/propertiesprovider/PropertyBasedPropertiesProviderTest_loadsProperties.properties";
 
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
@@ -52,12 +45,11 @@ public class PropertyBasedPropertiesProviderTest {
   }
 
   @Test
-  public void throwsOnMalformedFile() throws Exception {
+  void throwsOnMalformedFile() throws Exception {
     String path = "org/cfg4j/source/propertiesprovider/PropertyBasedPropertiesProviderTest_throwsOnMalformedFile.properties";
 
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
-      expectedException.expect(IllegalStateException.class);
-      provider.getProperties(input);
+      assertThatThrownBy(() -> provider.getProperties(input)).isExactlyInstanceOf(IllegalStateException.class);
     }
   }
 }

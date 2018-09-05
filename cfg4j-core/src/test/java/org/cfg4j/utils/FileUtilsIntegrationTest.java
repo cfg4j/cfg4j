@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Norbert Potocki (norbert.potocki@nort.pl)
+ * Copyright 2015-2018 Norbert Potocki (norbert.potocki@nort.pl)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,32 +18,27 @@ package org.cfg4j.utils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 
 
-@RunWith(MockitoJUnitRunner.class)
-public class FileUtilsIntegrationTest {
+class FileUtilsIntegrationTest {
 
-  @Rule
-  public ExpectedException expectedException = ExpectedException.none();
+
+
 
   private FileUtils fileUtils;
 
-  @Before
-  public void setUp() throws Exception {
+  @BeforeEach
+  void setUp() {
     fileUtils = new FileUtils();
   }
 
   @Test
-  public void deletesFile() throws Exception {
+  void deletesFile() throws Exception {
     Path tempFile = Files.createTempFile("", "");
 
     fileUtils.deleteDir(tempFile);
@@ -52,7 +47,7 @@ public class FileUtilsIntegrationTest {
   }
 
   @Test
-  public void deletesDirectory() throws Exception {
+  void deletesDirectory() throws Exception {
     Path tempDirectory = Files.createTempDirectory("");
 
     fileUtils.deleteDir(tempDirectory);
@@ -62,7 +57,7 @@ public class FileUtilsIntegrationTest {
 
 
   @Test
-  public void recursivelyDeletesFiles() throws Exception {
+  void recursivelyDeletesFiles() throws Exception {
     Path tempDirectory = Files.createTempDirectory("");
     Files.createTempFile(tempDirectory, "", "");
 
@@ -72,7 +67,7 @@ public class FileUtilsIntegrationTest {
   }
 
   @Test
-  public void recursivelyDeletesDirectories() throws Exception {
+  void recursivelyDeletesDirectories() throws Exception {
     Path tempDirectory = Files.createTempDirectory("");
     Files.createTempDirectory(tempDirectory, "");
 

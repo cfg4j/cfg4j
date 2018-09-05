@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Norbert Potocki (norbert.potocki@nort.pl)
+ * Copyright 2015-2018 Norbert Potocki (norbert.potocki@nort.pl)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,54 +19,48 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import org.cfg4j.source.context.environment.Environment;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-
-@RunWith(MockitoJUnitRunner.class)
-public class FirstTokenBranchResolverTest {
-
-  @Rule
-  public ExpectedException expectedException = ExpectedException.none();
+@ExtendWith(MockitoExtension.class)
+class FirstTokenBranchResolverTest {
 
   @Mock
   private Environment environment;
 
   private FirstTokenBranchResolver branchResolver;
 
-  @Before
-  public void setUp() throws Exception {
+  @BeforeEach
+  void setUp() {
     branchResolver = new FirstTokenBranchResolver();
   }
 
   @Test
-  public void resolvesEmptyStringToMaster() throws Exception {
+  void resolvesEmptyStringToMaster() {
     when(environment.getName()).thenReturn("");
 
     assertThat(branchResolver.getBranchNameFor(environment)).isEqualTo("master");
   }
 
   @Test
-  public void resolvesWhitespacesToMaster() throws Exception {
+  void resolvesWhitespacesToMaster() {
     when(environment.getName()).thenReturn("   ");
 
     assertThat(branchResolver.getBranchNameFor(environment)).isEqualTo("master");
   }
 
   @Test
-  public void supportsSingleToken() throws Exception {
+  void supportsSingleToken() {
     when(environment.getName()).thenReturn("us-west-1");
 
     assertThat(branchResolver.getBranchNameFor(environment)).isEqualTo("us-west-1");
   }
 
   @Test
-  public void usesFirstTokenAsBranchName() throws Exception {
+  void usesFirstTokenAsBranchName() {
     when(environment.getName()).thenReturn("us-west-1/local/path");
 
     assertThat(branchResolver.getBranchNameFor(environment)).isEqualTo("us-west-1");

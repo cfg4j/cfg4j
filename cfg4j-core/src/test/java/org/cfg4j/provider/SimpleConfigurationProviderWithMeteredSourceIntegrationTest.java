@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Norbert Potocki (norbert.potocki@nort.pl)
+ * Copyright 2015-2018 Norbert Potocki (norbert.potocki@nort.pl)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,25 +21,20 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.codahale.metrics.MetricRegistry;
 import org.cfg4j.source.ConfigurationSource;
 import org.cfg4j.source.inmemory.InMemoryConfigurationSource;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.junit.jupiter.api.Test;
 
 import java.util.Properties;
 
 
-@RunWith(MockitoJUnitRunner.class)
-public class SimpleConfigurationProviderWithMeteredSourceIntegrationTest {
+class SimpleConfigurationProviderWithMeteredSourceIntegrationTest {
 
-  @Rule
-  public ExpectedException expectedException = ExpectedException.none();
+
+
 
   private MetricRegistry metricRegistry = new MetricRegistry();
 
   @Test
-  public void emitsMetrics() throws Exception {
+  void emitsMetrics() {
     ConfigurationProvider provider = getConfigurationProvider();
 
     provider.getProperty("some.setting", Boolean.class);

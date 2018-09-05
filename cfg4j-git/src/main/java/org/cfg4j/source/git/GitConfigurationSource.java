@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Norbert Potocki (norbert.potocki@nort.pl)
+ * Copyright 2015-2018 Norbert Potocki (norbert.potocki@nort.pl)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -168,9 +168,11 @@ class GitConfigurationSource implements ConfigurationSource, Closeable {
 
   @Override
   public void close() throws IOException {
-    LOG.debug("Closing local repository: " + clonedRepoPath);
-    clonedRepo.close();
-    new FileUtils().deleteDir(clonedRepoPath);
+    if (clonedRepo != null) {
+      LOG.debug("Closing local repository: " + clonedRepoPath);
+      clonedRepo.close();
+      new FileUtils().deleteDir(clonedRepoPath);
+    }
   }
 
   private void checkoutToBranch(String branch) throws GitAPIException {

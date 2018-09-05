@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Norbert Potocki (norbert.potocki@nort.pl)
+ * Copyright 2015-2018 Norbert Potocki (norbert.potocki@nort.pl)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,26 +16,26 @@
 
 package org.cfg4j.validator;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-@RunWith(MockitoJUnitRunner.class)
-public class BindingValidatorTest {
 
-  public interface ConfigPojo {
+@ExtendWith(MockitoExtension.class)
+class BindingValidatorTest {
+
+  interface ConfigPojo {
     Integer someSetting();
 
     List<Boolean> otherSetting();
@@ -46,19 +46,18 @@ public class BindingValidatorTest {
   @Mock
   private ConfigPojo configPojo;
 
-  @Rule
-  public ExpectedException expectedException = ExpectedException.none();
 
-  @Before
-  public void setUp() throws Exception {
+  @BeforeEach
+  void setUp() {
     bindingValidator = new BindingValidator();
 
     when(configPojo.someSetting()).thenReturn(0);
-    when(configPojo.otherSetting()).thenReturn(Collections.<Boolean>emptyList());
   }
 
   @Test
-  public void invokesAllMethods() throws Exception {
+  void invokesAllMethods() {
+    when(configPojo.otherSetting()).thenReturn(Collections.<Boolean>emptyList());
+
     bindingValidator.validate(configPojo, ConfigPojo.class);
 
     verify(configPojo, times(1)).someSetting();
@@ -66,26 +65,23 @@ public class BindingValidatorTest {
   }
 
   @Test
-  public void propagatesNoSuchElementExceptionsFromInvocation() throws Exception {
+  void propagatesNoSuchElementExceptionsFromInvocation() {
     when(configPojo.someSetting()).thenThrow(NoSuchElementException.class);
 
-    expectedException.expect(NoSuchElementException.class);
-    bindingValidator.validate(configPojo, ConfigPojo.class);
+    assertThatThrownBy(() -> bindingValidator.validate(configPojo, ConfigPojo.class)).isExactlyInstanceOf(NoSuchElementException.class);
   }
 
   @Test
-  public void propagatesIllegalArgumentExceptionsFromInvocation() throws Exception {
+  void propagatesIllegalArgumentExceptionsFromInvocation() {
     when(configPojo.someSetting()).thenThrow(IllegalArgumentException.class);
 
-    expectedException.expect(IllegalArgumentException.class);
-    bindingValidator.validate(configPojo, ConfigPojo.class);
+    assertThatThrownBy(() -> bindingValidator.validate(configPojo, ConfigPojo.class)).isExactlyInstanceOf(IllegalArgumentException.class);
   }
 
   @Test
-  public void throwsOnOtherExceptions() throws Exception {
-    when(configPojo.someSetting()).thenThrow(IllegalAccessException.class);
+  void throwsOnOtherExceptions() {
+    when(configPojo.someSetting()).thenThrow(IllegalStateException.class);
 
-    expectedException.expect(IllegalStateException.class);
-    bindingValidator.validate(configPojo, ConfigPojo.class);
+    assertThatThrownBy(() -> bindingValidator.validate(configPojo, ConfigPojo.class)).isExactlyInstanceOf(IllegalStateException.class);
   }
 }

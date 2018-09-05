@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Norbert Potocki (norbert.potocki@nort.pl)
+ * Copyright 2015-2018 Norbert Potocki (norbert.potocki@nort.pl)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,21 +21,15 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import org.cfg4j.source.reload.Reloadable;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.concurrent.TimeUnit;
 
-
-@RunWith(MockitoJUnitRunner.class)
-public class PeriodicalReloadStrategyTest {
-
-  @Rule
-  public ExpectedException expectedException = ExpectedException.none();
+@ExtendWith(MockitoExtension.class)
+class PeriodicalReloadStrategyTest {
 
   @Mock
   private Reloadable reloadable;
@@ -44,7 +38,7 @@ public class PeriodicalReloadStrategyTest {
   private Reloadable reloadable2;
 
   @Test
-  public void reloadsImmediatelyAfterRegistered() throws Exception {
+  void reloadsImmediatelyAfterRegistered() {
     PeriodicalReloadStrategy strategy = new PeriodicalReloadStrategy(60, TimeUnit.SECONDS);
 
     strategy.register(reloadable);
@@ -54,7 +48,7 @@ public class PeriodicalReloadStrategyTest {
   }
 
   @Test
-  public void suppressesException() throws Exception {
+  void suppressesException() {
     doThrow(new IllegalStateException()).when(reloadable).reload();
     PeriodicalReloadStrategy strategy = new PeriodicalReloadStrategy(60, TimeUnit.SECONDS);
 

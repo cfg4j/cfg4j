@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Norbert Potocki (norbert.potocki@nort.pl)
+ * Copyright 2015-2018 Norbert Potocki (norbert.potocki@nort.pl)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,18 +16,17 @@
 package org.cfg4j.provider;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Properties;
 
-@RunWith(MockitoJUnitRunner.class)
-public class SimpleConfigurationProviderBindTest extends SimpleConfigurationProviderAbstractTest {
+
+class SimpleConfigurationProviderBindTest extends SimpleConfigurationProviderAbstractTest {
 
   public interface ConfigPojo {
     Integer someSetting();
@@ -38,31 +37,28 @@ public class SimpleConfigurationProviderBindTest extends SimpleConfigurationProv
   }
 
   @Test
-  public void bindThrowsWhenFetchingNonexistentKey() throws Exception {
+  void bindThrowsWhenFetchingNonexistentKey() {
     when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(new Properties());
 
-    expectedException.expect(NoSuchElementException.class);
-    simpleConfigurationProvider.bind("", ConfigPojo.class);
+    assertThatThrownBy(() -> simpleConfigurationProvider.bind("", ConfigPojo.class)).isExactlyInstanceOf(NoSuchElementException.class);
   }
 
   @Test
-  public void bindThrowsWhenUnableToFetchKey() throws Exception {
+  void bindThrowsWhenUnableToFetchKey() {
     when(configurationSource.getConfiguration(anyEnvironment())).thenThrow(IllegalStateException.class);
 
-    expectedException.expect(IllegalStateException.class);
-    simpleConfigurationProvider.bind("", ConfigPojo.class);
+    assertThatThrownBy(() -> simpleConfigurationProvider.bind("", ConfigPojo.class)).isExactlyInstanceOf(IllegalStateException.class);
   }
 
   @Test
-  public void bindThrowsOnIncompatibleConversion() throws Exception {
+  void bindThrowsOnIncompatibleConversion() {
     when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(propertiesWith("someSetting", "shouldBeNumber"));
 
-    expectedException.expect(IllegalArgumentException.class);
-    simpleConfigurationProvider.bind("", ConfigPojo.class);
+    assertThatThrownBy(() -> simpleConfigurationProvider.bind("", ConfigPojo.class)).isExactlyInstanceOf(IllegalArgumentException.class);
   }
 
   @Test
-  public void bindsAllInterfaceMethods() throws Exception {
+  void bindsAllInterfaceMethods() {
     when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(propertiesWith("someSetting", "42", "otherSetting", "true,false"));
 
     MultiPropertyConfigPojo config = simpleConfigurationProvider.bind("", MultiPropertyConfigPojo.class);
@@ -71,7 +67,7 @@ public class SimpleConfigurationProviderBindTest extends SimpleConfigurationProv
   }
 
   @Test
-  public void bindsInitialValues() throws Exception {
+  void bindsInitialValues() {
     when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(propertiesWith("someSetting", "42"));
 
     ConfigPojo config = simpleConfigurationProvider.bind("", ConfigPojo.class);
@@ -79,7 +75,7 @@ public class SimpleConfigurationProviderBindTest extends SimpleConfigurationProv
   }
 
   @Test
-  public void bindsInitialValuesInSubPath() throws Exception {
+  void bindsInitialValuesInSubPath() {
     when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(propertiesWith("myContext.someSetting", "42"));
 
     ConfigPojo config = simpleConfigurationProvider.bind("myContext", ConfigPojo.class);
@@ -87,7 +83,7 @@ public class SimpleConfigurationProviderBindTest extends SimpleConfigurationProv
   }
 
   @Test
-  public void reactsToSourceChanges() throws Exception {
+  void reactsToSourceChanges() {
     when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(propertiesWith("someSetting", "42"));
     ConfigPojo config = simpleConfigurationProvider.bind("", ConfigPojo.class);
 

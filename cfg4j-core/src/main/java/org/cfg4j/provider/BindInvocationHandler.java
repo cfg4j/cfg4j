@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Norbert Potocki (norbert.potocki@nort.pl)
+ * Copyright 2015-2018 Norbert Potocki (norbert.potocki@nort.pl)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,12 +58,7 @@ class BindInvocationHandler implements InvocationHandler {
     }
 
     final Type returnType = method.getGenericReturnType();
-    return simpleConfigurationProvider.getProperty(prefix + (prefix.isEmpty() ? "" : ".") + method.getName(), new GenericTypeInterface() {
-      @Override
-      public Type getType() {
-        return returnType;
-      }
-    });
+    return simpleConfigurationProvider.getProperty(prefix + (prefix.isEmpty() ? "" : ".") + method.getName(), () -> returnType);
   }
 
   /**

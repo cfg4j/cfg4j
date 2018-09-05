@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Norbert Potocki (norbert.potocki@nort.pl)
+ * Copyright 2015-2018 Norbert Potocki (norbert.potocki@nort.pl)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,16 +17,13 @@ package org.cfg4j.source.context.environment;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.junit.jupiter.api.Test;
 
 
-@RunWith(MockitoJUnitRunner.class)
-public class DefaultEnvironmentTest {
+class DefaultEnvironmentTest {
 
   @Test
-  public void usesEmptyStringAsEnvName() throws Exception {
+  void usesEmptyStringAsEnvName() {
     assertThat(new DefaultEnvironment().getName()).isEmpty();
   }
 }

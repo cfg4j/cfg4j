@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Norbert Potocki (norbert.potocki@nort.pl)
+ * Copyright 2015-2018 Norbert Potocki (norbert.potocki@nort.pl)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,54 +19,48 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import org.cfg4j.source.context.environment.Environment;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-
-@RunWith(MockitoJUnitRunner.class)
-public class AllButFirstTokenPathResolverTest {
-
-  @Rule
-  public ExpectedException expectedException = ExpectedException.none();
+@ExtendWith(MockitoExtension.class)
+class AllButFirstTokenPathResolverTest {
 
   @Mock
   private Environment environment;
 
   private AllButFirstTokenPathResolver pathResolver;
 
-  @Before
-  public void setUp() throws Exception {
+  @BeforeEach
+  void setUp() {
     pathResolver = new AllButFirstTokenPathResolver();
   }
 
   @Test
-  public void resolvesEmptyStringToEmptyPath() throws Exception {
+  void resolvesEmptyStringToEmptyPath() {
     when(environment.getName()).thenReturn("us-west-1/");
 
     assertThat(pathResolver.getPathFor(environment).toString()).isEqualTo("");
   }
 
   @Test
-  public void discardsFirstToken() throws Exception {
+  void discardsFirstToken() {
     when(environment.getName()).thenReturn("us-west-1/local/path");
 
     assertThat(pathResolver.getPathFor(environment).toString()).isEqualTo("local/path");
   }
 
   @Test
-  public void ignoresMissingFirstToken() throws Exception {
+  void ignoresMissingFirstToken() {
     when(environment.getName()).thenReturn("/local/path");
 
     assertThat(pathResolver.getPathFor(environment).toString()).isEqualTo("local/path");
   }
 
   @Test
-  public void treatsMissingPathAsEmptyPath() throws Exception {
+  void treatsMissingPathAsEmptyPath() {
     when(environment.getName()).thenReturn("us-west-1/");
 
     assertThat(pathResolver.getPathFor(environment).toString()).isEqualTo("");

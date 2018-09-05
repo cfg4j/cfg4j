@@ -175,6 +175,12 @@ class GitConfigurationSourceIntegrationTest {
     }
   }
 
+  @Test
+  void closeSucceedsWhenInitFails() throws Exception {
+    GitConfigurationSource gitConfigurationSource = getSourceBuilderForRemoteRepoWithDefaults().build();
+    gitConfigurationSource.close();
+  }
+
   private GitConfigurationSource getSourceForRemoteRepoWithDefaults() {
     GitConfigurationSource source = getSourceBuilderForRemoteRepoWithDefaults().build();
     source.init();

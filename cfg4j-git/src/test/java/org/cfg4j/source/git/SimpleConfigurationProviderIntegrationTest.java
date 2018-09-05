@@ -33,18 +33,18 @@ class SimpleConfigurationProviderIntegrationTest {
   private TempConfigurationGitRepo remoteRepo;
 
   @BeforeEach
-  public void setUp() throws Exception {
+  void setUp() throws Exception {
     remoteRepo = new TempConfigurationGitRepo("org.cfg4j-test-repo.git");
     remoteRepo.changeProperty(Paths.get("application.properties"), "some.setting", "masterValue");
   }
 
   @AfterEach
-  public void tearDown() {
+  void tearDown() {
     remoteRepo.remove();
   }
 
   @Test
-  public void readsConfigsFromGitConfigurationSource() {
+  void readsConfigsFromGitConfigurationSource() {
     ConfigurationSource source = new GitConfigurationSourceBuilder()
         .withRepositoryURI(remoteRepo.dirPath.toString())
         .build();

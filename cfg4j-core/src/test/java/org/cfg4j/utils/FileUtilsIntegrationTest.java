@@ -33,12 +33,12 @@ class FileUtilsIntegrationTest {
   private FileUtils fileUtils;
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     fileUtils = new FileUtils();
   }
 
   @Test
-  public void deletesFile() throws Exception {
+  void deletesFile() throws Exception {
     Path tempFile = Files.createTempFile("", "");
 
     fileUtils.deleteDir(tempFile);
@@ -47,7 +47,7 @@ class FileUtilsIntegrationTest {
   }
 
   @Test
-  public void deletesDirectory() throws Exception {
+  void deletesDirectory() throws Exception {
     Path tempDirectory = Files.createTempDirectory("");
 
     fileUtils.deleteDir(tempDirectory);
@@ -57,7 +57,7 @@ class FileUtilsIntegrationTest {
 
 
   @Test
-  public void recursivelyDeletesFiles() throws Exception {
+  void recursivelyDeletesFiles() throws Exception {
     Path tempDirectory = Files.createTempDirectory("");
     Files.createTempFile(tempDirectory, "", "");
 
@@ -67,7 +67,7 @@ class FileUtilsIntegrationTest {
   }
 
   @Test
-  public void recursivelyDeletesDirectories() throws Exception {
+  void recursivelyDeletesDirectories() throws Exception {
     Path tempDirectory = Files.createTempDirectory("");
     Files.createTempDirectory(tempDirectory, "");
 

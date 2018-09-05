@@ -33,12 +33,12 @@ class JsonBasedPropertiesProviderTest {
   private JsonBasedPropertiesProvider provider;
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     provider = new JsonBasedPropertiesProvider();
   }
 
   @Test
-  public void readsSingleValues() throws Exception {
+  void readsSingleValues() throws Exception {
     String path = "org/cfg4j/source/propertiesprovider/JsonBasedPropertiesProviderTest_readsSingleValues.json";
 
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
@@ -48,7 +48,7 @@ class JsonBasedPropertiesProviderTest {
   }
 
   @Test
-  public void readsNestedValues() throws Exception {
+  void readsNestedValues() throws Exception {
     String path = "org/cfg4j/source/propertiesprovider/JsonBasedPropertiesProviderTest_readsNestedValues.json";
 
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
@@ -58,7 +58,7 @@ class JsonBasedPropertiesProviderTest {
   }
 
   @Test
-  public void readsLists() throws Exception {
+  void readsLists() throws Exception {
     String path = "org/cfg4j/source/propertiesprovider/JsonBasedPropertiesProviderTest_readsLists.json";
 
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
@@ -68,7 +68,7 @@ class JsonBasedPropertiesProviderTest {
   }
 
   @Test
-  public void readsTextBlock() throws Exception {
+  void readsTextBlock() throws Exception {
     String path = "org/cfg4j/source/propertiesprovider/JsonBasedPropertiesProviderTest_readsTextBlock.json";
 
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
@@ -77,7 +77,7 @@ class JsonBasedPropertiesProviderTest {
   }
 
   @Test
-  public void throwsForNonJsonFile() throws Exception {
+  void throwsForNonJsonFile() throws Exception {
     String path = "org/cfg4j/source/propertiesprovider/JsonBasedPropertiesProviderTest_throwsForNonJsonFile.json";
 
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
@@ -87,7 +87,7 @@ class JsonBasedPropertiesProviderTest {
   }
 
   @Test
-  public void throwsOnNullInput() throws Exception {
+  void throwsOnNullInput() throws Exception {
     String path = "org/cfg4j/source/propertiesprovider/nonexistent.json";
 
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {

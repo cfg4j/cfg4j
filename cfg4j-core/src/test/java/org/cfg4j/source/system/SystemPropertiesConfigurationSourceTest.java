@@ -33,34 +33,34 @@ class SystemPropertiesConfigurationSourceTest {
   private SystemPropertiesConfigurationSource source;
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     source = new SystemPropertiesConfigurationSource();
     source.init();
   }
 
   @Test
-  public void returnsOSName() {
+  void returnsOSName() {
     assertThat(source.getConfiguration(new DefaultEnvironment())).containsKey("os.name");
   }
 
   @Test
-  public void returnsOsNameForAnyEnvironment() {
+  void returnsOsNameForAnyEnvironment() {
     assertThat(source.getConfiguration(mock(Environment.class))).containsKey("os.name");
   }
 
   @Test
-  public void doesNotReturnUndefinedKeys() {
+  void doesNotReturnUndefinedKeys() {
     assertThat(source.getConfiguration(new DefaultEnvironment())).doesNotContainKey("missing.property");
   }
 
   @Test
-  public void returnsManuallyDefinedKeys() {
+  void returnsManuallyDefinedKeys() {
     System.setProperty("manually.added.property", "defined");
     assertThat(source.getConfiguration(new DefaultEnvironment())).containsKey("manually.added.property");
   }
 
   @Test
-  public void returnsManuallyDefinedKeysAfterReload() {
+  void returnsManuallyDefinedKeysAfterReload() {
     assertThat(source.getConfiguration(new DefaultEnvironment())).doesNotContainKey("reloaded.property");
     System.setProperty("reloaded.property", "defined");
     assertThat(source.getConfiguration(new DefaultEnvironment())).containsKey("reloaded.property");

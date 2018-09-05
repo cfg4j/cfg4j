@@ -25,7 +25,7 @@ import java.nio.file.Paths;
 class DefaultConfigFilesProviderTest {
 
   @Test
-  public void providesDefaultConfigFile() {
+  void providesDefaultConfigFile() {
     DefaultConfigFilesProvider provider = new DefaultConfigFilesProvider();
     assertThat(provider.getConfigFiles()).containsExactly(Paths.get("application.properties"));
   }

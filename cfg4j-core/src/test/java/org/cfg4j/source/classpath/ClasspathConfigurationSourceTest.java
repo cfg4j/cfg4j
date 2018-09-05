@@ -45,7 +45,7 @@ class ClasspathConfigurationSourceTest {
   private ClasspathConfigurationSource source;
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     classpathRepo = new TempConfigurationClasspathRepo();
 
     source = new ClasspathConfigurationSource();
@@ -53,19 +53,19 @@ class ClasspathConfigurationSourceTest {
   }
 
   @AfterEach
-  public void tearDown() throws Exception {
+  void tearDown() throws Exception {
     classpathRepo.close();
   }
 
   @Test
-  public void getConfigurationReadsFromGivenPath() {
+  void getConfigurationReadsFromGivenPath() {
     Environment environment = new ImmutableEnvironment("otherApplicationConfigs");
 
     assertThat(source.getConfiguration(environment)).containsOnly(MapEntry.entry("some.setting", "otherAppSetting"));
   }
 
   @Test
-  public void getConfigurationDisallowsLeadingSlashInClasspathLocation() {
+  void getConfigurationDisallowsLeadingSlashInClasspathLocation() {
     Environment environment = new ImmutableEnvironment("/otherApplicationConfigs");
 
     // FIXME: expectedException.expect(MissingEnvironmentException.class);
@@ -73,7 +73,7 @@ class ClasspathConfigurationSourceTest {
   }
 
   @Test
-  public void getConfigurationReadsFromGivenFiles() {
+  void getConfigurationReadsFromGivenFiles() {
     configFilesProvider = new ConfigFilesProvider() {
       @Override
       public Iterable<Path> getConfigFiles() {
@@ -89,13 +89,13 @@ class ClasspathConfigurationSourceTest {
   }
 
   @Test
-  public void getConfigurationThrowsOnMissingEnvironment() {
+  void getConfigurationThrowsOnMissingEnvironment() {
     // FIXME: expectedException.expect(MissingEnvironmentException.class);
     source.getConfiguration(new ImmutableEnvironment("awlerijawoetinawwerlkjn"));
   }
 
   @Test
-  public void getConfigurationThrowsOnMissingConfigFile() {
+  void getConfigurationThrowsOnMissingConfigFile() {
     configFilesProvider = new ConfigFilesProvider() {
       @Override
       public Iterable<Path> getConfigFiles() {
@@ -112,7 +112,7 @@ class ClasspathConfigurationSourceTest {
   }
 
   @Test
-  public void getConfigurationThrowsOnMalformedConfigFile() {
+  void getConfigurationThrowsOnMalformedConfigFile() {
     configFilesProvider = new ConfigFilesProvider() {
       @Override
       public Iterable<Path> getConfigFiles() {

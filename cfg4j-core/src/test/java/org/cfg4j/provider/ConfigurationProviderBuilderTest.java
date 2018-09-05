@@ -33,12 +33,12 @@ class ConfigurationProviderBuilderTest {
   private ConfigurationProviderBuilder builder;
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     builder = new ConfigurationProviderBuilder();
   }
 
   @Test
-  public void initializesStrategyOnBuild() {
+  void initializesStrategyOnBuild() {
     ReloadStrategy reloadStrategy = mock(ReloadStrategy.class);
     builder
         .withReloadStrategy(reloadStrategy)

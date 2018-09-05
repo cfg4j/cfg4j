@@ -34,7 +34,7 @@ class SimpleConfigurationProviderWithMeteredSourceIntegrationTest {
   private MetricRegistry metricRegistry = new MetricRegistry();
 
   @Test
-  public void emitsMetrics() {
+  void emitsMetrics() {
     ConfigurationProvider provider = getConfigurationProvider();
 
     provider.getProperty("some.setting", Boolean.class);

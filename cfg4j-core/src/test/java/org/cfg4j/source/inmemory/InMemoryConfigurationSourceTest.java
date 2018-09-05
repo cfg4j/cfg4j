@@ -34,7 +34,7 @@ class InMemoryConfigurationSourceTest {
   private Properties properties;
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     properties = new Properties();
     properties.put("sample.setting", "value");
 
@@ -43,7 +43,7 @@ class InMemoryConfigurationSourceTest {
   }
 
   @Test
-  public void returnsSourceProperties() {
+  void returnsSourceProperties() {
     assertThat(source.getConfiguration(new DefaultEnvironment())).isEqualTo(properties);
   }
 

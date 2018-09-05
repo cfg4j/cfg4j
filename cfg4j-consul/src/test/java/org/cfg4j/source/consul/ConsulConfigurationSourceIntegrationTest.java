@@ -31,7 +31,7 @@ import java.util.concurrent.TimeUnit;
 
 
 
-public class ConsulConfigurationSourceIntegrationTest {
+class ConsulConfigurationSourceIntegrationTest {
 
   private static final String PING_RESPONSE = "\n" +
       "{\"Config\":{\"Bootstrap\":true,\"BootstrapExpect\":0,\"Server\":true,\"Datacenter\":\"dc1\",\"DataDir\":\"/tmp/consul\",\"DNSRecursor\":\"\",\"DNSRecursors\":[],\"DNSConfig\":{\"NodeTTL\":0,\"ServiceTTL\":null,\"AllowStale\":false,\"EnableTruncate\":false,\"MaxStale\":5000000000,\"OnlyPassing\":false},\"Domain\":\"consul.\",\"LogLevel\":\"INFO\",\"NodeName\":\"receivehead-lm\",\"ClientAddr\":\"127.0.0.1\",\"BindAddr\":\"0.0.0.0\",\"AdvertiseAddr\":\"192.168.0.4\",\"Ports\":{\"DNS\":8600,\"HTTP\":8500,\"HTTPS\":-1,\"RPC\":8400,\"SerfLan\":8301,\"SerfWan\":8302,\"Server\":8300},\"Addresses\":{\"DNS\":\"\",\"HTTP\":\"\",\"HTTPS\":\"\",\"RPC\":\"\"},\"LeaveOnTerm\":false,\"SkipLeaveOnInt\":false,\"StatsiteAddr\":\"\",\"StatsdAddr\":\"\",\"Protocol\":2,\"EnableDebug\":false,\"VerifyIncoming\":false,\"VerifyOutgoing\":false,\"CAFile\":\"\",\"CertFile\":\"\",\"KeyFile\":\"\",\"ServerName\":\"\",\"StartJoin\":[],\"StartJoinWan\":[],\"RetryJoin\":[],\"RetryMaxAttempts\":0,\"RetryIntervalRaw\":\"\",\"RetryJoinWan\":[],\"RetryMaxAttemptsWan\":0,\"RetryIntervalWanRaw\":\"\",\"UiDir\":\"\",\"PidFile\":\"\",\"EnableSyslog\":false,\"SyslogFacility\":\"LOCAL0\",\"RejoinAfterLeave\":false,\"CheckUpdateInterval\":300000000000,\"ACLDatacenter\":\"\",\"ACLTTL\":30000000000,\"ACLTTLRaw\":\"\",\"ACLDefaultPolicy\":\"allow\",\"ACLDownPolicy\":\"extend-cache\",\"Watches\":null,\"DisableRemoteExec\":false,\"DisableUpdateCheck\":false,\"DisableAnonymousSignature\":false,\"HTTPAPIResponseHeaders\":null,\"AtlasInfrastructure\":\"\",\"AtlasJoin\":false,\"Revision\":\"0c7ca91c74587d0a378831f63e189ac6bf7bab3f+CHANGES\",\"Version\":\"0.5.0\",\"VersionPrerelease\":\"\",\"UnixSockets\":{\"Usr\":\"\",\"Grp\":\"\",\"Perms\":\"\"}},\"Member\":{\"Name\":\"receivehead-lm\",\"Addr\":\"192.168.0.4\",\"Port\":8301,\"Tags\":{\"bootstrap\":\"1\",\"build\":\"0.5.0:0c7ca91c\",\"dc\":\"dc1\",\"port\":\"8300\",\"role\":\"consul\",\"vsn\":\"2\",\"vsn_max\":\"2\",\"vsn_min\":\"1\"},\"Status\":1,\"ProtocolMin\":1,\"ProtocolMax\":2,\"ProtocolCur\":2,\"DelegateMin\":2,\"DelegateMax\":4,\"DelegateCur\":4}}";
@@ -72,7 +72,7 @@ public class ConsulConfigurationSourceIntegrationTest {
 
 
   @BeforeEach
-  public void setUp() throws Exception {
+  void setUp() throws Exception {
     dispatcher = new ModifiableDispatcher();
     runMockServer();
     source = new ConsulConfigurationSourceBuilder()
@@ -84,18 +84,18 @@ public class ConsulConfigurationSourceIntegrationTest {
   }
 
   @AfterEach
-  public void tearDown() throws Exception {
+  void tearDown() throws Exception {
     server.shutdown();
   }
 
   @Test
-  public void connectsToSpecifiedAgent() throws Exception {
+  void connectsToSpecifiedAgent() throws Exception {
     RecordedRequest request = server.takeRequest(0, TimeUnit.MILLISECONDS);
     assertThat(request).isNotNull();
   }
 
   @Test
-  public void initThrowsOnConnectionFailure() throws Exception {
+  void initThrowsOnConnectionFailure() throws Exception {
     server.shutdown();
     source = new ConsulConfigurationSourceBuilder()
         .withHost(server.getHostName())
@@ -107,21 +107,21 @@ public class ConsulConfigurationSourceIntegrationTest {
   }
 
   @Test
-  public void getConfigurationReturnsAllKeysFromGivenEnvironment() {
+  void getConfigurationReturnsAllKeysFromGivenEnvironment() {
     Environment environment = new ImmutableEnvironment("us-west-1");
 
     assertThat(source.getConfiguration(environment)).contains(MapEntry.entry("featureA.toggle", "disabled"));
   }
 
   @Test
-  public void getConfigurationIgnoresLeadingSlashInGivenEnvironment() {
+  void getConfigurationIgnoresLeadingSlashInGivenEnvironment() {
     Environment environment = new ImmutableEnvironment("/us-west-1");
 
     assertThat(source.getConfiguration(environment)).contains(MapEntry.entry("featureA.toggle", "disabled"));
   }
 
   @Test
-  public void getConfigurationThrowsBeforeInitCalled() {
+  void getConfigurationThrowsBeforeInitCalled() {
     source = new ConsulConfigurationSourceBuilder()
         .withHost(server.getHostName())
         .withPort(server.getPort())
@@ -132,7 +132,7 @@ public class ConsulConfigurationSourceIntegrationTest {
   }
 
   @Test
-  public void getConfigurationThrowsAfterFailedReload() throws Exception {
+  void getConfigurationThrowsAfterFailedReload() throws Exception {
     server.shutdown();
     try {
       source.getConfiguration(new ImmutableEnvironment("us-west-2"));

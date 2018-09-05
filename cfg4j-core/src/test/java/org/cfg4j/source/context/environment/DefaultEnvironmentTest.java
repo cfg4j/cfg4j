@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 class DefaultEnvironmentTest {
 
   @Test
-  public void usesEmptyStringAsEnvName() {
+  void usesEmptyStringAsEnvName() {
     assertThat(new DefaultEnvironment().getName()).isEmpty();
   }
 }

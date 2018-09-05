@@ -56,7 +56,7 @@ class MeteredConfigurationSourceTest {
   private MeteredConfigurationSource source;
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     Timer timer = mock(Timer.class);
     when(timer.time()).thenReturn(mock(Timer.Context.class));
     when(metricRegistry.timer(anyString())).thenReturn(timer);
@@ -66,7 +66,7 @@ class MeteredConfigurationSourceTest {
   }
 
   @Test
-  public void getConfigurationCallsDelegate() {
+  void getConfigurationCallsDelegate() {
     Properties properties = new Properties();
     when(delegate.getConfiguration(any(Environment.class))).thenReturn(properties);
 
@@ -74,7 +74,7 @@ class MeteredConfigurationSourceTest {
   }
 
   @Test
-  public void getConfigurationPropagatesMissingEnvironmentExceptions() {
+  void getConfigurationPropagatesMissingEnvironmentExceptions() {
     when(delegate.getConfiguration(any(Environment.class))).thenThrow(new MissingEnvironmentException(""));
 
     // FIXME: expectedException.expect(MissingEnvironmentException.class);
@@ -82,7 +82,7 @@ class MeteredConfigurationSourceTest {
   }
 
   @Test
-  public void getConfigurationPropagatesIllegalStateExceptions() {
+  void getConfigurationPropagatesIllegalStateExceptions() {
     when(delegate.getConfiguration(any(Environment.class))).thenThrow(new IllegalStateException(""));
 
     // FIXME: expectedException.expect(IllegalStateException.class);
@@ -90,12 +90,12 @@ class MeteredConfigurationSourceTest {
   }
 
   @Test
-  public void initCallsDelegate() {
+  void initCallsDelegate() {
     verify(delegate, times(1)).init();
   }
 
   @Test
-  public void initPropagatesIllegalStateExceptions() {
+  void initPropagatesIllegalStateExceptions() {
     doThrow(new IllegalStateException("")).when(delegate).init();
 
     // FIXME: expectedException.expect(IllegalStateException.class);
@@ -103,7 +103,7 @@ class MeteredConfigurationSourceTest {
   }
 
   @Test
-  public void initPropagatesSourceCommunicationExceptions() {
+  void initPropagatesSourceCommunicationExceptions() {
     doThrow(new SourceCommunicationException("", null)).when(delegate).init();
 
     // FIXME: expectedException.expect(SourceCommunicationException.class);

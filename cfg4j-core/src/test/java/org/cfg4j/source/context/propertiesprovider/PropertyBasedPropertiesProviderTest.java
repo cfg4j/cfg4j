@@ -33,12 +33,12 @@ class PropertyBasedPropertiesProviderTest {
   private PropertyBasedPropertiesProvider provider;
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     provider = new PropertyBasedPropertiesProvider();
   }
 
   @Test
-  public void loadsProperties() throws Exception {
+  void loadsProperties() throws Exception {
     String path = "org/cfg4j/source/propertiesprovider/PropertyBasedPropertiesProviderTest_loadsProperties.properties";
 
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
@@ -47,7 +47,7 @@ class PropertyBasedPropertiesProviderTest {
   }
 
   @Test
-  public void throwsOnMalformedFile() throws Exception {
+  void throwsOnMalformedFile() throws Exception {
     String path = "org/cfg4j/source/propertiesprovider/PropertyBasedPropertiesProviderTest_throwsOnMalformedFile.properties";
 
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {

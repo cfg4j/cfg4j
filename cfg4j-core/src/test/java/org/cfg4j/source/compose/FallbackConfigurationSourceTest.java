@@ -45,7 +45,7 @@ class FallbackConfigurationSourceTest {
   private FallbackConfigurationSource fallbackConfigurationSource;
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     underlyingSources = new ConfigurationSource[5];
     for (int i = 0; i < underlyingSources.length; i++) {
       underlyingSources[i] = mock(ConfigurationSource.class);
@@ -56,7 +56,7 @@ class FallbackConfigurationSourceTest {
   }
 
   @Test
-  public void getConfigurationThrowsWhenAllSourcesThrowOnMissingEnvironment() {
+  void getConfigurationThrowsWhenAllSourcesThrowOnMissingEnvironment() {
     makeAllSourcesThrow(new MissingEnvironmentException(""));
 
     // FIXME: expectedException.expect(MissingEnvironmentException.class);
@@ -64,7 +64,7 @@ class FallbackConfigurationSourceTest {
   }
 
   @Test
-  public void getConfigurationThrowsWhenAllSourcesThrow() {
+  void getConfigurationThrowsWhenAllSourcesThrow() {
     makeAllSourcesThrow(new IllegalStateException());
 
     // FIXME: expectedException.expect(IllegalStateException.class);
@@ -72,7 +72,7 @@ class FallbackConfigurationSourceTest {
   }
 
   @Test
-  public void getConfigurationSelectsFirstAvailableConfiguration() {
+  void getConfigurationSelectsFirstAvailableConfiguration() {
     makeAllSourcesThrow(new IllegalStateException());
     underlyingSources[LAST_SOURCE_INDEX] = mock(ConfigurationSource.class);
     when(underlyingSources[LAST_SOURCE_INDEX].getConfiguration(any(Environment.class))).thenReturn(getProps("prop1", "value1")[0]);
@@ -82,14 +82,14 @@ class FallbackConfigurationSourceTest {
   }
 
   @Test
-  public void initInitializesAllSources() {
+  void initInitializesAllSources() {
     for (ConfigurationSource underlyingSource : underlyingSources) {
       verify(underlyingSource, atLeastOnce()).init();
     }
   }
 
   @Test
-  public void initThrowsWhenAllSourcesThrow() {
+  void initThrowsWhenAllSourcesThrow() {
     makeAllSourcesThrow(new IllegalStateException());
 
     // FIXME: expectedException.expect(IllegalStateException.class);
@@ -97,7 +97,7 @@ class FallbackConfigurationSourceTest {
   }
 
   @Test
-  public void initIgnoresIllegalStateExceptionsIfAtLeastOneSourceSucceeds() {
+  void initIgnoresIllegalStateExceptionsIfAtLeastOneSourceSucceeds() {
     makeAllSourcesThrow(new IllegalStateException());
     doNothing().when(underlyingSources[LAST_SOURCE_INDEX]).init();
 
@@ -105,7 +105,7 @@ class FallbackConfigurationSourceTest {
   }
 
   @Test
-  public void initIgnoresSourceCommunicationExceptionsIfAtLeastOneSourceSucceeds() {
+  void initIgnoresSourceCommunicationExceptionsIfAtLeastOneSourceSucceeds() {
     makeAllSourcesThrow(new SourceCommunicationException("", null));
     doNothing().when(underlyingSources[LAST_SOURCE_INDEX]).init();
 

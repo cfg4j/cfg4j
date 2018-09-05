@@ -33,12 +33,12 @@ class YamlBasedPropertiesProviderTest {
   private YamlBasedPropertiesProvider provider;
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     provider = new YamlBasedPropertiesProvider();
   }
 
   @Test
-  public void readsSingleValues() throws Exception {
+  void readsSingleValues() throws Exception {
     String path = "org/cfg4j/source/propertiesprovider/YamlBasedPropertiesProviderTest_readsSingleValues.yaml";
 
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
@@ -48,7 +48,7 @@ class YamlBasedPropertiesProviderTest {
   }
 
   @Test
-  public void readsNestedValues() throws Exception {
+  void readsNestedValues() throws Exception {
     String path = "org/cfg4j/source/propertiesprovider/YamlBasedPropertiesProviderTest_readsNestedValues.yaml";
 
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
@@ -58,7 +58,7 @@ class YamlBasedPropertiesProviderTest {
   }
 
   @Test
-  public void readsLists() throws Exception {
+  void readsLists() throws Exception {
     String path = "org/cfg4j/source/propertiesprovider/YamlBasedPropertiesProviderTest_readsLists.yaml";
 
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
@@ -68,7 +68,7 @@ class YamlBasedPropertiesProviderTest {
   }
 
   @Test
-  public void readsTextBlock() throws Exception {
+  void readsTextBlock() throws Exception {
     String path = "org/cfg4j/source/propertiesprovider/YamlBasedPropertiesProviderTest_readsTextBlock.yaml";
 
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
@@ -77,7 +77,7 @@ class YamlBasedPropertiesProviderTest {
   }
 
   @Test
-  public void supportsReferences() throws Exception {
+  void supportsReferences() throws Exception {
     String path = "org/cfg4j/source/propertiesprovider/YamlBasedPropertiesProviderTest_supportsReferences.yaml";
 
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
@@ -89,7 +89,7 @@ class YamlBasedPropertiesProviderTest {
   }
 
   @Test
-  public void throwsForNonYamlFile() throws Exception {
+  void throwsForNonYamlFile() throws Exception {
     String path = "org/cfg4j/source/propertiesprovider/YamlBasedPropertiesProviderTest_throwsForNonYamlFile.yaml";
 
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
@@ -99,7 +99,7 @@ class YamlBasedPropertiesProviderTest {
   }
 
   @Test
-  public void supportsEmptyDocument() throws Exception {
+  void supportsEmptyDocument() throws Exception {
     String path = "org/cfg4j/source/propertiesprovider/YamlBasedPropertiesProviderTest_supportsEmptyDocument.yaml";
 
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
@@ -108,7 +108,7 @@ class YamlBasedPropertiesProviderTest {
   }
 
   @Test
-  public void throwsOnNullInput() throws Exception {
+  void throwsOnNullInput() throws Exception {
     String path = "org/cfg4j/source/propertiesprovider/nonexistent.json";
 
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {

@@ -35,7 +35,7 @@ class SimpleConfigurationProviderBindTest extends SimpleConfigurationProviderAbs
   }
 
   @Test
-  public void bindThrowsWhenFetchingNonexistentKey() {
+  void bindThrowsWhenFetchingNonexistentKey() {
     when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(new Properties());
 
     // FIXME: expectedException.expect(NoSuchElementException.class);
@@ -43,7 +43,7 @@ class SimpleConfigurationProviderBindTest extends SimpleConfigurationProviderAbs
   }
 
   @Test
-  public void bindThrowsWhenUnableToFetchKey() {
+  void bindThrowsWhenUnableToFetchKey() {
     when(configurationSource.getConfiguration(anyEnvironment())).thenThrow(IllegalStateException.class);
 
     // FIXME: expectedException.expect(IllegalStateException.class);
@@ -51,7 +51,7 @@ class SimpleConfigurationProviderBindTest extends SimpleConfigurationProviderAbs
   }
 
   @Test
-  public void bindThrowsOnIncompatibleConversion() {
+  void bindThrowsOnIncompatibleConversion() {
     when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(propertiesWith("someSetting", "shouldBeNumber"));
 
     // FIXME: expectedException.expect(IllegalArgumentException.class);
@@ -59,7 +59,7 @@ class SimpleConfigurationProviderBindTest extends SimpleConfigurationProviderAbs
   }
 
   @Test
-  public void bindsAllInterfaceMethods() {
+  void bindsAllInterfaceMethods() {
     when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(propertiesWith("someSetting", "42", "otherSetting", "true,false"));
 
     MultiPropertyConfigPojo config = simpleConfigurationProvider.bind("", MultiPropertyConfigPojo.class);
@@ -68,7 +68,7 @@ class SimpleConfigurationProviderBindTest extends SimpleConfigurationProviderAbs
   }
 
   @Test
-  public void bindsInitialValues() {
+  void bindsInitialValues() {
     when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(propertiesWith("someSetting", "42"));
 
     ConfigPojo config = simpleConfigurationProvider.bind("", ConfigPojo.class);
@@ -76,7 +76,7 @@ class SimpleConfigurationProviderBindTest extends SimpleConfigurationProviderAbs
   }
 
   @Test
-  public void bindsInitialValuesInSubPath() {
+  void bindsInitialValuesInSubPath() {
     when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(propertiesWith("myContext.someSetting", "42"));
 
     ConfigPojo config = simpleConfigurationProvider.bind("myContext", ConfigPojo.class);
@@ -84,7 +84,7 @@ class SimpleConfigurationProviderBindTest extends SimpleConfigurationProviderAbs
   }
 
   @Test
-  public void reactsToSourceChanges() {
+  void reactsToSourceChanges() {
     when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(propertiesWith("someSetting", "42"));
     ConfigPojo config = simpleConfigurationProvider.bind("", ConfigPojo.class);
 

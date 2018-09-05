@@ -48,7 +48,7 @@ class BindInvocationHandlerTest {
   public ArgumentCaptor<GenericTypeInterface> captor;
 
   @Test
-  public void usesProvidedPrefix() throws Exception {
+  void usesProvidedPrefix() throws Exception {
     BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "abc");
 
     handler.invoke(this, this.getClass().getMethod("stringMethod"), new Object[]{});
@@ -57,7 +57,7 @@ class BindInvocationHandlerTest {
   }
 
   @Test
-  public void usesDefaultNamespaceWhenNoPrefix() throws Exception {
+  void usesDefaultNamespaceWhenNoPrefix() throws Exception {
     BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
 
     handler.invoke(this, this.getClass().getMethod("stringMethod"), new Object[]{});
@@ -66,7 +66,7 @@ class BindInvocationHandlerTest {
   }
 
   @Test
-  public void queriesForProvidedType() throws Exception {
+  void queriesForProvidedType() throws Exception {
     BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
 
     handler.invoke(this, this.getClass().getMethod("mapMethod"), new Object[]{});
@@ -76,7 +76,7 @@ class BindInvocationHandlerTest {
   }
 
   @Test
-  public void propagatesNoSuchElementException() throws Exception {
+  void propagatesNoSuchElementException() throws Exception {
     when(configurationProvider.getProperty(anyString(), any(GenericTypeInterface.class))).thenThrow(new NoSuchElementException());
     BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
 
@@ -85,7 +85,7 @@ class BindInvocationHandlerTest {
   }
 
   @Test
-  public void propagatesIllegalArgumentException() throws Exception {
+  void propagatesIllegalArgumentException() throws Exception {
     when(configurationProvider.getProperty(anyString(), any(GenericTypeInterface.class))).thenThrow(new IllegalArgumentException());
     BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
 
@@ -94,7 +94,7 @@ class BindInvocationHandlerTest {
   }
 
   @Test
-  public void propagatesIllegalStateException() throws Exception {
+  void propagatesIllegalStateException() throws Exception {
     when(configurationProvider.getProperty(anyString(), any(GenericTypeInterface.class))).thenThrow(new IllegalStateException());
     BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
 
@@ -103,7 +103,7 @@ class BindInvocationHandlerTest {
   }
 
   @Test
-  public void passesCallToNonObjectLevelMethodWithCollidingName() throws Exception {
+  void passesCallToNonObjectLevelMethodWithCollidingName() throws Exception {
     when(configurationProvider.getProperty(eq("equals"), any(GenericTypeInterface.class))).thenReturn(true);
     BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
 
@@ -111,7 +111,7 @@ class BindInvocationHandlerTest {
   }
 
   @Test
-  public void passesCallToNonObjectLevelMethodWithCollidingNameAndDifferentNumberOfParams() throws Exception {
+  void passesCallToNonObjectLevelMethodWithCollidingNameAndDifferentNumberOfParams() throws Exception {
     when(configurationProvider.getProperty(eq("equals"), any(GenericTypeInterface.class))).thenReturn(true);
     BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
 
@@ -119,7 +119,7 @@ class BindInvocationHandlerTest {
   }
 
   @Test
-  public void invokesObjectLevelMethod() throws Exception {
+  void invokesObjectLevelMethod() throws Exception {
     when(configurationProvider.getProperty(eq("hashCode"), any(GenericTypeInterface.class))).thenThrow(new NoSuchElementException());
     BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
 
@@ -137,11 +137,11 @@ class BindInvocationHandlerTest {
   }
 
   // Name collision with {@link Object#equals(Object)} (but with different parameters)
-  private boolean equals(String param) {
+  boolean equals(String param) {
     return true;
   }
 
-  private boolean equals(String param1, String param2) {
+  boolean equals(String param1, String param2) {
     return true;
   }
 }

@@ -38,7 +38,7 @@ class GitConfigurationSourceIntegrationTest {
   private TempConfigurationGitRepo remoteRepo;
 
   @BeforeEach
-  public void setUp() throws Exception {
+  void setUp() throws Exception {
     remoteRepo = new TempConfigurationGitRepo("org.cfg4j-test-repo.git");
     remoteRepo.changeProperty(Paths.get("application.properties"), "some.setting", "masterValue");
     remoteRepo.changeProperty(Paths.get("otherConfig.properties"), "otherConfig.setting", "masterValue");
@@ -52,12 +52,12 @@ class GitConfigurationSourceIntegrationTest {
   }
 
   @AfterEach
-  public void tearDown() {
+  void tearDown() {
     remoteRepo.remove();
   }
 
   @Test
-  public void initThrowsWhenUnableToCreateLocalCloneOnNoTempDir() {
+  void initThrowsWhenUnableToCreateLocalCloneOnNoTempDir() {
     // FIXME: expectedException.expect(IllegalStateException.class);
 
     getSourceBuilderForRemoteRepoWithDefaults()
@@ -68,7 +68,7 @@ class GitConfigurationSourceIntegrationTest {
   }
 
   @Test
-  public void initThrowsOnInvalidRemote() {
+  void initThrowsOnInvalidRemote() {
     // FIXME: expectedException.expect(SourceCommunicationException.class);
     new GitConfigurationSourceBuilder()
         .withRepositoryURI("")
@@ -77,7 +77,7 @@ class GitConfigurationSourceIntegrationTest {
   }
 
   @Test
-  public void getConfigurationUsesBranchResolver() throws Exception {
+  void getConfigurationUsesBranchResolver() throws Exception {
     class Resolver implements BranchResolver {
 
       @Override
@@ -94,7 +94,7 @@ class GitConfigurationSourceIntegrationTest {
   }
 
   @Test
-  public void getConfigurationReadsConfigFromGivenBranch() throws Exception {
+  void getConfigurationReadsConfigFromGivenBranch() throws Exception {
     try (GitConfigurationSource gitConfigurationSource = getSourceForRemoteRepoWithDefaults()) {
       Environment environment = new ImmutableEnvironment(TEST_ENV_BRANCH);
 
@@ -103,7 +103,7 @@ class GitConfigurationSourceIntegrationTest {
   }
 
   @Test
-  public void getConfigurationUsesPathResolver() throws Exception {
+  void getConfigurationUsesPathResolver() throws Exception {
     class Resolver implements PathResolver {
 
       @Override
@@ -120,7 +120,7 @@ class GitConfigurationSourceIntegrationTest {
   }
 
   @Test
-  public void getConfigurationReadsFromGivenPath() throws Exception {
+  void getConfigurationReadsFromGivenPath() throws Exception {
     try (GitConfigurationSource gitConfigurationSource = getSourceForRemoteRepoWithDefaults()) {
       Environment environment = new ImmutableEnvironment("/otherApplicationConfigs/");
 
@@ -129,7 +129,7 @@ class GitConfigurationSourceIntegrationTest {
   }
 
   @Test
-  public void getConfigurationReadsFromGivenFiles() throws Exception {
+  void getConfigurationReadsFromGivenFiles() throws Exception {
     ConfigFilesProvider configFilesProvider = new ConfigFilesProvider() {
       @Override
       public Iterable<Path> getConfigFiles() {
@@ -144,7 +144,7 @@ class GitConfigurationSourceIntegrationTest {
   }
 
   @Test
-  public void getConfigurationThrowsOnMissingBranch() throws Exception {
+  void getConfigurationThrowsOnMissingBranch() throws Exception {
     try (GitConfigurationSource gitConfigurationSource = getSourceForRemoteRepoWithDefaults()) {
       // FIXME: expectedException.expect(MissingEnvironmentException.class);
       gitConfigurationSource.getConfiguration(new ImmutableEnvironment("nonExistentBranch"));
@@ -152,7 +152,7 @@ class GitConfigurationSourceIntegrationTest {
   }
 
   @Test
-  public void getConfigurationThrowsOnMissingConfigFile() throws Exception {
+  void getConfigurationThrowsOnMissingConfigFile() throws Exception {
     remoteRepo.deleteFile(Paths.get("application.properties"));
 
     try (GitConfigurationSource gitConfigurationSource = getSourceForRemoteRepoWithDefaults()) {
@@ -162,7 +162,7 @@ class GitConfigurationSourceIntegrationTest {
   }
 
   @Test
-  public void getConfigurationThrowsOnMalformedConfigFile() {
+  void getConfigurationThrowsOnMalformedConfigFile() {
     ConfigFilesProvider configFilesProvider = new ConfigFilesProvider() {
       @Override
       public Iterable<Path> getConfigFiles() {
@@ -175,7 +175,7 @@ class GitConfigurationSourceIntegrationTest {
   }
 
   @Test
-  public void getConfigurationThrowsBeforeInitCalled() throws Exception {
+  void getConfigurationThrowsBeforeInitCalled() throws Exception {
     try (GitConfigurationSource gitConfigurationSource = getSourceBuilderForRemoteRepoWithDefaults().build()) {
       // FIXME: expectedException.expect(IllegalStateException.class);
       gitConfigurationSource.getConfiguration(new ImmutableEnvironment(""));

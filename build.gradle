@@ -100,10 +100,6 @@ subprojects {
         useJUnitPlatform()
     }
 
-    javadoc {
-        options.addBooleanOption('html5', true)
-    }
-
     group = "${artifactGroup}"
     version = "${artifactVersion}"
 

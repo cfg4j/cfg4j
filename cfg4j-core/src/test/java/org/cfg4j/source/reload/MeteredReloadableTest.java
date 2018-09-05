@@ -1,5 +1,6 @@
 package org.cfg4j.source.reload;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -48,7 +49,6 @@ class MeteredReloadableTest {
   void reloadPropagatesIllegalStateExceptions() {
     doThrow(new IllegalStateException("")).when(delegate).reload();
 
-    // FIXME: expectedException.expect(IllegalStateException.class);
-    reloadable.reload();
+    assertThatThrownBy(() -> reloadable.reload()).isExactlyInstanceOf(IllegalStateException.class);
   }
 }

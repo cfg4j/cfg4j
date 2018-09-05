@@ -16,6 +16,7 @@
 package org.cfg4j.provider;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -37,9 +38,6 @@ import java.util.NoSuchElementException;
 
 @ExtendWith(MockitoExtension.class)
 class BindInvocationHandlerTest {
-
-
-
 
   @Mock
   private ConfigurationProvider configurationProvider;
@@ -80,8 +78,7 @@ class BindInvocationHandlerTest {
     when(configurationProvider.getProperty(anyString(), any(GenericTypeInterface.class))).thenThrow(new NoSuchElementException());
     BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
 
-    // FIXME: expectedException.expect(NoSuchElementException.class);
-    handler.invoke(this, this.getClass().getMethod("stringMethod"), new Object[]{});
+    assertThatThrownBy(() -> handler.invoke(this, this.getClass().getMethod("stringMethod"), new Object[]{})).isExactlyInstanceOf(NoSuchElementException.class);
   }
 
   @Test
@@ -89,8 +86,7 @@ class BindInvocationHandlerTest {
     when(configurationProvider.getProperty(anyString(), any(GenericTypeInterface.class))).thenThrow(new IllegalArgumentException());
     BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
 
-    // FIXME: expectedException.expect(IllegalArgumentException.class);
-    handler.invoke(this, this.getClass().getMethod("stringMethod"), new Object[]{});
+    assertThatThrownBy(() -> handler.invoke(this, this.getClass().getMethod("stringMethod"), new Object[]{})).isExactlyInstanceOf(IllegalArgumentException.class);
   }
 
   @Test
@@ -98,8 +94,7 @@ class BindInvocationHandlerTest {
     when(configurationProvider.getProperty(anyString(), any(GenericTypeInterface.class))).thenThrow(new IllegalStateException());
     BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
 
-    // FIXME: expectedException.expect(IllegalStateException.class);
-    handler.invoke(this, this.getClass().getMethod("stringMethod"), new Object[]{});
+    assertThatThrownBy(() -> handler.invoke(this, this.getClass().getMethod("stringMethod"), new Object[]{})).isExactlyInstanceOf(IllegalStateException.class);
   }
 
   @Test
@@ -120,28 +115,31 @@ class BindInvocationHandlerTest {
 
   @Test
   void invokesObjectLevelMethod() throws Exception {
-    when(configurationProvider.getProperty(eq("hashCode"), any(GenericTypeInterface.class))).thenThrow(new NoSuchElementException());
     BindInvocationHandler handler = new BindInvocationHandler(configurationProvider, "");
 
     int hashCode = (int) handler.invoke(this, this.getClass().getMethod("hashCode"), new Object[]{});
     assertThat(hashCode).isEqualTo(handler.hashCode());
   }
 
-  // For "mocking" java.lang.reflect.Method
-  private String stringMethod() {
+  // For mocking java.lang.reflect.Method
+  @SuppressWarnings("WeakerAccess")
+  public String stringMethod() {
     return null;
   }
 
-  private Map<List<Integer>, Boolean> mapMethod() {
+  @SuppressWarnings("WeakerAccess")
+  public Map<List<Integer>, Boolean> mapMethod() {
     return null;
   }
 
   // Name collision with {@link Object#equals(Object)} (but with different parameters)
-  boolean equals(String param) {
+  @SuppressWarnings("WeakerAccess")
+  public boolean equals(String param) {
     return true;
   }
 
-  boolean equals(String param1, String param2) {
+  @SuppressWarnings("WeakerAccess")
+  public boolean equals(String param1, String param2) {
     return true;
   }
 }

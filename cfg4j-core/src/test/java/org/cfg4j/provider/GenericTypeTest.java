@@ -17,6 +17,7 @@
 package org.cfg4j.provider;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.Test;
 
@@ -24,24 +25,19 @@ import java.util.List;
 
 class GenericTypeTest {
 
-
-
-
   @Test
   void throwsIfNotDirectlySubclassed() {
     abstract class GenericTypeDirect extends GenericType<List<Integer>> {
     }
 
-    // FIXME: expectedException.expect(IllegalArgumentException.class);
-    new GenericTypeDirect() {
-    };
+    assertThatThrownBy(() -> new GenericTypeDirect() {
+    }).isExactlyInstanceOf(IllegalArgumentException.class);
   }
 
   @Test
   void throwsIfNotParametrizedType() {
-    // FIXME: expectedException.expect(IllegalArgumentException.class);
-    new GenericType() {
-    };
+    assertThatThrownBy(() -> new GenericType() {
+    }).isExactlyInstanceOf(IllegalArgumentException.class);
   }
 
   @Test

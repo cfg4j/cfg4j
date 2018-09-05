@@ -17,8 +17,6 @@
 package org.cfg4j.source.context.propertiesprovider;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,41 +24,23 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.io.InputStream;
-import java.util.Properties;
-
 
 @ExtendWith(MockitoExtension.class)
 class PropertiesProviderSelectorTest {
 
-
-
-
   @Mock
   private PropertiesProvider yamlProvider;
-  private Properties yamlProperties;
 
   @Mock
   private PropertiesProvider jsonProvider;
-  private Properties jsonProperties;
 
   @Mock
   private PropertiesProvider propertiesProvider;
-  private Properties propertiesProperties;
 
   private PropertiesProviderSelector selector;
 
   @BeforeEach
   void setUp() {
-    yamlProperties = new Properties();
-    when(yamlProvider.getProperties(any(InputStream.class))).thenReturn(yamlProperties);
-
-    jsonProperties = new Properties();
-    when(jsonProvider.getProperties(any(InputStream.class))).thenReturn(jsonProperties);
-
-    propertiesProperties = new Properties();
-    when(yamlProvider.getProperties(any(InputStream.class))).thenReturn(propertiesProperties);
-
     selector = new PropertiesProviderSelector(propertiesProvider, yamlProvider, jsonProvider);
   }
 

@@ -17,6 +17,7 @@
 package org.cfg4j.source.context.propertiesprovider;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.assertj.core.data.MapEntry;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,9 +27,6 @@ import java.io.InputStream;
 
 
 class YamlBasedPropertiesProviderTest {
-
-
-
 
   private YamlBasedPropertiesProvider provider;
 
@@ -42,7 +40,7 @@ class YamlBasedPropertiesProviderTest {
     String path = "org/cfg4j/source/propertiesprovider/YamlBasedPropertiesProviderTest_readsSingleValues.yaml";
 
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
-      assertThat(provider.getProperties(input)).containsExactly(MapEntry.entry("setting", "masterValue"),
+      assertThat(provider.getProperties(input)).containsOnly(MapEntry.entry("setting", "masterValue"),
           MapEntry.entry("integerSetting", 42));
     }
   }
@@ -52,7 +50,7 @@ class YamlBasedPropertiesProviderTest {
     String path = "org/cfg4j/source/propertiesprovider/YamlBasedPropertiesProviderTest_readsNestedValues.yaml";
 
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
-      assertThat(provider.getProperties(input)).containsExactly(MapEntry.entry("some.setting", "masterValue"),
+      assertThat(provider.getProperties(input)).containsOnly(MapEntry.entry("some.setting", "masterValue"),
           MapEntry.entry("some.integerSetting", 42));
     }
   }
@@ -93,8 +91,7 @@ class YamlBasedPropertiesProviderTest {
     String path = "org/cfg4j/source/propertiesprovider/YamlBasedPropertiesProviderTest_throwsForNonYamlFile.yaml";
 
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
-      // FIXME: expectedException.expect(IllegalStateException.class);
-      provider.getProperties(input);
+      assertThatThrownBy(() -> provider.getProperties(input)).isExactlyInstanceOf(IllegalStateException.class);
     }
   }
 
@@ -112,8 +109,7 @@ class YamlBasedPropertiesProviderTest {
     String path = "org/cfg4j/source/propertiesprovider/nonexistent.json";
 
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
-      // FIXME: expectedException.expect(NullPointerException.class);
-      provider.getProperties(input);
+      assertThatThrownBy(() -> provider.getProperties(input)).isExactlyInstanceOf(NullPointerException.class);
     }
   }
 }

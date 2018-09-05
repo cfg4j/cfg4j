@@ -16,6 +16,7 @@
 package org.cfg4j.source.compose;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doNothing;
@@ -59,16 +60,14 @@ class FallbackConfigurationSourceTest {
   void getConfigurationThrowsWhenAllSourcesThrowOnMissingEnvironment() {
     makeAllSourcesThrow(new MissingEnvironmentException(""));
 
-    // FIXME: expectedException.expect(MissingEnvironmentException.class);
-    fallbackConfigurationSource.getConfiguration(mock(Environment.class));
+    assertThatThrownBy(() -> fallbackConfigurationSource.getConfiguration(mock(Environment.class))).isExactlyInstanceOf(MissingEnvironmentException.class);
   }
 
   @Test
   void getConfigurationThrowsWhenAllSourcesThrow() {
     makeAllSourcesThrow(new IllegalStateException());
 
-    // FIXME: expectedException.expect(IllegalStateException.class);
-    fallbackConfigurationSource.getConfiguration(mock(Environment.class));
+    assertThatThrownBy(() -> fallbackConfigurationSource.getConfiguration(mock(Environment.class))).isExactlyInstanceOf(IllegalStateException.class);
   }
 
   @Test
@@ -92,8 +91,7 @@ class FallbackConfigurationSourceTest {
   void initThrowsWhenAllSourcesThrow() {
     makeAllSourcesThrow(new IllegalStateException());
 
-    // FIXME: expectedException.expect(IllegalStateException.class);
-    fallbackConfigurationSource.init();
+    assertThatThrownBy(() -> fallbackConfigurationSource.init()).isExactlyInstanceOf(IllegalStateException.class);
   }
 
   @Test

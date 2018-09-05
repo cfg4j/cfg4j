@@ -16,6 +16,7 @@
 package org.cfg4j.source.compose;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
@@ -58,16 +59,14 @@ class MergeConfigurationSourceTest {
   void getConfigurationThrowsWhenOneOfSourcesThrowsOnMissingEnvironment() {
     when(underlyingSources[1].getConfiguration(ArgumentMatchers.any())).thenThrow(new MissingEnvironmentException(""));
 
-    // FIXME: expectedException.expect(MissingEnvironmentException.class);
-    mergeConfigurationSource.getConfiguration(new ImmutableEnvironment("test"));
+    assertThatThrownBy(() -> mergeConfigurationSource.getConfiguration(new ImmutableEnvironment("test"))).isExactlyInstanceOf(MissingEnvironmentException.class);
   }
 
   @Test
   void getConfigurationThrowsWhenOneOfSourcesThrows() {
     when(underlyingSources[3].getConfiguration(ArgumentMatchers.any())).thenThrow(new IllegalStateException());
 
-    // FIXME: expectedException.expect(IllegalStateException.class);
-    mergeConfigurationSource.getConfiguration(new ImmutableEnvironment("test"));
+    assertThatThrownBy(() -> mergeConfigurationSource.getConfiguration(new ImmutableEnvironment("test"))).isExactlyInstanceOf(IllegalStateException.class);
   }
 
   @Test

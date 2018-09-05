@@ -20,11 +20,13 @@ import static org.mockito.ArgumentMatchers.any;
 import org.cfg4j.source.ConfigurationSource;
 import org.cfg4j.source.context.environment.Environment;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Properties;
 
-
+@ExtendWith(MockitoExtension.class)
 abstract class SimpleConfigurationProviderAbstractTest {
 
   SimpleConfigurationProvider simpleConfigurationProvider;

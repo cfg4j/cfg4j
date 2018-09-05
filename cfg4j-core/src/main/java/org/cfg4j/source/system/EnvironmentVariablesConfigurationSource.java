@@ -26,7 +26,7 @@ import java.util.Properties;
 
 /**
  * {@link ConfigurationSource} providing all environment variables under the specified {@link Environment}
- * namespaced prefix.
+ * namespace prefix.
  */
 public class EnvironmentVariablesConfigurationSource implements ConfigurationSource {
 

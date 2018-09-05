@@ -17,6 +17,7 @@
 package org.cfg4j.source.context.propertiesprovider;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.assertj.core.data.MapEntry;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,9 +27,6 @@ import java.io.InputStream;
 
 
 class PropertyBasedPropertiesProviderTest {
-
-
-
 
   private PropertyBasedPropertiesProvider provider;
 
@@ -51,8 +49,7 @@ class PropertyBasedPropertiesProviderTest {
     String path = "org/cfg4j/source/propertiesprovider/PropertyBasedPropertiesProviderTest_throwsOnMalformedFile.properties";
 
     try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
-      // FIXME: expectedException.expect(IllegalStateException.class);
-      provider.getProperties(input);
+      assertThatThrownBy(() -> provider.getProperties(input)).isExactlyInstanceOf(IllegalStateException.class);
     }
   }
 }

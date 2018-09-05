@@ -17,6 +17,7 @@
 package org.cfg4j.source.metered;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
@@ -43,9 +44,6 @@ import java.util.Properties;
 
 @ExtendWith(MockitoExtension.class)
 class MeteredConfigurationSourceTest {
-
-
-
 
   @Mock
   private ConfigurationSource delegate;
@@ -77,16 +75,14 @@ class MeteredConfigurationSourceTest {
   void getConfigurationPropagatesMissingEnvironmentExceptions() {
     when(delegate.getConfiguration(any(Environment.class))).thenThrow(new MissingEnvironmentException(""));
 
-    // FIXME: expectedException.expect(MissingEnvironmentException.class);
-    source.getConfiguration(new DefaultEnvironment());
+    assertThatThrownBy(() -> source.getConfiguration(new DefaultEnvironment())).isExactlyInstanceOf(MissingEnvironmentException.class);
   }
 
   @Test
   void getConfigurationPropagatesIllegalStateExceptions() {
     when(delegate.getConfiguration(any(Environment.class))).thenThrow(new IllegalStateException(""));
 
-    // FIXME: expectedException.expect(IllegalStateException.class);
-    source.getConfiguration(new DefaultEnvironment());
+    assertThatThrownBy(() -> source.getConfiguration(new DefaultEnvironment())).isExactlyInstanceOf(IllegalStateException.class);
   }
 
   @Test
@@ -98,15 +94,13 @@ class MeteredConfigurationSourceTest {
   void initPropagatesIllegalStateExceptions() {
     doThrow(new IllegalStateException("")).when(delegate).init();
 
-    // FIXME: expectedException.expect(IllegalStateException.class);
-    delegate.init();
+    assertThatThrownBy(() -> delegate.init()).isExactlyInstanceOf(IllegalStateException.class);
   }
 
   @Test
   void initPropagatesSourceCommunicationExceptions() {
     doThrow(new SourceCommunicationException("", null)).when(delegate).init();
 
-    // FIXME: expectedException.expect(SourceCommunicationException.class);
-    delegate.init();
+    assertThatThrownBy(() -> delegate.init()).isExactlyInstanceOf(SourceCommunicationException.class);
   }
 }

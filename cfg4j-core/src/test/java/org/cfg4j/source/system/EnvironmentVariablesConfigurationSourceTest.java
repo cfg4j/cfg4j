@@ -17,25 +17,14 @@
 package org.cfg4j.source.system;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
 import org.cfg4j.source.context.environment.DefaultEnvironment;
 import org.cfg4j.source.context.environment.Environment;
-import org.cfg4j.source.context.environment.ImmutableEnvironment;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledIf;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-
 
 class EnvironmentVariablesConfigurationSourceTest {
-
-
 
   private EnvironmentVariablesConfigurationSource source;
 
@@ -53,45 +42,5 @@ class EnvironmentVariablesConfigurationSourceTest {
   @Test
   void returnsPathForAnyEnvironment() {
     assertThat(source.getConfiguration(mock(Environment.class))).containsKey("PATH");
-  }
-
-  @Test
-  @EnabledIf("systemProperty.get('os.arch') == null")
-  void returnsAllVariablesInNamespace() {
-    // Given
-    EnvironmentVariablesConfigurationSource mockSource = new EnvironmentVariablesConfigurationSource();
-
-    final String namespace = "APPLICATION_NAME";
-    Environment nameSpaced = new ImmutableEnvironment(namespace);
-    Environment nameSpaceTrailingUnderscore = new ImmutableEnvironment(namespace + "_");
-
-    Map<String, String> mockEnv = new HashMap<>() {{
-      put("PATH", "/usr/bin");
-      put(namespace + "_PROFILE", "PROD");
-      put(namespace + "_USER", "TEST");
-    }};
-
-    System mock = mock(System.class);
-    given(mock.getenv()).willReturn(mockEnv);
-
-    System.setProperty(namespace + "_PROFILE", "PROD");
-    System.setProperty(namespace + "_USER", "TEST");
-    assumeTrue("CI".equals(System.getenv("ENV")));
-
-
-    // When
-    mockSource.init();
-
-    // Then
-    Properties config = mockSource.getConfiguration(nameSpaced);
-    assertThat(config.containsKey("PROFILE"));
-    assertThat(config.containsKey("USER"));
-    assertThat(!config.containsKey("PATH"));
-
-    // Then
-    Properties configUnderscoreEnv = mockSource.getConfiguration(nameSpaceTrailingUnderscore);
-    assertThat(configUnderscoreEnv.containsKey("PROFILE"));
-    assertThat(configUnderscoreEnv.containsKey("USER"));
-    assertThat(!configUnderscoreEnv.containsKey("PATH"));
   }
 }

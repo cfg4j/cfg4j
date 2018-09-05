@@ -16,21 +16,23 @@
 package org.cfg4j.provider;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Properties;
 
 
 class SimpleConfigurationProviderBindTest extends SimpleConfigurationProviderAbstractTest {
 
-  interface ConfigPojo {
+  public interface ConfigPojo {
     Integer someSetting();
   }
 
-  interface MultiPropertyConfigPojo extends ConfigPojo {
+  public interface MultiPropertyConfigPojo extends ConfigPojo {
     List<Boolean> otherSetting();
   }
 
@@ -38,24 +40,21 @@ class SimpleConfigurationProviderBindTest extends SimpleConfigurationProviderAbs
   void bindThrowsWhenFetchingNonexistentKey() {
     when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(new Properties());
 
-    // FIXME: expectedException.expect(NoSuchElementException.class);
-    simpleConfigurationProvider.bind("", ConfigPojo.class);
+    assertThatThrownBy(() -> simpleConfigurationProvider.bind("", ConfigPojo.class)).isExactlyInstanceOf(NoSuchElementException.class);
   }
 
   @Test
   void bindThrowsWhenUnableToFetchKey() {
     when(configurationSource.getConfiguration(anyEnvironment())).thenThrow(IllegalStateException.class);
 
-    // FIXME: expectedException.expect(IllegalStateException.class);
-    simpleConfigurationProvider.bind("", ConfigPojo.class);
+    assertThatThrownBy(() -> simpleConfigurationProvider.bind("", ConfigPojo.class)).isExactlyInstanceOf(IllegalStateException.class);
   }
 
   @Test
   void bindThrowsOnIncompatibleConversion() {
     when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(propertiesWith("someSetting", "shouldBeNumber"));
 
-    // FIXME: expectedException.expect(IllegalArgumentException.class);
-    simpleConfigurationProvider.bind("", ConfigPojo.class);
+    assertThatThrownBy(() -> simpleConfigurationProvider.bind("", ConfigPojo.class)).isExactlyInstanceOf(IllegalArgumentException.class);
   }
 
   @Test

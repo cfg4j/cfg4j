@@ -16,11 +16,13 @@
 package org.cfg4j.source.classpath;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.assertj.core.data.MapEntry;
 import org.cfg4j.source.context.environment.DefaultEnvironment;
 import org.cfg4j.source.context.environment.Environment;
 import org.cfg4j.source.context.environment.ImmutableEnvironment;
+import org.cfg4j.source.context.environment.MissingEnvironmentException;
 import org.cfg4j.source.context.filesprovider.ConfigFilesProvider;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,9 +38,6 @@ import java.util.Collections;
 
 @ExtendWith(MockitoExtension.class)
 class ClasspathConfigurationSourceTest {
-
-
-
 
   private TempConfigurationClasspathRepo classpathRepo;
   private ConfigFilesProvider configFilesProvider;
@@ -68,8 +67,7 @@ class ClasspathConfigurationSourceTest {
   void getConfigurationDisallowsLeadingSlashInClasspathLocation() {
     Environment environment = new ImmutableEnvironment("/otherApplicationConfigs");
 
-    // FIXME: expectedException.expect(MissingEnvironmentException.class);
-    source.getConfiguration(environment);
+    assertThatThrownBy(() -> source.getConfiguration(environment)).isExactlyInstanceOf(MissingEnvironmentException.class);
   }
 
   @Test
@@ -90,8 +88,7 @@ class ClasspathConfigurationSourceTest {
 
   @Test
   void getConfigurationThrowsOnMissingEnvironment() {
-    // FIXME: expectedException.expect(MissingEnvironmentException.class);
-    source.getConfiguration(new ImmutableEnvironment("awlerijawoetinawwerlkjn"));
+    assertThatThrownBy(() -> source.getConfiguration(new ImmutableEnvironment("awlerijawoetinawwerlkjn"))).isExactlyInstanceOf(MissingEnvironmentException.class);
   }
 
   @Test
@@ -107,8 +104,7 @@ class ClasspathConfigurationSourceTest {
 
     source = new ClasspathConfigurationSource(configFilesProvider);
 
-    // FIXME: expectedException.expect(IllegalStateException.class);
-    source.getConfiguration(new DefaultEnvironment());
+    assertThatThrownBy(() -> source.getConfiguration(new DefaultEnvironment())).isExactlyInstanceOf(IllegalStateException.class);
   }
 
   @Test
@@ -124,8 +120,7 @@ class ClasspathConfigurationSourceTest {
 
     source = new ClasspathConfigurationSource(configFilesProvider);
 
-    // FIXME: expectedException.expect(IllegalStateException.class);
-    source.getConfiguration(new DefaultEnvironment());
+    assertThatThrownBy(() -> source.getConfiguration(new DefaultEnvironment())).isExactlyInstanceOf(IllegalStateException.class);
   }
 
 }

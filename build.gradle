@@ -79,9 +79,7 @@ subprojects {
         from sourceSets.main.allSource
     }
 
-    test {
-        useJUnitPlatform()
-    }
+
 
 // ----------- Task configurations -----------
     defaultTasks "clean", "build"
@@ -96,6 +94,14 @@ subprojects {
             xml.enabled false
             html.enabled false
         }
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+
+    javadoc {
+        options.addBooleanOption('html5', true)
     }
 
     group = "${artifactGroup}"

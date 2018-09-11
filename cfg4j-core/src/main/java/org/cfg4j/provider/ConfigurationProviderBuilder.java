@@ -19,6 +19,7 @@ import static java.util.Objects.requireNonNull;
 
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
+import com.github.drapostolos.typeparser.TypeParser;
 import org.cfg4j.source.ConfigurationSource;
 import org.cfg4j.source.context.environment.DefaultEnvironment;
 import org.cfg4j.source.context.environment.Environment;
@@ -46,6 +47,7 @@ public class ConfigurationProviderBuilder {
   private Environment environment;
   private MetricRegistry metricRegistry;
   private String prefix;
+  private TypeParser typeParser;
 
   /**
    * Construct {@link ConfigurationProvider}s builder.
@@ -63,6 +65,7 @@ public class ConfigurationProviderBuilder {
     reloadStrategy = new ImmediateReloadStrategy();
     environment = new DefaultEnvironment();
     prefix = "";
+    typeParser = TypeParser.newBuilder().build();
   }
 
   /**
@@ -125,6 +128,16 @@ public class ConfigurationProviderBuilder {
     this.metricRegistry = metricRegistry;
     return this;
   }
+  
+  /**
+   * Use a custom {@link TypeParser} to read properties into desired objects.
+   *
+   * @return new {@link ConfigurationProvider}
+   */
+  public ConfigurationProviderBuilder withTypeParser(TypeParser typeParser) {
+    this.typeParser = typeParser;
+    return this;
+  }
 
   /**
    * Build a {@link ConfigurationProvider} using this builder's configuration.
@@ -134,8 +147,9 @@ public class ConfigurationProviderBuilder {
   public ConfigurationProvider build() {
     LOG.info("Initializing ConfigurationProvider with "
         + configurationSource.getClass().getCanonicalName() + " source, "
-        + reloadStrategy.getClass().getCanonicalName() + " reload strategy and "
-        + environment.getClass().getCanonicalName() + " environment");
+        + reloadStrategy.getClass().getCanonicalName() + " reload strategy, "
+        + environment.getClass().getCanonicalName() + " environment and "
+        + typeParser.getClass().getCanonicalName() + " type parser");
 
     final CachedConfigurationSource cachedConfigurationSource = new CachedConfigurationSource(configurationSource);
     if (metricRegistry != null) {
@@ -151,7 +165,7 @@ public class ConfigurationProviderBuilder {
     reloadable.reload();
     reloadStrategy.register(reloadable);
 
-    SimpleConfigurationProvider configurationProvider = new SimpleConfigurationProvider(cachedConfigurationSource, environment);
+    SimpleConfigurationProvider configurationProvider = new SimpleConfigurationProvider(cachedConfigurationSource, environment, typeParser);
     if (metricRegistry != null) {
       return new MeteredConfigurationProvider(metricRegistry, prefix, configurationProvider);
     }
@@ -167,6 +181,7 @@ public class ConfigurationProviderBuilder {
         ", environment=" + environment +
         ", metricRegistry=" + metricRegistry +
         ", prefix='" + prefix + '\'' +
+        ", typeParser=" + typeParser +
         '}';
   }
 }

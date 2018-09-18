@@ -25,6 +25,9 @@ import org.cfg4j.source.context.propertiesprovider.YamlBasedPropertiesProvider;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.eclipse.jgit.transport.CredentialsProvider;
+
+
 /**
  * Builder for {@link GitConfigurationSource}.
  */
@@ -37,6 +40,7 @@ public class GitConfigurationSourceBuilder {
   private String tmpRepoPrefix;
   private ConfigFilesProvider configFilesProvider;
   private PropertiesProviderSelector propertiesProviderSelector;
+  private CredentialsProvider credentialsProvider;  //@wjw_add
 
   /**
    * Construct {@link GitConfigurationSource}s builder
@@ -130,13 +134,23 @@ public class GitConfigurationSourceBuilder {
   }
 
   /**
+   * for Authenticate With JGit
+   * @param credentialsProvider
+   * @return
+   */
+  public GitConfigurationSourceBuilder withCredentialsProvider(CredentialsProvider credentialsProvider) {
+      this.credentialsProvider = credentialsProvider;
+      return this;
+  }
+  
+  /**
    * Build a {@link GitConfigurationSource} using this builder's configuration
    *
    * @return new {@link GitConfigurationSource}
    */
   public GitConfigurationSource build() {
     return new GitConfigurationSource(repositoryURI, tmpPath, tmpRepoPrefix, branchResolver, pathResolver,
-        configFilesProvider, propertiesProviderSelector);
+        configFilesProvider, credentialsProvider, propertiesProviderSelector);
   }
 
   @Override

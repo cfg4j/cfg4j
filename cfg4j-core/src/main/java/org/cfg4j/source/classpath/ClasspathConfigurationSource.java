@@ -103,13 +103,13 @@ public class ClasspathConfigurationSource implements ConfigurationSource {
     Path pathPrefix = Paths.get(environment.getName());
 
     URL url = getClass().getClassLoader().getResource(pathPrefix.toString());
-    if (url == null && !environment.getName().isEmpty()) {
+    if (url == null && !(environment.getName().isEmpty() || environment.getName().equals("."))) {
       throw new MissingEnvironmentException("Directory doesn't exist: " + environment.getName());
     }
 
     List<Path> paths = new ArrayList<>();
     for (Path path : configFilesProvider.getConfigFiles()) {
-      paths.add(pathPrefix.resolve(path));
+      paths.add(pathPrefix.resolve(path).normalize());
     }
 
     for (Path path : paths) {

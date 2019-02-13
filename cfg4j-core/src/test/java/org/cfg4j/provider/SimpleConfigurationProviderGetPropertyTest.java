@@ -57,7 +57,8 @@ class SimpleConfigurationProviderGetPropertyTest extends SimpleConfigurationProv
   void getProperty2ThrowsWhenFetchingNonexistentKey() {
     when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(new Properties());
 
-    assertThatThrownBy(() -> simpleConfigurationProvider.getProperty("some.property", String.class)).isExactlyInstanceOf(NoSuchElementException.class);
+    String property = simpleConfigurationProvider.getProperty("some.property", String.class);
+    assertThat(property).isNull();
   }
 
   @Test
@@ -104,11 +105,11 @@ class SimpleConfigurationProviderGetPropertyTest extends SimpleConfigurationProv
   }
 
   @Test
-  void getProperty3ThrowsWhenFetchingNonexistentKey() {
+  void getProperty3ReturnsNullWhenFetchingNonexistentKey() {
     when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(new Properties());
 
-    assertThatThrownBy(() -> simpleConfigurationProvider.getProperty("some.property", new GenericType<List<String>>() {
-    })).isExactlyInstanceOf(NoSuchElementException.class);
+    List<String> property = simpleConfigurationProvider.getProperty("some.property", new GenericType<List<String>>() { });
+    assertThat(property).isNull();
   }
 
   @Test

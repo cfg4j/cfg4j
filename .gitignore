@@ -1,6 +1,7 @@
 .idea/
 .gradle/
 build/
+out/
 *.iml
 *.log.*
 gradle.properties

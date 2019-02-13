@@ -24,6 +24,8 @@ import org.cfg4j.source.ConfigurationSource;
 import org.cfg4j.source.context.environment.Environment;
 import org.cfg4j.source.context.environment.MissingEnvironmentException;
 import org.cfg4j.validator.BindingValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -34,6 +36,8 @@ import java.util.Properties;
  * Basic implementation of {@link ConfigurationProvider}. To construct this provider use {@link ConfigurationProviderBuilder}.
  */
 class SimpleConfigurationProvider implements ConfigurationProvider {
+
+  private static final Logger LOG = LoggerFactory.getLogger(SimpleConfigurationProvider.class);
 
   private final ConfigurationSource configurationSource;
   private final Environment environment;
@@ -63,6 +67,10 @@ class SimpleConfigurationProvider implements ConfigurationProvider {
   public <T> T getProperty(String key, Class<T> type) {
     String propertyStr = getProperty(key);
 
+    if (propertyStr == null) {
+      return null;
+    }
+
     try {
       TypeParser parser = TypeParser.newBuilder().build();
       return parser.parse(propertyStr, type);
@@ -74,6 +82,10 @@ class SimpleConfigurationProvider implements ConfigurationProvider {
   @Override
   public <T> T getProperty(String key, GenericTypeInterface genericType) {
     String propertyStr = getProperty(key);
+
+    if (propertyStr == null) {
+      return null;
+    }
 
     try {
       TypeParser parser = TypeParser.newBuilder().build();
@@ -87,11 +99,12 @@ class SimpleConfigurationProvider implements ConfigurationProvider {
 
   private String getProperty(String key) {
     try {
-
       Object property = configurationSource.getConfiguration(environment).get(key);
 
       if (property == null) {
-        throw new NoSuchElementException("No configuration with key: " + key);
+        LOG.trace(String.format("No configuration with key: %s [%s, %s]",
+          key, configurationSource.toString(), environment));
+        return null;
       }
 
       return property.toString();

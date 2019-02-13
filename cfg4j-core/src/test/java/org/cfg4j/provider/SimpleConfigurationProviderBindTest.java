@@ -22,7 +22,6 @@ import static org.mockito.Mockito.when;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Properties;
 
 
@@ -37,10 +36,11 @@ class SimpleConfigurationProviderBindTest extends SimpleConfigurationProviderAbs
   }
 
   @Test
-  void bindThrowsWhenFetchingNonexistentKey() {
+  void bindFillsWithNullWhenFetchingNonexistentKey() {
     when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(new Properties());
 
-    assertThatThrownBy(() -> simpleConfigurationProvider.bind("", ConfigPojo.class)).isExactlyInstanceOf(NoSuchElementException.class);
+    ConfigPojo config = simpleConfigurationProvider.bind("", ConfigPojo.class);
+    assertThat(config.someSetting()).isNull();
   }
 
   @Test

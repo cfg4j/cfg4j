@@ -43,8 +43,8 @@ public class ExtendesPropertiesResolverTest extends AbstractPropertiesResolverTe
   public void resolveWithOwerride() throws Exception {
     String overriden = "22";
     testResolve(asMap(
-      "a.^extends", "l.a",
       "a.b", overriden,
+      "a.^extends", "l.a",
       "l.a", "1",
       "l.a.b", "2",
       "l.a.c.d", "3"

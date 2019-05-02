@@ -37,7 +37,13 @@ public class ExtendsPropertiesResolver extends AbstractPropertiesResolver {
     for (Map.Entry<String, Object> entry : input.entrySet()) {
       String key = entry.getKey();
       if (key.startsWith(linkPrefix)) {
-        output.put(key.replace(linkPrefix, keyToReplace), entry.getValue());
+        String finalKey = key.replace(linkPrefix, keyToReplace);
+        if(input.containsKey(finalKey)) {
+          System.out.println("Ignore extention for overriden key "+ finalKey + ", used value:" + input.get(finalKey));
+          output.put(finalKey, input.get(finalKey));
+        } else {
+          output.put(finalKey, entry.getValue());
+        }
         found = true;
       }
     }

@@ -18,6 +18,7 @@ package org.cfg4j.provider;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
 import org.cfg4j.provider.bind.MapTypeBindStrategy;
+import org.cfg4j.provider.bind.OptionalTypeBindStrategy;
 import org.cfg4j.source.ConfigurationSource;
 import org.cfg4j.source.context.environment.DefaultEnvironment;
 import org.cfg4j.source.context.environment.Environment;
@@ -212,6 +213,7 @@ public class ConfigurationProviderBuilder {
   private List<BindStrategy> defaultBindStrategies() {
     List<BindStrategy> bindStrategies = new ArrayList<>();
     bindStrategies.add(new MapTypeBindStrategy());
+    bindStrategies.add(new OptionalTypeBindStrategy());
     return bindStrategies;
   }
 

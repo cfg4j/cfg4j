@@ -17,6 +17,7 @@ package org.cfg4j.provider;
 
 import org.cfg4j.provider.bind.MapTypeBindStrategy;
 import org.cfg4j.provider.bind.NestedCustomTypeBindStrategy;
+import org.cfg4j.provider.bind.OptionalTypeBindStrategy;
 import org.cfg4j.source.ConfigurationSource;
 import org.cfg4j.source.context.environment.Environment;
 import org.junit.Before;
@@ -46,7 +47,7 @@ public abstract class ConfigurationProviderAbstractTest {
 
   @Before
   public void setUp() throws Exception {
-    configurationProvider = new SimpleConfigurationProvider(configurationSource, environment, Arrays.<BindStrategy>asList(new NestedCustomTypeBindStrategy("org.cfg4j"), new MapTypeBindStrategy()));
+    configurationProvider = new SimpleConfigurationProvider(configurationSource, environment, Arrays.<BindStrategy>asList(new NestedCustomTypeBindStrategy("org.cfg4j"), new MapTypeBindStrategy(), new OptionalTypeBindStrategy()));
   }
 
   protected Environment anyEnvironment() {

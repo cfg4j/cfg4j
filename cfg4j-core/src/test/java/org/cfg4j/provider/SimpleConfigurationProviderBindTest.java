@@ -23,16 +23,19 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Properties;
+import java.util.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SimpleConfigurationProviderBindTest extends ConfigurationProviderAbstractTest {
 
   public interface ConfigPojo {
     Integer someSetting();
+  }
+
+  public interface OptionalConfigPojo {
+    Integer someSetting();
+    Optional<Integer> optionalSetting();
+    Optional<ConfigPojo> optionalPojo();
   }
 
   public interface MultiPropertyConfigPojo extends ConfigPojo {
@@ -134,5 +137,18 @@ public class SimpleConfigurationProviderBindTest extends ConfigurationProviderAb
     assertThat(config.map().get("a")).isEqualTo(1);
     assertThat(config.map().get("b")).isEqualTo(2);
     assertThat(config.map().get("c")).isEqualTo(3);
+  }
+
+  @Test
+  public void shouldNotFailOnOptionalField() throws Exception {
+    when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(propertiesWith(
+      "myContext.someSetting", "1",
+      "myContext.optionalSetting", "2",
+      "myContext.optionalPojo.someSetting", "3"));
+    OptionalConfigPojo config = configurationProvider.bind("myContext", OptionalConfigPojo.class);
+    assertThat(config.someSetting()).isEqualTo(1);
+    assertThat(config.optionalSetting().get()).isEqualTo(2);
+    assertThat(config.optionalPojo().get().someSetting()).isEqualTo(3);
+
   }
 }

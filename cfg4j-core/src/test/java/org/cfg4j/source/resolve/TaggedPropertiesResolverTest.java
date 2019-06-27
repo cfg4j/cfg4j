@@ -29,6 +29,14 @@ public class TaggedPropertiesResolverTest extends AbstractPropertiesResolverTest
   }
 
   @Test
+  public void passUnTaggedPropertiesAsIs() throws Exception {
+    testResolve(asMap(
+        "a.b", "1"),
+        asMap(
+            "a.b", "1"));
+  }
+
+  @Test
   public void ignoreNotFoundTags() throws Exception {
     testResolve(asMap(
         "$baz.a", "1",
@@ -50,6 +58,25 @@ public class TaggedPropertiesResolverTest extends AbstractPropertiesResolverTest
         "a.b.c", "3",
         "a.b.c.d", "4"));
   }
+
+  @Test
+  public void resolveMultipleTagsWithPriorityToMoreSpecificMatch() throws Exception {
+    testResolve(asMap(
+      "$foo.$bar.a", "1",
+      "$foo.a", "2"),
+
+      asMap(
+        "a", "1"
+        ));
+  }
+
+  @Test(expected = IllegalStateException.class)
+  public void failOnAmbiguousMatch() throws Exception {
+    resolver.resolve(asMap(
+      "$foo.a", "1",
+      "$bar.a", "2"));
+  }
+
 
   @Test
   public void ignoreIfOneOfTagsDoesntMatchPreConfiguredTags() throws Exception {

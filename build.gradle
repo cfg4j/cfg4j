@@ -19,7 +19,7 @@ buildscript {
 
     ext {
         artifactGroup = "com.mm.cfg4j"
-        artifactVersion = "5.0.11"
+        artifactVersion = "5.0.14"
     }
 
     repositories {
@@ -88,8 +88,8 @@ subprojects {
     defaultTasks "clean", "build"
 
     compileJava {
-        sourceCompatibility = 1.7
-        targetCompatibility = 1.7
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
     }
 
     jacocoTestReport {

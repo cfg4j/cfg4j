@@ -39,7 +39,6 @@ public class ExtendsPropertiesResolver extends AbstractPropertiesResolver {
       if (key.startsWith(linkPrefix)) {
         String finalKey = key.replace(linkPrefix, keyToReplace);
         if(input.containsKey(finalKey)) {
-          System.out.println("Ignore extention for overriden key "+ finalKey + ", used value:" + input.get(finalKey));
           output.put(finalKey, input.get(finalKey));
         } else {
           output.put(finalKey, entry.getValue());

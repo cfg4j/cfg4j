@@ -29,6 +29,7 @@ dependencies {
     compile project(":cfg4j-core")
 
     compile group: "org.apache.curator", name: "curator-framework", version: "4.0.0"
+    testCompile group: "org.apache.curator", name: "curator-test", version: "4.0.0"
     testCompile group: "com.squareup.okhttp", name: "mockwebserver", version: "2.7.5"
     testCompile group: "ch.qos.logback", name: "logback-classic", version: "1.2.3"
 }

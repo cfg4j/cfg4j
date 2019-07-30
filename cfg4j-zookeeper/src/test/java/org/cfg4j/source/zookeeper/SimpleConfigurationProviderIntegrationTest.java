@@ -14,80 +14,141 @@
  * limitations under the License.
  */
 
-package org.cfg4j.source.consul;
+package org.cfg4j.source.zookeeper;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import com.squareup.okhttp.mockwebserver.Dispatcher;
-import com.squareup.okhttp.mockwebserver.MockResponse;
-import com.squareup.okhttp.mockwebserver.MockWebServer;
-import com.squareup.okhttp.mockwebserver.RecordedRequest;
+import org.apache.curator.framework.CuratorFramework;
+import org.apache.curator.framework.CuratorFrameworkFactory;
+import org.apache.curator.retry.RetryOneTime;
+import org.apache.curator.test.TestingServer;
+import org.assertj.core.util.Lists;
 import org.cfg4j.provider.ConfigurationProvider;
 import org.cfg4j.provider.ConfigurationProviderBuilder;
-import org.cfg4j.source.ConfigurationSource;
+import org.cfg4j.provider.GenericType;
 import org.cfg4j.source.context.environment.ImmutableEnvironment;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class SimpleConfigurationProviderIntegrationTest {
-
-  private static final String PING_RESPONSE = "\n" +
-      "{\"Config\":{\"Bootstrap\":true,\"BootstrapExpect\":0,\"Server\":true,\"Datacenter\":\"dc1\",\"DataDir\":\"/tmp/consul\",\"DNSRecursor\":\"\",\"DNSRecursors\":[],\"DNSConfig\":{\"NodeTTL\":0,\"ServiceTTL\":null,\"AllowStale\":false,\"EnableTruncate\":false,\"MaxStale\":5000000000,\"OnlyPassing\":false},\"Domain\":\"consul.\",\"LogLevel\":\"INFO\",\"NodeName\":\"receivehead-lm\",\"ClientAddr\":\"127.0.0.1\",\"BindAddr\":\"0.0.0.0\",\"AdvertiseAddr\":\"192.168.0.4\",\"Ports\":{\"DNS\":8600,\"HTTP\":8500,\"HTTPS\":-1,\"RPC\":8400,\"SerfLan\":8301,\"SerfWan\":8302,\"Server\":8300},\"Addresses\":{\"DNS\":\"\",\"HTTP\":\"\",\"HTTPS\":\"\",\"RPC\":\"\"},\"LeaveOnTerm\":false,\"SkipLeaveOnInt\":false,\"StatsiteAddr\":\"\",\"StatsdAddr\":\"\",\"Protocol\":2,\"EnableDebug\":false,\"VerifyIncoming\":false,\"VerifyOutgoing\":false,\"CAFile\":\"\",\"CertFile\":\"\",\"KeyFile\":\"\",\"ServerName\":\"\",\"StartJoin\":[],\"StartJoinWan\":[],\"RetryJoin\":[],\"RetryMaxAttempts\":0,\"RetryIntervalRaw\":\"\",\"RetryJoinWan\":[],\"RetryMaxAttemptsWan\":0,\"RetryIntervalWanRaw\":\"\",\"UiDir\":\"\",\"PidFile\":\"\",\"EnableSyslog\":false,\"SyslogFacility\":\"LOCAL0\",\"RejoinAfterLeave\":false,\"CheckUpdateInterval\":300000000000,\"ACLDatacenter\":\"\",\"ACLTTL\":30000000000,\"ACLTTLRaw\":\"\",\"ACLDefaultPolicy\":\"allow\",\"ACLDownPolicy\":\"extend-cache\",\"Watches\":null,\"DisableRemoteExec\":false,\"DisableUpdateCheck\":false,\"DisableAnonymousSignature\":false,\"HTTPAPIResponseHeaders\":null,\"AtlasInfrastructure\":\"\",\"AtlasJoin\":false,\"Revision\":\"0c7ca91c74587d0a378831f63e189ac6bf7bab3f+CHANGES\",\"Version\":\"0.5.0\",\"VersionPrerelease\":\"\",\"UnixSockets\":{\"Usr\":\"\",\"Grp\":\"\",\"Perms\":\"\"}},\"Member\":{\"Name\":\"receivehead-lm\",\"Addr\":\"192.168.0.4\",\"Port\":8301,\"Tags\":{\"bootstrap\":\"1\",\"build\":\"0.5.0:0c7ca91c\",\"dc\":\"dc1\",\"port\":\"8300\",\"role\":\"consul\",\"vsn\":\"2\",\"vsn_max\":\"2\",\"vsn_min\":\"1\"},\"Status\":1,\"ProtocolMin\":1,\"ProtocolMax\":2,\"ProtocolCur\":2,\"DelegateMin\":2,\"DelegateMax\":4,\"DelegateCur\":4}}";
-
-  private class ModifiableDispatcher extends Dispatcher {
-
-    @Override
-    public MockResponse dispatch(RecordedRequest request) {
-
-      switch (request.getPath()) {
-        case "/v1/agent/self":
-          return new MockResponse().setResponseCode(200).setBody(PING_RESPONSE);
-        case "/v1/kv/?recurse=true":
-          return new MockResponse()
-              .setResponseCode(200)
-              .addHeader("Content-Type", "application/json; charset=utf-8")
-              .setBody("[{\"CreateIndex\":1,\"ModifyIndex\":1,\"LockIndex\":0,\"Key\":\"us-west-1/featureA.toggle\",\"Flags\":0,\"Value\":\"ZGlzYWJsZWQ=\"}]");
-      }
-      return new MockResponse().setResponseCode(404);
-    }
-  }
-
-  private MockWebServer server;
-  private ModifiableDispatcher dispatcher;
-
+  
+  private TestingServer testingServer;
+  
+  private CuratorFramework testingClient;
+  
   @BeforeEach
   void setUp() throws Exception {
-    dispatcher = new ModifiableDispatcher();
-    runMockServer();
+    testingServer = new TestingServer(2182);
+    testingClient = CuratorFrameworkFactory.newClient(testingServer.getConnectString(), new RetryOneTime(1000));
+    testingClient.start();
+    
   }
-
+  
   @AfterEach
   void tearDown() throws Exception {
-    server.shutdown();
+    testingClient.close();
+    testingServer.stop();
   }
-
+  
   @Test
-  void readsConfigsFromConsulConfigurationSource() {
-    ConfigurationSource source = new ConsulConfigurationSourceBuilder()
-        .withHost(server.getHostName())
-        .withPort(server.getPort())
+  void readStringConfigurationFromZookeeper() {
+    try {
+      testingClient.create().forPath("/cfg4j");
+      testingClient.create().forPath("/cfg4j/dev");
+      testingClient.create().forPath("/cfg4j/dev/name", "Alice".getBytes(StandardCharsets.UTF_8));
+      
+      ConfigurationProvider provider = new ConfigurationProviderBuilder()
+        .withConfigurationSource(new ZookeeperConfigurationSourceBuilder().withConnectString(testingServer.getConnectString()).build())
+        .withEnvironment(new ImmutableEnvironment("dev"))
         .build();
-
-    ConfigurationProvider provider = new ConfigurationProviderBuilder()
-        .withConfigurationSource(source)
-        .withEnvironment(new ImmutableEnvironment("us-west-1"))
-        .build();
-
-    assertThat(provider.getProperty("featureA.toggle", String.class)).isEqualTo("disabled");
+      String name = provider.getProperty("name", String.class);
+      assertThat(name).isEqualTo("Alice");
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
-
-
-  private void runMockServer() throws IOException {
-    server = new MockWebServer();
-    server.setDispatcher(dispatcher);
-    server.start(0);
+  
+  @Test
+  void readIntegerConfigurationFromZookeeper() {
+    try {
+      testingClient.create().forPath("/cfg4j");
+      testingClient.create().forPath("/cfg4j/dev");
+      testingClient.create().forPath("/cfg4j/dev/age", String.valueOf(20).getBytes(StandardCharsets.UTF_8));
+      
+      ConfigurationProvider provider = new ConfigurationProviderBuilder()
+        .withConfigurationSource(new ZookeeperConfigurationSourceBuilder().withConnectString(testingServer.getConnectString()).build())
+        .withEnvironment(new ImmutableEnvironment("dev"))
+        .build();
+      Integer age = provider.getProperty("age", Integer.class);
+      assertThat(age).isEqualTo(20);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+  
+  @Test
+  void readListStringConfigurationFromZookeeper() {
+    try {
+      testingClient.create().forPath("/cfg4j");
+      testingClient.create().forPath("/cfg4j/dev");
+      testingClient.create().forPath("/cfg4j/dev/hobby", "soccer,ping pong".getBytes(StandardCharsets.UTF_8));
+      
+      ConfigurationProvider provider = new ConfigurationProviderBuilder()
+        .withConfigurationSource(new ZookeeperConfigurationSourceBuilder().withConnectString(testingServer.getConnectString()).build())
+        .withEnvironment(new ImmutableEnvironment("dev"))
+        .build();
+      List<String> hobbys = provider.getProperty("hobby", new GenericType<List<String>>() {
+      });
+      assertThat(hobbys).containsAll(Lists.list("soccer", "ping pong"));
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+  
+  @Test
+  void readConfigurationNotExistsFromZookeeper() {
+    try {
+      testingClient.create().forPath("/cfg4j");
+      testingClient.create().forPath("/cfg4j/dev");
+      
+      ConfigurationProvider provider = new ConfigurationProviderBuilder()
+        .withConfigurationSource(new ZookeeperConfigurationSourceBuilder().withConnectString(testingServer.getConnectString()).build())
+        .withEnvironment(new ImmutableEnvironment("dev"))
+        .build();
+      String user = provider.getProperty("user", String.class);
+      assertThat(user).isNull();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+  
+  @Test
+  void readSetPathConfigurationFromZookeeper() {
+    try {
+      testingClient.create().forPath("/server");
+      testingClient.create().forPath("/server/dev");
+      String data = "{\n" +
+        "  \"server\": \"pet\",\n" +
+        "  \"host\": \"192.168.1.2\",\n" +
+        "  \"port\": 8080\n" +
+        "}";
+      testingClient.create().forPath("/server/dev/micro_service", data.getBytes(StandardCharsets.UTF_8));
+      
+      ConfigurationProvider provider = new ConfigurationProviderBuilder()
+        .withConfigurationSource(new ZookeeperConfigurationSourceBuilder()
+          .withConnectString(testingServer.getConnectString())
+          .withRootPath("/server")
+          .build())
+        .withEnvironment(new ImmutableEnvironment("dev"))
+        .build();
+      String serviceInfo = provider.getProperty("micro_service", String.class);
+      System.out.println(data);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 }

@@ -1,0 +1,43 @@
+/*
+ * Copyright 2019-now secondriver (secondriver@yeah.net)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+// ----------- Build script configuration -----------
+
+buildscript {
+
+    ext {
+        artifactName = "cfg4j-zookeeper"
+    }
+}
+
+// ----------- External module dependencies -----------
+
+dependencies {
+
+    compile project(":cfg4j-core")
+
+    compile group: "org.apache.curator", name: "curator-framework", version: "4.0.0"
+    testCompile group: "org.apache.curator", name: "curator-test", version: "4.0.0"
+    testCompile group: "com.squareup.okhttp", name: "mockwebserver", version: "2.7.5"
+    testCompile group: "ch.qos.logback", name: "logback-classic", version: "1.2.3"
+}
+
+// ----------- Task configurations -----------
+jar {
+    baseName = "${artifactName}"
+    version = "${artifactVersion}"
+}
+
+archivesBaseName = "${artifactName}"

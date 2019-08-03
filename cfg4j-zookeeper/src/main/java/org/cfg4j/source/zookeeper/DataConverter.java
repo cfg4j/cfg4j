@@ -18,10 +18,15 @@
 package org.cfg4j.source.zookeeper;
 
 /**
- * Author: secondriver
- * Created: 2019/7/29
+ * Zookeeper ZNode byte[] data convert to String type
  */
 public interface DataConverter {
   
+  /**
+   * Convert ZNode byte[] data to String
+   *
+   * @param data ZNode data
+   * @return ZNode String type data
+   */
   String convert(byte[] data);
 }

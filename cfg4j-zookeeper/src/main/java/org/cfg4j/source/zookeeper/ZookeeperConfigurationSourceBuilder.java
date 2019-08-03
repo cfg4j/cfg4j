@@ -19,18 +19,40 @@ package org.cfg4j.source.zookeeper;
 
 import java.nio.charset.StandardCharsets;
 
+
 /**
- * Author: secondriver
- * Created: 2019/7/29
+ * Builder for {@link ZookeeperConfigurationSource}.
  */
 public class ZookeeperConfigurationSourceBuilder {
   
+  /**
+   * Storage configuration root ZNode path
+   * <p>
+   * default value '/cfg4j'
+   */
   private String rootPath = "/cfg4j";
   
+  /**
+   * Connect Zookeeper server url
+   * <p>
+   * default value 'localhost:2181'
+   */
   private String connectString = "localhost:2181";
   
+  /**
+   * ZNode byte[] data convert to String
+   * <p>
+   * default byte[] use UTF-8 convert to String type
+   */
   private DataConverter dataConverter = data -> new String(data, StandardCharsets.UTF_8);
   
+  
+  /**
+   * Set rootPath for {@link ZookeeperConfigurationSource}s built by this builder
+   *
+   * @param rootPath storage configuration root ZNode path
+   * @return this builder with ZNode rootPath set to provided parameter
+   */
   public ZookeeperConfigurationSourceBuilder withRootPath(String rootPath) {
     if (rootPath != null && !"".equals(rootPath.trim())) {
       this.rootPath = rootPath;
@@ -44,6 +66,12 @@ public class ZookeeperConfigurationSourceBuilder {
     return this;
   }
   
+  /**
+   * Set connectString for {@link ZookeeperConfigurationSource}s built by this builder
+   *
+   * @param connectString connect zookeeper server url
+   * @return this builder with connectString set to provided parameter
+   */
   public ZookeeperConfigurationSourceBuilder withConnectString(String connectString) {
     if (connectString == null || "".equals(connectString.trim())) {
       throw new IllegalStateException("Zookeeper connection string can't be null or empty.");
@@ -52,6 +80,12 @@ public class ZookeeperConfigurationSourceBuilder {
     return this;
   }
   
+  /**
+   * Set dataConverter for {@link ZookeeperConfigurationSource}s built by this builder
+   *
+   * @param dataConverter ZNode byte[] data convert to String
+   * @return this builder with dataConverter set to provided parameter
+   */
   public ZookeeperConfigurationSourceBuilder withDataConvert(DataConverter dataConverter) {
     if (dataConverter == null) {
       throw new IllegalArgumentException("DataConverter must be not null.");
@@ -60,6 +94,11 @@ public class ZookeeperConfigurationSourceBuilder {
     return this;
   }
   
+  /**
+   * Build a {@link ZookeeperConfigurationSource} using this builder's configuration
+   *
+   * @return new {@link ZookeeperConfigurationSource}
+   */
   public ZookeeperConfigurationSource build() {
     return new ZookeeperConfigurationSource(this.rootPath, this.connectString, this.dataConverter);
   }

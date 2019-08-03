@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2018 Norbert Potocki (norbert.potocki@nort.pl)
+ * Copyright 2019 secondriver (secondriver@yeah.net)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -146,7 +146,7 @@ class SimpleConfigurationProviderIntegrationTest {
         .withEnvironment(new ImmutableEnvironment("dev"))
         .build();
       String serviceInfo = provider.getProperty("micro_service", String.class);
-      System.out.println(data);
+      assertThat(serviceInfo).isEqualTo(data);
     } catch (Exception e) {
       e.printStackTrace();
     }

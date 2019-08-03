@@ -21,6 +21,7 @@ import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.RetryForever;
 import org.cfg4j.source.ConfigurationSource;
+import org.cfg4j.source.SourceCommunicationException;
 import org.cfg4j.source.context.environment.Environment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,8 +32,9 @@ import java.util.Map;
 import java.util.Properties;
 
 /**
- * Author: secondriver
- * Created: 2019/7/29
+ * Note: use {@link ZookeeperConfigurationSourceBuilder} for building instances of this class.
+ * <p>
+ * Read configuration from the Zookeeper ZNode store.
  */
 public class ZookeeperConfigurationSource implements ConfigurationSource {
   
@@ -52,7 +54,16 @@ public class ZookeeperConfigurationSource implements ConfigurationSource {
   
   private Environment environment;
   
-  public ZookeeperConfigurationSource(String rootPath, String connectString, DataConverter dataConverter) {
+  /**
+   * Note: use {@link ZookeeperConfigurationSourceBuilder} for building instances of this class.
+   * <p>
+   * Read configuration from the Zookeeper ZNode store located at {@code connectString} with {@code rootPath}.
+   *
+   * @param rootPath      Zookeeper root ZNode path for storage configuration , start with '/'
+   * @param connectString Zookeeper connect info 'host:port,host:port'
+   * @param dataConverter Zookeeper ZNode byte[] data convert to String
+   */
+  ZookeeperConfigurationSource(String rootPath, String connectString, DataConverter dataConverter) {
     this.rootPath = rootPath;
     this.connectString = connectString;
     this.dataConverter = dataConverter;
@@ -78,6 +89,9 @@ public class ZookeeperConfigurationSource implements ConfigurationSource {
     return properties;
   }
   
+  /**
+   * @throws SourceCommunicationException when unable to connect to Zookeeper client
+   */
   @Override
   public void init() {
     try {
@@ -90,6 +104,7 @@ public class ZookeeperConfigurationSource implements ConfigurationSource {
       this.curatorFramework.start();
     } catch (Exception e) {
       LOG.error("Can't connect zookeeper {} occur {} . ", this.connectString, e.getMessage());
+      throw new SourceCommunicationException("Can't connect zookeeper server on " + this.connectString, e);
     }
     this.initialized = true;
   }

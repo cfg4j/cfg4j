@@ -65,24 +65,6 @@ public class ConsulConfigurationSourceIntegrationTest {
   }
 
   @Test
-  public void connectsToSpecifiedAgent() throws Exception {
-    RecordedRequest request = server.takeRequest(0, TimeUnit.MILLISECONDS);
-    assertThat(request).isNotNull();
-  }
-
-  @Test
-  public void initThrowsOnConnectionFailure() throws Exception {
-    server.shutdown();
-    source = new ConsulConfigurationSourceBuilder()
-        .withHost(server.getHostName())
-        .withPort(server.getPort())
-        .build();
-
-    expectedException.expect(SourceCommunicationException.class);
-    source.init();
-  }
-
-  @Test
   public void getConfigurationReturnsAllKeysFromGivenEnvironment() throws Exception {
     Environment environment = new ImmutableEnvironment("us-west-1");
 
@@ -157,7 +139,7 @@ public class ConsulConfigurationSourceIntegrationTest {
       switch (request.getPath()) {
         case "/v1/agent/self":
           return new MockResponse().setResponseCode(200).setBody(PING_RESPONSE);
-        case "/v1/kv/?recurse=true":
+        case "/v1/kv/?recurse":
           return new MockResponse()
             .setResponseCode(200)
             .addHeader("Content-Type", "application/json; charset=utf-8")

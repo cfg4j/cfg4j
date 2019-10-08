@@ -17,10 +17,11 @@ package org.cfg4j.source.consul;
 
 import static java.util.Objects.requireNonNull;
 
-import com.google.common.net.HostAndPort;
-import com.orbitz.consul.Consul;
-import com.orbitz.consul.KeyValueClient;
-import com.orbitz.consul.model.kv.Value;
+import com.ecwid.consul.v1.ConsulClient;
+import com.ecwid.consul.v1.QueryParams;
+import com.ecwid.consul.v1.Response;
+import com.ecwid.consul.v1.kv.model.GetValue;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +42,7 @@ public class ConsulConfigurationSource implements ConfigurationSource {
   private static final Logger LOG = LoggerFactory.getLogger(ConsulConfigurationSource.class);
   private final String host;
   private final int port;
-  private KeyValueClient kvClient;
+  private ConsulClient kvClient;
   private Map<String, String> consulValues;
   private boolean initialized;
 
@@ -97,10 +98,7 @@ public class ConsulConfigurationSource implements ConfigurationSource {
   public void init() {
     try {
       LOG.info("Connecting to Consul client at " + host + ":" + port);
-
-      Consul consul = Consul.builder().withHostAndPort(HostAndPort.fromParts(host, port)).build();
-
-      kvClient = consul.keyValueClient();
+      kvClient = new ConsulClient(String.format("%s:%d", host, port));
     } catch (Exception e) {
       throw new SourceCommunicationException("Can't connect to host " + host + ":" + port, e);
     }
@@ -110,26 +108,21 @@ public class ConsulConfigurationSource implements ConfigurationSource {
 
   private void reload() {
     Map<String, String> newConsulValues = new HashMap<>();
-    List<Value> valueList;
+    List<GetValue> valueList = Collections.emptyList();
 
     try {
       LOG.debug("Reloading configuration from Consuls' K-V store");
-      valueList = kvClient.getValues("/");
+      valueList = kvClient.getKVValues("").getValue();
     } catch (Exception e) {
       initialized = false;
       throw new SourceCommunicationException("Can't get values from k-v store", e);
     }
 
-    for (Value value : valueList) {
-      String val = "";
-
-      if (value.getValueAsString().isPresent()) {
-        val = value.getValueAsString().get();
-      }
-
-      LOG.trace("Consul provided configuration key: " + value.getKey() + " with value: " + val);
-
-      newConsulValues.put(value.getKey(), val);
+    for (GetValue value : valueList) {
+      String key = value.getKey();
+      String val = value.getDecodedValue();
+      LOG.trace("Consul provided configuration key: " + key + " with value: " + val);
+      newConsulValues.put(key, val);
     }
 
     consulValues = newConsulValues;

@@ -23,6 +23,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.Properties;
 
 
@@ -34,6 +35,10 @@ class SimpleConfigurationProviderBindTest extends SimpleConfigurationProviderAbs
 
   public interface MultiPropertyConfigPojo extends ConfigPojo {
     List<Boolean> otherSetting();
+  }
+
+  public interface OptionalConfigPojo extends ConfigPojo {
+    Optional<String> otherSetting();
   }
 
   @Test
@@ -90,5 +95,24 @@ class SimpleConfigurationProviderBindTest extends SimpleConfigurationProviderAbs
     when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(propertiesWith("someSetting", "0"));
 
     assertThat(config.someSetting()).isEqualTo(0);
+  }
+
+  @Test
+  void bindsOptionalWithValue() {
+    when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(propertiesWith("someSetting", "42", "otherSetting", "string"));
+
+    OptionalConfigPojo config = simpleConfigurationProvider.bind("", OptionalConfigPojo.class);
+    assertThat(config.someSetting()).isEqualTo(42);
+    assertThat(config.otherSetting()).isNotEmpty();
+    assertThat(config.otherSetting()).containsSame("string");
+  }
+
+  @Test
+  void bindsOptionalWithoutValue() {
+    when(configurationSource.getConfiguration(anyEnvironment())).thenReturn(propertiesWith("someSetting", "42"));
+
+    OptionalConfigPojo config = simpleConfigurationProvider.bind("", OptionalConfigPojo.class);
+    assertThat(config.someSetting()).isEqualTo(42);
+    assertThat(config.otherSetting()).isEmpty();
   }
 }

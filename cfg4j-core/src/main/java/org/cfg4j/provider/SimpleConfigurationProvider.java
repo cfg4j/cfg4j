@@ -15,8 +15,6 @@
  */
 package org.cfg4j.provider;
 
-import static java.util.Objects.requireNonNull;
-
 import com.github.drapostolos.typeparser.NoSuchRegisteredParserException;
 import com.github.drapostolos.typeparser.TypeParser;
 import com.github.drapostolos.typeparser.TypeParserException;
@@ -26,9 +24,14 @@ import org.cfg4j.source.context.environment.MissingEnvironmentException;
 import org.cfg4j.validator.BindingValidator;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
+import java.lang.reflect.Type;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.Properties;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Basic implementation of {@link ConfigurationProvider}. To construct this provider use {@link ConfigurationProviderBuilder}.
@@ -67,38 +70,55 @@ class SimpleConfigurationProvider implements ConfigurationProvider {
       TypeParser parser = TypeParser.newBuilder().build();
       return parser.parse(propertyStr, type);
     } catch (TypeParserException | NoSuchRegisteredParserException e) {
-      throw new IllegalArgumentException("Unable to cast value \'" + propertyStr + "\' to " + type, e);
+      throw new IllegalArgumentException("Unable to cast value '" + propertyStr + "' to " + type, e);
     }
   }
 
   @Override
   public <T> T getProperty(String key, GenericTypeInterface genericType) {
-    String propertyStr = getProperty(key);
-
-    try {
-      TypeParser parser = TypeParser.newBuilder().build();
+    boolean isOptional = isOptional(genericType);
+    if (isOptional && isMissingProperty(key)) {
       @SuppressWarnings("unchecked")
-      T property = (T) parser.parseType(propertyStr, genericType.getType());
+      T property = (T) Optional.empty();
+      return property;
+    }
+    String propertyStr = getProperty(key);
+    try {
+      Object parsedProperty = TypeParser.newBuilder().build().parseType(propertyStr, getResolvedType(genericType));
+      @SuppressWarnings("unchecked")
+      T property = (T) (isOptional ? Optional.of(parsedProperty) : parsedProperty);
       return property;
     } catch (TypeParserException | NoSuchRegisteredParserException e) {
-      throw new IllegalArgumentException("Unable to cast value \'" + propertyStr + "\' to " + genericType, e);
+      throw new IllegalArgumentException("Unable to cast value '" + propertyStr + "' to " + genericType, e);
+    }
+  }
+
+  private boolean isOptional(GenericTypeInterface genericType) {
+    return genericType.getType() instanceof ParameterizedType && ((ParameterizedType) genericType.getType()).getRawType().equals(Optional.class);
+  }
+
+  private boolean isMissingProperty(String key) {
+    try {
+      return !configurationSource.getConfiguration(environment).containsKey(key);
+    } catch (IllegalStateException e) {
+      throw new IllegalStateException("Couldn't fetch configuration from configuration source for key: " + key, e);
+    }
+  }
+
+  private Type getResolvedType(GenericTypeInterface genericType) {
+    if (isOptional(genericType)) {
+      return ((ParameterizedType) genericType.getType()).getActualTypeArguments()[0];
+    } else {
+      return genericType.getType();
     }
   }
 
   private String getProperty(String key) {
-    try {
-
-      Object property = configurationSource.getConfiguration(environment).get(key);
-
-      if (property == null) {
-        throw new NoSuchElementException("No configuration with key: " + key);
-      }
-
-      return property.toString();
-
-    } catch (IllegalStateException e) {
-      throw new IllegalStateException("Couldn't fetch configuration from configuration source for key: " + key, e);
+    if (isMissingProperty(key)) {
+      throw new NoSuchElementException("No configuration with key: " + key);
     }
+    Object property = configurationSource.getConfiguration(environment).get(key);
+    return property.toString();
   }
 
   @Override
@@ -133,8 +153,8 @@ class SimpleConfigurationProvider implements ConfigurationProvider {
   @Override
   public String toString() {
     return "SimpleConfigurationProvider{" +
-        "configurationSource=" + configurationSource +
-        ", environment=" + environment +
-        '}';
+      "configurationSource=" + configurationSource +
+      ", environment=" + environment +
+      '}';
   }
 }

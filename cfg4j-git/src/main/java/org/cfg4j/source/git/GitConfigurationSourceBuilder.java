@@ -21,6 +21,8 @@ import org.cfg4j.source.context.propertiesprovider.JsonBasedPropertiesProvider;
 import org.cfg4j.source.context.propertiesprovider.PropertiesProviderSelector;
 import org.cfg4j.source.context.propertiesprovider.PropertyBasedPropertiesProvider;
 import org.cfg4j.source.context.propertiesprovider.YamlBasedPropertiesProvider;
+import org.eclipse.jgit.transport.CredentialsProvider;
+import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -37,6 +39,7 @@ public class GitConfigurationSourceBuilder {
   private String tmpRepoPrefix;
   private ConfigFilesProvider configFilesProvider;
   private PropertiesProviderSelector propertiesProviderSelector;
+  private CredentialsProvider credentialsProvider;
 
   /**
    * Construct {@link GitConfigurationSource}s builder
@@ -108,6 +111,19 @@ public class GitConfigurationSourceBuilder {
   }
 
   /**
+   * Set {@link CredentialsProvider} for {@link GitConfigurationSource}s built by this builder
+   *
+   * @param credentialsProvider {@link CredentialsProvider} to use
+   * @return this builder with {@link CredentialsProvider} set to {@code credentialsProvider}
+   */
+
+  public GitConfigurationSourceBuilder withCredentialsProvider(CredentialsProvider credentialsProvider) {
+    this.credentialsProvider = credentialsProvider;
+    return this;
+  }
+
+
+  /**
    * Set relative repository path in temporary dir for {@link GitConfigurationSource}s built by this builder
    *
    * @param tmpRepoPrefix relative repository path in temporary dir to use
@@ -136,7 +152,7 @@ public class GitConfigurationSourceBuilder {
    */
   public GitConfigurationSource build() {
     return new GitConfigurationSource(repositoryURI, tmpPath, tmpRepoPrefix, branchResolver, pathResolver,
-        configFilesProvider, propertiesProviderSelector);
+        configFilesProvider, propertiesProviderSelector, credentialsProvider);
   }
 
   @Override

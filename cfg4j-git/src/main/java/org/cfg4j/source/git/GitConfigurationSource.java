@@ -30,6 +30,7 @@ import org.eclipse.jgit.api.CreateBranchCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Ref;
+import org.eclipse.jgit.transport.CredentialsProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,6 +63,7 @@ class GitConfigurationSource implements ConfigurationSource, Closeable {
   private Git clonedRepo;
   private Path clonedRepoPath;
   private boolean initialized;
+  private CredentialsProvider credentialsProvider;
 
   /**
    * Note: use {@link GitConfigurationSourceBuilder} for building instances of this class.
@@ -81,7 +83,7 @@ class GitConfigurationSource implements ConfigurationSource, Closeable {
    */
   GitConfigurationSource(String repositoryURI, Path tmpPath, String tmpRepoPrefix, BranchResolver branchResolver,
                          PathResolver pathResolver, ConfigFilesProvider configFilesProvider,
-                         PropertiesProviderSelector propertiesProviderSelector) {
+                         PropertiesProviderSelector propertiesProviderSelector, CredentialsProvider credentialsProvider) {
     this.branchResolver = requireNonNull(branchResolver);
     this.pathResolver = requireNonNull(pathResolver);
     this.configFilesProvider = requireNonNull(configFilesProvider);
@@ -89,7 +91,7 @@ class GitConfigurationSource implements ConfigurationSource, Closeable {
     this.repositoryURI = requireNonNull(repositoryURI);
     this.tmpPath = requireNonNull(tmpPath);
     this.tmpRepoPrefix = requireNonNull(tmpRepoPrefix);
-
+    this.credentialsProvider = credentialsProvider == null? CredentialsProvider.getDefault():credentialsProvider;
     initialized = false;
   }
 
@@ -148,6 +150,7 @@ class GitConfigurationSource implements ConfigurationSource, Closeable {
       clonedRepo = Git.cloneRepository()
           .setURI(repositoryURI)
           .setDirectory(clonedRepoPath.toFile())
+          .setCredentialsProvider(credentialsProvider)
           .call();
     } catch (GitAPIException e) {
       throw new SourceCommunicationException("Unable to clone repository: " + repositoryURI, e);
@@ -159,7 +162,7 @@ class GitConfigurationSource implements ConfigurationSource, Closeable {
   private void reload() {
     try {
       LOG.debug("Reloading configuration by pulling changes");
-      clonedRepo.pull().call();
+      clonedRepo.pull().setCredentialsProvider(credentialsProvider).call();
     } catch (GitAPIException e) {
       initialized = false;
       throw new IllegalStateException("Unable to pull from remote repository", e);

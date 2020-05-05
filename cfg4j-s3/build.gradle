@@ -1,0 +1,27 @@
+// ----------- Build script configuration -----------
+
+buildscript {
+
+    ext {
+        artifactName = "cfg4j-s3"
+    }
+}
+
+// ----------- External module dependencies -----------
+
+dependencies {
+
+    compile project(":cfg4j-core")
+
+    compile group: "com.amazonaws", name: "aws-java-sdk-s3", version: "1.11.535"
+
+    testCompile project(":cfg4j-core").sourceSets.test.output
+}
+
+// ----------- Task configurations -----------
+jar {
+    baseName = "${artifactName}"
+    version = "${artifactVersion}"
+}
+
+archivesBaseName = "${artifactName}"

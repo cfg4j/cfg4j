@@ -25,9 +25,7 @@ import org.cfg4j.source.context.filesprovider.ConfigFilesProvider;
 import org.cfg4j.source.context.propertiesprovider.PropertiesProvider;
 import org.cfg4j.source.context.propertiesprovider.PropertiesProviderSelector;
 import org.cfg4j.utils.FileUtils;
-import org.eclipse.jgit.api.CheckoutCommand;
-import org.eclipse.jgit.api.CreateBranchCommand;
-import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.*;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.transport.CredentialsProvider;
@@ -64,6 +62,7 @@ class GitConfigurationSource implements ConfigurationSource, Closeable {
   private Path clonedRepoPath;
   private boolean initialized;
   private CredentialsProvider credentialsProvider;
+  private TransportConfigCallback transportConfigCallback;
 
   /**
    * Note: use {@link GitConfigurationSourceBuilder} for building instances of this class.
@@ -80,10 +79,13 @@ class GitConfigurationSource implements ConfigurationSource, Closeable {
    * @param configFilesProvider        {@link ConfigFilesProvider} used for determining which files in repository should be read
    * @param propertiesProviderSelector selector used for choosing {@link PropertiesProvider} based on a configuration file extension
    *                                   as config files
+   * @param credentialsProvider        credentialsProvider
+   * @param transportConfigCallback    optional transportConfigCallback
    */
   GitConfigurationSource(String repositoryURI, Path tmpPath, String tmpRepoPrefix, BranchResolver branchResolver,
                          PathResolver pathResolver, ConfigFilesProvider configFilesProvider,
-                         PropertiesProviderSelector propertiesProviderSelector, CredentialsProvider credentialsProvider) {
+                         PropertiesProviderSelector propertiesProviderSelector,
+                         CredentialsProvider credentialsProvider, TransportConfigCallback transportConfigCallback) {
     this.branchResolver = requireNonNull(branchResolver);
     this.pathResolver = requireNonNull(pathResolver);
     this.configFilesProvider = requireNonNull(configFilesProvider);
@@ -147,11 +149,16 @@ class GitConfigurationSource implements ConfigurationSource, Closeable {
     }
 
     try {
-      clonedRepo = Git.cloneRepository()
-          .setURI(repositoryURI)
-          .setDirectory(clonedRepoPath.toFile())
-          .setCredentialsProvider(credentialsProvider)
-          .call();
+      CloneCommand cloneCommand = Git.cloneRepository()
+        .setURI(repositoryURI)
+        .setDirectory(clonedRepoPath.toFile())
+        .setCredentialsProvider(credentialsProvider);
+
+      if(transportConfigCallback != null) {
+        cloneCommand.setTransportConfigCallback(transportConfigCallback);
+      }
+
+      clonedRepo = cloneCommand.call();
     } catch (GitAPIException e) {
       throw new SourceCommunicationException("Unable to clone repository: " + repositoryURI, e);
     }

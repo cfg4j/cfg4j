@@ -21,6 +21,7 @@ import org.cfg4j.source.context.propertiesprovider.JsonBasedPropertiesProvider;
 import org.cfg4j.source.context.propertiesprovider.PropertiesProviderSelector;
 import org.cfg4j.source.context.propertiesprovider.PropertyBasedPropertiesProvider;
 import org.cfg4j.source.context.propertiesprovider.YamlBasedPropertiesProvider;
+import org.eclipse.jgit.api.TransportConfigCallback;
 import org.eclipse.jgit.transport.CredentialsProvider;
 
 import java.nio.file.Path;
@@ -39,6 +40,7 @@ public class GitConfigurationSourceBuilder {
   private ConfigFilesProvider configFilesProvider;
   private PropertiesProviderSelector propertiesProviderSelector;
   private CredentialsProvider credentialsProvider;
+  private TransportConfigCallback transportConfigCallback;
 
   /**
    * Construct {@link GitConfigurationSource}s builder
@@ -121,6 +123,11 @@ public class GitConfigurationSourceBuilder {
     return this;
   }
 
+  public GitConfigurationSourceBuilder withTransportConfigCallback(TransportConfigCallback transportConfigCallback) {
+    this.transportConfigCallback = transportConfigCallback;
+    return this;
+  }
+
 
   /**
    * Set relative repository path in temporary dir for {@link GitConfigurationSource}s built by this builder
@@ -151,7 +158,7 @@ public class GitConfigurationSourceBuilder {
    */
   public GitConfigurationSource build() {
     return new GitConfigurationSource(repositoryURI, tmpPath, tmpRepoPrefix, branchResolver, pathResolver,
-        configFilesProvider, propertiesProviderSelector, credentialsProvider);
+        configFilesProvider, propertiesProviderSelector, credentialsProvider, transportConfigCallback);
   }
 
   @Override

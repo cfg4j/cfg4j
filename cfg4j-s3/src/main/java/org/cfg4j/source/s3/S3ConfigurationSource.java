@@ -13,13 +13,21 @@ import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import org.cfg4j.source.ConfigurationSource;
 import org.cfg4j.source.SourceCommunicationException;
 import org.cfg4j.source.context.environment.Environment;
+import org.cfg4j.source.context.filesprovider.ConfigFilesProvider;
+import org.cfg4j.source.context.propertiesprovider.PropertiesProvider;
+import org.cfg4j.source.context.propertiesprovider.PropertiesProviderSelector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.*;
+
+import static com.amazonaws.util.StringUtils.join;
+import static java.util.Objects.requireNonNull;
 
 class S3ConfigurationSource implements ConfigurationSource, Closeable {
 
@@ -30,16 +38,21 @@ class S3ConfigurationSource implements ConfigurationSource, Closeable {
   private String accessKey;
   private String secretKey;
   private String bucketName;
-  private String key;
-
+  private String prefix;
+  private final ConfigFilesProvider configFilesProvider;
+  private final PropertiesProviderSelector propertiesProviderSelector;
   private AmazonS3 s3Client;
 
-  S3ConfigurationSource(String accessKey, String secretKey, String bucketName, String key) {
-    this.accessKey = accessKey;
-    this.secretKey = secretKey;
-    this.bucketName = bucketName;
-    this.key = key;
+  S3ConfigurationSource(String accessKey, String secretKey, String bucketName, String prefix,
+                        ConfigFilesProvider configFilesProvider,
+                        PropertiesProviderSelector propertiesProviderSelector) {
+    this.accessKey = requireNonNull(accessKey);
+    this.secretKey = requireNonNull(secretKey);
+    this.bucketName = requireNonNull(bucketName);
+    this.prefix = requireNonNull(prefix);
     this.initialized = false;
+    this.propertiesProviderSelector = requireNonNull(propertiesProviderSelector);
+    this.configFilesProvider = requireNonNull(configFilesProvider);
   }
 
   @Override
@@ -48,15 +61,28 @@ class S3ConfigurationSource implements ConfigurationSource, Closeable {
       throw new IllegalStateException("Configuration source has to be successfully initialized before you request configuration.");
     }
 
-    GetObjectRequest s3request = new GetObjectRequest(this.bucketName, this.key);
-    S3ObjectInputStream is = null;
+    Properties properties = new Properties();
 
+    for (Path path : configFilesProvider.getConfigFiles()) {
+        PropertiesProvider provider = propertiesProviderSelector.getProvider(path.getFileName().toString());
+        properties.putAll(getProperties(environment, path.getFileName().toString(), provider));
+    }
+
+    return properties;
+
+  }
+
+  private Properties getProperties(Environment environment, String fileName, PropertiesProvider propertiesProvider) {
+    String key = join("/", prefix, environment.getName(), fileName);
+    GetObjectRequest s3request = new GetObjectRequest(this.bucketName, key);
+    S3ObjectInputStream is = null;
     try {
       S3Object result = s3Client.getObject(s3request);
       is = result.getObjectContent();
-      return inputStreamToProperties(is);
-    } catch(IOException e) {
-      throw new IllegalStateException("Unable to load configuration from " + bucketName + " " + key, e);
+      return propertiesProvider.getProperties(is);
+    }
+    catch (Exception e) {
+      throw new IllegalStateException("Unable to load configuration from " + fileName + " file", e);
     } finally {
       if (is != null) {
         try {
@@ -68,15 +94,9 @@ class S3ConfigurationSource implements ConfigurationSource, Closeable {
     }
   }
 
-  protected Properties inputStreamToProperties(InputStream is) throws IOException {
-    Properties props = new Properties();
-    props.load(is);
-    return props;
-  }
-
   @Override
   public void init() {
-    LOG.info("Initializing " + S3ConfigurationSource.class + " pointing to " + bucketName + key);
+    LOG.info("Initializing " + S3ConfigurationSource.class + " pointing to " + bucketName + prefix);
 
     try {
       AWSCredentials awsCredentials = new BasicAWSCredentials(accessKey, secretKey);
@@ -106,7 +126,7 @@ class S3ConfigurationSource implements ConfigurationSource, Closeable {
       "accessKey='" + accessKey + '\'' +
       ", secretKey='" + secretKey + '\'' +
       ", bucketName='" + bucketName + '\'' +
-      ", key='" + key + '\'' +
+      ", prefix='" + prefix + '\'' +
       '}';
   }
 }

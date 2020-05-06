@@ -117,7 +117,6 @@ public class GitConfigurationSourceBuilder {
    * @param credentialsProvider {@link CredentialsProvider} to use
    * @return this builder with {@link CredentialsProvider} set to {@code credentialsProvider}
    */
-
   public GitConfigurationSourceBuilder withCredentialsProvider(CredentialsProvider credentialsProvider) {
     this.credentialsProvider = credentialsProvider;
     return this;

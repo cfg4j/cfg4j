@@ -1,6 +1,10 @@
 .idea/
 .gradle/
 build/
+target/
+.DS_Store
 *.iml
 *.log.*
+classes
+gradle
 gradle.properties

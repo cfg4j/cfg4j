@@ -43,7 +43,12 @@ public class BindingValidator {
    */
   public <T> void validate(T configurationBean, Class<T> type) {
     LOG.debug("Validating configuration bean of type " + type);
-
+        System.out.println("soemthing");
+        System.out.println("soemthing");        
+        System.out.println("soemthing");
+        System.out.println("soemthing");        
+        System.out.println("soemthing");
+        System.out.println("soemthing");
     for (Method declaredMethod : type.getDeclaredMethods()) {
       try {
         LOG.debug("Validating method: " + declaredMethod.getName());
@@ -65,6 +70,15 @@ public class BindingValidator {
         throw new IllegalStateException("Can't bind method " + declaredMethod.getName(), e);
 
       } catch (IllegalAccessException e) {
+        System.out.println("soemthing");
+        System.out.println("soemthing");
+        System.out.println("soemthing");
+        System.out.println("soemthing");
+        System.out.println("soemthing");
+        System.out.println("soemthing");
+
+
+
         throw new IllegalStateException("Can't bind method " + declaredMethod.getName(), e);
       }
     }
